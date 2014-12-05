@@ -1,0 +1,93 @@
+\documentclass[11pt,table,final,fleqn,xcolor={usenames,dvipsnames}]{beamer}
+\usetheme[]{Frankfurt}
+
+\input{00-settings.tex}
+
+\title{Numerical errors in computer simulations}
+
+\author[I.~Roghair]{\underline{Ivo~Roghair}, Edwin Zondervan, Martin van Sint Annaland}
+
+\institute[SPI]{{Chemical Process Intensification,\\
+  Process Systems Engineering,\\
+  Eindhoven University of Technology}}
+
+\date
+
+
+% BEGIN PRESENTATION
+\begin{document}
+\lstset{language=Matlab,%
+    basicstyle=\footnotesize\ttfamily,
+    breaklines=true,%
+    morekeywords={matlab2tikz},
+    keywordstyle=\color{blue},%
+    morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
+    identifierstyle=\color{black},%
+    stringstyle=\color{mylilas},
+    commentstyle=\color{mygreen},%
+    showstringspaces=false,
+    numbers=none,%
+    emph=[2]{int,simplify,diff,log,atan,syms,ribbon}, emphstyle=[2]{\color{blue}},
+}
+
+
+% 
+% \begin{frame}
+%   \frametitle{Extension with convection terms}
+%   \[
+%     \frac{\partial c}{\partial t} = \mathcal{D}\frac{\partial^2 c}{\partial x^2} - u\frac{\partial c}{\partial x} + R
+%   \]
+%   \vskip1em
+%   Discretization of first derivative $\dfrac{dc}{dx}$,\\
+%   looks simple but is numerical headache! \\ \vskip1em
+%   
+%   Central discretization: $\dfrac{dc}{dx} = \dfrac{c_{i+1}-c__{i-1}}{\Delta x}$ \\
+%   $\Rightarrow$ simple and easy, too bad it doesn't work: yields unstable solutions if convection dominated.
+% \end{frame}
+
+% 
+% \begin{frame}[fragile]
+%   \frametitle{BVP example: analytical solution}
+%   Compare with the analytical solution: \\ \vskip1em
+%     \tikz \node[emphblock,text width=\textwidth] { \vskip1ex
+%   $\displaystyle q = k_L E_A C_{A,i,L}$ \\ \vskip1ex  with \\ 
+%   \begin{minipage}{0.5\textwidth}
+%       \begin{align*}
+%   E_A &= \frac{\mathit{Ha}}{\tanh \mathit{Ha}} &\quad \text{(Enhancement factor)} \\
+%   \mathit{Ha} &= \frac{\sqrt{k_R\mathcal{D}}}{k_L} &\quad \text{(Hatta number)} \\ 
+%   k_L &= \frac{\mathcal{D}}{\delta} &\quad \text{(mass transfer coefficient)}
+%       \end{align*}
+%     \end{minipage}
+% };
+% \end{frame}
+
+
+% \begin{frame}
+%   \frametitle{test}
+%   \footnotesize\selectfont
+%   \begin{tikzpicture}[]
+% \matrix (m) [ampersand replacement=\&,row sep = 5pt,
+%             style grid={},%style odd rows = {draw=red},
+%          left delimiter=(,right delimiter={)}, matrix of math nodes] 
+%          { 1\&0\&0\&0\&\cdots\&0\\
+%           -\Fo\&(1+2\Fo)\&-\Fo\&0\&\cdots\&0\\
+%             0\&-\Fo\&(1+2\Fo)\&-\Fo\&\cdots\&0\\
+%             0\&0\&-\Fo\&(1+2\Fo)\&\cdots\&0\\
+%             \vdots\&\vdots\&\vdots\&\vdots\&\ddots\&\vdots\\
+%             0\&0\&0\&0\&\cdots\&1\\ };
+% \matrix (x) [right=1cm of m,ampersand replacement=\&,row sep = 5pt, 
+%             style grid={},%style odd rows = {draw=red},
+%          left delimiter=(,right delimiter={)}, matrix of math nodes] 
+%          {  c_0^{n+1} \\
+%             c_1^{n+1} \\
+%             c_2^{n+1} \\
+%             c_3^{n+1} \\
+%             \vdots \\
+%             c_m^{n+1} \\ };         
+%          \fitandstyle[background]{(m-cell-1-1) (m-cell-1-2)}{fill=maincolor,fill opacity=0.3,draw=maincolor,thick,rounded corners=4pt};
+%          \fitandstyle[background]{(x-cell-1-1) (x-cell-1-1)}{fill=maincolor,fill opacity=0.3,draw=maincolor,thick,rounded corners=4pt};
+% \end{tikzpicture}
+% \end{frame}
+
+
+\end{document}
