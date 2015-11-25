@@ -17,19 +17,18 @@
 
 \input{../00-settings.tex}
 
-% \usepackage{pgfpages}
-% \pgfpagesuselayout{4 on 1}[border shrink=5mm]
-
+%\usepackage{pgfpages}
+%\pgfpagesuselayout{4 on 1}[border shrink=5mm]
+	
 % PRESENTATION SPECIFICS
 \title{Numerical errors in computer simulations}
 
-\author[I.~Roghair]{\underline{Ivo~Roghair}, Edwin Zondervan, Martin van Sint Annaland}
+\author[I.~Roghair]{\underline{Martin van Sint Annaland}, Ivo~Roghair}
 
 \institute[SPI]{{Chemical Process Intensification,\\
-  Process Systems Engineering,\\
   Eindhoven University of Technology}}
 
-\date
+\date{November 12, 2015}
 
 
 % BEGIN PRESENTATION
@@ -113,9 +112,9 @@
   A numerical result $\tilde{x}$ is an approximation of the real value $x$.
   \begin{itemize}
   \colorize<1>  \item Absolute error
-    \[ \delta = \tilde{x} - x, x \neq 0 \]
+    \[ \delta = \lvert\tilde{x} - x\rvert, x \neq 0 \]
   \colorize<2>  \item Relative error
-    \[ \frac{\delta}{\tilde{x}} = \frac{\tilde{x} - x}{\tilde{x}} \]
+    \[ \frac{\delta}{\tilde{x}} = \lvert\frac{\tilde{x} - x}{\tilde{x}}\rvert \]
   \colorize<3> \item Error margin 
     \[ \tilde{x} - \delta \leq x \leq \tilde{x} + \delta \] 
     \[ x = \tilde{x} \pm \delta \]
@@ -322,7 +321,7 @@
  \frametitle{Representation of real (floating point) numbers}
  \begin{itemize}
     \item Formally, a real number is represented by the following bit sequence
-    \[ x = \sigma \left( 2^{-1} + c_2 2^{-2} + \ldots + c_m 2^{-m} \right)2^e \] \\
+    \[ x = \sigma \left( 2^{-1} + c_2 2^{-2} + \ldots + c_m 2^{-m} \right)2^{e-1023} \] \\
     Here, $\sigma$ is  the sign of $x$ and $e$ is an integer value.
   \item A floating point number hence contains sections that contain the sign, the exponent and the mantissa \\
   \vskip1em
@@ -514,7 +513,7 @@
 \[ x + y = \tilde{x} + \tilde{y} \pm (\delta + \varepsilon) \approx 6.2845-5.025\times10^{-5} \]
 \[ x - y = \tilde{x} - \tilde{y} \pm (\delta + \varepsilon) \approx -0.0013 + 3.55\times10^{-5}\]
   \begin{itemize}
-  \item The absolute error is small ($\approx 10^{-6}$), but the relative error is much bigger (0.028).
+  \item The absolute error is small ($\approx 10^{-5}$), but the relative error is much bigger (0.028).
   \item Adding up the errors results in a loss of significant digits!
   \end{itemize}
 }
@@ -816,7 +815,7 @@ ans = 1/(x^3 + 1)
   \pause
   \begin{block}{Exercise 2}
   Calculate the \emph{value} of $p$:
-  \[  p = \int_0^{10} \frac{e^x - e^{-x}}{\sinh x} \] \vskip-1em
+  \[  p = \int_0^{10} \frac{e^x - e^{-x}}{\sinh x}dx \] \vskip-1em
   \pause
   \begin{lstlisting}
 >> f = ((exp(x)- exp(-x))/sinh(x));

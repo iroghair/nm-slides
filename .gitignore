@@ -7,3 +7,5 @@
 *.vrb
 *.tex.backup
 Slides\ Edwin/*
+*.bak
+*.synctex.gz

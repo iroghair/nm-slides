@@ -1,0 +1,55 @@
+\documentclass[11pt,table,final,fleqn,xcolor={usenames,dvipsnames,table}]{beamer}
+\usetheme[]{Frankfurt}
+
+\input{../00-settings.tex}
+
+% \usepackage{pgfpages}
+% \pgfpagesuselayout{4 on 1}[border shrink=5mm]
+
+\title{Ordinary differential equations}
+
+\author[M.~Van Sint Annaland]{\underline{Martin van Sint Annaland}, Ivo~Roghair \\ \vskip1em {\scriptsize \underline{m.v.sintannaland@tue.nl}}}
+
+\institute[SPI]{{Chemical Process Intensification,\\
+  Eindhoven University of Technology}}
+
+\date
+
+
+% BEGIN PRESENTATION
+\begin{document}
+\sisetup{detect-all}
+\lstset{language=Matlab,%
+    %basicstyle=\color{red},
+    basicstyle=\footnotesize\ttfamily,
+    breaklines=true,%
+    morekeywords={matlab2tikz},
+    keywordstyle=\color{blue},%
+    morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
+    identifierstyle=\color{black},%
+    stringstyle=\color{mylilas},
+    commentstyle=\color{mygreen},%
+    showstringspaces=false,%without this there will be a symbol in the places where there is a space
+    numbers=none,%
+%     numberstyle={\tiny \color{black}},% size of the numbers
+%     numbersep=-2pt, % this defines how far the numbers are from the text
+%     emph=[1]{for,end,break},emphstyle=[1]\color{red}, %some words to emphasise
+    emph=[2]{int,simplify,diff,log,atan,syms,interp3,interpn}, emphstyle=[2]{\color{blue}}
+}
+
+\part{Ordinary Differential Equations}
+\frame[plain]{
+  \titlepage
+}
+
+\section{Introduction}
+\subsection*{General}
+\begin{frame}[label=contents]
+  \frametitle{Today's outline}
+  \mode<beamer>{
+    \only<1>{\tableofcontents}
+  }
+  \only<2>{\tableofcontents[currentsection]}
+\end{frame}
+  
+\end{document}

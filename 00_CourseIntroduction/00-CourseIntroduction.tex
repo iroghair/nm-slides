@@ -1,0 +1,310 @@
+\documentclass[11pt,table,final,fleqn,xcolor={usenames,dvipsnames}]{beamer}
+\usetheme[]{Frankfurt}
+\usecolortheme{crane}
+
+% \usepackage{listings}
+% \usepackage{multimedia} % Movies
+% \usepackage{fancyvrb,relsize}
+% \usepackage{commath}
+% \usepackage{graphicx}
+% \usepackage{longtable}
+% \usepackage[math]{iwona}
+% \usepackage{wasysym}
+% \usepackage{amsmath}
+% \usepackage{amssymb}
+% \usepackage[amssymb]{SIunits}
+% \usepackage{tikz} % Drawing
+
+\input{00-settings.tex}
+% 
+% \usepackage{pgfpages}
+% \pgfpagesuselayout{4 on 1}[border shrink=5mm]
+
+% PRESENTATION SPECIFICS
+\title{Numerical Methods For Chemical Engineers}
+\subtitle{Study guide for 6E5X0, 2015-2016}
+
+\author[I.~Roghair]{\underline{Ivo~Roghair}, Martin van Sint Annaland}
+
+\institute{Chemical Process Intensification\\Eindhoven University of Technology}
+
+\date
+
+% BEGIN PRESENTATION
+\begin{document}
+\lstset{language=Matlab,%
+    %basicstyle=\color{red},
+    basicstyle=\footnotesize\ttfamily,
+    breaklines=true,%
+    morekeywords={matlab2tikz},
+    keywordstyle=\color{blue},%
+    morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
+    identifierstyle=\color{black},%
+    stringstyle=\color{mylilas},
+    commentstyle=\color{mygreen},%
+    showstringspaces=false,%without this there will be a symbol in the places where there is a space
+    numbers=none,%
+%     numberstyle={\tiny \color{black}},% size of the numbers
+%     numbersep=-2pt, % this defines how far the numbers are from the text
+%     emph=[1]{for,end,break},emphstyle=[1]\color{red}, %some words to emphasise
+    emph=[2]{int,simplify,diff,log,atan,syms}, emphstyle=[2]{\color{blue}}
+}
+
+\frame[plain]{
+  \titlepage
+}
+
+
+\section{Introduction}
+\begin{frame}
+ \frametitle{Ptolemy and the almagest}
+ \begin{columns}
+   \column{0.5\textwidth}\centering
+     \includegraphics[width=0.8\columnwidth]{img/Ptolemy.png}
+   \column{0.5\textwidth}\centering
+     \includegraphics[width=\columnwidth]{img/Cassini_apparent.png}   
+ \end{columns} \vspace{1em}
+ \tikz{\node[emphblock,text width=\textwidth]{
+   ${\sim}150$ AD. Development of numerical approximations to describe the motions of the heavenly bodies with accuracy matching reality sufficiently.};}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Numerical Methods}
+ \begin{itemize}
+  \item Numerical analysis is concerned with obtaining approximate solutions to problems while maintaining reasonable bounds of error...
+  \item ...because it is often impossible to obtain exact answers ...
+  \item Numerical analysis makes use of algorithms to
+approximate solutions
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Relevance}
+  \begin{itemize}
+  \item Important to the world!
+  \item E.g. in astronomy, construction, agriculture, architecture, ....
+  \item And of course in Engineering!
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{...Chemical Engineering...}
+  \begin{itemize}
+	  \item Description of reactors and separators (dynamic and steady state)
+		\item Computational fluid dynamics
+		\item Thermodynamic equations of state
+		\item Optimizing process performance
+		\item Design and synthesis of processes
+		\item Regression of data, e.g. isotherms, kinetics, ...
+ \end{itemize}
+\end{frame}
+
+\section{About this course}
+\begin{frame}
+ \frametitle{Course Schedule}
+ \begin{tabular}{ccll}
+ \hline
+ Lecture & Date & Topic & Teacher \\ 
+ \hline
+ 1 & 9/11/2015 & Programming and algorithms & IR \\ 
+ 2 & 12/11/2015 & Numerical errors & MSA \\ 
+ 3 & 16/11/2015 & Linear eqns: direct methods & IR\\ 
+ 4 & 19/11/2015 & Linear eqns: iterative methods & IR\\ 
+ 5 & 23/11/2015 & Non-linear equations & MSA\\ 
+ 6 & 26/11/2015 & Interpolation + integration & IR\\ 
+ 7 & 30/11/2015 & ODEs (1) & MSA\\ 
+ 8 & 3/12/2015 & ODEs (2) & MSA\\ 
+ 9 & 7/12/2015 & PDEs (1) & MSA\\ 
+ 10 & 10/12/2015 & PDEs (2) & MSA\\ 
+  & 14/12/2015 & Guest lecture & Mathworks \\ 
+ 11 & 04/01/2016 & Curve fitting and regression & IR\\ 
+ 12 & 07/01/2016 & Optimization & IR\\ 
+ \hline
+ \end{tabular} 
+\end{frame}
+
+\begin{frame}
+ \frametitle{Course Objectives}
+ \begin{itemize}
+  \item Acquire knowledge of and experience with different techniques for the numerical solution of systems of linear and non-linear algebraic and differential equations, as well as data analysis and optimization.
+  \item Being able to solve various numerical problems using Matlab or Excel. 
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Prerequisites}
+  The following subjects should give you enough hold-on to follow this course comfortably:
+ \begin{itemize}
+   \item Calculus A and B
+   \item Linear Algebra
+   \item Some basic MATLAB experience
+     \begin{itemize}
+       \item We will shortly cover some aspects on MATLAB programming in this first lecture. Detailed documents and courses are on OASE, for your own reference.
+     \end{itemize}
+   \item Laptop with Matlab and Excel installed
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Course Materials}
+ \begin{itemize}
+  \item Lecture slides
+  \item MATLAB scripts
+  \item Additional articles
+  \item Lecture book: A numerical primer for the chemical engineer by Edwin Zondervan (recommended) \pause
+  \item There are other useful books:
+  \begin{itemize}
+    \item Numerical recipes, W.H. Press et al., Cambridge
+    \item Numerical methods for chemical engineering, K.J. Beers, Cambridge
+    \item Numerical methods for chemical engineers, A. Constantinides, Prentice hall
+    \item Essential matlab-for engineers B.D. Hahn
+  \end{itemize}
+ \end{itemize}
+  \tikz{\node[emphblock,text width=\textwidth]{
+    Look on OASE for the slides, exercises, scripts, assignments and additional documentation on MATLAB.
+   };}
+\end{frame}
+
+\section{Assessments}
+\begin{frame}
+ \frametitle{Assessment}
+ \begin{block}{5 assignments}
+  \begin{itemize}
+    \item Each 20\% of the final result
+    \item Done in groups of 2 persons (form coupled yourselves)
+    \item Results will be addressed in a short report (template provided, OASE)
+    \item Typically 2 weeks for each assignment
+  \end{itemize}   
+ \end{block}
+ \pause
+ \begin{block}{About the 5th assignment}
+  \begin{itemize}
+    \item Consists of an assignment and an oral examination (groups)
+    \item Oral examination covers \emph{all assignments and topics}
+    \item We will assess individual knowledge on the topics
+    \item Mark needs to be at least a 5.0. 
+    \item Details on OWinfo
+  \end{itemize}   
+ \end{block}
+\end{frame} 
+\begin{frame}
+ \frametitle{Assignment grading}
+ We will use rubrics to grade your reports. The following categories will be looked at. \pause
+    \begin{itemize}[<+->]
+    	\item Use of numerical methods: e.g. built-in solvers vs. show implementation numerical methods
+    	\item Analysis of results: just the number is provided vs. high detail analysis and interpretation
+    	\item Programming skills: unstructured code, difficult to change vs. readable code with comments and UI
+    	\item Visualisation: unreadable graphs with no axes labels or legend vs. publication quality graphs, consistency between datasets
+    \end{itemize} 
+    \vspace*{2em} \pause
+  \tikz{\node[emphblock,text width=\textwidth]{
+    The actual rubrics are provided on OASE (look in Assignments folder). If certain aspects are unclear, feel free to contact us.
+   };}
+\end{frame}
+
+%
+%\begin{frame}
+% \frametitle{Report structure}
+% We want the report to be to the point, describing your approach in solving the numerical problems and giving the results.
+% \begin{enumerate}
+%   \item Introduction: A few lines in your own words on the goal of the assignment. Don't copy/paste the assignment, we know what it says.
+%   \item Results: Provide the results on the question(s) on the assignment. Explain your choices, observations. Make clear graphs (axis labels, readable font). Provide code snippets when you want to illustrate certain nifty tricks, but whole scripts should go in the appendix. Feel free to explore beyond the boundaries of the assignment.
+%   \item Discussion and Conclusion: A few lines! Did you achieve your goals, what have you learned?
+%   \item Appendix: Provide the scripts and possibly figures that did not make it into the report itself.
+% \end{enumerate}
+%\end{frame}
+
+%
+\begin{frame}
+ \frametitle{Assignment handout and deadlines}
+     Deliver your assignments via e-mail to \href{mailto:i.roghair@tue.nl}{i.roghair@tue.nl}.
+    \begin{itemize}
+    	\item Deliver the report in PDF format
+    	\item Name the files NM\_X\_lastname1\_lastname2.pdf (with X the assignment number)
+    	\item Send along the scripts+necessities in a .zip
+    \end{itemize}
+  \tikz{\node[emphblock,text width=\textwidth]{
+    When delivering your final assignment, suggest a timeslot for the oral exam.
+   };}
+\end{frame}
+
+\begin{frame}
+ \setbeamercolor{alerted text}{fg=tuered}
+ \frametitle{Assignment handout and deadlines}
+ \begin{tabular}{p{0.1\textwidth}ccp{0.4\textwidth}}
+ \hline
+ Assign\-ment & Provided & Deadline & Topic \\ 
+ \hline
+  1 & 9/11/2015 & 23/11/2015 & Programming and algorithms, numerical errors \\ 
+ 2 & 19/11/2015 & \alert{07/12/2015} & Linear and non-linear equations  \\ 
+ 3 & \alert{03/11/2015} & \alert{17/12/2015} & ODEs, integration and interpolation \\
+ 4 & 10/12/2015 & 04/01/2016 & PDEs \\ 
+ 5 & 04/01/2015 & 17/01/2016 & All topics \\ 
+ \hline
+ \end{tabular} 
+ \\
+ \vspace*{1em}
+  \tikz{\node[emphblock,text width=\textwidth]{
+    Deliver your assignment via e-mail to \href{mailto:i.roghair@tue.nl}{i.roghair@tue.nl}.
+    When delivering your final assignment, suggest a timeslot for the oral exam.
+   };}
+\end{frame}
+
+\section{Finally...}
+\begin{frame}
+ \frametitle{Contact information}
+ \begin{block}{Ivo Roghair}
+  \begin{itemize}
+   \item E-mail: \href{mailto:i.roghair@tue.nl}{i.roghair@tue.nl}
+   \item Office: STW 0.37
+   \end{itemize} 
+ \end{block}
+ \vspace{1em}
+  \begin{block}{Martin van Sint Annaland}
+  \begin{itemize}
+   \item E-mail: \href{mailto:m.v.sintannaland@tue.nl}{m.v.sintannaland@tue.nl}
+   \item Office: STW 0.39 
+   \end{itemize} 
+ \end{block}
+ \begin{block}{Ramon Voncken and Alessandro Battistella}
+    For help with the exercises, Ramon and Alessandro (STW 0.36) will help out during the lectures.\\
+    Ramon: \href{mailto:r.j.w.voncken@tue.nl}{r.j.w.voncken@tue.nl}\\
+    Alessandro: \href{mailto:a.battistella@tue.nl}{a.battistella@tue.nl}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Some last remarks}
+  \begin{itemize}
+   \item This course was transferred to our group only very recently. Please mind there are some sharp edges occasionally.
+   \item Tell us if something is not clear.
+   \item We try to make the lectures interactive, working on examples and creating scripts as we go. Please work along with us to get the most out of this course!
+   \item The exercises are meant to provide a jumping start towards the assignments. We will answer questions on the exercises, but not on the assignments. 
+   \item We will distribute the assignments via OASE. During the lectures/tutorials we first and foremost work on the exercises. If they are done, you can work on the assignment if you want.
+   \end{itemize} 
+\end{frame}
+
+ 
+\begin{frame}
+ \frametitle{Some Acknowledgements}
+ \centering\includegraphics[width=\textwidth]{img/ack.png}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Some Real Acknowledgements}
+ \begin{itemize}
+  \item To Roel Verstappen of Groningen University
+  \item To Johan Hult of Cambridge University
+  \item To Edwin Zondervan, now at Universität Bremen
+ \end{itemize}
+\end{frame}
+\end{document}
+
+
+% References
+% http://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-00sc-introduction-to-computer-science-and-programming-spring-2011/unit-1/lecture-1-introduction-to-6.00/
+% http://www.greenteapress.com/thinkpython/html/thinkpython002.html
+% https://www.youtube.com/channel/UCLMQ21H2ad95faYG3yGCwYA
+%http://stackoverflow.com/questions/4227145/in-matlab-are-variables-really-double-precision-by-default
+%http://www.exploringbinary.com/why-0-point-1-does-not-exist-in-floating-point/
+

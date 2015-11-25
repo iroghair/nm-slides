@@ -1,4 +1,4 @@
-\documentclass[11pt,table,final,fleqn,xcolor={usenames,dvipsnames}]{beamer}
+\documentclass[11pt,table,final,fleqn,xcolor={usenames,dvipsnames},unknownkeysallowed]{beamer}
 \usetheme[]{Frankfurt}
 \usecolortheme{crane}
 
@@ -24,9 +24,9 @@
 \title{Algorithms, validation and visualisation}
 \subtitle{Introduction to programming in Matlab}
 
-\author[I.~Roghair]{\underline{Ivo~Roghair}, Edwin Zondervan, Martin van Sint Annaland}
+\author[I.~Roghair]{\underline{Ivo~Roghair}, Martin van Sint Annaland}
 
-\institute{Chemical Process Intensification\\Process Systems Engineering}
+\institute{Chemical Process Intensification\\Eindhoven University of Technology}
 
 \date
 
@@ -355,35 +355,20 @@ s =
 \end{frame}
 
 \begin{frame}[fragile]
- \frametitle{Building blocks: loops}
-  \lstinline$for$-loop: Performs a block of code a certain number of times. \\ 
-  \vskip1em \pause
-  \begin{lstlisting}
->> p(1) = 1;
->> p(2) = 1;
->> for i = 2:10
-p(i+1) = p(i)+p(i-1);
-end
->> p
-p =
-     1     1     2     3     5     8    13    21    34    55    89
-  \end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
  \frametitle{Building blocks: conditional statements}
   \lstinline$if$-statement: Performs a block of code if a certain condition is met. \\ 
   \vskip1em \pause
   \begin{lstlisting}
-num = floor(10*rand+1);
-guess = input('Your guess please: ');
-if (guess ~= num)
-    disp('That is wrong. Have a nice day');
+num = floor (10* rand +1) ;
+guess = input ('Your guess please : ') ;
+if ( guess ~= num )
+    disp (['Wrong, it was ', num2str(num), '. Kbye. ']) ;
 else
-    disp('Correct!');
+    disp ('Correct !') ;
 end
   \end{lstlisting}
-  \begin{columns}
+  \pause
+  \begin{columns}[T]
     \column{0.5\textwidth}
     Other relational operators
       \begin{longtable}{l!{\vrule}l}
@@ -408,6 +393,84 @@ end
 \end{frame}
 
 \begin{frame}[fragile]
+ \frametitle{Building blocks: loops}
+  \lstinline$for$-loop: Performs a block of code a certain number of times. \\ 
+  \vskip1em \pause
+  \begin{lstlisting}
+>> p(1) = 1;
+>> p(2) = 1;
+>> for i = 2:10
+p(i+1) = p(i)+p(i-1);
+end
+>> p
+p =
+     1     1     2     3     5     8    13    21    34    55    89
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Building blocks: indeterminate repetition}
+  \lstinline$while$-loop: Performs and repeats a block of code until a certain condition. \\ 
+  \vskip1em \pause
+  \begin{lstlisting}
+num = floor (10* rand +1) ;
+guess = input ('Your guess please : ') ;
+
+while ( guess ~= num )
+    guess = input ('That is wrong . Try again ... ') ;
+end
+
+if (isempty(guess))
+    disp('No number supplied - exit');
+else
+    disp ('Correct !') ;
+end
+  \end{lstlisting}
+\end{frame}
+
+%%%% Example
+\begin{frame}[fragile]
+ \frametitle{Example algorithm}
+ Compute the factorial of $N$: $N! = N\cdot(N-1)\cdot(N-2)\cdots 2\cdot 1$\\ \vskip1em
+ How to deal with this? \vfill
+ \begin{columns}[T]
+   \column{0.3\textwidth}
+   \begin{block}<2->{Naive approach}
+       \begin{lstlisting}
+Z = 1;
+Z = Z*2;
+Z = Z*3;
+Z = Z*4;
+... etc ...      
+       \end{lstlisting}
+   \end{block}
+   \column{0.3\textwidth}
+   \begin{block}<3->{For-loop}
+       \begin{lstlisting}
+Z = 1;
+for i = 1:N
+    Z = Z*i;
+end
+       \end{lstlisting}
+   \end{block}
+   \column{0.3\textwidth}
+\begin{block}<4>{While-loop}
+       \begin{lstlisting}
+Z = 1;
+i = 1;
+while (i<=N)
+    Z = Z*i;
+    i = i+1;
+end
+       \end{lstlisting}
+   \end{block}
+ \end{columns}
+ \onslide<4>{
+   Note: \lstinline$N$ must be set beforehand!\\ 
+   Note: Pay attention to the relational operators!  }
+\end{frame}
+
+\begin{frame}[fragile]
  \frametitle{Building blocks: case selection}
   \lstinline$switch$-statement: Selects and runs a block of code. \\ 
   \vskip1em \pause
@@ -426,24 +489,11 @@ end
   \end{lstlisting}
 \end{frame}
 
-\begin{frame}[fragile]
- \frametitle{Building blocks: indeterminate repetition}
-  \lstinline$while$-loop: Performs and repeats a block of code until a certain condition. \\ 
-  \vskip1em \pause
-  \begin{lstlisting}
-num = floor(10*rand+1);
-guess = input('Your guess please: ');
-while (guess ~= num)
-    guess = input('That is wrong. Try again...');
-end
-disp('Correct!');
-  \end{lstlisting}
-\end{frame}
 
 \begin{frame}[fragile]
  \frametitle{Input and output}
  Many programs require some input to function correctly. A combination of the following is common:
- \begin{itemize}
+ \begin{itemize}[<+->]
    \item Input may be given in a parameters file (``hard-coded'')
    \item Input may be entered via the keyboard
    \begin{lstlisting}
@@ -451,7 +501,7 @@ disp('Correct!');
    \end{lstlisting}
    \item Input may be read from a file, e.g.
     \begin{lstlisting}
->> data = getfield(importdata('myData.txt, ' ', 5), 'data');
+>> data = getfield(importdata('myData.txt, ' ', 4), 'data');
 >> numdata = xlsread('myExcelDataFile.xls');
    \end{lstlisting}
    \item There are many more advanced functions, e.g. \lstinline$fread$, \lstinline$fgets$, ...
@@ -461,10 +511,11 @@ disp('Correct!');
 \begin{frame}[fragile]
  \frametitle{Input and output}
  Output of results to screen, storing arrays to a file or exporting a graphic are the most common ways of getting data out of Matlab:
- \begin{itemize}
+ \begin{itemize}[<+->]
    \item Results of each expression are automatically shown on screen as long as the line is not ended with a semi-colon;
    \item Output may be stored via the GUI:
     \begin{itemize}
+      \item Use the 'Export Setup' function
       \item Save figure (use .fig, .eps or .png, \textbf{not} .jpg or .pcx)
       \item Save variables (right click, save as)
     \end{itemize}
@@ -481,41 +532,141 @@ disp('Correct!');
 
 \subsection*{Functions}
 \begin{frame}[fragile]
- \frametitle{Functions}
- A function in a programming language is a program fragment that 'knows' how to perform a defined task. Creating good functions keeps your code clean, re-usable and structured.
+ \frametitle{Functions - general}
+ A function in a programming language is a program fragment that performs a certain task. Creating functions keeps your code clean, re-usable and structured.
  \begin{itemize}
-   \colorize<2-> \item You will use functions supplied by the programming language, and define functions yourself
+   \colorize<2-> \item You can use functions supplied by the programming language, and define functions yourself
    \colorize<3-> \item Functions take one or more input parameters (\emph{arguments}), and \emph{return} an output (result).
    \begin{itemize}
      \colorize<3-> \item If functions do not return a result, it is called a procedure
    \end{itemize}
    \colorize<4-> \item In Matlab, functions are defined as follows (2 output variables and 3 input arguments):
-   \begin{lstlisting}
+  \begin{overlayarea}{\textwidth}{2em}
+   \begin{onlyenv}<4>
+    \begin{lstlisting}
 function [out1, out2] = myFunction(in1, in2, in3)
-   \end{lstlisting}
+    \end{lstlisting}
+    \end{onlyenv}
+   \end{overlayarea}
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
- \frametitle{Functions}
+ \frametitle{Functions - locality and arguments}
  \begin{itemize}
    \item You are supplying arguments to a function because it does not have acces to previously defined variables. This is called \emph{locality}.
    \begin{itemize}
-     \item This does not include global variables. These are often considered evil.
-     \item The locality of variables also causes that local variables created in a function are not accessible to other functions unless they are returned or supplied as an argument!
+     \item This does not include global variables - but they're evil!
+     \item Local variables created in a function are not accessible to other functions unless they are returned or supplied as an argument!
    \end{itemize}
  \end{itemize}
  \vskip1em \pause
- Write a function that takes 3 variables, and returns the average: \pause
+ Exercise: write a function that takes 3 variables, and returns the average: \pause
+  \begin{columns}[T]
+   \column{0.5\textwidth}
+   \begin{block}<2->{Approach 1}
  \begin{lstlisting}
-function result = avg(a,b,c)
+function res = avg1(a,b,c)
     mySum = a + b + c;
-    result = mySum / 3;
-end
- \end{lstlisting}
+    res = mySum / 3;
+end \end{lstlisting}
+   \end{block}
+   \column{0.5\textwidth}
+   \begin{block}<3->{Approach 2}
+       \begin{lstlisting}
+function res = avg2(a,b,c)
+    data = [a; b; c];
+    res = mean(data);
+end \end{lstlisting}
+   \end{block}
+ \end{columns}
 \end{frame}
 
 \begin{frame}[fragile]
+ \frametitle{Exercise: create a function}
+ Compute $N! = N\cdot(N-1)\cdot(N-2)\cdots 2\cdot 1$\\ \vskip1em
+ Create a function of our while-loop approach with N the argument: \\
+ 
+ \begin{columns}[T]
+   \column{0.5\textwidth}
+   \begin{block}{Original script}
+	   \begin{lstlisting}
+Z = 1;
+i = 1;
+while (i<=N)
+    Z = Z*i;
+    i = i+1;
+end \end{lstlisting}
+   \end{block}
+   \column{0.5\textwidth}
+   \begin{block}<2>{Function}
+	   \begin{lstlisting}
+function Z = fact_while(N)
+
+Z = 1;
+i = 1;
+while (i<=N)
+    Z = Z*i;
+    i = i+1;
+end
+
+end
+	   \end{lstlisting}
+   \end{block}
+ \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Functions - checking input}
+  The function we created computes the factorial correctly! \pause
+  \begin{itemize}
+     \item When the supplied argument is positive\pause\ and \pause
+     \item When the supplied argument is a natural number...
+  \end{itemize}\pause
+  \begin{columns}[T]
+   \column{0.4\textwidth}
+     \includegraphics[width=\columnwidth]{deadmau5.png}
+   \column{0.6\textwidth}
+    \pause
+    \begin{itemize}[<+->]
+     \item In this case, we should check the user input to prevent an infinite loop: \pause
+     \begin{lstlisting}
+if (fix(N)~=N) | (N<0)
+    disp 'Provide a positive integer number!'
+    return;
+end \end{lstlisting}
+      \item If no check can be done before a while-loop, you may want to stop after $x$ loops
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Functions - checking input}
+  The whole factorial function, including comments:
+     \begin{lstlisting}
+function Z = fact_while(N)
+%% This function computes a factorial of input value N
+% Usage  : fact_while(N)
+% N      : value of which the factorial is computed
+% returns: factorial of N
+
+% Catch non-integer case
+if (fix(N)~=N) | (N<0)
+    disp 'Provide a positive integer number!'
+    return;
+end
+
+Z = 1;
+i = 1;
+while (i<=N)
+    Z = Z*i;
+    i = i+1;
+end
+
+end \end{lstlisting}
+\end{frame}
+
+\begin{frame}[label=recursion,fragile]
  \frametitle{Recursion}
  \begin{columns}
    \column{0.5\textwidth}
@@ -533,24 +684,7 @@ end
  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]
- \frametitle{Recursion}
- \begin{columns}
-   \column{0.5\textwidth}
-   \begin{itemize}
-    \item<1-> In order to understand recursion, one must first understand recursion
-    \item<2-> A recursive function is called by itself (a function within a function)
-    \begin{itemize}
-      \item<3-> This could lead to infinite calls;
-      \item<3-> A base case is required so that recursion is stopped;
-      \item<3-> Base case does not call itself, simply returns.
-    \end{itemize}
- \end{itemize}
-   \column{0.5\textwidth}
-   \centering
-   \includegraphics<4>[width=0.7\columnwidth]{inception.jpg}
- \end{columns}
-\end{frame}
+\againframe{recursion}
 
 \begin{frame}[fragile]
  \frametitle{Recursion: example}
@@ -567,8 +701,31 @@ end
 \vskip1em \pause
 \begin{itemize}
   \item What does this function do? \pause
-  \item Can you spot the error?
+  \item Can you spot the error? \pause
+  \item How deep can you go? Which values of b don't work anymore?
 \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Recursion: exercise}
+ Create a function computing the factorial of $N$, based on recursion. \pause
+ \begin{lstlisting}
+function res = fact_recursive(x)
+
+% Catch non-integer case
+if (fix(x)~=x) | (x<0)
+    disp 'You should provide a positive integer number only'
+    return;
+end
+
+if (x > 1)
+    res = x*fact_recursive(x-1);
+else
+    res = 1;
+end
+
+end 
+ \end{lstlisting}
 \end{frame}
 
 \section{Eliminating errors}
@@ -837,7 +994,7 @@ xlabel('X'); ylabel('Y'); title('Absolute error');
     \begin{itemize}[<+->]
       \item Errorbars: \lstinline$errorbar(x,y,err)$
       \item 3D-plots: \lstinline$plot3(x,y,z)$
-      \item Histograms: \lstinline$hist(x,20)$
+      \item Histograms: \lstinline$histogram(x,20)$
 %       \item Vectorplots: \lstinline$quiver(x,y,vx,vy)$
     \end{itemize}
    \column{0.4\textwidth}
@@ -910,7 +1067,6 @@ axis tight; hold on;
 
 % Vectors
 quiver(x,y,dx,dy,'k');
-
     \end{lstlisting}
    \column{0.4\textwidth}
    \begin{center}
@@ -982,11 +1138,11 @@ quiver(x,y,dx,dy,'k');
     \end{longtable}
     \colorize<3> \item Go to Data $\Rightarrow$ Solver
     \begin{itemize}
-      \colorize<3> \item Goalfunction: C1 (value of: 0)
-      \colorize<3> \item Add boundary condition: C2 = 0
-      \colorize<3> \item By changing cells: \$B\$1:\$B\$2 (you can just select the cells)
+      \colorize<3> \item Goalfunction: C2 (value of: 0)
+      \colorize<3> \item Add boundary condition: C3 = 0
+      \colorize<3> \item By changing cells: \$B\$2:\$B\$3 (you can just select the cells)
     \end{itemize}
-    \colorize<4> \item Solve. You will find B1=0 and B2=2.
+    \colorize<4> \item Solve. You will find B2=0 and B3=2.
    \end{itemize}
 \end{frame}
 
@@ -1094,230 +1250,230 @@ ans =
    -0.6458
   \end{lstlisting}
 \end{frame}
-
-\subsection*{Projectile}
-\begin{frame}[fragile]
-\scriptsize\selectfont
-  \frametitle{Example: projectile trajectory}
-  \begin{center}
-    \begin{tikzpicture}[scale=0.7,ball/.style={circle,minimum size=8mm,thick,shading=ball,ball color=maincolor,
-				      font=\sffamily\scriptsize},>=stealth',thick,node distance=0.75cm]
-      \node[ball,anchor=north] (ball) at (0,0) {$M$};
-      \node[anchor=north east] at (1.5,1.7) (aim) {};
-      \node[anchor=south east] at (aim.south) {$v_0$};
-      \uncover<2->{\node at (7.5,-0.5) (aim2) {};
-      \node[anchor=north] at (aim2) {Trajectory};}    
-      \node at (4,2.6) (aim3) {};
-      \uncover<3->{\node[ball,ball color=gray,fill opacity=0.5] (ball2) at (aim3) {};}
-      
-      \draw[->] (ball.north east) -> (aim.center);
-      \draw<2->[->,dashed] (ball.north east) parabola bend (aim3) (aim2);
-      \draw<3->[->] (ball2) -- node[midway,anchor=west]{$F_g=mg$} ($ (ball2)+(0,-2) $);
-    \end{tikzpicture}
-  \end{center}
-  \vskip1em
-  \begin{itemize}
-    \item<1-> A ball with mass $M$ is thrown at time $t = 0$ with a certain velocity $v(t) = v(0) = v_0$
-    \item<2-> We need to describe the trajectory of the ball over time
-    \item<3-> It is given that the only force acting on the ball is gravity: $F = Mg$
-  \end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-\scriptsize\selectfont
-  \frametitle{Example: projectile trajectory}
-  Computers cannot solve a continuous equation; we need to \emph{discretize} the time into steps of size $\Delta t$. Create a time line:\\ \vskip2em\pause
-  \begin{tikzpicture}[snake=zigzag, line before snake = 5mm, line after snake = 5mm]
-    %draw horizontal line   
-    \draw (0,0) -- (6,0);
-    \draw[snake] (5.5,0) -- (8.5,0);
-    \draw (8,0) -- (10,0);
-
-    %draw vertical lines
-    \foreach \x in {0,2,4,6,8,10}
-      \draw (\x cm,3pt) -- (\x cm,-3pt);
-
-    %draw nodes
-    \draw (0,0) node[below=3pt] {$ t=0 $} node[above=3pt] {$ 1 $};
-    \draw (2,0) node[below=3pt] {$ \Delta t $} node[above=3pt] {$ 2 $};
-    \draw (4,0) node[below=3pt] {$ 2\Delta t $} node[above=3pt] {$ 3 $};
-    \draw (6,0) node[below=3pt] {$ 3\Delta t $} node[above=3pt] {$ 4 $};
-    \draw (8,0) node[below=3pt] {$ t_\mathrm{end}-\Delta t $} node[above=3pt] {$ n-1 $};
-    \draw (10,0) node[below=3pt] {$ t_\mathrm{end} $} node[above=3pt] {$ n $};
-    
-    \onslide<4>{
-      \draw (0,-1.5) node[above=1pt] {$x_0$};
-      \draw (0,-1.5) node[below=3pt] {$v_0$};
-    }
-    \onslide<5>{
-      \draw (0,-1.5) node[above=1pt] {$x(t)$};
-      \draw (0,-1.5) node[below=3pt] {$v(t)$};
-      \draw (2,-1.5) node[above=1pt] {$x(t+\Delta t)$};
-      \draw (2,-1.5) node[below=3pt] {$v(t+\Delta t)$};
-    }
-    \onslide<6>{
-      \draw (2,-1.5) node[above=1pt] {$x(t)$};
-      \draw (2,-1.5) node[below=3pt] {$v(t)$};
-      \draw (4,-1.5) node[above=1pt] {$x(t+\Delta t)$};
-      \draw (4,-1.5) node[below=3pt] {$v(t+\Delta t)$};
-    }
-    \onslide<7>{
-      \draw (4,-1.5) node[above=1pt] {$x(t)$};
-      \draw (4,-1.5) node[below=3pt] {$v(t)$};
-      \draw (6,-1.5) node[above=1pt] {$x(t+\Delta t)$};
-      \draw (6,-1.5) node[below=3pt] {$v(t+\Delta t)$};
-    }
-   \end{tikzpicture}
-\end{frame}
-
-\begin{frame}[fragile]
-\scriptsize\selectfont
-  \frametitle{Example: projectile trajectory}
-  \begin{itemize}
-    \item A Taylor expansion shows how the $x$-position is obtained at discrete time intervals: 
-    \[ f(x) = f(a) + \frac{f'(a)}{1!}(x-a) + \frac{f''(a)}{2!}(x-a)^2  + \ldots \]\pause
-    \[ x(t+\Delta t) = x(t) + \frac{\frac{dx}{dt}(t)}{1!}(t + \Delta t - t) + \frac{\frac{d^2x}{dt^2}}{2!}(t+\Delta t - t)^2  + O(\Delta t^3) \] \pause
-    \[ x(t+\Delta t) = x(t) + v(t)\Delta t + \frac{F}{2M}\Delta t^2  + O(\Delta t^3) \] \pause
-    \item Taking small time steps, we can discard $\Delta t^2$ and subsequent terms:
-    \[ x(t+\Delta t) = x(t) + v(t)\Delta t \] \pause
-    \item A similar approach is taken for the velocity:
-    \[ v(t+\Delta t) = v(t) + a(t)\Delta t \] \pause
-    \[ F = Ma \Rightarrow a = \frac{F}{M} \Rightarrow v(t+\Delta t) = v(t) + \frac{F(t)}{M}\Delta t \]
-  \end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-\scriptsize\selectfont
-  \frametitle{Example: projectile trajectory}
-  Our mathematical model is as follows: \pause
-  \begin{enumerate}
-    \item Initialisation of parameters ($x_0$, $v_0$, $g$, $\Delta t$, $t_end$, $M$)\pause
-    \item Create storage vectors for time, position, velocity \pause
-    \item Start a time-marching loop \pause
-    \begin{itemize}
-    \scriptsize\selectfont
-      \item Calculate $x(t+\Delta t)$, then $F$, then $v(t+\Delta t)$:
-      \[ x(t+\Delta t) = x(t) + v(t)\Delta t \] 
-      \[ F = Mg \]
-      \[ v(t+\Delta t) = v(t) + \frac{F}{M}\Delta t \] \pause
-      \item Store current solution
-    \end{itemize}
-    \item Draw result and return solution vector $x$
-    \begin{itemize}
-      \item Exact solution:
-      \[
-        x(t) = x_0 + v_0 t + ( \frac{1}{2} -9.81 t^2 )
-      \]
-    \end{itemize}
-  \end{enumerate}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Example: projectile trajectory - solution (initialisation)}
-  \scriptsize\selectfont
-  \begin{lstlisting}
-function [pos,tim] = projectile(v0,M)
-
-% Initialise parameters
-t_end = 2;                  % End time
-deltat = 0.01;              % Time step
-x0 = 1;                     % Initial position
-
-nsteps = fix(t_end/deltat); % Number of time steps
-pos = zeros(nsteps,1);      % Position vector
-vel = zeros(nsteps,1);      % Velocity vector
-tim = zeros(nsteps,1);      % Time vector
-
-% Default values for mass and velocity
-if (nargin < 2)
-    M = 10;
-    if (nargin < 1)
-        v0 = 1;
-    end
-end
-  \end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Example: projectile trajectory - solution (main program)}
-  \scriptsize\selectfont
-  \begin{lstlisting}
-pos(1) = x0;                % Store initial position
-vel(1) = v0;                % Store initial velocity
-
-% The time loop
-for n = 1:nsteps-1
-    pos(n+1) = position(pos(n),vel(n),deltat);
-    vel(n+1) = velocity(vel(n),M,deltat);
-    tim(n+1) = tim(n) + deltat;
-end
-
-% Plot results
-figure; plot(tim,pos, 'o');
-
-% Compare to analytical solution
-compareToExact(x0,v0,tim,pos);
-
-end
-  \end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Example: projectile trajectory - solution (added functions)}
-  \scriptsize\selectfont
-  \begin{lstlisting}
-function F = force(M)
-% M:    mass of particle
-g = -9.81;
-F = M * g;
-end
-
-function v = velocity(vt,mass,dt)
-% vt:   velocity at previous time
-% mass: mass of particle
-% dt:   time step size
-v = vt + force(mass)/mass * dt;
-end
-
-function x = position(xt,vel,dt)
-% xt:   position at current time step
-% vel:  velocity at current time step
-% dt:   time step size
-x = xt + vel * dt;
-end
-  \end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Example: projectile trajectory - solution (verification)}
-  \scriptsize\selectfont
-  \begin{lstlisting}
-function compareToExact(x0,v0,tim,pos)
-
-% Exact solution
-pos_ex = x0 + v0 * tim + ( 0.5 * -9.81 * tim .* tim );
-
-% Draw comparative figure
-figure;
-subplot(2,1,1)
-plot(tim,pos, 'o');
-hold on;
-plot(tim,pos_ex,'r-')
-subplot(2,1,2)
-stem(tim,pos_ex-pos,'r-')
-
-% Print the L2-error norm
-norm(pos_ex - pos)
-end
-  \end{lstlisting}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Example: projectile trajectory - solution}
-  \begin{center}
-    \includegraphics[width=0.8\textwidth]{projectile-utc}
-  \end{center}
-\end{frame}
+%
+%\subsection*{Projectile}
+%\begin{frame}[fragile]
+%\scriptsize\selectfont
+%  \frametitle{Example: projectile trajectory}
+%  \begin{center}
+%    \begin{tikzpicture}[scale=0.7,ball/.style={circle,minimum size=8mm,thick,shading=ball,ball color=maincolor,
+%				      font=\sffamily\scriptsize},>=stealth',thick,node distance=0.75cm]
+%      \node[ball,anchor=north] (ball) at (0,0) {$M$};
+%      \node[anchor=north east] at (1.5,1.7) (aim) {};
+%      \node[anchor=south east] at (aim.south) {$v_0$};
+%      \uncover<2->{\node at (7.5,-0.5) (aim2) {};
+%      \node[anchor=north] at (aim2) {Trajectory};}    
+%      \node at (4,2.6) (aim3) {};
+%      \uncover<3->{\node[ball,ball color=gray,fill opacity=0.5] (ball2) at (aim3) {};}
+%      
+%      \draw[->] (ball.north east) -> (aim.center);
+%      \draw<2->[->,dashed] (ball.north east) parabola bend (aim3) (aim2);
+%      \draw<3->[->] (ball2) -- node[midway,anchor=west]{$F_g=mg$} ($ (ball2)+(0,-2) $);
+%    \end{tikzpicture}
+%  \end{center}
+%  \vskip1em
+%  \begin{itemize}
+%    \item<1-> A ball with mass $M$ is thrown at time $t = 0$ with a certain velocity $v(t) = v(0) = v_0$
+%    \item<2-> We need to describe the trajectory of the ball over time
+%    \item<3-> It is given that the only force acting on the ball is gravity: $F = Mg$
+%  \end{itemize}
+%\end{frame}
+%
+%\begin{frame}[fragile]
+%\scriptsize\selectfont
+%  \frametitle{Example: projectile trajectory}
+%  Computers cannot solve a continuous equation; we need to \emph{discretize} the time into steps of size $\Delta t$. Create a time line:\\ \vskip2em\pause
+%  \begin{tikzpicture}[snake=zigzag, line before snake = 5mm, line after snake = 5mm]
+%    %draw horizontal line   
+%    \draw (0,0) -- (6,0);
+%    \draw[snake] (5.5,0) -- (8.5,0);
+%    \draw (8,0) -- (10,0);
+%
+%    %draw vertical lines
+%    \foreach \x in {0,2,4,6,8,10}
+%      \draw (\x cm,3pt) -- (\x cm,-3pt);
+%
+%    %draw nodes
+%    \draw (0,0) node[below=3pt] {$ t=0 $} node[above=3pt] {$ 1 $};
+%    \draw (2,0) node[below=3pt] {$ \Delta t $} node[above=3pt] {$ 2 $};
+%    \draw (4,0) node[below=3pt] {$ 2\Delta t $} node[above=3pt] {$ 3 $};
+%    \draw (6,0) node[below=3pt] {$ 3\Delta t $} node[above=3pt] {$ 4 $};
+%    \draw (8,0) node[below=3pt] {$ t_\mathrm{end}-\Delta t $} node[above=3pt] {$ n-1 $};
+%    \draw (10,0) node[below=3pt] {$ t_\mathrm{end} $} node[above=3pt] {$ n $};
+%    
+%    \onslide<4>{
+%      \draw (0,-1.5) node[above=1pt] {$x_0$};
+%      \draw (0,-1.5) node[below=3pt] {$v_0$};
+%    }
+%    \onslide<5>{
+%      \draw (0,-1.5) node[above=1pt] {$x(t)$};
+%      \draw (0,-1.5) node[below=3pt] {$v(t)$};
+%      \draw (2,-1.5) node[above=1pt] {$x(t+\Delta t)$};
+%      \draw (2,-1.5) node[below=3pt] {$v(t+\Delta t)$};
+%    }
+%    \onslide<6>{
+%      \draw (2,-1.5) node[above=1pt] {$x(t)$};
+%      \draw (2,-1.5) node[below=3pt] {$v(t)$};
+%      \draw (4,-1.5) node[above=1pt] {$x(t+\Delta t)$};
+%      \draw (4,-1.5) node[below=3pt] {$v(t+\Delta t)$};
+%    }
+%    \onslide<7>{
+%      \draw (4,-1.5) node[above=1pt] {$x(t)$};
+%      \draw (4,-1.5) node[below=3pt] {$v(t)$};
+%      \draw (6,-1.5) node[above=1pt] {$x(t+\Delta t)$};
+%      \draw (6,-1.5) node[below=3pt] {$v(t+\Delta t)$};
+%    }
+%   \end{tikzpicture}
+%\end{frame}
+%
+%\begin{frame}[fragile]
+%\scriptsize\selectfont
+%  \frametitle{Example: projectile trajectory}
+%  \begin{itemize}
+%    \item A Taylor expansion shows how the $x$-position is obtained at discrete time intervals: 
+%    \[ f(x) = f(a) + \frac{f'(a)}{1!}(x-a) + \frac{f''(a)}{2!}(x-a)^2  + \ldots \]\pause
+%    \[ x(t+\Delta t) = x(t) + \frac{\frac{dx}{dt}(t)}{1!}(t + \Delta t - t) + \frac{\frac{d^2x}{dt^2}}{2!}(t+\Delta t - t)^2  + O(\Delta t^3) \] \pause
+%    \[ x(t+\Delta t) = x(t) + v(t)\Delta t + \frac{F}{2M}\Delta t^2  + O(\Delta t^3) \] \pause
+%    \item Taking small time steps, we can discard $\Delta t^2$ and subsequent terms:
+%    \[ x(t+\Delta t) = x(t) + v(t)\Delta t \] \pause
+%    \item A similar approach is taken for the velocity:
+%    \[ v(t+\Delta t) = v(t) + a(t)\Delta t \] \pause
+%    \[ F = Ma \Rightarrow a = \frac{F}{M} \Rightarrow v(t+\Delta t) = v(t) + \frac{F(t)}{M}\Delta t \]
+%  \end{itemize}
+%\end{frame}
+%
+%\begin{frame}[fragile]
+%\scriptsize\selectfont
+%  \frametitle{Example: projectile trajectory}
+%  Our mathematical model is as follows: \pause
+%  \begin{enumerate}
+%    \item Initialisation of parameters ($x_0$, $v_0$, $g$, $\Delta t$, $t_end$, $M$)\pause
+%    \item Create storage vectors for time, position, velocity \pause
+%    \item Start a time-marching loop \pause
+%    \begin{itemize}
+%    \scriptsize\selectfont
+%      \item Calculate $x(t+\Delta t)$, then $F$, then $v(t+\Delta t)$:
+%      \[ x(t+\Delta t) = x(t) + v(t)\Delta t \] 
+%      \[ F = Mg \]
+%      \[ v(t+\Delta t) = v(t) + \frac{F}{M}\Delta t \] \pause
+%      \item Store current solution
+%    \end{itemize}
+%    \item Draw result and return solution vector $x$
+%    \begin{itemize}
+%      \item Exact solution:
+%      \[
+%        x(t) = x_0 + v_0 t + ( \frac{1}{2} -9.81 t^2 )
+%      \]
+%    \end{itemize}
+%  \end{enumerate}
+%\end{frame}
+%
+%\begin{frame}[fragile]
+%  \frametitle{Example: projectile trajectory - solution (initialisation)}
+%  \scriptsize\selectfont
+%  \begin{lstlisting}
+%function [pos,tim] = projectile(v0,M)
+%
+%% Initialise parameters
+%t_end = 2;                  % End time
+%deltat = 0.01;              % Time step
+%x0 = 1;                     % Initial position
+%
+%nsteps = fix(t_end/deltat); % Number of time steps
+%pos = zeros(nsteps,1);      % Position vector
+%vel = zeros(nsteps,1);      % Velocity vector
+%tim = zeros(nsteps,1);      % Time vector
+%
+%% Default values for mass and velocity
+%if (nargin < 2)
+%    M = 10;
+%    if (nargin < 1)
+%        v0 = 1;
+%    end
+%end
+%  \end{lstlisting}
+%\end{frame}
+%
+%\begin{frame}[fragile]
+%  \frametitle{Example: projectile trajectory - solution (main program)}
+%  \scriptsize\selectfont
+%  \begin{lstlisting}
+%pos(1) = x0;                % Store initial position
+%vel(1) = v0;                % Store initial velocity
+%
+%% The time loop
+%for n = 1:nsteps-1
+%    pos(n+1) = position(pos(n),vel(n),deltat);
+%    vel(n+1) = velocity(vel(n),M,deltat);
+%    tim(n+1) = tim(n) + deltat;
+%end
+%
+%% Plot results
+%figure; plot(tim,pos, 'o');
+%
+%% Compare to analytical solution
+%compareToExact(x0,v0,tim,pos);
+%
+%end
+%  \end{lstlisting}
+%\end{frame}
+%
+%\begin{frame}[fragile]
+%  \frametitle{Example: projectile trajectory - solution (added functions)}
+%  \scriptsize\selectfont
+%  \begin{lstlisting}
+%function F = force(M)
+%% M:    mass of particle
+%g = -9.81;
+%F = M * g;
+%end
+%
+%function v = velocity(vt,mass,dt)
+%% vt:   velocity at previous time
+%% mass: mass of particle
+%% dt:   time step size
+%v = vt + force(mass)/mass * dt;
+%end
+%
+%function x = position(xt,vel,dt)
+%% xt:   position at current time step
+%% vel:  velocity at current time step
+%% dt:   time step size
+%x = xt + vel * dt;
+%end
+%  \end{lstlisting}
+%\end{frame}
+%
+%\begin{frame}[fragile]
+%  \frametitle{Example: projectile trajectory - solution (verification)}
+%  \scriptsize\selectfont
+%  \begin{lstlisting}
+%function compareToExact(x0,v0,tim,pos)
+%
+%% Exact solution
+%pos_ex = x0 + v0 * tim + ( 0.5 * -9.81 * tim .* tim );
+%
+%% Draw comparative figure
+%figure;
+%subplot(2,1,1)
+%plot(tim,pos, 'o');
+%hold on;
+%plot(tim,pos_ex,'r-')
+%subplot(2,1,2)
+%stem(tim,pos_ex-pos,'r-')
+%
+%% Print the L2-error norm
+%norm(pos_ex - pos)
+%end
+%  \end{lstlisting}
+%\end{frame}
+%
+%\begin{frame}
+%  \frametitle{Example: projectile trajectory - solution}
+%  \begin{center}
+%    \includegraphics[width=0.8\textwidth]{projectile-utc}
+%  \end{center}
+%\end{frame}
 
 \section{Conclusions}
 \subsection*{Conclusions}
