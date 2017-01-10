@@ -1,0 +1,1826 @@
+\documentclass[11pt,table,final,fleqn,xcolor={usenames,dvipsnames,table},handout]{beamer}
+\usetheme[]{Frankfurt}
+
+\input{../00-settings.tex}
+
+
+\title{Ordinary differential equations}
+
+\author[M.~Van Sint Annaland]{\underline{Martin van Sint Annaland}, Ivo~Roghair \\ \vskip1em {\scriptsize \underline{m.v.sintannaland@tue.nl}}}
+
+\institute[SPI]{{Chemical Process Intensification,\\
+  Eindhoven University of Technology}}
+
+\date
+
+% BEGIN PRESENTATION
+\begin{document}
+\sisetup{detect-all}
+\input{../lstsettings.tex}
+
+\frame[plain]{
+  \titlepage
+}
+
+% \renewcommand{\vec}[1]{\\boldsymbol{#1}}
+\part{Explicit and Implicit methods}
+\frame{\partpage}
+
+\section{Introduction}
+\subsection*{General}
+\begin{frame}[label=contents]
+  \frametitle{Today's outline}
+  \mode<beamer>{
+    \only<1>{\tableofcontents}
+  }
+  \only<2>{\tableofcontents[currentsection]}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Overview}
+    \begin{block}{Ordinary differential equations}
+      An equation containing a function of one independent variable and its derivatives, in contrast to a \emph{partial differential equation}, which contains derivatives with respect to more independent variables.
+    \end{block}
+    \pause
+  \begin{block}{Main question}
+  How to solve 
+  \[
+    \frac{d\vec{y}}{dx} = f(\vec{y}(x),x) \quad \text{with} \quad \vec{y}(x=0) = \vec{y}_0
+  \]
+  accurately and efficiently?
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{What is an ODE?}
+  \begin{itemize}
+    \item Algebraic equation:
+    \[
+      f(y(x),x) = 0 \qquad \text{e.g.} \, -\ln(K_{eq})=(1-\zeta)
+    \]
+    \item First order ODE:
+    \[
+      f\left(\frac{dy}{dx}(x),y(x),x\right) = 0 \quad \text{e.g.} \, \frac{dc}{dt} = -kc^n
+    \]
+    \item Second order ODE:
+    \[
+      f\left(\frac{d^2y}{dx^2}(x),\frac{dy}{dx}(x),y(x),x \right) = 0 \quad \text{e.g.} \quad \mathcal{D}\frac{d^2c}{dx^2}= - \frac{kc}{1+Kc}
+    \]
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{About second order ODEs}
+  Very often a second order ODE can be rewritten into a system of first order ODEs (whether it is handy depends on the boundary conditions!)
+  \vskip1em
+  \pause
+  \mode<beamer>{
+  \only<1-2>{
+  \begin{block}{Example}
+  Recall:
+  \[
+    \mathcal{D}\frac{d^2c}{dx^2}= - \frac{kc}{1+Kc}
+  \]
+  Define $y = -\mathcal{D} \frac{dc}{dx}$, then $\frac{dy}{dx}=\frac{kc}{1+Kc}$, thus solve system:
+  \begin{align*}
+    \frac{dc}{dx} &= -\frac{1}{\mathcal{D}}y \\
+    \frac{dy}{dx} &= \frac{kc}{1+Kc}
+  \end{align*}
+  \end{block}}}
+  \only<3>{
+  \begin{block}{More general}
+  Consider the second order ODE:
+  \[
+    \frac{d^2y}{dx^2} + q(x)\frac{dy}{dx} = r(x)
+  \]
+  Now define and solve using $z$ as a new variable:
+  \begin{align*}
+    \frac{dy}{dx} &= z(x) \\
+    \frac{dz}{dx} &= r(x) - q(x)z(x)
+  \end{align*}
+  \end{block}}
+  \vskip1em
+  \pause
+\end{frame}
+
+\begin{frame}[label=ivpbvp]
+  \frametitle{Importance of boundary conditions}
+  \footnotesize\selectfont
+  The nature of boundary conditions determines the appropriate numerical method. Classification into 2 main categories:
+  \begin{itemize}
+    \item \emph{Initial value problems (IVP)} \\
+    We know the values of all $y_i$ at some starting position $x_s$, and it is desired to find the values of $y_i$ at some final point $x_f$. \vskip1em
+    \begin{center}
+      \begin{tikzpicture}[scale=5]
+        \node[] (y1s) at (0,0.1) {$y_{1,s}$};
+        \node[] (y1f) at (1,0.1) {\color{tuered}$y_{1,f}$};
+        \node[] (y2s) at (0,0) {$y_{2,s}$};
+        \node[] (y2f) at (1,0) {\color{tuered}$y_{2,f}$};
+        \node[fdot] (xs) at (0,-0.1) {};
+        \node[fdot] (xf) at (1,-0.1) {};
+        \node[anchor=north] at (xs.south) {$x_s$};
+        \node[anchor=north] at (xf.south) {$x_f$};
+        \draw[line] (xs) -- (xf);
+        \draw[line,->,densely dashed] (0.1,0.05) -- node[midway,above] {``Marching''} (0.9,0.05);
+      \end{tikzpicture}
+    \end{center}
+    \item \emph{Boundary value problems (BVP)} \\
+    Boundary conditions are specified at more than one $x$. Typically, some of the BC are specified at $x_s$ and the remainder at $x_f$. \vskip1em
+    \centering
+    \begin{tikzpicture}[scale=5]
+      \input{shooting.tex}
+    \end{tikzpicture}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Overview}
+  Initial value problems:
+  \begin{itemize}
+    \colorize<2> \item Explicit methods
+    \begin{itemize}
+      \colorize<2> \item First order: forward Euler
+      \colorize<2> \item Second order: improved Euler (RK2)
+      \colorize<2> \item Fourth order: Runge-Kutta 4 (RK4)
+      \colorize<2> \item Step size control
+    \end{itemize}
+    \colorize<3> \item Implicit methods
+    \begin{itemize}
+      \colorize<3> \item First order: backward Euler
+      \colorize<3> \item Second order: midpoint rule
+    \end{itemize}
+  \end{itemize}
+  \onslide<4>{
+  Boundary value problems
+  \begin{itemize}
+    \colorize<4> \item Shooting method
+  \end{itemize}
+  }
+\end{frame}
+
+\section{Euler's method}
+\againframe<2>{contents}
+\subsection{Forward Euler}
+\begin{frame}
+  \frametitle{Euler's method}
+  Consider the following single initial value problem:
+  \[
+    \frac{dc}{dt} = f(c(t),t) \quad \text{with} \quad c(t=0)=c_0 \quad \text{(initial value problem)}
+  \]
+  \pause
+  Easiest solution algorithm: Euler's method, derived here via Taylor series expansion:
+  \[
+    c(t_0 + \Delta t) \approx c(t_0) + \left.\frac{dc}{dt}\right|_{t_0}\Delta t + \frac{1}{2} \left.\frac{d^2c}{dt^2}\right|_{t_0} \left(\Delta t\right) ^2 + \mathcal{O}{(\Delta t^3)}
+  \]
+  \pause
+  Neglect terms with higher order than two: $\left. \frac{dc}{dt}\right|_{t_0} = \frac{c(t_0 + \Delta t) - c(t_0)}{\Delta t}$
+  Substitution: 
+  \[
+    \frac{c(t_0 + \Delta t) - c(t_0)}{\Delta t} = f(c_0,t_0)\Rightarrow c(t_0+\Delta t) = c(t_0) + \Delta t f(c_0,t_0) 
+  \]
+\end{frame}
+
+\begin{frame}[t,fragile]
+  \frametitle{Euler's method: graphical example}
+  \[
+    \frac{c(t_0 + \Delta t) - c(t_0)}{\Delta t} = f(c_0,t_0)\Rightarrow c(t_0+\Delta t) = c(t_0) + \Delta t f(c_0,t_0) 
+  \]
+  \vskip1em
+   \begin{tikzpicture}
+      \begin{axis}[every axis/.append style={font=\footnotesize},
+      width=\columnwidth, height=5.5cm,
+      xmin=0,xmax=4,ymin=0,ymax=4,
+      xtick={1,2,3},ytick={1,2,2.5},
+      axis x line=middle,axis y line=middle,
+      xlabel=$t$,xticklabels={$t_0$,$\Delta t$,$2\Delta t$},
+      ylabel=$c(t)$,yticklabels={$c_0$,$c_1$,$c_2$},tick align=outside,ymajorgrids=true,major grid style={dashed}]
+
+    \addplot[graph,quiver={u=\thisrow{u},v=\thisrow{v},scale arrows=0.4},-stealth']
+      table {
+      x y u v
+      1 1 1 1
+      2 2 1 0.5
+      };
+      \addplot[graph,sharp plot,densely dashed,mark=*,mark options={solid,fill=tuered},mark size=1.7pt,nodes near coords={\coordindex}]
+      table {
+      x y
+      1 1
+      2 2
+      3 2.5
+      };
+      \node[black] at (axis cs:1.4,0.9) {$\left.\frac{dc}{dt}\right|_{t_0}$};
+      \node[black] at (axis cs:2.4,1.8) {$\left.\frac{dc}{dt}\right|_{\Delta t}$};
+%       \node[black] at (axis cs:2.1,0.5) {$k_1$};
+    \end{axis}
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Euler's method - solution method}
+    \begin{tikzpicture}[snake=zigzag, line before snake = 5mm, line after snake = 5mm]
+    %draw horizontal line   
+    \draw (0,0) -- (6,0);
+    \draw[snake] (5.5,0) -- (8.5,0);
+    \draw (8,0) -- (10,0);
+
+    %draw vertical lines
+    \foreach \x in {0,2,4,6,8,10}
+      \draw (\x cm,3pt) -- (\x cm,-3pt);
+
+    %draw nodes
+    \draw (0,0) node[below=3pt] {$ t=0 $} node[above=3pt] {$ 1 $};
+    \draw (2,0) node[below=3pt] {$ \Delta t $} node[above=3pt] {$ 2 $};
+    \draw (4,0) node[below=3pt] {$ 2\Delta t $} node[above=3pt] {$ 3 $};
+    \draw (6,0) node[below=3pt] {$ 3\Delta t $} node[above=3pt] {$ 4 $};
+    \draw (8,0) node[below=3pt] {$ t_\mathrm{end}-\Delta t $} node[above=3pt] {$ n-1 $};
+    \draw (10,0) node[below=3pt] {$ t_\mathrm{end} $} node[above=3pt] {$ n $};
+    
+    \onslide<1>{
+      \draw (0,-1.5) node[above=1pt] {$c_0$};
+    }
+    \onslide<2>{
+      \draw (0,-1.5) node[above=1pt] {$c(t)$};
+      \draw (2,-1.5) node[above=1pt] {$c(t+\Delta t)$};
+    }
+    \onslide<3>{
+      \draw (2,-1.5) node[above=1pt] {$c(t)$};
+      \draw (4,-1.5) node[above=1pt] {$c(t+\Delta t)$};
+    }
+    \onslide<4>{
+      \draw (4,-1.5) node[above=1pt] {$c(t)$};
+      \draw (6,-1.5) node[above=1pt] {$c(t+\Delta t)$};
+    }
+   \end{tikzpicture}
+   \vskip1em
+  Start with $t = t_0$, $c=c_0$, then calculate at discrete points in time: $c(t_1 = t_0 + \Delta t) = c(t_0) + \Delta t f(c_0,t_0)$. 
+  \onslide<5>{
+  \vskip1em
+  \tikz{\node[emphblock,text width=\textwidth] {
+  Pseudo-code Euler's method: $ \frac{dy}{dx} = f(x,y) \quad \text{and} \quad y(x_0) = y_0$.
+  \begin{enumerate}
+    \item Initialize variables, functions; set $h = \frac{x_1 - x_0}{N}$
+    \item Set $x = x_0$, $y = y_0$
+    \item While $x<x_\text{end}$ do\\
+    $ \displaystyle x_{i+1} = x_i + h; \quad y_{i+1} = y_i + h f(x_i,y_i)$
+  \end{enumerate}
+  };}
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Euler's method - example}
+  First order reaction in a batch reactor:
+  \[
+    \frac{dc}{dt} = -kc \quad \text{with} \quad c(t=0) = 1\, \si{\mole\per\cubic\meter}, \quad k = 1\, \si{s^{-1}}, \quad t_\text{end} = 2\, \si{\second}
+  \]
+  \pause
+  \footnotesize\selectfont
+  \begin{longtable}{p{0.3\textwidth}p{0.5\textwidth}}
+  \hline
+    Time [\si{\second}] & Concentration [\si{\mole\per\cubic\meter}] \\ \hline
+    $t_0 = 0$                                 & $c_0 = 1.00$ \\
+    $\begin{aligned}t_1 &= t_0 + \Delta t\\ &= 0 + 0.1 = 0.1\end{aligned}$    & $\begin{aligned}c_1 &= c_0 + \Delta t \cdot (-kc_0) \\ &= 1 + 0.1 \cdot (-1 \cdot 1) = 0.9\end{aligned}$ \\
+    $\begin{aligned}t_2 &= t_1 + \Delta t\\ &= 0.1 + 0.1 = 0.2\end{aligned}$  & $\begin{aligned}c_2 &= c_1 + \Delta t \cdot (-kc_1)\\ &= 0.9 + 0.1 \cdot (-1 \cdot 0.9) = 0.81\end{aligned}$ \\ 
+    $\begin{aligned} t_3 &= t_2 + \Delta t \\ &= 0.2 + 0.1 = 0.3\end{aligned}$  & $\begin{aligned}c_3 &= c_2 + \Delta t \cdot (-kc_2)\\ &= 0.81 + 0.1 \cdot (-1 \cdot 0.81) = 0.729 \end{aligned}$ \\ 
+    \centering$\ldots$                                  & $\quad \quad \quad \quad \ldots$ \\
+    $t_{i+1} = t_i + \Delta t$                & $c_{i+1} = c_i + \Delta t \cdot (-k c_i) $ \\
+    \centering$\ldots$ & $\quad \quad \quad \quad \ldots$ \\
+    $t_{20} = 2.0 $ & $c_{20} = c_{19} + \Delta t \cdot (-k c_{19}) = 0.1211577$ \\
+    \hline
+  \end{longtable}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Euler's method - example}
+%   Accuracy: Results are shown for $N=20,4-,80,\ldots,320$ using $k = 1 \si{s^{-1}$
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{axis}[every axis/.append style={font=\footnotesize},
+    width=\textwidth, height=7cm,     % size of the image
+    grid = major,
+    grid style={dashed, gray!30},
+    xmin=0,     % start the diagram at this x-coordinate
+    xmax=2,    % end   the diagram at this x-coordinate
+    ymin=0,     % start the diagram at this y-coordinate
+    ymax=1,   % end   the diagram at this y-coordinate
+    xtick={0,0.2,...,2},
+    ytick={0,0.2,...,1},
+    axis background/.style={fill=white},
+    axis x line=middle,
+    axis y line=middle,
+    ylabel style={at={(ticklabel* cs:1.05)},anchor=south west},
+    ylabel=$c$ (\si{\mole\per\cubic\meter}),
+    xlabel=$t$ (\si{\second}),
+    tick align=outside,
+    legend style={draw=none,fill=none,font=\tiny,at={(0.5,1.0)},anchor=south},
+    legend columns=5
+    ]
+
+      \addplot[graph,mark=x] table [id=EE_20]{ODE_EulerExpl_20.dat};  \addlegendentry{20 points}
+      \only<2->{\addplot[graph,draw=tueyellow] table [id=EE_20]{ODE_EulerExpl_40.dat}; } \addlegendentry{40 points}
+      \only<3->{\addplot[graph,draw=tuelblue] table [id=EE_20]{ODE_EulerExpl_80.dat}; } \addlegendentry{80 points}
+      \only<4->{\addplot[graph,draw=tuegreen] table [id=EE_20]{ODE_EulerExpl_160.dat};} \addlegendentry{160 points}
+      \only<5->{\addplot[graph,draw=tuelila] table [id=EE_20]{ODE_EulerExpl_320.dat};} \addlegendentry{320 points}
+    \end{axis}
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Problems with Euler's method}
+  The question is: What step size, or how many steps to use?
+  \begin{enumerate}
+    \item \emph{Accuracy}  $\Rightarrow$ need information on numerical error!
+    \item \emph{Stability} $\Rightarrow$ need information on stability limits!
+  \end{enumerate}
+  \vskip1em
+
+  \begin{columns}
+    \column{0.5\textwidth}
+    \begin{tikzpicture}
+      \begin{axis}[every axis/.append style={font=\tiny},
+      width=\columnwidth, height=5.5cm,     % size of the image
+      grid = major,
+      grid style={dashed, gray!30},
+      xmin=0,     % start the diagram at this x-coordinate
+      xmax=2,    % end   the diagram at this x-coordinate
+      ymin=0,     % start the diagram at this y-coordinate
+      ymax=1,   % end   the diagram at this y-coordinate
+      xtick={0,0.5,...,2},
+      ytick={0,0.25,...,1},
+%       axis background/.style={fill=white},
+%       axis x line=middle,
+%       axis y line=middle,
+      xlabel style={at={(ticklabel* cs:1.1)},anchor=south},
+      xlabel=$t$ (\si{\second}),
+      ylabel style={at={(yticklabel* cs:0.5)},anchor=north},
+      ylabel=$c$ (\si{\mole\per\cubic\meter}),
+      tick align=outside,
+      legend style={draw=none,fill=none,font=\tiny,at={(0.5,-0.1)},anchor=north},
+      legend columns=3
+      ]
+
+	\addplot[graph] table [id=EE_20]{ODE_EulerExpl_20.dat}; \addlegendentry{$N=20$}
+	\addplot[graph,draw=tueyellow] table [id=EE_20]{ODE_EulerExpl_40.dat}; \addlegendentry{$N=40$}
+	\addplot[graph,draw=tuelblue] table [id=EE_20]{ODE_EulerExpl_80.dat};  \addlegendentry{$N=80$}
+	\addplot[graph,draw=tuegreen] table [id=EE_20]{ODE_EulerExpl_160.dat}; \addlegendentry{$N=160$}
+	\addplot[graph,draw=tuelila] table [id=EE_20]{ODE_EulerExpl_320.dat}; \addlegendentry{$N=320$}
+      \end{axis}
+    \end{tikzpicture}
+     \centering Reaction rate: $k = 1$ \si{s^{-1}}
+    \column{0.5\textwidth}
+    \begin{tikzpicture}
+      \begin{axis}[every axis/.append style={font=\tiny},
+      width=\columnwidth, height=5.5cm,     % size of the image
+      grid = major,
+      grid style={dashed, gray!30},
+      xmin=0,     % start the diagram at this x-coordinate
+      xmax=0.25,    % end   the diagram at this x-coordinate
+      ymin=-5,     % start the diagram at this y-coordinate
+      ymax=5,   % end   the diagram at this y-coordinate
+      restrict y to domain*=-300:300,
+      xtick={0,0.05,...,0.25},
+      ytick={-5,-2.5,...,5},
+%       axis background/.style={fill=white},
+% %       axis x line=middle,
+%       axis y line=middle,
+      xlabel style={at={(ticklabel* cs:1.1)},anchor=south},
+      xlabel=$t$ (\si{\second}),
+      ylabel style={at={(yticklabel* cs:0.5)},anchor=north},
+      ylabel=$c$ (\si{\mole\per\cubic\meter}),
+      tick align=outside,
+      legend style={draw=none,fill=none,font=\tiny,at={(0.5,-0.1)},anchor=north},
+      legend columns=3
+      ]
+
+	\addplot[graph,sharp plot,mark=+,mark size=1.3pt] table [id=EE_20]{ODE_Euler2Expl_20.dat}; \addlegendentry{$N=20$}
+	\addplot[graph,sharp plot,draw=tueyellow,mark=x,mark size=1.3pt] table [id=EE_20]{ODE_Euler2Expl_40.dat}; \addlegendentry{$N=40$}
+	\addplot[graph,sharp plot,draw=tuelblue,mark=o,mark size=1.3pt] table [id=EE_20]{ODE_Euler2Expl_80.dat};  \addlegendentry{$N=80$}
+	\addplot[graph,sharp plot,draw=tuegreen] table [id=EE_20]{ODE_Euler2Expl_160.dat}; \addlegendentry{$N=160$}
+	\addplot[graph,sharp plot,draw=tuelila] table [id=EE_20]{ODE_Euler2Expl_320.dat}; \addlegendentry{$N=320$}
+      \end{axis}
+    \end{tikzpicture}
+     \centering Reaction rate: $k = 50$ \si{s^{-1}}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Accuracy}
+  Comparison with analytical solution for $k=1$ \si{s^{-1}}:
+  \[
+    c(t) = c_0 \exp \left(-kt\right) \Rightarrow \zeta = 1-\exp\left(-kt\right) \Rightarrow \zeta_\text{analytical} = 0.864665
+  \]
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+      \begin{longtable}{ccc}
+      \hline
+      $N$ & $\zeta$ & $\frac{\zeta^{}_\text{numerical}-\zeta_\text{analytical}}{\zeta_\text{analytical}}$ \\ \hline
+      20  & 0.878423 & 0.015912 \\
+      40  & 0.871488 & 0.007891 \\
+      80  & 0.868062 & 0.003929 \\
+      160 & 0.866360 & 0.001961 \\
+      320 & 0.865511 & 0.000979\\
+      \hline
+    \end{longtable}
+  \column{0.5\textwidth}
+    \begin{tikzpicture}
+      \begin{loglogaxis}[
+      width=\columnwidth,height=5cm,
+      ylabel style={at={(yticklabel* cs:0.5)},anchor=south},
+      xlabel=N,
+      ylabel=Relative error,
+      log ticks with fixed point,
+      xtick={20,40,80,160,320},
+      ytick={0.02,0.01,0.005,0.002,0.001}]
+      \addplot[graph,draw=tuelblue,mark=o] table {ODE_euler_err.dat};
+      \end{loglogaxis}
+    \end{tikzpicture}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Accuracy}
+  \tikz{\node[emphblock,text width=\textwidth] {For Euler's method: Error halves when the number of grid points is doubled, i.e. error is proportional to $\Delta t$: first order method.};}
+  \vskip1em
+  Error estimate:
+  \[
+    \left. \frac{dx}{dt}\right|_{t_0} = \frac{x(t_0+\Delta t)-x(t_0)}{\Delta t} + \frac{1}{2} \left.\frac{d^2x}{dt^2}\right|_{t_0} (\Delta t) + \mathcal{O}{(\Delta t)\color{tuered}^2}
+  \]
+  \[
+    \frac{x(t_0+\Delta t)-x(t_0)}{\Delta t} = f(x_0,t_0) - \frac{1}{2} \left.\frac{d^2x}{dt^2}\right|_{t_0} (\Delta t) +  \mathcal{O}{(\Delta t)\color{tuered}^2}
+  \]
+
+\end{frame}
+
+% \subsection{Convergence rate}
+% \begin{frame}
+%   \frametitle{Errors and convergence rate}
+%   \begin{block}{$L_2$ norm (Euclidean norm)}
+%     $ \quad \norm{\vec{v}}_2 = \sqrt{v_1^2+v_2^2+\ldots+v_n^2} = \sqrt{\sum_{i=1}^n v_i^2} $
+%   \end{block}
+%   \begin{block}{$L_\infty$ norm (maximum norm)}
+%     $ \quad \norm{\vec{v}}_\infty = \text{max}\left( \abs{v_1},\ldots,\abs{v_n}\right) $
+%   \end{block}
+%   \begin{block}{Absolute difference}
+%     $ \quad \epsilon_\text{abs} = \norm{\vec{y}_\text{numerical} - \vec{y}_\text{analytical}}_{2,\infty} $
+%   \end{block}
+%   \begin{block}{Relative difference}
+%     $ \quad \epsilon_\text{rel} = \frac{\norm{\vec{y}_\text{numerical} - \vec{y}_\text{analytical}}_{2,\infty}}{\norm{\vec{y}_\text{analytical}}_{2,\infty}} $
+%   \end{block}
+% \end{frame}
+% 
+% \begin{frame}
+%   \frametitle{Errors and convergence rate}
+%   \footnotesize\selectfont
+%    \begin{block}{Convergence rate (or: order of convergence) $r$}
+%   $\displaystyle \epsilon = \lim_{\Delta x \rightarrow 0} c(\Delta x)^r $
+%   \end{block}
+%   \begin{itemize}
+%     \item A first order method reduces the error by a factor 2 when increasing the number of steps by a factor 2
+%     \item A second order method reduces the error by a factor 4 when increasing the number of steps by a factor 2
+%   \end{itemize}
+%   What to do when there is no analytical solution available?
+%   \pause
+%   Compare to calculations with different number of steps: $\epsilon_1 = c(\Delta x_1)^r $ and $\epsilon_2 = c(\Delta x_2)^r $ and solve for $r$: \\ \vfill
+%   $ \displaystyle
+%     \frac{\epsilon_2}{\epsilon_1} = \frac{c(\Delta x_2)^r}{c(\Delta x_1)^r} = \left(\frac{\Delta x_2}{\Delta x_1}\right)^r \Rightarrow \log\left( \frac{\epsilon_2}{\epsilon_1}\right) = \log\left( \frac{\Delta x_2}{\Delta x_1}\right)^r $ 
+%   \vfill
+%   \tikz{\node[emphblock,text width=\textwidth] {$ \displaystyle
+%     \Rightarrow r = \frac{\log\left( \frac{\epsilon_2}{\epsilon_1}\right)}{\log\left( \frac{\Delta x_2}{\Delta x_1}\right)} = \frac{\log\left( \frac{\epsilon_2}{\epsilon_1}\right)}{\log\left( \frac{N_1}{N_2}\right)} \quad \text{in the limit of} \quad \Delta x \rightarrow 0 \qquad \text{or} \qquad N \rightarrow \infty $};}
+% \end{frame}
+
+\section{Rates of convergence}
+\againframe<2>{contents}
+\subsection*{Rate of convergence}
+\begin{frame}
+  \frametitle{Errors and convergence rate}
+  \begin{block}{$L_2$ norm (Euclidean norm)}
+    $ \quad \norm{\vec{v}}_2 = \sqrt{v_1^2+v_2^2+\ldots+v_n^2} = \sqrt{\sum_{i=1}^n v_i^2} $
+  \end{block}
+  \begin{block}{$L_\infty$ norm (maximum norm)}
+    $ \quad \norm{\vec{v}}_\infty = \text{max}\left( \abs{v_1},\ldots,\abs{v_n}\right) $
+  \end{block}
+  \begin{block}{Absolute difference}
+    $ \quad \epsilon_\text{abs} = \norm{\vec{y}_\text{numerical} - \vec{y}_\text{analytical}}_{2,\infty} $
+  \end{block}
+  \begin{block}{Relative difference}
+    $ \quad \epsilon_\text{rel} = \frac{\norm{\vec{y}_\text{numerical} - \vec{y}_\text{analytical}}_{2,\infty}}{\norm{\vec{y}_\text{analytical}}_{2,\infty}} $
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Errors and convergence rate}
+  \footnotesize\selectfont
+   \begin{block}{Convergence rate (or: order of convergence) $r$}
+  $\displaystyle \epsilon = \lim_{\Delta x \rightarrow 0} c(\Delta x)^r $
+  \end{block}
+  \begin{itemize}
+    \item A first order method reduces the error by a factor 2 when increasing the number of steps by a factor 2
+    \item A second order method reduces the error by a factor 4 when increasing the number of steps by a factor 2
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Computing the rate of convergence}
+  \footnotesize\selectfont
+  When the analytical solution is available, choose \tikz{\node[circle,draw=none,fill=tuelblue,inner sep=0.7pt,text=white]{\scriptsize 1};} or \tikz{\node[circle,draw=none,fill=tuelblue,inner sep=0.7pt,text=white]{\scriptsize 2};} for a particular number of grid points $N$:
+  \begin{enumerate}
+  \footnotesize\selectfont
+    \item Compute the relative or absolute error vector $\overline{\varepsilon}$. Take the norm to compute a single error value $\epsilon$ following:
+    \begin{itemize}
+    \footnotesize\selectfont
+      \item Based on $L_1$-norm: $\displaystyle \epsilon = \frac{\left\Vert\mathbf{\overline{\varepsilon}}\right\Vert_1}{N}$ \vskip1ex
+      \item Based on $L_2$-norm: $\displaystyle \epsilon = \frac{\left\Vert\mathbf{\overline{\varepsilon}}\right\Vert_2}{\sqrt{N}}$\vskip1ex
+      \item Based on $L_\infty$-norm: $\displaystyle \epsilon = \left\Vert\mathbf{\overline{\varepsilon}}\right\Vert_\infty$
+    \end{itemize}
+    \item Compute the relative or absolute error at a single indicative points (e.g. middle of domain, outlet).
+  \end{enumerate}
+  \pause
+  Compare to calculations with different number of steps: $\epsilon_1 = c(\Delta x_1)^r $ and $\epsilon_2 = c(\Delta x_2)^r $ and solve for $r$: \\ \vfill
+  $ \displaystyle
+    \frac{\epsilon_2}{\epsilon_1} = \frac{c(\Delta x_2)^r}{c(\Delta x_1)^r} = \left(\frac{\Delta x_2}{\Delta x_1}\right)^r \Rightarrow \log\left( \frac{\epsilon_2}{\epsilon_1}\right) = \log\left( \frac{\Delta x_2}{\Delta x_1}\right)^r $ 
+  \vfill
+  \tikz{\node[emphblock,text width=0.9\textwidth] {$ \displaystyle
+    \Rightarrow r = \frac{\log\left( \frac{\epsilon_2}{\epsilon_1}\right)}{\log\left( \frac{\Delta x_2}{\Delta x_1}\right)} = \frac{\log\left( \frac{\epsilon_2}{\epsilon_1}\right)}{\log\left( \frac{N_1}{N_2}\right)} \quad \text{in the limit of} \quad \Delta x \rightarrow 0 \quad \text{or} \quad N \rightarrow \infty $};}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Computing the rate of convergence}
+  \footnotesize\selectfont
+  When the analytical solution is \textbf{not} available:
+  \begin{enumerate}
+  \footnotesize\selectfont
+    \item Compute the solution with $N+1$, $N$, $N-1$ and $N-2$ grid points
+    \item Select a single indicative grid point (e.g. middle of domain, outlet) that lies at exactly the same position in each computation
+    \item Use the solution $c$ at this grid point for various grid sizes to compute:
+    \[\displaystyle
+       r = \dfrac{\log \dfrac{c_{N+1}  - c_N}{c_N - c_{N-1}}} {\log \dfrac{c_N - c_{N-1}}{c_{N-1} - c_{N-2}}}
+    \]
+   \end{enumerate} 
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example: Euler's method --- order of convergence}
+  \begin{longtable}{cccc}
+    \hline
+    $N$ & $\zeta$ & $\frac{\zeta^{}_\text{numerical}-\zeta_\text{analytical}}{\zeta_\text{analytical}}$ & $ r = \frac{\log\left(\frac{\epsilon_i}{\epsilon_{i-1}}\right)}{\log \left( \frac{N_{i-1}}{N_i}\right)} $ \\ \hline
+    20  & 0.878423 & 0.015912 & ---\\
+    40  & 0.871488 & 0.007891 & 1.011832\\
+    80  & 0.868062 & 0.003929 & 1.005969\\
+    160 & 0.866360 & 0.001961 & 1.002996\\
+    320 & 0.865511 & 0.000979 & 1.001500\\
+    \hline
+  \end{longtable}
+  \pause
+  $ \Rightarrow$ Euler's method is a first order method (as we already knew from the truncation error analysis) \\
+  \pause \vskip1em
+  Wouldn't it be great to have a method that can give the answer using much less steps? \pause $ \Rightarrow$ Higher order methods
+\end{frame}
+
+\section{Runge-Kutta methods}
+\againframe<2>{contents}
+\subsection{RK2 methods}
+\begin{frame}[t,fragile]
+\frametitle{Runge-Kutta methods}
+  Propagate a solution by combining the information of several Euler-style steps (each involving one function evaluation) to match a Taylor series expansion up to some higher order.
+  \vskip1em
+  Euler: $ y_{i+1} = y_i + h f(x_i,y_i) $ with $h = \Delta x$, i.e. $\text{slope} = k_1 = f(x_i,y_i)$.\\
+  \begin{columns}
+    \column{0.5\textwidth}
+    \begin{center}Euler's method\end{center}
+    \begin{tikzpicture}
+      \begin{axis}[every axis/.append style={font=\footnotesize},
+      width=1.3\columnwidth, height=4cm,
+      xmin=0,xmax=4,ymin=0,ymax=4,
+      xtick={1,2,3},ytick={0},
+      axis x line=middle,axis y line=middle,
+      xlabel=$x$,xticklabels={$x_1$,$x_2$,$x_3$},
+      ylabel=$y(x)$,tick align=outside]
+
+    \addplot[graph,quiver={u=\thisrow{u},v=\thisrow{v},scale arrows=0.4},-stealth']
+      table {
+      x y u v
+      1 1 1 1
+      2 2 1 0.5
+      };
+      \addplot[graph,sharp plot,densely dashed,mark=*,mark options={solid,fill=tuered},mark size=1.7pt,nodes near coords={\coordindex}]
+      table {
+      x y
+      1 1
+      2 2
+      3 2.5
+      };
+    \end{axis}
+  \end{tikzpicture}
+  \column{0.5\textwidth}
+    \begin{center}RK2 method\end{center}
+    \begin{tikzpicture}
+      \begin{axis}[every axis/.append style={font=\footnotesize},
+      width=1.3\columnwidth, height=4cm,
+      xmin=0,xmax=4,ymin=0,ymax=1.1,
+      xtick={1,2,3},ytick={0},
+      axis x line=middle,axis y line=middle,
+      xlabel=$x$,xticklabels={$x_0$,$x_1$,$x_2$},
+      ylabel=$y(x)$,tick align=outside]
+
+      \draw[line,-,black,densely dotted] (axis cs:1,1) -- (axis cs:2,0.2);
+      \draw[line,-,black,densely dotted] (axis cs:2,0.6) -- (axis cs:3,0.2);
+
+    \addplot[graph,quiver={u=\thisrow{u},v=\thisrow{v},scale arrows=0.7},-stealth',mark=*,nodes near coords={\coordindex}]
+      table {
+      x   y     u    v
+      1   1     0.5   -0.4
+      2   0.6   1 -0.4
+      3  0.45   1  0
+      };
+      \addplot[graph,quiver={u=\thisrow{u},v=\thisrow{v},scale arrows=0.4},-stealth',mark=*,mark options={solid,fill=white}]
+      table {
+      x   y     u    v
+      2   0.2   1   -0.4
+      3   0.2   1.75   0
+      };
+      \addplot[graph,sharp plot,densely dashed]
+      table {
+      x   y     u    v
+      1   1     0.5   -0.5
+      2   0.6   1 -0.2
+      3  0.45   1  0
+      };
+      \node[black] at (axis cs:1.1,0.75) {$k_1$};
+      \node[black] at (axis cs:2.4,0.20) {$k_2$};
+      \node[black] at (axis cs:1.7,0.9) {$\frac{k_1+k_2}{2}$};
+%       \node[black] at (axis cs:2.6,0.4) {$k_2$};
+      \end{axis}
+  \end{tikzpicture}
+  \end{columns}
+\end{frame}
+% \begin{frame}[t,fragile]
+% \frametitle{Runge-Kutta methods}
+%   Propagate a solution by combining the information of several Euler-style steps (each involving one function evaluation) to match a Taylor series expansion up to some higher order.
+%   \vskip1em
+%   Euler: $ y_{i+1} = y_i + h f(x_i,y_i) $ with $h = \Delta x$, i.e. $\text{slope} = k_1 = f(x_i,y_i)$.\\
+%   \begin{columns}
+%     \column{0.5\textwidth}
+%     \begin{center}Euler's method\end{center}
+%     \begin{tikzpicture}
+%       \begin{axis}[every axis/.append style={font=\footnotesize},
+%       width=1.3\columnwidth, height=4cm,
+%       xmin=0,xmax=4,ymin=0,ymax=4,
+%       xtick={1,2,3},ytick={0},
+%       axis x line=middle,axis y line=middle,
+%       xlabel=$x$,xticklabels={$x_1$,$x_2$,$x_3$},
+%       ylabel=$y(x)$,tick align=outside]
+% 
+%     \addplot[graph,quiver={u=\thisrow{u},v=\thisrow{v},scale arrows=0.4},-stealth']
+%       table {
+%       x y u v
+%       1 1 1 1
+%       2 2 1 0.5
+%       };
+%       \addplot[graph,sharp plot,densely dashed,mark=*,mark options={solid,fill=tuered},mark size=1.7pt,nodes near coords={\coordindex}]
+%       table {
+%       x y
+%       1 1
+%       2 2
+%       3 2.5
+%       };
+%     \end{axis}
+%   \end{tikzpicture}
+%   \column{0.5\textwidth}
+%     \begin{center}RK2 method\end{center}
+%     \begin{tikzpicture}
+%       \begin{axis}[every axis/.append style={font=\footnotesize},
+%       width=1.3\columnwidth, height=4cm,
+%       xmin=0,xmax=4,ymin=0,ymax=1.1,
+%       xtick={1,1.5,2,2.5,3},ytick={0},
+%       axis x line=middle,axis y line=middle,
+%       xlabel=$x$,xticklabels={$x_0$,$x_\frac{1}{2}$,$x_1$,$x_\frac{3}{2}$,$x_2$},
+%       ylabel=$y(x)$,tick align=outside]
+% 
+%     \addplot[graph,quiver={u=\thisrow{u},v=\thisrow{v},scale arrows=0.4},-stealth',mark=*,nodes near coords={$c_\coordindex$}]
+%       table {
+%       x   y     u    v
+%       1   1     0.5   -0.5
+%       2   0.6 1 -0.2
+%       3  0.45  1  0
+%       };
+%       \addplot[graph,quiver={u=\thisrow{u},v=\thisrow{v},scale arrows=0.4},-stealth',mark=*,mark options={solid,fill=white}]
+%       table {
+%       x   y     u    v
+%       1.5 0.5 1   -0.4
+%       2.5   0.5 1 -0.15
+%       };
+%       \addplot[graph,sharp plot,densely dashed]
+%       table {
+%       x   y     u    v
+%       1   1     0.5   -0.5
+%       2   0.6 1 -0.2
+%       3  0.45  1  0
+%       };
+%       \node[black] at (axis cs:1.1,0.8) {$k_1$};
+%       \node[black] at (axis cs:1.7,0.35) {$k_2$};
+%       \node[black] at (axis cs:2.1,0.5) {$k_1$};
+%       \node[black] at (axis cs:2.6,0.4) {$k_2$};
+%       \end{axis}
+%   \end{tikzpicture}
+%   \end{columns}
+% \end{frame}
+
+\begin{frame}[t,fragile]
+  \frametitle{Classical second order Runge-Kutta (RK2) method}
+  \footnotesize\selectfont
+   This method is also called Heun's method, or improved Euler method:
+  \begin{enumerate}
+    \item Approximate the slope at $x_i$: $k_1 = f(x_i,y_i)$
+    \item Approximate the slope at $x_{i+1}$: $k_2 = f(x_{i+1},y_{i+1})$ where we use Euler's method to approximate $y_{i+1} = y_i + h f(x_i,y_i) = y_i + h k_1$
+    \item Perform an Euler step with the average of the slopes: $y_{i+1} = y_i + h\frac{1}{2}(k_1+k_2)$
+  \end{enumerate}
+  \pause\vskip1em
+  In pseudocode:\\
+  \tikz{\node[emphblock, text width=0.5\textwidth] {
+    \begin{algorithmic}
+    \State $x = x_0$, $y = y_0$
+    \While {$x < x_\text{end}$}
+        \State $x_{i+1} = x_i + h$
+        \State $k_1 = f(x_i,y_i)$
+        \State $k_2 = f(x_i+h,y_i+h k_1)$
+        \State $y_{i+1} = y_i + h \frac{1}{2}\left( k_1 + k_2 \right)$
+    \EndWhile \\
+    \end{algorithmic} };}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Runge-Kutta methods --- derivation}
+  \footnotesize\selectfont
+  \[ \frac{dy}{dx} = f(x,y(x)) \]
+  \pause Using Taylor series expansion: $\displaystyle     y_{i+1} = y_i + h \left.\frac{dy}{dx}\right|_i + \left.\frac{h^2}{2}\frac{d^2y}{dx^2}\right|_i + \mathcal{O}{(h^3)} $
+  \begin{align*}
+    \left.\frac{dy}{dx}\right|_i &= f(x_i,y_i) \equiv f_i \\
+    \left.\frac{d^2y}{dx^2}\right|_i &= \left.\frac{d}{dx}f(x,y(x))\right|_i = \left.\frac{\partial f}{\partial x}\right|_i + \left.\frac{\partial f}{\partial y}\right|_i \left.\frac{\partial y}{\partial x}\right|_i = \left.\frac{\partial f}{\partial x}\right|_i + \left.\frac{\partial f}{\partial y}\right|_i f_i \quad \text{(chain rule)}
+  \end{align*}
+  \pause Substitution gives:
+   \begin{align*}
+    y_{i+1} &= y_i + h f_i + \frac{h^2}{2} \left( \left.\frac{\partial f}{\partial x}\right|_i +  \left.\frac{\partial f}{\partial y}\right|_i f_i \right) + \mathcal{O}{(h^3)} \\
+    y_{i+1} &= y_i + \frac{h}{2} f_i + \frac{h}{2} \left( f_i + h\left.\frac{\partial f}{\partial x}\right|_i + h f_i \left.\frac{\partial f}{\partial y}\right|_i \right) + \mathcal{O}{(h^3)}
+  \end{align*}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Runge-Kutta methods --- derivation}
+%   \footnotesize\selectfont
+  Note multivariate Taylor expansion:
+  \begin{multline*}
+    f(x_i+h,y_i+k) = f_i + h \left. \frac{\partial f}{\partial x}\right|_i + k\left. \frac{\partial f}{\partial y}\right|_i + \mathcal{O}{(h^2)} \\
+    \Rightarrow \frac{h}{2}\left(f_i + h\left.\frac{\partial f}{\partial x}\right|_i + h f_i \left. \frac{\partial f}{\partial y} \right|_i \right) = \frac{h}{2} f\left(x_i+h,y_i+kf_i\right) + \mathcal{O}{(h^3)}
+  \end{multline*}
+  Concluding:
+  \[
+    y_{i+1} = y_i + \frac{h}{2} f_i + \frac{h}{2} f\left(x_i+h,y_i+kf_i\right) + \mathcal{O}{(h^3)}
+  \]
+  Rewriting:\\
+  \tikz{\node[emphblock, text width=0.5\textwidth] {
+  \vspace*{-1.5em}
+  \begin{align*}
+    k_1 &= f\left(x_i,y_i\right) \\
+    k_2 &= f\left(x_i+h,y_i+hk_1\right) \\
+    \Rightarrow y_{i+1} &= y_i + \frac{h}{2}(k_1 + k_2)
+    \end{align*} };}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Runge-Kutta methods --- derivation}
+  \footnotesize\selectfont
+  Generalization: {\color<4>{tuealert}$y_{i+1} = y_i + h(b_1 k_1 + b_2 k_2) + \mathcal{O}{(h^3)}$} \\
+  with $k_1 = f_i$, $k_2 = f(x_i + c_2 h, y_1 + a_{2,1}h k_1)$\\
+  (Note that classical RK2: $b_1 = b_2 = \frac{1}{2}$ and $c_2 = a_{2,1}=1$.) \vskip1em \pause
+  Bivariate Taylor expansion:
+  \[
+    f(x_i+c_2 h, y_i + a_{2,1}h k_1 ) = f_i + c_2 h \left. \frac{\partial f}{\partial x}\right|_i + a_{2,1}hk_1\left. \frac{\partial f}{\partial y}\right|_i + \mathcal{O}{(h^2)}
+  \]
+\begin{align*}
+    y_{i+1} &= y_i + h(b_1 k_1 + b_2 k_2) + \mathcal{O}{(h^3)} \\
+    &= y_i + h\left[b_1 f_i + b_2 f(x_i + c_2 h, y_1 + a_{2,1}h k_1)\right] + \mathcal{O}{(h^3)} \\
+    &= y_i + h\left[b_1 f_i + b_2 \left\{ f_i + c_2 h \left.\frac{\partial f}{\partial x}\right|_i + a_{2,1} h k_1 \left.\frac{\partial f}{\partial y}\right|_i + \mathcal{O}{(h^2)} \right\}\right] + \mathcal{O}{(h^3)} \\
+    &= {\color<4>{tuealert}y_i + h(b_1 + b_2)f_i + h^2b_2\left( c_2 \left.\frac{\partial f}{\partial x}\right|_i + a_{2,1}f_i \left.\frac{\partial f}{\partial y}\right|_i \right) + \mathcal{O}{(h^3)} }
+\end{align*} \pause
+Comparison with Taylor: 
+\[
+  {\color<4>{tuealert}y_{i+1} = y_i + h f_i + \frac{h^2}{2}\left( \left. \frac{\partial f}{\partial x}\right|_i + \left. \frac{\partial f}{\partial y}\right|_i f_i \right) + \mathcal{O}{(h^3)}}
+\]
+Using $b_1+b_2=1$, $c_2b_2=\frac{1}{2}$, $a_{2,1}b_2=\frac{1}{2} \Rightarrow$ 3 eqns and 4 unknowns $\Rightarrow$ multiple possibilities!
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Runge-Kutta methods --- derivation}
+%   \footnotesize\selectfont
+  \begin{align*}
+%     y_{i+1} &= y_i + h(b_1 k_1 + b_2 k_2) + \mathcal{O}{(h^3)} \\
+    y_{i+1} &= y_i + h(b_1 + b_2)f_i + h^2b_2\left( c_2 \left.\frac{\partial f}{\partial x}\right|_i + a_{2,1}f_i \left.\frac{\partial f}{\partial y}\right|_i \right) + \mathcal{O}{(h^3)} \\
+    y_{i+1} &= y_i + h f_i + \frac{h^2}{2}\left( \left. \frac{\partial f}{\partial x}\right|_i + \left. \frac{\partial f}{\partial y}\right|_i f_i \right) + \mathcal{O}{(h^3)}
+  \end{align*}
+  \vfill
+  $\Rightarrow$ 3 eqns and 4 unknowns $\Rightarrow$ multiple possibilities!\vskip1em 
+  \begin{enumerate}
+    \item Classical RK2: \\
+    $b_1 = b_2 = \frac{1}{2}$ and $c_2 = a_{2,1}=1$
+    \item Midpoint rule (modified Euler): \\
+    $ b_1 = 0$, $b_2 = 1$, $c_2 = a_{2,1} = \frac{1}{2}$\\ 
+  \end{enumerate}
+  \vfill
+\end{frame}
+
+
+\begin{frame}[t,fragile]
+  \frametitle{Second order Runge-Kutta methods}
+  \footnotesize\selectfont
+%     \rowcolors[]{2}{maincolor!20}{maincolor!10}
+    \begin{longtable}{c c}
+    \hline
+    \begin{minipage}{0.4\textwidth}\centering Classical~RK2 method \\(=~Heun's~method, improved~Euler~method)\end{minipage} & \begin{minipage}{0.4\textwidth}\centering Explicit midpoint rule  (modified~Euler~method)\end{minipage} \\ \hline
+    $k_1 = f_i$ & $k_1 = f_i$ \\
+    $k_2 = f(x_i + h, y_i + h k_1)$ & $k_2 = f(x_i + \frac{1}{2}h, y_i + \frac{1}{2} h k_1)$ \\
+    $y_{i+1} = y_i + \frac{1}{2} h (k_1 + k_2)$ & $y_{i+1} = y_i + h k_2$ \\
+    \hline
+  \end{longtable}
+  \begin{columns}
+    \column{0.5\textwidth}
+    \begin{tikzpicture}
+      \begin{axis}[every axis/.append style={font=\footnotesize},
+      width=1.2\columnwidth, height=5.5cm,
+      xmin=0,xmax=4,ymin=0,ymax=1.1,
+      xtick={1,2,3},ytick={1,0.6,0.45},
+      axis x line=middle,axis y line=middle,
+      xlabel=$x$,xticklabels={$x_0$,$x_1$,$x_2$},
+      ylabel=$y(x)$,yticklabels={$y_0$,$y_1$,$y_2$},tick align=outside]
+
+      \draw[line,-,black,densely dotted] (axis cs:1,1) -- (axis cs:2,0.2);
+      \draw[line,-,black,densely dotted] (axis cs:2,0.6) -- (axis cs:3,0.2);
+
+    \addplot[graph,quiver={u=\thisrow{u},v=\thisrow{v},scale arrows=0.7},-stealth',mark=*,nodes near coords={\coordindex}]
+      table {
+      x   y     u    v
+      1   1     0.5   -0.4
+      2   0.6   1 -0.4
+      3  0.45   1  0
+      };
+      \addplot[graph,quiver={u=\thisrow{u},v=\thisrow{v},scale arrows=0.4},-stealth',mark=*,mark options={solid,fill=white}]
+      table {
+      x   y     u    v
+      2   0.2   1   -0.4
+      3   0.2   1.75   0
+      };
+      \addplot[graph,sharp plot,densely dashed]
+      table {
+      x   y     u    v
+      1   1     0.5   -0.5
+      2   0.6   1 -0.2
+      3  0.45   1  0
+      };
+      \node[black] at (axis cs:1.1,0.75) {$k_1$};
+      \node[black] at (axis cs:2.4,0.20) {$k_2$};
+      \node[black] at (axis cs:1.7,0.9) {$\frac{k_1+k_2}{2}$};
+%       \node[black] at (axis cs:2.6,0.4) {$k_2$};
+      \end{axis}
+  \end{tikzpicture}
+  \column{0.5\textwidth}
+  \begin{tikzpicture}
+      \begin{axis}[every axis/.append style={font=\footnotesize},
+      width=1.2\columnwidth, height=5.5cm,
+      xmin=0,xmax=4,ymin=0,ymax=1.1,
+      xtick={1,1.5,2,2.5,3},ytick={1,0.6,0.45},
+      axis x line=middle,axis y line=middle,
+      xlabel=$x$,xticklabels={$x_0$,$x_\frac{1}{2}$,$x_1$,$x_\frac{3}{2}$,$x_2$},
+      ylabel=$y(x)$,yticklabels={$y_0$,$y_1$,$y_2$},tick align=outside]
+
+    \draw[line,-,black,densely dotted] (axis cs:1,1) -- (axis cs:1.5,0.5);
+    \draw[line,-,black,densely dotted] (axis cs:2,0.6) -- (axis cs:2.5,0.5);
+      
+    \addplot[graph,quiver={u=\thisrow{u},v=\thisrow{v},scale arrows=0.4},-stealth',mark=*,nodes near coords={\coordindex}]
+      table {
+      x   y     u    v
+      1   1     0.5   -0.5
+      2   0.6 1 -0.2
+      3  0.45  1  0
+      };
+      \addplot[graph,quiver={u=\thisrow{u},v=\thisrow{v},scale arrows=0.4},-stealth',mark=*,mark options={solid,fill=white}]
+      table {
+      x   y     u    v
+      1.5 0.5 1   -0.4
+      2.5   0.5 1 -0.15
+      };
+      \addplot[graph,sharp plot,densely dashed]
+      table {
+      x   y     u    v
+      1   1     0.5   -0.5
+      2   0.6 1 -0.2
+      3  0.45  1  0
+      };
+      \node[black] at (axis cs:1.1,0.8) {$k_1$};
+      \node[black] at (axis cs:1.7,0.35) {$k_2$};
+      \node[black] at (axis cs:1.7,0.85) {$k_2$};
+%       \node[black] at (axis cs:2.6,0.4) {$k_2$};
+      \end{axis}
+  \end{tikzpicture}
+  \end{columns}
+\end{frame}
+
+
+\begin{frame}[t,fragile]
+  \frametitle{Second order Runge-Kutta method --- Example}
+  First order reaction in a batch reactor:$\frac{dc}{dt} = -kc$ with $c(t=0) = 1$~\si{\mole\per\cubic\meter}, $k = 1$ \si{s^{-1}}, $t_\text{end} = 2$ \si{\second}.
+  \scriptsize\selectfont
+  \begin{longtable}{p{0.1\textwidth}p{0.2\textwidth}p{0.25\textwidth}p{0.35\textwidth}}
+  \hline
+    Time [\si{\second}] & C [\si{\mole\per\cubic\meter}] & $k_1 = hf(x_i,y_i)$ & $k_2 = hf(x_i + \frac{1}{2}h,y_n + \frac{1}{2}k_1)$\\ \hline
+    $0$   & $1.00$ & $0.1\cdot(-1\cdot1) = -0.1$& $0.1\cdot(-1\cdot(1-0.5\cdot0.1))=-0.095$\\
+    $0.1$   & $1-0.095=0.905$ & $0.1\cdot(-1\cdot0.0905) = -0.0905$& $0.1\cdot(-1\cdot(0.905-0.5\cdot0.0905))=−0.085975$\\
+   $\quad \ldots$ & $\quad \quad \ldots$ & $\quad \quad \quad \ldots$ & $\quad \quad \quad \ldots$ \\
+   $2$ & $0.1358225$ & $-0.0135822$ & $-0.0129031$ \\
+    \hline
+  \end{longtable}
+ \begin{tikzpicture}
+      \begin{axis}[every axis/.append style={font=\footnotesize},
+      width=\columnwidth, height=4.5cm,
+      xmin=0,xmax=4,ymin=0,ymax=1.1,
+      xtick={1,1.5,2,2.5,3},ytick={0},
+      axis x line=middle,axis y line=left,
+      xlabel=$t$,xticklabels={$t_0$,$t_\frac{1}{2}$,$t_1$,$t_\frac{3}{2}$,$t_2$},
+      ylabel=$c(t)$,tick align=outside]
+
+    \addplot[graph,quiver={u=\thisrow{u},v=\thisrow{v},scale arrows=0.4},-stealth',mark=*,nodes near coords={$c_\coordindex$}]
+      table {
+      x   y     u    v
+      1   1     0.5   -0.5
+      2   0.6 1 -0.2
+      3  0.45  1  0
+      };
+      \addplot[graph,quiver={u=\thisrow{u},v=\thisrow{v},scale arrows=0.4},-stealth',mark=*,mark options={solid,fill=white}]
+      table {
+      x   y     u    v
+      1.5 0.5 1   -0.4
+      2.5   0.5 1 -0.15
+      };
+      \addplot[graph,sharp plot,densely dashed]
+      table {
+      x   y     u    v
+      1   1     0.5   -0.5
+      2   0.6 1 -0.2
+      3  0.45  1  0
+      };
+      \node[black] at (axis cs:1.1,0.8) {$k_1$};
+      \node[black] at (axis cs:1.7,0.35) {$k_2$};
+      \node[black] at (axis cs:2.1,0.5) {$k_1$};
+      \node[black] at (axis cs:2.6,0.4) {$k_2$};
+      \end{axis}
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+  \frametitle{RK2 method --- order of convergence}
+  \begin{longtable}{cccc}
+    \hline
+    $N$ & $\zeta$ & $\frac{\zeta^{}_\text{numerical}-\zeta_\text{analytical}}{\zeta_\text{analytical}}$ & $ r = \frac{\log\left(\frac{\epsilon_i}{\epsilon_{i-1}}\right)}{\log \left( \frac{N_{i-1}}{N_i}\right)} $ \\ \hline
+    20  & 0.864178 & \num{5.634E-04} & ---\\
+    40  & 0.864548 & \num{1.355E-04} & 2.056\\
+    80  & 0.864636 & \num{3.323E-05} & 2.028\\
+    160 & 0.864658 & \num{8.229E-06} & 2.014\\
+    320 & 0.864663 & \num{2.048E-06} & 2.007\\
+    \hline
+  \end{longtable}
+  \pause
+  $ \Rightarrow$ RK2 is a second order method. Doubling the number of cells reduces the error by a factor 4! \\
+  \vskip1em
+  Can we do even better?
+\end{frame}
+
+\subsection{RK4 method}
+\begin{frame}
+  \frametitle{RK4 method (classical fourth order Runge-Kutta method)}
+  \vskip1em
+  \centering
+  \begin{tikzpicture}[scale=0.8,xscale=1.3]
+    \draw[line,-,densely dashed] (0,4)  .. node [fdot,very near start,solid] (k1) {} node [fdot,midway,above=9pt,solid,fill=white](k2) {} node [fdot,midway,below=9pt,solid,fill=white](k3) {}controls(2,1) and (6,0) .. node [fdot,pos=0.8,solid] (k4) {} (8,0); 
+    \draw[line,ultra thick] ($ (k1) +(0.45,-0.5) $) -- ($ (k1) -(0.45,-0.5) $);
+    \node[below=2pt] at (k1) {$y_i$}; 
+    \draw[line,ultra thick] ($ (k4) +(0.75,-0.127) $) -- ($ (k4) -(0.75,-0.127) $);
+    \node[below=2pt] at (k4) {$y_{i+1}$}; 
+    \draw[line,ultra thick] ($ (k2) +(0.6,-0.25) $) -- ($ (k2) -(0.6,-0.25) $);
+    \draw[line,ultra thick] ($ (k3) +(0.6,-0.25) $) -- ($ (k3) -(0.6,-0.25) $);
+    \node[above=3pt] at (k1) {1};
+    \node[above=3pt] at (k2) {2};
+    \node[below=3pt] at (k3) {3};
+    \node[above=3pt] at (k4) {4};
+  \end{tikzpicture} 
+  \vspace*{-1cm}
+
+  \begin{align*}
+    k_1 &= f(x_i, y_i) \\
+    k_2 &= f(x_i+\frac{1}{2}h, y_i + \frac{1}{2}hk_1) \\
+    k_3 &= f(x_i + \frac{1}{2}h,y_i + \frac{1}{2}hk_2) \\
+    k_4 &= f(x_i + h, y_i + hk_3) \\
+    y_{i+1} &= y_i + h\left(\frac{1}{6}k_1 + \frac{1}{3}\left(k_2 + k_3\right) + \frac{1}{6}k_4\right)
+  \end{align*}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{RK4 method --- order of convergence}
+  \begin{longtable}{cccc}
+    \hline
+    $N$ & $\zeta$ & $\frac{\zeta^{}_\text{numerical}-\zeta_\text{analytical}}{\zeta_\text{analytical}}$ & $ r = \frac{\log\left(\frac{\epsilon_i}{\epsilon_{i-1}}\right)}{\log \left( \frac{N_{i-1}}{N_i}\right)} $ \\ \hline
+    20  & 0.864664472 & \num{2.836E-07} & ---\\
+    40  & 0.864664702 & \num{1.700E-08} & 4.060\\
+    80  & 0.864664716 & \num{1.040E-09} & 4.030\\
+    160 & 0.864664717 & \num{6.435E-11} & 4.015\\
+    320 & 0.864664717 & \num{4.001E-12} & 4.007\\
+    \hline
+  \end{longtable}
+  \pause
+  $ \Rightarrow$ RK4 is a fourth order method: Doubling the number of cells reduces the error by a factor 16! \\
+  \vskip1em
+  Can we do even better?
+\end{frame}
+
+\section{Step size control}
+\againframe<2>{contents}
+\subsection*{Adaptive step size}
+\begin{frame}
+  \frametitle{Adaptive step size control}
+  The step size (be it either position, time or both (PDEs)) cannot be decreased indefinitely to favour a higher accuracy, since each additional grid point causes additional computation time. It may be wise to adapt the step size according to the computation requirements. \vskip1em
+  Globally two different approaches can be used:
+  \begin{enumerate}
+    \item Step doubling: compare solutions when taking one full step or two consecutive halve steps
+    \item Embedded methods: Compare solutions when using two approximations of different order
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Adaptive step size control: step doubling}
+    \begin{tikzpicture}[scale=5]
+      \node[] at (1,0.3){};
+      \node[] at (1,-0.3){};
+      \node[fdot] (t0)  at (0   , 0) {};
+      \node<3->[fdot] (t05) at (0.5 , 0) {};
+      \node[fdot] (t1)  at (1   , 0) {};
+      \node<3->[fdot] (t15) at (1.5 , 0) {};
+      \node[fdot] (t2)  at (2   , 0) {};
+      \node[above=13pt]  at (t0) {$t$};
+      \node[above=13pt]  at (t1) {$t+\Delta t$};
+      \node[above=13pt]  at (t2) {$t+2\Delta t$};
+            
+      \draw[gridline] (t0) -- (t1) -- (t2);
+      \draw<2->[line,draw=tuered] (t0) .. node [midway,above] (dt1) {$\Delta t$} controls (0.25,0.2) and (0.75,0.2) .. (t1);
+      \draw<2->[line,draw=tuered] (t1) .. node [midway,above] (dt2) {$\Delta t$} controls (1.25,0.2) and (1.75,0.2) .. (t2);
+      
+      \draw<3->[line,draw=tuelblue] (t0) .. node [midway,below] (dt05) {$\frac{\Delta t}{2}$} controls (0.125,-0.15) and (0.375,-0.15) .. (t05);
+      \draw<3->[line,draw=tuelblue] (t05) .. node [midway,below] (dt15) {$\frac{\Delta t}{2}$} controls (0.625,-0.15) and (0.875,-0.15) .. (t1);
+      \draw<3->[line,draw=tuelblue] (t1) .. node [midway,below] (dt05) {$\frac{\Delta t}{2}$} controls (1.125,-0.15) and (1.375,-0.15) .. (t15);
+      \draw<3->[line,draw=tuelblue] (t15) .. node [midway,below] (dt15) {$\frac{\Delta t}{2}$} controls (1.625,-0.15) and (1.875,-0.15) .. (t2);
+      
+      \node<2->[above=3pt,color=tuered]  at (t1) {$y_1$};
+      \node<3->[below=3pt,color=tuelblue]  at (t1) {$y_2$};
+%       \node[above=3pt,color=tuered]  at (t2) {$y_1$};
+%       \node[below=3pt,color=tuelblue]  at (t2) {$y_2$};
+            
+
+%       \draw[line] (t1) .. node [midway,above] (dt2) {$\Delta t$} controls (1.25,0.2) and (1.75,0.2) .. (t2);
+
+%       \draw[line,densely dashed] (0.1,0.05) -- node[midway,above] {``Marching''} (0.9,0.05);
+    \end{tikzpicture}\begin{itemize}
+  \item<2-> \color{tuered} RK4 with one large step of $h$: $ y_{i+1} = y_1 + ch^5 + \mathcal{O}{(h^6)} $
+  \item<3-> \color{tuelblue} RK4 with two steps of $\frac{1}{2}h$: $ y_{i+1} = y_2 + 2c(\frac{1}{2}h)^5 + \mathcal{O}{(h^6)} $
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Adaptive step size control: step doubling}
+\begin{itemize}
+  \item Estimation of truncation error by comparing $y_1$ and $y_2$:\\
+  $\Delta = y_2 - y_1$
+  \item If $\Delta$ too large, reduce step size for accuracy
+  \item If $\Delta$ too small, increase step size for efficiency.
+  \item Ignoring higher order terms and solving for $c$:
+  $ \Delta = \frac{15}{16}ch^5 \Rightarrow ch^5 = \frac{16}{15} \Delta \Rightarrow y_{i+1} = y_2 + \frac{\Delta}{15} + \mathcal{O}{(h^6)}$ \\ (local Richardson extrapolation)
+\end{itemize}
+  Note that when we specify a tolerance \emph{tol}, we can estimate the maximum allowable step size as:
+  $ h_\text{new} = \alpha h_\text{old} \abs{\frac{\text{tol}}{\Delta}}^{\frac{1}{5}}$ with $\alpha$ a safety factor (typically $\alpha = 0.9$).
+\end{frame}
+
+\begin{frame}
+  \frametitle{Adaptive step size control: embedded methods}
+  Use a special fourth and a fifth order Runge Kutta method to approximate $y_{i+1}$
+  \begin{itemize}
+    \item The fourth order method is special because we want to use the same positions for the evaluation for computational efficiency.
+    \item RK45 is the preferred method (minimum number of function evaluations) (this is built in Matlab as \lstinline$ode45$).
+  \end{itemize}
+\end{frame}
+
+\section{Implicit methods}
+\againframe<2>{contents}
+\subsection{Backward Euler}
+\begin{frame}
+  \frametitle{Problems with Euler's method: instability}
+  Consider the ODE:
+  \[
+    \frac{dy}{dx} = f(x,y(x)) \qquad \text{with} \qquad y(x=0) = y_0
+  \]
+  \vskip1em
+  \pause
+  First order approximation of derivative: $\frac{dy}{dx} = \frac{y_{i+1}-y_i}{\Delta x}$. 
+  \vskip1em
+  Where to evaluate the function $f$?
+  \vskip1em
+  \pause
+  \begin{enumerate}
+    \item Evaluation at $x_i$:  Explicit Euler method (forward Euler)
+    \item Evaluation at $x_{i+1}$: Implicit Euler method (backward Euler)
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Problems with Euler's method: instability -- forward Euler}
+  Explicit Euler method (forward Euler):
+    \begin{itemize}
+      \item Use values at $x_i$: \\ $\frac{y_{i+1}-y_i}{\Delta x} = f(x_i,y_i) \Rightarrow y_{i+1} = y_i + h f(x_i,y_i)$. 
+      \item This is an explicit equation for $y_{i+1}$ in terms of $y_i$.
+      \item It can give instabilities with large function values.
+    \end{itemize}
+    \pause \vskip1em
+    Consider the first order batch reactor: 
+    \[
+      \frac{dc}{dt} = -kc \Rightarrow c_{i+1} = c_i - k{\color{tuered}c_i}\Delta t \Rightarrow \frac{c_{i+1}}{c_i} = 1-k\Delta t
+    \]
+    \pause
+    It follows that unphysical results are obtained for $k\Delta t \geq 1$!! \vskip1em
+    \begin{block}{Stability requirement}
+      \centering $k \Delta t < 1$\\ (but probably accuracy requirements are more stringent here!)
+    \end{block}
+\end{frame}
+\begin{frame}
+  \frametitle{Problems with Euler's method: instability -- backward Euler}
+  Implicit Euler method (backward Euler):
+    \begin{itemize}
+      \item Use values at $x_{i+1}$: $\frac{y_{i+1}-y_i}{\Delta x} = f(x_{i+1},y_{i+1}) \Rightarrow y_{i+1} = y_i + h f(x_{i+1},y_{i+1})$. 
+      \item This is an implicit equation for $y_{i+1}$, because it also depends on terms of $y_{i+1}$.
+    \end{itemize}
+    \pause \vskip1em
+    Consider the first order batch reactor: 
+    \[
+      \frac{dc}{dt} = -kc \Rightarrow c_{i+1} = c_i - k{\color{tuered}c_{i+1}}\Delta t \Rightarrow \frac{c_{i+1}}{c_i} = \frac{1}{1+k\Delta t}
+    \]
+    \pause
+    This equation does never give unphysical results!\\
+    The implicit Euler method is \emph{unconditionally stable} \\
+    (but maybe not very accurate or efficient).
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Semi-implicit Euler method}
+  \footnotesize\selectfont
+  Usually $f$ is a non-linear function of $y$, so that linearization is required (recall Newton's method).
+  
+  \begin{align*}
+    \frac{dy}{dx} &= f(y) \Rightarrow y_{i+1} = y_i + h f (y_{i+1}) \quad \text{using} \quad f(y_{i+1}) = f(y_i) + \left.\frac{df}{dy}\right|_i(y_{i+1}-y_i) + \ldots \\
+  &\Rightarrow y_{i+1} =  y_i + h \left[ f(y_i) + \left.\frac{df}{dy}\right|_i (y_{i+1}-y_i) \right] \\ 
+  &\Rightarrow \left(1-h\left.\frac{df}{dy}\right|_i \right)y_{i+1} = \left(1-h\left.\frac{df}{dy}\right|_i\right)y_i + h f(y_i) 
+  \end{align*}
+  
+  \tikz{\node[emphblock,text width=\textwidth] {$\displaystyle \Rightarrow y_{i+1} = y_i + h \left( 1 - h \left.\frac{df}{dy}\right|_i \right)^{-1} f(y_i) $};}
+  \pause
+  For the case that $f(x,y(x))$ we could add the variable $x$ as an additional variable $y_{n+1}=x$. Or add one fully implicit Euler step (which avoids the computation of $\frac{\partial f}{\partial x}$): \vspace*{-1em}
+  \[
+    y_{i+1} = y_i + h f(x_{i+1},y_{i+1}) \Rightarrow y_{i+1} = y_i + h \left(1-h\left.\frac{df}{dy}\right|_i \right)^{-1} f(x_{i+1},y_i)
+  \]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Semi-implicit Euler method - example}
+  Second order reaction in a batch reactor:\\
+  $\frac{dc}{dt} = -kc^2$ with $c_0 = 1$~\si{\mole\per\cubic\meter}, $k = 1$ \si{\cubic\meter\per\mole\per\second}, $t_\text{end} = 2$ \si{\second} \\
+  Analytical solution: $c(t) = \frac{c_0}{1+kc_0t}$
+  \vskip1em \pause  
+  Define $f = -kc^2$, then $\frac{df}{dc} = -2kc \Rightarrow c_{i+1} = c_i - \frac{hkc_i^2}{1+2hkc_i}$.
+  \pause
+    \begin{longtable}{cccc}
+    \hline
+    $N$ & $\zeta$ & $\frac{\zeta^{}_\text{numerical}-\zeta_\text{analytical}}{\zeta_\text{analytical}}$ & $ r = \frac{\log\left(\frac{\epsilon_i}{\epsilon_{i-1}}\right)}{\log \left( \frac{N_{i-1}}{N_i}\right)} $ \\ \hline
+    20  & 0.654066262 & \num{1.89E-002} & ---\\
+    40  & 0.660462687 & \num{9.31E-003} & 1.02220\\
+    80  & 0.663589561 & \num{4.62E-003} & 1.01162\\
+    160 & 0.665134433 & \num{2.30E-003} & 1.00594\\
+    320 & 0.665902142 & \num{1.15E-003} & 1.00300\\
+    \hline
+  \end{longtable}
+\end{frame}
+
+\subsection{Implicit midpoint method}
+\begin{frame}
+  \frametitle{Second order implicit method: Implicit midpoint method}
+  \footnotesize\selectfont
+\begin{longtable}{c c}
+    \hline
+    \begin{minipage}{0.4\textwidth}\centering Implicit midpoint rule \\(second order)\end{minipage} & \begin{minipage}{0.4\textwidth}\centering Explicit midpoint rule  (modified~Euler~method)\end{minipage} \\ \hline
+    $y_{i+1} = y_i + hf\left(x_i + \frac{1}{2}h, {\color{tuered}\frac{1}{2}(y_i + y_{i+1})}\right)$  & $y_{i+1} = y_i + hf(x_i + \frac{1}{2}h, {\color{tuered}y_i + \frac{1}{2} h k_1})$ \\
+    \hline
+  \end{longtable}
+  in case $f(y)$ then:
+  \[
+    f\left(\frac{1}{2}(y_i+y_{i+1})\right) = f_i + \left.\frac{df}{dy}\right|_i \left( \frac{1}{2}(y_i + y_{i+1})-y_i\right) = f_i + \frac{1}{2}\left.\frac{df}{dy}\right|_i(y_{i+1}-y_i)
+  \]
+  \pause
+  Implicit midpoint rule reduces to: 
+  \begin{align*}
+    y_{i+1} &= y_i + h f_i + \frac{h}{2}\left.\frac{df}{dy}\right|_i(y_{i+1}-y_i)\\
+    &\Rightarrow \left(1 - \frac{h}{2} \left.\frac{df}{dy}\right|_i\right)y_{i+1} = \left(1 - \frac{h}{2} \left.\frac{df}{dy}\right|_i\right)y_i + h f_i
+  \end{align*}
+  \tikz{\node[emphblock,text width=0.7\textwidth] {
+    $ \displaystyle \Rightarrow y_{i+1} = y_i + h \left( 1 - \frac{h}{2} \left.\frac{df}{dy}\right|_i\right)^{-1} f_i$
+    };}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Implicit midpoint method --- example}
+  Second order reaction in a batch reactor: \\
+  $\frac{dc}{dt} = -kc^2$ with $c_0 = 1$~\si{\mole\per\cubic\meter}, $k = 1$ \si{\cubic\meter\per\mole\per\second}, $t_\text{end} = 2$ \si{\second} (Analytical solution: $c(t) = \frac{c_0}{1+kc_0t}$). 
+  \vskip1em \pause  
+  Define $f = -kc^2$, then $\frac{df}{dc} = -2kc$.\vskip1em \pause
+  Substitution: 
+  \begin{align*}
+    c_{i+1} &= c_i + h \left(1-\frac{h}{2} \cdot (-2kc_i)\right)^{-1} \cdot(-kc^2_i) \\
+	    &= c_i - \frac{hkc_i^2}{1+hkc_i} = \frac{c_i + h k c_i^2 - h k c_i^2 }{1+hkc_i} \Rightarrow c_{i+1} = \frac{c_i}{1+hkc_i}
+  \end{align*}
+  
+  \pause
+  You will find that this method is exact for all step sizes $h$ because of the quadratic source term!
+\end{frame}
+
+\begin{frame}
+  \frametitle{Implicit midpoint method --- example}
+  {\color{tuealert}Second order} reaction in a batch reactor:\\
+  $\frac{dc}{dt} = -kc^2$ with $c_0 = 1$~\si{\mole\per\cubic\meter}, $k = 1$ \si{\cubic\meter\per\mole\per\second}, $t_\text{end} = 2$ \si{\second}\\
+  Analytical solution: $c(t) = \frac{c_0}{1+kc_0t}$
+  \[
+    c_{i+1} = \frac{c_i}{1+hkc_i}
+  \]
+  \pause  
+  \begin{longtable}{cccc}
+    \hline
+    $N$ & $\zeta$ & $\frac{\zeta^{}_\text{numerical}-\zeta_\text{analytical}}{\zeta_\text{analytical}}$ & $ r = \frac{\log\left(\frac{\epsilon_i}{\epsilon_{i-1}}\right)}{\log \left( \frac{N_{i-1}}{N_i}\right)} $ \\ \hline
+    20  & 0.6666666667 & \num{1.665E-016} & ---\\
+    40  & 0.6666666667 & \num{0} & ---\\
+    80  & 0.6666666667 & \num{0} & ---\\
+    160 & 0.6666666667 & \num{0} & ---\\
+    320 & 0.6666666667 & \num{0} & ---\\
+    \hline
+  \end{longtable}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Implicit midpoint method --- example}
+  {\color{tuealert}Third order} reaction in a batch reactor\\
+  Analytical solution: $c(t) = \frac{c_0}{\sqrt{1+2kc_0^2t}}$
+  \[
+    c_{i+1} = c_i - \frac{hkc_i^3}{1+\frac{3}{2}hkc_i^2}
+  \]
+  \pause  
+  \begin{longtable}{cccc}
+    \hline
+    $N$ & $\zeta$ & $\frac{\zeta^{}_\text{numerical}-\zeta_\text{analytical}}{\zeta_\text{analytical}}$ & $ r = \frac{\log\left(\frac{\epsilon_i}{\epsilon_{i-1}}\right)}{\log \left( \frac{N_{i-1}}{N_i}\right)} $ \\ \hline
+    20  & 0.5526916174 & \num{1.71E-004} & ---\\
+    40  & 0.5527633731 & \num{4.17E-005} & 2.041\\
+    80  & 0.5527807304 & \num{1.03E-005} & 2.021\\
+    160 & 0.5527849965 & \num{2.55E-006} & 2.011\\
+    320 & 0.5527860538 & \num{6.34E-007} & 2.005\\
+    \hline
+  \end{longtable}
+\end{frame}
+
+\part{Boudary Value Problems and Systems of ODEs}
+\frame{\partpage}
+
+\section{Boundary value problems}
+\againframe<2>{contents}
+\subsection{Shooting method}
+\againframe{ivpbvp}
+\begin{frame}
+  \frametitle{Shooting method}
+  How to solve a BVP using the shooting method:\\ \vskip1em
+  \centering
+    \begin{tikzpicture}[scale=5]
+      \input{shooting.tex}
+    \end{tikzpicture}
+  \begin{itemize}
+    \item Define the system of ODEs
+    \item Provide an initial guess for the unknown boundary condition
+    \item Solve the system and compare the resulting boundary condition to the expected value
+    \item Adjust the guessed boundary value, and solve again. Repeat until convergence.
+    \begin{itemize}
+      \item Of course, you can subtract the expected value from the computed value at the boundary, and use a non-linear root finding method
+    \end{itemize}
+
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[t]
+  \frametitle{BVP: example in Excel}
+  \footnotesize\selectfont
+  \setlength{\mathindent}{12pt}
+  Consider a chemical reaction in a liquid film layer of thickness $\delta$:\\
+  $\displaystyle \mathcal{D}\frac{d^2c}{dx^2} = k_Rc $ with \begin{minipage}{0.7\textwidth}
+    \begin{align*}
+      c(x=0) &= C_{A,i,L} = 1 &\quad \text{(interface concentration)} \\
+      c(x=\delta) &= 0 &\quad \text{(bulk concentration)}\\
+    \end{align*}
+  \end{minipage}
+  Question: compute the concentration profile in the film layer.
+  \pause
+  \only<2>{
+    \begin{block}{Step 1: Define the system of ODEs}
+      This second-order ODE can be rewritten as a system of first-order ODEs, if we define the flux $q$ as:
+      \[
+  q = -\mathcal{D}\frac{dc}{dx}
+      \]
+      Now, we find:
+      \begin{align*}
+  \frac{dc}{dx} &= -\frac{1}{\mathcal{D}}q\\
+  \frac{dq}{dx} &= -k_Rc
+      \end{align*}
+    \end{block}
+  }
+  \only<3>{
+    \vskip1em
+  \begin{columns}
+    \column{0.5\textwidth}
+    \begin{block}{Step 2: Set the boundary conditions}
+      The boundary conditions for the concentrations at $x=0$ and $x=\delta$ are known.\\ \vskip1em The flux at the interface, however, is not known, and should be solved for.
+    \end{block}
+    \column{0.5\textwidth}
+    \centering\tikz\node [emphblock,cloud, draw,cloud puffs=11,minimum width=\columnwidth] 
+    {
+      \begin{minipage}{2cm}
+        $\displaystyle \frac{dc}{dx} = -\frac{1}{\mathcal{D}}q$ \\ \vskip1ex
+        $\displaystyle \frac{dq}{dx} = -k_Rc$
+      \end{minipage}
+    };
+  \end{columns}
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{BVP: example in Excel}  
+  \scriptsize\selectfont
+  \rowcolors[]{80}{white}{white}\renewcommand\arraystretch{1.1}
+  
+  Solving the two first-order ODEs in Excel. First, the cells with constants:
+  \begin{columns}
+    \column{0.5\textwidth}
+    \begin{longtable}{|>{\columncolor{gray!40}}R{0.3cm}*{1}{|L{0.8cm}}*{1}{|L{1.2cm}}*{1}{|L{1.3cm}}|}
+      \hline
+      \rowcolor{gray!40}& \centering A  & \centering B& \centering C \tabularnewline
+      \hline
+      1 & CAiL& 1 & mol/m3  \\
+      \hline
+      2 & D \hfill & 1e--8 & m2/s \\
+      \hline
+      3 & kR \hfill& 10& 1/s \\
+      \hline
+      4 & delta\hfill & 1e--4 & m \\
+      \hline
+      5 & N \hfill& 100& \\
+      \hline
+      6 & dx \hfill& =B4/B5 &  \\
+      \hline
+    \end{longtable}
+    \column{0.5\textwidth}
+    \centering\tikz\node [emphblock,cloud, draw,cloud puffs=11,minimum width=\columnwidth] 
+    {
+      \begin{minipage}{2cm}
+        $\displaystyle \frac{dc}{dx} = -\frac{1}{\mathcal{D}}q$ \\ \vskip1ex
+        $\displaystyle \frac{dq}{dx} = -k_Rc$
+      \end{minipage}
+    };
+  \end{columns}
+  \pause \vskip1em
+  Now, we program the forward Euler (explicit) schemes for $c$ and $q$ below: \\ \setlength{\LTleft}{-0.5cm}
+  \begin{longtable}{|>{\columncolor{gray!40}}R{0.3cm}*{1}{|L{1.8cm}}*{1}{|L{4.05cm}}*{1}{|L{3.7cm}}|}
+    \hline
+    \rowcolor{gray!40}& \centering A  & \centering B& \centering C \tabularnewline
+    \hline
+    10 & x \hfill & c\hfill & q  \hfill\\
+    \hline
+    11 & 0     & =B1 & \color{tuered} 10 \\
+    \hline
+    12 & =A11+\$B\$6  & =B11+\$B\$6*(--1/\$B\$2*C11) & =C11+\$B\$6*(-\$B\$3*B11)\\
+    \hline
+    13 & =A12+\$B\$6  & =B12+\$B\$6*(--1/\$B\$2*C12) & =C12+\$B\$6*(-\$B\$3*B12)\\
+    \hline
+    $\dots$ & $\dots$ & $\dots$& $\dots$\\
+    \hline
+    111 & =A110+\$B\$6 & =B110+\$B\$6*(--1/\$B\$2*C110) & =C110+\$B\$6*(-\$B\$3*B110) \\
+    \hline
+  \end{longtable}
+\end{frame}
+
+\begin{frame}
+  \frametitle{BVP: example in Excel}  
+  \begin{itemize}
+    \item We now have profiles for $c$ and $q$ as a function of position $x$.
+    \item The concentration $c(x=\delta)$ depends (eventually) on the boundary condition at the interface $q(x=0)$
+    \item We can use the solver to change $q(x=0)$ such that the concentration at the bulk meets our requirement: $c(x=\delta)=0$
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{BVP: example in Matlab}
+  We first program the system of ODEs in a separate function:
+  \begin{align*}
+    \frac{dc}{dx} &= -\frac{1}{\mathcal{D}}q\\
+    \frac{dq}{dx} &= -k_Rc
+  \end{align*}
+  \begin{lstlisting}
+function [dxdt] = BVPODE(t,x,ps)
+dxdt(1)=-1/ps.D*x(2);
+dxdt(2)=-ps.kR*x(1);
+dxdt=dxdt';
+return
+  \end{lstlisting}
+  \pause\vskip1em
+  Note that we pass a variable (type: struct) that contains required parameters: \lstinline$ps$.
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{BVP: example in Matlab}
+  The ODE function is solved via ode45, after setting a number of initial and boundary conditions:
+  \begin{lstlisting}
+function f = RunBVP(bcq,ps)
+[x,cq] = ode45(@BVPODE,[0 ps.delta],[1 bcq], [], ps);
+f = cq(end,1) - 0;
+plotyy(x,cq(:,1),x,cq(:,2));
+return;
+  \end{lstlisting}
+  \pause\vskip1em
+  Note the following:
+  \begin{itemize}
+    \item We use the interval $0\leq x \leq \delta$
+    \item Boundary conditions are given as: $c(x=0)=1$ and $q(x=0)=$ \lstinline$bcq$, which is given as an argument to the function (i.e. changable from 'outside'!)
+    \item The function returns \lstinline$f$, the difference between the computed and desired concentration at $x=\delta$.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{BVP: example in Matlab}
+  Finally, we should solve the system so that we obtain the right boundary condition $q=$ \lstinline$bcq$ such that $c(x=\delta)=0$. We can use the built-in function \lstinline$fzero$ to do this
+  \begin{lstlisting}
+% Parameter definition
+ps.D=1e-8;
+ps.kR=10;
+ps.delta=1e-4;
+
+% Solve for flux boundary condition (initial guess: 0)
+opt = optimset('Display','iter');
+flux = fzero(@RunBVP,0,opt,ps);
+  \end{lstlisting}
+%   \vskip1em
+%   \tikz \node[emphblock,text width=\textwidth] {Compare the analytical solution: \\
+%   $\displaystyle q = k_L E_A C_{A,i,L} \quad$ with \begin{minipage}{0.7\textwidth}
+%       \begin{align*}
+%   E_A &= \frac{\mathit{Ha}}{\tanh \mathit{Ha}} &\quad \text{(Activation energy)} \\
+%   \mathit{Ha} &= \frac{\sqrt{k_R\mathcal{D}}}{k_L} &\quad \text{(Hatta number)} \\
+%   k_L &= \frac{\mathcal{D}}{\delta} &\quad \text{(mass transfer coefficient)}
+%       \end{align*}
+%     \end{minipage}
+% };
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{BVP example: analytical solution}
+  Compare with the analytical solution: \\ \vskip1em
+    \tikz \node[emphblock,text width=\textwidth] {
+  $\displaystyle q = k_L E_A C_{A,i,L} \quad$ with \\ 
+  \begin{minipage}{0.6\textwidth}
+      \begin{align*}
+  E_A &= \frac{\mathit{Ha}}{\tanh \mathit{Ha}} &\quad \text{(Enhancement factor)} \\
+  \mathit{Ha} &= \frac{\sqrt{k_R\mathcal{D}}}{k_L} &\quad \text{(Hatta number)} \\ 
+  k_L &= \frac{\mathcal{D}}{\delta} &\quad \text{(mass transfer coefficient)}
+      \end{align*}
+    \end{minipage}
+};
+\end{frame}
+
+\section{Systems of ODEs}
+\againframe<2>{contents}
+\subsection{Solution methods for systems of ODEs}
+\begin{frame}
+  \frametitle{Systems of ODEs}
+  A system of ODEs is specified using vector notation:
+  \[
+    \frac{d\vec{y}}{dx} = \vec{f}(x,\vec{y}(x))
+  \]
+  for
+  \begin{multline*}
+    \frac{dy_1}{dx} = f_1(x,y_1(x),y_2(x)) \quad \text{or} \quad f_1(x,y_1,y_2)\\
+    \frac{dy_2}{dx} = f_2(x,y_1(x),y_2(x)) \quad \text{or} \quad f_2(x,y_1,y_2)\\
+  \end{multline*}
+  \pause
+  \tikz{\node[emphblock,text width=\textwidth] {The solution techniques discussed before can also be used to solve systems of equations.};}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Systems of ODEs: Explicit methods}
+  \begin{block}{Forward Euler method}
+    $ \displaystyle  \vec{y}_{i+1} = \vec{y}_i + h \vec{f}(x_i,\vec{y}_i) $
+  \end{block}
+  \begin{block}{Improved Euler method (classical RK2)}
+    $\displaystyle \vec{y}_{i+1} = \vec{y}_i + \frac{h}{2}(\vec{k}_1+\vec{k}_2)$
+    \quad using \quad \begin{minipage}{0.4\textwidth}
+      $\displaystyle \vec{k}_1 = \vec{f}(x_i,\vec{y}_i)$\\
+      $\displaystyle \vec{k}_2 = \vec{f}(x_i+h,\vec{y}_i+h\vec{k}_1)$
+    \end{minipage}
+  \end{block}  
+  \begin{block}{Modified Euler method (midpoint rule)}
+    $\displaystyle \vec{y}_{i+1} = \vec{y}_i + h\vec{k}_2$
+    \quad using \quad \begin{minipage}{0.4\textwidth}
+      $\displaystyle \vec{k}_1 = \vec{f}(x_i,\vec{y}_i)$\\
+      $\displaystyle \vec{k}_2 = \vec{f}(x_i+\frac{h}{2},\vec{y}_i+\frac{h}{2}\vec{k}_1)$
+    \end{minipage}
+  \end{block}   
+\end{frame}
+
+\begin{frame}
+  \frametitle{Systems of ODEs: Explicit methods}
+  \begin{block}{Classical fourth order Runge-Kutta method (RK4)}
+    $\displaystyle \vec{y}_{i+1} = \vec{y}_i + h\left(\frac{\vec{k}_1}{6}+\frac{1}{3}\left( \vec{k}_2 + \vec{k}_3\right) + \frac{\vec{k}_4}{6} \right)$
+    \\ \vskip2em
+\quad using \quad \begin{minipage}{0.4\textwidth}
+      $\displaystyle \vec{k}_1 = \vec{f}(x_i,\vec{y}_i)$\\ \vskip1ex
+      $\displaystyle \vec{k}_2 = \vec{f}(x_i+\frac{h}{2},\vec{y}_i+\frac{h}{2}\vec{k}_1)$ \\ \vskip1ex
+      $\displaystyle \vec{k}_3 = \vec{f}(x_i+\frac{h}{2},\vec{y}_i+\frac{h}{2}\vec{k}_2)$ \\ \vskip1ex
+      $\displaystyle \vec{k}_4 = \vec{f}(x_i+h,\vec{y}_i+h\vec{k}_3)$ \\ \vskip1ex
+    \end{minipage}
+%     \end{center}
+  \end{block}  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Systems of ODEs: Implicit methods}
+  \begin{block}{Backward Euler method}
+    $ \displaystyle  \vec{y}_{i+1} = \vec{y}_i + h \left(1 - h\left. \frac{d\vec{f}}{d\vec{y}}\right|_i \right)^{-1}\vec{f}(\vec{y}_i)$
+  \end{block}
+  \begin{block}{Implicit midpoint method}
+    $ \displaystyle  \vec{y}_{i+1} = \vec{y}_i + h \left(1 - \frac{h}{2}\left. \frac{d\vec{f}}{d\vec{y}}\right|_i \right)^{-1} \vec{f}(\vec{y}_i)$
+  \end{block}  
+\end{frame}
+
+\subsection{Stiff systems of ODEs}
+\begin{frame}
+  \frametitle{Stiff systems of ODEs}
+  A system of ODEs can be stiff and require a different solution method. \pause
+  For example:
+  \[
+    \frac{dc_1}{dt} = 998c_1 + 1998c_2 \qquad 
+    \frac{dc_2}{dt} = -999c_1 -1999c_2
+  \]
+  with boundary conditions $c_1(t=0)=1$ and $c_2(t=0)=0$. \\
+  The analytical solution is: 
+  \[
+    c_1 = 2e^{-t}-e^{-1000t} \qquad
+    c_2 =-e^{-t}+e^{-1000t}
+  \]
+  For the explicit method we require $\Delta t<10^{-3}$ despite the fact that the term is completely negligible, but essential to keep stability. \pause
+  \tikz{\node[emphblock,text width=\textwidth] {The ``disease'' of stiff equations: we need to follow the solution on the shortest length scale to maintain stability of the integration, although accuracy requirements would allow a much larger time step.};}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Demonstration with example}
+  Forward Euler (explicit) 
+%   \vskip2em
+  \begin{align*}
+ \frac{c_{1,i+1} - c_{1,i}}{dt} &= 998c_{1,i}+1998c_{2,i}\\
+  \frac{c_{2,i+1} - c_{2,i}}{dt} &= -999c_{1,i}-1999c_{2,i}
+  \end{align*}
+    \qquad $\Rightarrow $ 
+    \begin{minipage}{0.7\textwidth}
+      $c_{1,i+1} = \left(1+998\Delta t\right)c_{1,i} + 1998\Delta t c_{2,i}$\\
+      $c_{2,i+1} = -999\Delta t c_{1,i} + \left( 1- 1999\Delta t\right) c_{2,i}$
+  \end{minipage}\vskip1em
+  \phantom{
+  $A \vec{c}_{i+1} = \vec{c}_i$ with 
+  $A = \begin{pmatrix}
+    1-998\Delta t & -1998\Delta t \\
+    999\Delta t & 1+1999\Delta t
+  \end{pmatrix}$ 
+  and $\vec{b} = \begin{pmatrix}
+             c_{1,i}\\
+             c_{2,i}\\
+           \end{pmatrix}$}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Demonstration with example}
+ \rowcolors[]{20}{white}{white}
+  Backward Euler (implicit)
+%   \vskip1em
+  \begin{align*}
+ \frac{dc_{1,i+1} - c_{1,i+1}}{dt} &= 998c_{1,i+1}+1998c_{2,i+1}\\
+  \frac{dc_{2,i+1} - c_{2,i+1}}{dt} &= -999c_{1,i+1}-1999c_{2,i+1}
+  \end{align*}
+    \qquad $\Rightarrow $ 
+    \begin{minipage}{0.7\textwidth}
+      $\left(1-998\Delta t\right)c_{1,i+1} - 1998\Delta t c_{2,i} = c_{1,i}$\\
+      $999\Delta t c_{1,i+1}+\left(1+999\Delta t\right)c_{2,i+1} = c_{2,i}$
+  \end{minipage} \vskip1em \pause
+  $A \vec{c}_{i+1} = \vec{c}_i$ with 
+  $A = \begin{pmatrix}
+    1-998\Delta t & -1998\Delta t \\
+    999\Delta t & 1+1999\Delta t
+  \end{pmatrix}$ 
+  and $\vec{b} = \begin{pmatrix}
+             c_{1,i}\\
+             c_{2,i}\\
+           \end{pmatrix}$
+\end{frame}
+
+\begin{frame}
+  \frametitle{Demonstration with example}
+ \rowcolors[]{20}{white}{white}
+  Backward Euler (implicit)
+%   \vskip1em
+  $A \vec{c}_{i+1} = \vec{c}_i$ with 
+  $A = \begin{pmatrix}
+    1-998\Delta t & -1998\Delta t \\
+    999\Delta t & 1+1999\Delta t
+  \end{pmatrix}$ 
+  \quad and \quad $\vec{b} = \begin{pmatrix}
+             c_{1,i}\\
+             c_{2,i}\\
+           \end{pmatrix}$
+\vskip1em \pause
+Cramers rule:\\
+$c_{1,i+1} = \dfrac{\begin{vmatrix}
+                                   c_{1,i} & -1998\Delta t \\
+                                   c_{2,i} & 1+1999\Delta t
+                                 \end{vmatrix}
+}{\det{A}} = \frac{\left(1+1999\Delta t\right)c_{1,i}+1998 \Delta t c_{2,i}}{\left( 1-998\Delta t\right)\left( 1+1999\Delta t\right) + 1998\cdot 999 \Delta t^2}$\\
+
+$c_{2,i+1} = \dfrac{\begin{vmatrix}
+                                   1-998\Delta t & c_{1,i}\\
+                                   999\Delta t & c_{2,i}
+                                 \end{vmatrix}
+}{\det{A}} = \frac{-999\Delta t c_{1,i} + \left(1-998\Delta t\right)c_{2,i}}{\left(1-998\Delta t\right)\left( 1+1999\Delta t\right) + 1998\cdot 999 \Delta t^2}$\\ \vskip1em 
+% \tikz{\node[emphblock,text width=\textwidth] {
+Forward Euler: $\Delta t \leq 0.001$ for stability\\
+Backward Euler: always stable, even for $\Delta t > 100$ (but then not very accurate!)
+% };}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Demonstration with example}
+  \tikz{\node[emphblock,text width=\textwidth] {
+  Cure for stiff problems: use implicit methods!
+To find out whether your system is stiff: check whether one of the eigenvalues have an imaginary part};}
+\end{frame}
+
+\section{Solving systems of ODEs in Matlab}
+\subsection*{Solving ODEs in Matlab}
+\begin{frame}
+  \frametitle{Solving systems of ODEs in Matlab}
+  Matlab provides convenient procedures to solve (systems of) ODEs automatically.
+  \vskip1em
+  The procedure is as follows:
+  \begin{enumerate}
+    \item Create a function that specifies the ODEs. Specifically, this function returns the $\frac{d\vec{y}}{dx}$ vector.
+    \item Initialise solver variables and settings (e.g. step size, initial conditions, tolerance), in a separate script
+    \item Call the ODE solver function, using a \emph{function handle} to the ODE function described in point 1.
+    \begin{itemize}
+      \item The ODE solver will return the vector for the independent variable, and a solution vector (matrix for systems of ODEs).
+    \end{itemize}
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Solving systems of ODEs in Matlab: example}
+  We solve the system: $\displaystyle \frac{dx_1}{dt} = -x_1 - x_2, \quad  \frac{dx_2}{dt} = x_1 - 2x_2 $
+  \begin{block}{Create an ODE function}
+    \begin{lstlisting}[backgroundcolor=]
+function [dxdt] = myODEFunction(t,x)
+dxdt(1) = -x(1) - x(2);
+dxdt(2) =  x(1) - 2*x(2);
+dxdt=dxdt'; % Transpose to column vector
+return
+    \end{lstlisting}
+  \end{block}
+  \pause
+  \begin{block}{Create a solution script}
+    \begin{lstlisting}[backgroundcolor=]
+x_init = [0 1];         % Initial conditions
+tspan = [0 10];         % Time span
+options = odeset('RelTol',1e-4,'AbsTol',[1e-4 1e-4]);
+[t,x] = ode45(@myODEfunction,tspan,x_init,options);
+    \end{lstlisting}
+  \end{block}
+\vfill
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Solving systems of ODEs in Matlab: example}
+  Plot the solution:
+  \begin{lstlisting}
+plot(t,x(:,1),'r-x',t,x(:,2),'b-o')
+  \end{lstlisting}
+  \pause
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{axis}[%every axis/.append style={font=\footnotesize},
+        width=\textwidth, height=7cm,     % size of the image
+        grid = major,grid style={dashed, gray!30},
+        axis background/.style={fill=white},
+        axis x line=middle,axis y line=middle,ylabel=$x$,xlabel=$t$]
+
+        \addplot[graph,mark=x] table []{ODE_matlabsolve1.dat};  \addlegendentry{$x_1$}
+        \addplot[graph,mark=o,draw=tueblue,mark options={fill=white}] table []{ODE_matlabsolve2.dat};  \addlegendentry{$x_2$}
+      \end{axis}
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Solving systems of ODEs in Matlab: example}
+  A few notes on working with \lstinline$ode45$ and other solvers. If we want to give additional arguments (e.g. \lstinline$a$, \lstinline$b$ and \lstinline$c$) to our ODE function, we can list them in the function line:
+  \begin{lstlisting}
+function [dxdt] = myODE(t,x,a,b,c)
+  \end{lstlisting}
+  The additional arguments can now be set in the solver script by \emph{adding them after the options}:
+  \begin{lstlisting}
+[t,x] = ode45(@myODE,tspan,x_0,options,a,b,c);
+    \end{lstlisting}
+  \pause
+  \begin{itemize}
+    \item Of course, in the solver script, the variables do not need to be called \lstinline$a$, \lstinline$b$ and \lstinline$c$:
+      \begin{lstlisting}
+[t,x] = ode45(@myODE,tspan,x_0,options,k1,phi,V);
+    \end{lstlisting}
+    \item These variables may be of any type (vectors, matrix, struct). Especially a struct is useful to carry many values in 1 variable.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Solving systems of ODEs in Matlab: example}
+  You may have noticed that the step size in $t$ varied. This is because we have given the begin and end times of our time span:
+  \begin{lstlisting}
+tspan = [0 10];
+  \end{lstlisting}
+  \pause
+  You can also solve at specific steps, by supplying all steps explicitly, e.g.:
+  \begin{lstlisting}
+tspan = linspace(0,10,101); 
+    \end{lstlisting}
+  This example provides 101 explicit time steps between 0 and 10 seconds.
+  \vskip1em
+  Note that you may affect the efficiency and accuracy of the solver algorithm by doing this!
+  \vfill
+\end{frame}
+
+\section{Conclusion}
+\againframe<2>{contents}
+\begin{frame}
+  \frametitle{Other methods}
+  Other explicit methods:
+  \begin{itemize}
+    \item Burlisch-Stoer method (Richardson extrapolation + modified midpoint method)
+  \end{itemize}
+  \vskip1em
+  Other implicit methods:
+  \begin{itemize}
+    \item Rosenbrock methods (higher order implicit Runge-Kutta methods)
+    \item Predictor-corrector methods
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Summary}
+  \begin{itemize}
+    \item Several solution methods and their derivation were discussed:
+    \begin{itemize}
+      \item Explicit solution methods: Euler, Improved Euler, Midpoint method, RK45
+      \item Implicit methods: Implicit Euler and Implicit midpoint method
+      \item A few examples of their spreadsheet implementation were shown
+    \end{itemize}
+    \item We have paid attention to accuracy and instability, rate of convergence and step size
+    \item Systems of ODEs can be solved by the same algorithms. Stiff problems should be treated with care.
+    \item An example of solving ODEs with Matlab was demonstrated.
+  \end{itemize}
+\end{frame}
+
+\end{document}
+
+
+% References
+% http://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-00sc-introduction-to-computer-science-and-programming-spring-2011/unit-1/lecture-1-introduction-to-6.00/
+% http://www.greenteapress.com/thinkpython/html/thinkpython002.html
+% https://www.youtube.com/channel/UCLMQ21H2ad95faYG3yGCwYA
+%http://stackoverflow.com/questions/4227145/in-matlab-are-variables-really-double-precision-by-default
+%http://www.exploringbinary.com/why-0-point-1-does-not-exist-in-floating-point/
+

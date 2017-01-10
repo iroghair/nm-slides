@@ -22,8 +22,9 @@ ylabel('Measured variable');
 matlab2tikz('filename','../tikzplots/scatter1.tikz','width','0.8\textwidth');
 
 % Wite an Excel data file
-xldata=[x y];
+xldata=[x;y]';
 xlswrite('myDataSet.xls', xldata);
+save('myDataSet.txt','xldata','-ascii')
 
 %% Fitting a model
 X(:,1) = ones(size(x));

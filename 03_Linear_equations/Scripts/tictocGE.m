@@ -4,7 +4,7 @@ for n = 1:length(s)
     A = rand(s(n));
     b = rand(s(n),1);
     tic;
-    x = GaussianEliminate_v3(A,b);
+    x = GaussianEliminate(A,b);
     t_GE(n) = toc;
 end
 loglog(s,t_GE);

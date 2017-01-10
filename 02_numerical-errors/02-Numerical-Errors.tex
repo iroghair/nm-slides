@@ -1,4 +1,4 @@
-\documentclass[11pt,table,final,fleqn,xcolor={usenames,dvipsnames}]{beamer}
+\documentclass[11pt,table,final,fleqn,xcolor={usenames,dvipsnames},handout]{beamer}
 \usetheme[]{Frankfurt}
 \usecolortheme{crane}
 
@@ -21,35 +21,19 @@
 %\pgfpagesuselayout{4 on 1}[border shrink=5mm]
 	
 % PRESENTATION SPECIFICS
-\title{Numerical errors in computer simulations}
+\title{Errors in computer simulations}
 
-\author[I.~Roghair]{\underline{Martin van Sint Annaland}, Ivo~Roghair}
+\author[I.~Roghair]{\underline{Ivo~Roghair}, Martin van Sint Annaland}
 
 \institute[SPI]{{Chemical Process Intensification,\\
   Eindhoven University of Technology}}
 
-\date{November 12, 2015}
+\date
 
 
 % BEGIN PRESENTATION
 \begin{document}
-\lstset{language=Matlab,%
-    %basicstyle=\color{red},
-    basicstyle=\footnotesize\ttfamily,
-    breaklines=true,%
-    morekeywords={matlab2tikz},
-    keywordstyle=\color{blue},%
-    morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
-    identifierstyle=\color{black},%
-    stringstyle=\color{mylilas},
-    commentstyle=\color{mygreen},%
-    showstringspaces=false,%without this there will be a symbol in the places where there is a space
-    numbers=none,%
-%     numberstyle={\tiny \color{black}},% size of the numbers
-%     numbersep=-2pt, % this defines how far the numbers are from the text
-%     emph=[1]{for,end,break},emphstyle=[1]\color{red}, %some words to emphasise
-    emph=[2]{int,simplify,diff,log,atan,syms}, emphstyle=[2]{\color{blue}}
-}
+\input{../lstsettings.tex}
 
 \part{Numerical errors in computer simulations}
 \frame[plain]{
@@ -58,7 +42,7 @@
 
 \section{Introduction}
 \subsection*{General}
-\begin{frame}[label=contents,nonavbar]
+\begin{frame}[label=contents]
   \frametitle{Today's outline}
   \mode<beamer>{
     \only<1>{\tableofcontents}
@@ -66,6 +50,24 @@
   \only<2>{\tableofcontents[currentsection,currentsubsection]}
 \end{frame}
 
+% \begin{frame}
+%  \frametitle{Errors in computer programs}
+%   In the previous lecture, we have identified three error categories in programming:
+%   \begin{description}
+%    \item[Syntax errors] You did not obey the language rules. These errors prevent running or compilation of the program.
+%    \item[Runtime errors] Something goes wrong during the execution of the program resulting in an error message (problem with input, division by zero, loading of non-existent files, memory problems, etc.)
+%    \item[Semantic errors] The program does not do what you expect, but does what have told it to do.
+%   \end{description}
+%   \pause
+%   This is only a subset of all errors that may be encountered:
+%   \begin{description}
+%    \item[Mathematical model errors] The equations do not describe the physical system
+%    \item[Implementation errors] Includes the errors given above
+%    \item[Numerical errors] Roundoff, truncation and break errors
+%   \end{description}
+% \end{frame}
+
+\subsection*{Numerical errors}
 \frame{
   \frametitle{Example 1}
   Start your spreadsheet program (Excel, ...) \vskip2em \pause 
@@ -77,8 +79,10 @@
         A1     & \texttt{0.1} \pause \\
         A2     & \texttt{=(A1*10)-0.9} \pause\\
         A3     & \texttt{=(A2*10)-0.9} \pause\\
-        A4-A30 & \texttt{=(A?*10)-0.9}
-    \end{tabular}
+        A4     & \texttt{=(A3*10)-0.9}
+    \end{tabular} \\
+    \vskip2em
+    (repeat until A30)
     \pause \vskip1em What's happening? \pause
 
     \column{0.5\textwidth}
@@ -86,25 +90,126 @@
     \begin{tabular}{l!{\vrule}c}
         Cell   & Value  \\ \hline
         A1     & \texttt{2} \pause \\
-        A2-A30 & \texttt{=(A?*10)-18}\\
-    \end{tabular} 
-    \pause \vskip1em Give this a thought!
+        A2     & \texttt{=(A1*10)-18}\\
+        A3     & \texttt{=(A2*10)-18}\\
+        A4     & \texttt{=(A3*10)-18}\\
+    \end{tabular}  \\ 
+    \vskip2em
+    (repeat until A30)
   \end{columns}
 }
 
-\frame{
-  \frametitle{General}
+\begin{frame}<1-2>[label=errors]
+  \frametitle{Errors in computer simulations}
   In this course we will outline different numerical errors that may appear in computer simulations, and how these errors can affect the simulation results.
   \vskip2em
   \pause
   \begin{itemize}[<+->]
   \item Errors in the mathematical model (physics) % Wordt hier niet behandeld, zie FTV/CRE 
+  \item Errors in the program (implementation)     % Is behandeld in eerste deel college (bij gebruik debugger)
   \item Errors in the entered parameters           % Wordt hier niet behandeld, zie practicum PT
-  \item Errors in the program (implementation)% Is behandeld in eerste deel college (bij gebruik debugger)
   \item\alert<7>{ Roundoff- and truncation errors} % Wordt hier behandeld
   \item\alert<7>{ Break errors}                           % Wordt hier behandeld
   \end{itemize}
-}
+\end{frame}
+
+\begin{frame}<1-3>[label=verification,fragile]
+ \frametitle{Verification and validation}
+  \scriptsize\selectfont
+  \begin{columns}
+    \column{0.6\textwidth}
+    \uncover<3->{\begin{block}{Verification}
+    Verification is the process of mathematically and computationally assuring that the model computes what you have entered.    
+    \end{block}
+    }
+    \uncover<7->{
+    \begin{block}{Validation}
+      Validation is the process of determining the degree to which a model is an accurate representation of the real world from the perspective of the intended uses of the model
+    \end{block}
+    }
+
+  \column{0.4\textwidth}
+    \begin{tikzpicture}[block/.style={rectangle,minimum size=3mm,text badly centered,drop shadow,
+					thick,rounded corners,draw=maincolor,top color=maincolor!35,bottom color=maincolor!20,
+					font=\sffamily\scriptsize},>=stealth,node distance=0.75cm]
+	\node[block] (p) at (0,0) {Problem};
+	\uncover<2->{\node[below of=p] (p1) {};
+	\node[block, below of=p1] (mm) {Mathematical Model};
+	\node[below of=mm] (mm1) {};}
+	\uncover<4->{\node[block, below of=mm1] (cm) {Computational Model};
+	\node[below of=cm] (cm1) {};}
+	\uncover<6->{\node[block, below of=cm1] (r) {Results};}
+	
+	\uncover<3->{\node[block, left of=p1,node distance=2cm] (v1) {Verification};}
+	\uncover<5->{\node[block, left of=mm1,node distance=2cm] (v2) {Verification};}
+	\uncover<7->{\node[block, left of=cm1,node distance=2cm] (v3) {Validation};}
+	
+	\uncover<2->{\draw[->] (p) -> (mm);}
+	\uncover<4->{\draw[->] (mm) -> (cm);}
+	\uncover<6->{\draw[->] (cm) -> (r);}
+	
+	\uncover<3->{\draw[->] (v1) -> (p1);}
+	\uncover<5->{\draw[->] (v2) -> (mm1);}
+	\uncover<7->{\draw[->] (v3) -> (cm1);}
+    \end{tikzpicture}
+  \end{columns}
+\end{frame}
+% 
+
+\begin{frame}
+  \frametitle{Verification of the physical model}
+  \scriptsize\selectfont
+  \begin{columns}
+    \column{0.5\textwidth}
+    \begin{center}
+      \mode<beamer>{
+	\includegraphics<1>[width=0.8\columnwidth]{ptolemy1-1}
+	\includegraphics<2>[width=0.8\columnwidth]{ptolemy1-2}
+	\includegraphics<3>[width=0.8\columnwidth]{ptolemy1-3}
+	\includegraphics<4>[width=0.8\columnwidth]{ptolemy1-4}
+	\includegraphics<5>[width=0.8\columnwidth]{ptolemy1-5}
+	\includegraphics<6>[width=0.8\columnwidth]{ptolemy1-6}
+      }
+      \includegraphics<7->[width=0.8\columnwidth]{ptolemy1-7}
+    \end{center}
+    \column{0.5\textwidth}
+    \begin{center}
+      \mode<beamer>{
+	\includegraphics<7>[width=0.8\columnwidth]{ptolemy2-0}
+	\includegraphics<8>[width=0.8\columnwidth]{ptolemy2-1}
+	\includegraphics<9>[width=0.8\columnwidth]{ptolemy2-2}
+	\includegraphics<10>[width=0.8\columnwidth]{ptolemy2-3}
+	\includegraphics<11>[width=0.8\columnwidth]{ptolemy2-4}
+	\includegraphics<12>[width=0.8\columnwidth]{ptolemy2-5}
+	\includegraphics<13>[width=0.8\columnwidth]{ptolemy2-6}
+      }
+      \includegraphics<14>[width=0.8\columnwidth]{ptolemy2-7}
+    \end{center}
+  \end{columns}
+  \begin{itemize}
+    \item<7-> The perceived orbit of Mars from Earth shows a zig-zag (in contrast to the Sun, Mercury, Venus)
+    \item<14> Even though they were not 'right', Earth-centered models (Ptolemy) were still valid
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Be aware of your uncertainties}
+  \vfill
+  \begin{block}{Aleatory uncertainty}
+    Uncertainty that arises due to inherent randomness of the system, features that are too complex to measure and take into account
+  \end{block}
+  \vskip1em
+  \begin{block}{Epistemic uncertainty}
+      Uncertainty that arises due to lack of knowledge of the system, but could in principle be known
+  \end{block}
+  \vfill
+\end{frame}
+
+\againframe<2-3>{errors}
+\againframe<3-5>{verification}
+\againframe<3-4>{errors}
+\againframe<5-7>{verification}
+\againframe<4->{errors}
 
 \subsection*{Significant digits}
 \frame{ 
@@ -768,13 +873,13 @@ end
   \begin{lstlisting}
 >> syms x
 >> f = (x - 1)*(x + 1)*(x^2 + 1) + 1
- 
+(*@ \pause @*) 
 f =
  
 (x^2 + 1)*(x - 1)*(x + 1) + 1
- 
+(*@ \pause @*) 
 >> f2 = simplify(f)
- 
+(*@ \pause @*) 
 f2 =
  
 x^4
@@ -789,15 +894,15 @@ x^4
 >> syms x
 >> f = 1/(x^3+1);
 >> my_f_int = int(f)
- 
+(*@ \pause @*) 
 my_f_int = log(x + 1)/3 - log((x - 1/2)^2 + 3/4)/6 + (3^(1/2)*atan((2*3^(1/2)*(x - 1/2))/3))/3
-
+(*@ \pause @*)
 >> my_f_diff = diff(my_f_int)
- 
+ (*@ \pause @*)
 my_f_diff = 1/(3*(x + 1)) + 2/(3*((4*(x - 1/2)^2)/3 + 1)) - (2*x - 1)/(6*((x - 1/2)^2 + 3/4))
- 
+(*@ \pause @*) 
 >> simplify(my_f_diff)
- 
+(*@ \pause @*) 
 ans = 1/(x^3 + 1)
     \end{lstlisting}
 \end{frame}

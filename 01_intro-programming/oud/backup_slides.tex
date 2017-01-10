@@ -1,0 +1,58 @@
+
+\begin{frame}[fragile]
+  \frametitle{Algorithm design}
+  \begin{enumerate}
+    \colorize<1> \item \emph{Problem analysis}\\ Contextual understanding of the nature of the problem to be solved
+    \colorize<2> \item \emph{Problem statement}\\ Develop a detailed statement of the mathematical problem to be solved with the program
+    \colorize<3> \item \emph{Processing scheme}\\ Define the inputs and outputs of the program
+    \colorize<4> \item \emph{Algorithm}\\ A step-by-step procedure of all actions to be taken by the program (\emph{pseudo-code})
+    \colorize<5> \item \emph{Program the algorithm}\\ Convert the algorithm into a computer language, and debug until it runs
+    \colorize<6> \item \emph{Evaluation}\\ Test all of the options and conduct a validation study
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}
+ \frametitle{About programming}
+  \begin{block}{What is programming?}
+    Constructing a (series of) algorithm(s) that fulfill a certain function
+  \end{block}
+  \begin{itemize}
+   \item Translate your problem to a formal procedure (recipe, pseudo-code)
+   \begin{itemize}
+    \item What steps do I need to do? 
+    \item Can you break down a step further?
+    \item Is the order of the steps of importance?
+    \item Can I re-use certain parts? 
+   \end{itemize}
+   \item Translate your formal procedures to machine instructions
+   \begin{itemize}
+    \item Learning a programming language: syntax
+   \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+ \frametitle{Syntax and semantics}
+   \begin{block}{Syntax (the form)}
+   Correctness of the structure of symbols \\
+   \lstinline$x = 3 * 4;  % ok$ \\
+   \lstinline$x + c = 5   % wrong$ \\
+   \lstinline$c = 5 + car % wrong$
+   \end{block}
+  \begin{block}{Semantics (the meaning)}
+   Opposed to natural language, programming languages are designed to prevent ambiguous, non-sensical statements  \\
+   For instance, ``This is a lie.'', grammatically perfect, but ambiguous meaning.
+   \end{block}
+\end{frame}
+
+
+Implementation
+function findIndex(values, target) {
+  for(var i = 0; i < values.length; ++i){
+    if (values[i] == target) { return i; }
+  }
+  return -1;
+}
+findIndex([7, 3, 6, 1, 0], 6)
+

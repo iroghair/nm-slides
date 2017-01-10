@@ -1,0 +1,1 @@
+temp = A(column,:);

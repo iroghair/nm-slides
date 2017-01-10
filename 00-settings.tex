@@ -10,7 +10,7 @@
 \usepackage{multirow}
 \usepackage[math]{iwona}
 \usepackage{wasysym}
-% \usepackage[fleqn]{amsmath}
+\usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{siunitx}
 \usepackage{tikz} % Drawing
@@ -18,7 +18,7 @@
 \usepackage{pgfplotstable}
 
 % Presentation settings
-\rowcolors[]{1}{maincolor!20}{maincolor!10}
+% \rowcolors[]{1}{maincolor!20}{maincolor!10}
 
 \newcommand{\Fo}{\ensuremath{\mathit{Fo}}}
 
@@ -36,9 +36,6 @@
 \graphicspath{ {../img/} }
 
 \setbeamertemplate{footline}[frame number]
-
-% \setmainfont{Yanone Kaffeesatz}
-% \setmathfont(Digits,Latin,Greek)[Numbers={Lining,Proportional}]{Gentium Plus}
 
 % TU/e colors
 \definecolor{tuered}{RGB}{247,49,49}
@@ -96,7 +93,7 @@
 \def\colorize<#1>{%
   \temporal<#1>{\color{tuedblue!40!gray!40}}{\color{tuealert}}{\color{black}}}
   
-\setlength{\mathindent}{0pt}
+% \setlength{\mathindent}{0pt}
 
 \makeatother
 
@@ -104,7 +101,8 @@
 \hypersetup{colorlinks,linkcolor=,urlcolor=tueblue}
 
 % Vector format
-\renewcommand{\vec}[1]{\mathbf{#1}}
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+\renewcommand{\det}[1]{\text{det}\begin{vmatrix}#1\end{vmatrix}}
 
 \usetikzlibrary{decorations} % Drawing
 \usetikzlibrary{patterns}
@@ -113,7 +111,10 @@
 \usetikzlibrary{snakes}
 \usetikzlibrary{calc}
 \usetikzlibrary{arrows}
-\usetikzlibrary{decorations}
+\usetikzlibrary{snakes}
+\usetikzlibrary{fit}
+\usetikzlibrary{fadings}
+\usetikzlibrary{matrix}
 \usetikzlibrary{plotmarks}
 \usetikzlibrary{shapes}
 \usetikzlibrary{shadings}
@@ -121,6 +122,8 @@
 % Blocks
 \tikzset{block/.style={rectangle,draw=maincolor,fill=maincolor!20,text width=10em,text centered,rounded corners,minimum height=4em,thick}}
 \tikzset{emphblock/.style={rectangle,draw=maincolor,text centered,rounded corners,thick,top color=maincolor!10,bottom color=maincolor!30}}
+\tikzset{emphblocko/.style={rectangle,draw=tueorange,text centered,rounded corners,thick,top color=tueorange!10,bottom color=tueorange!30}}
+\tikzset{emphblocky/.style={rectangle,draw=tueyellow,text centered,rounded corners,thick,top color=tueyellow!10,bottom color=tueyellow!30}}
 % Dots
 \tikzset{dot/.style={draw=tuered,circle,thick,minimum size=1mm,inner sep=0pt,outer sep=0pt,fill=white}}
 \tikzset{fdot/.style={circle,draw=black,fill=black,,inner sep=1.5pt}}
@@ -133,7 +136,41 @@
 \tikzset{intblock/.style={line,draw=tuefuchsia,fill=tuefuchsia!50!white,fill opacity=0.3,opacity=0.6}}
 \tikzset{intdot/.style={line,dot,draw=tuefuchsia,fill=tuefuchsia,opacity=0.6}}
 \tikzset{gridline/.style={lightgray,ultra thin,dashed}}
+\newcommand{\tikzmark}[2]{\tikz[overlay,remember picture,
+  baseline=(#1.base)] \node (#1) {#2};}
 
+  \tikzset{style green/.style={
+    set fill color=tuegreen!60,
+    set border color=white,
+  },
+  style cyan/.style={
+    set fill color=tuelblue!60,
+    set border color=white,
+  },
+  style orange/.style={
+    set fill color=tueorange!60,
+    set border color=white,
+  },
+  style yellow/.style={
+    set fill color=tueyellow!60,
+    set border color=white,
+  },
+  mat/.style={
+    above left offset={-0.15,0.38},
+    below right offset={0.15,-0.125},
+    #1
+  },
+  mat2/.style={
+    above left offset={-0.15,0.31},
+    below right offset={0.15,-0.125},
+    #1
+  },
+  txt/.style={
+    above left offset={-0.1,0.34},
+    below right offset={0.15,-0.15},
+    #1
+  }
+}
 
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 \newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
@@ -142,6 +179,12 @@
 % % every axis y label/.append style={at={axis cs:14,14},rotate=0,anchor=south east}
 % exery axis/.style={ylabel near ticks},
 % }
-
+\tikzset{
+  invisible/.style={opacity=0},
+  visible on/.style={alt={#1{}{invisible}}},
+  alt/.code args={<#1>#2#3}{%
+    \alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}} % \pgfkeysalso doesn't change the path
+  },
+}
 
 \renewcommand*\familydefault{\sfdefault}  % Use sans font
