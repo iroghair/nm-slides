@@ -1,4 +1,4 @@
-\documentclass[11pt,table,final,fleqn,xcolor={usenames,dvipsnames},unknownkeysallowed]{beamer}
+\documentclass[11pt,table,final,fleqn,xcolor={usenames,dvipsnames},unknownkeysallowed,handout]{beamer}
 \usetheme[]{Frankfurt}
 \usecolortheme{crane}
 
@@ -10,7 +10,7 @@
 % \usepackage{longtable}
 % \usepackage[math]{iwona}
 % \usepackage{wasysym}
-% \usepackage{amsmath}
+% \usepackage{amsmath} 
 % \usepackage{amssymb}
 % \usepackage[amssymb]{SIunits}
 % \usepackage{tikz} % Drawing
@@ -860,11 +860,11 @@ x = fminbnd(fun,x1,x2)
   \column{0.65\textwidth}
   \pause
     \begin{enumerate}
-      \item Dedicate three separate cells for $A$, $B$ and $C$. Give an initial guess \pause
+      \item Dedicate three separate cells for $A$, $B$ and $C$. Give an initial guess of 15, 2800, 200.\pause
       \item Convert all values to proper units (hint: use e.g. =CONVERT(A2,``mmHg'',``Pa''))\pause
-      \item Compute $\ln P_\text{exp}$ and $\ln P_\text{corr}$\pause
-      \item Compute $(\ln P_\text{exp} - \ln P_\text{corr})^2$, and sum this column\pause
-      \item Start the solver, and minimize the sum by changing cells for $A$, $B$ and $C$.
+      \item Compute $P_\text{Antoine}$ (in \si{\pascal})\pause
+      \item Compute $(P_\text{exp} - P_\text{Antoine})^2$, and sum this column\pause
+      \item Start the solver, and aim for a value of 0 in the sum, by changing cells for $A$, $B$ and $C$.
     \end{enumerate}
   \end{columns}
 \end{frame}
@@ -1202,6 +1202,7 @@ ans =
 	\node[xshift=0cm,yshift=0cm, anchor=center] at (current page.center) {\includegraphics[width=\textwidth]{img/fullnerd2.png}};}
       \end{tikzpicture}}
 \end{frame}
+
 
 \section{Conclusions}
 \subsection*{Conclusions}

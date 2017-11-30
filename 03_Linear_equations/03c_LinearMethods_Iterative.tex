@@ -29,6 +29,7 @@
 % \part{Solving systems of linear equations}
 % \frame{\partpage}
 \section{Introduction}
+
 \subsection*{General}
 \begin{frame}[label=contents]
   \frametitle{Today's outline}
@@ -143,7 +144,7 @@
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Laplace's equation}
+  \frametitle{Discretization of Laplace's equation (I)}
   \begin{columns}
   \column{0.6\textwidth}
 %     \vskip-2em
@@ -199,7 +200,7 @@
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Laplace's equation}
+  \frametitle{Discretization of Laplace's equation (II)}
   Estimate the second-order differentials: assume a piece-wise linear profile in the temperature: \vskip1em
   \begin{columns}
   \column{0.5\textwidth}
@@ -222,6 +223,7 @@
 %     \end{center}
   \hfill
   \column{0.35\textwidth}
+  \pause
   \begin{align*}
     \frac{\partial^2T}{\partial x^2} \approx \frac{\left.\frac{\partial T}{\partial x}\right|_{i+\frac{1}{2}}-\left.\frac{\partial T}{\partial x}\right|_{i-\frac{1}{2}}}{\Delta x} \\[15pt]
     \approx \frac{ \frac{\left(T_{i+1,j}-T_{i,j}\right)}{\Delta x} - \frac{\left(T_{i,j}-T_{i-1,j}\right)}{\Delta x}}{\Delta x}\\[15pt]
@@ -231,7 +233,7 @@
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Laplace's equation}
+  \frametitle{Discretization of Laplace's equation (III)}
   The $y$-direction is derived analogously, so that the 2D Laplace's equation is discretized as:
   \[
     \frac{T_{i+1,j}-2T_{i,j}+T_{i-1,j}}{(\Delta x)^2} + \frac{T_{i,j+1}-2T_{i,j}+T_{i,j-1}}{(\Delta y)^2} = 0
@@ -306,13 +308,13 @@
   \]
   Create a \emph{banded} matrix $A$ in Matlab, by setting the coefficients for the internal cells:
   \begin{lstlisting}
-% Grid size
 Nx=5;  %number of points along x direction
 Ny=5;  %number of points in the y direction
 Nc=Nx*Ny; % Total number of points
 
 e = ones(Nc,1);
 A = spdiags([e,e,-4*e,e,e],[-Nx,-1,0,1,Nx],Nc,Nc);
+b = zeros(Nc,1);
   \end{lstlisting}
   The function \lstinline$spdiags$ uses the following arguments:
   \begin{itemize}
@@ -340,46 +342,73 @@ A = spdiags([e,e,-4*e,e,e],[-Nx,-1,0,1,Nx],Nc,Nc);
   \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]
-  \frametitle{LU decomposition of a sparse matrix}
-  \begin{columns}
-  \column{0.35\textwidth}
-   \begin{lstlisting}
->> [L,U,P] = lu(A)
->> subplot(1,2,1)
->> spy(L)
->> subplot(1,2,2)
->> spy(U)
-   \end{lstlisting}
-  \column{0.65\textwidth}
-  \pause
-  \begin{itemize}
-   \item With LU decomposition we produce matrices that are less sparse than the original matrix.
-   \item Sparse storage often required, and also numerical techniques that fully utilizes this!
-  \end{itemize}\vskip2em
-  \includegraphics[width=\columnwidth]{img/sparse_lu}
-  \end{columns}
-\end{frame}
-
 \subsection*{Boundary conditions}
 \begin{frame}[fragile]
   \frametitle{About boundary conditions}
   \begin{itemize}
-   \item For the nodes on the boundary, we have a simple equation:
+    \item For the nodes on the boundary, we have a simple equation:
     \[
       T_{k,\text{boundary}} = \text{Some fixed value}
-    \]
-    \item However, we have set all nodes to be a function of their neighbors...
-    \item Find the boundary node indices using $k = i + Nx(j-1)$
-    \begin{itemize}
-      \item \lstinline$i = 1$, \lstinline$j = 1:Ny$
-      \item \lstinline$i = Nx$, \lstinline$j = 1:Ny$
-      \item \lstinline$j = 1$, \lstinline$i = 1:Nx$
-      \item \lstinline$j = Ny$, \lstinline$i = 1:Nx$
-    \end{itemize}
-    \item Reset the row in $A$ to zeros, set $A_{kk}$ = 1
-    \item Set value in rhs: $b_k = T_{k,\text{boundary}}$
-    \item Boundary conditions are often more elaborate to implement! See \lstinline$setBoundaryConditions.m$.
+      \]
+      \item However, we have set all nodes to be a function of their neighbors...
+      \item Find the boundary node indices using $k = i + Nx(j-1)$
+      \begin{itemize}
+        \item \lstinline$i = 1$, \lstinline$j = 1:Ny$
+        \item \lstinline$i = Nx$, \lstinline$j = 1:Ny$
+        \item \lstinline$j = 1$, \lstinline$i = 1:Nx$
+        \item \lstinline$j = Ny$, \lstinline$i = 1:Nx$
+      \end{itemize}
+      \item Reset the row in $A$ to zeros, set $A_{kk}$ = 1
+      \item Set value in rhs: $b_k = T_{k,\text{boundary}}$
+      \item Boundary conditions are often more elaborate to implement! See \lstinline$setBoundaryConditions.m$.
+  \end{itemize}
+\end{frame}
+  
+\begin{frame}[fragile]
+  \frametitle{Partial implementation of the boundary conditions}
+  See \lstinline$setBoundaryConditions.m$.
+  \begin{lstlisting}[]
+function [A,b] = setBoundaryConditions(A,b,Tb,Nx,Ny)
+
+% Set boundary conditions over x-direction
+for i=1:Nx
+    j = 1;
+    ind = i + Nx * (j-1);
+    A(ind,:) = 0;   % Reset matrix for boudary cells
+    A(ind,ind) = 1; % Add a 1 on the diagonal
+    b(ind) = Tb(1);
+    j = Ny;
+    ind = i + Nx * (j-1);
+    A(ind,:) = 0;   % Reset matrix for boudary cells
+    A(ind,ind) = 1; % Add a 1 on the diagonal
+    b(ind) = Tb(2);
+end
+
+%% Repeat for y-direction
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{How applying boundary conditions affects the linear system}
+  \begin{lstlisting}[]
+function [A,b] = setBoundaryConditions(A,b,Tb,Nx,Ny)
+  \end{lstlisting}
+  \pause
+  \begin{itemize}
+    \item Make sure that matrix \lstinline$A$ and right hand side vector \lstinline$b$ are in your workspace, as well as \lstinline$Nx$ and \lstinline$N_y$
+    \item Create a vector that holds the temperature at each boundary:
+    \begin{lstlisting}
+>> T = [10 20 30 40];
+    \end{lstlisting}
+    \item Call the function, store $A$ and $b$ in new variables:
+    \begin{lstlisting}
+>> [A2,b2] = setBoundaryConditions(A,b,T,Nx,Ny);
+    \end{lstlisting}
+    \item Check the new structure of the matrix and the right hand side:
+    \begin{lstlisting}
+>> subplot(1,2,1); spy(A2);
+>> subplot(1,2,2); spy(b2);
+    \end{lstlisting}
   \end{itemize}
 \end{frame}
 
@@ -387,7 +416,7 @@ A = spdiags([e,e,-4*e,e,e],[-Nx,-1,0,1,Nx],Nc,Nc);
 \begin{frame}[fragile]
   \frametitle{A full program, including solver}
   The program and auxiliary functions are on Canvas (\lstinline$solveLaplaceEq.m$)
-\begin{lstlisting}[linewidth=1.05\textwidth]
+  \begin{lstlisting}[linewidth=1.05\textwidth]
 function [x,y,T,A] = solveLaplaceEq(Nx,Ny)
 % Solves the steady-state Laplace equation 
 
@@ -404,9 +433,9 @@ T = A\b;  % Solve matrix
 Tc = reshape(T,[Nx,Ny]); % Reshape x-vec to mat Nx,Ny
 [xc yc] = meshgrid(1:Nx,1:Ny); % Get position arrays
 surf(xc,yc,Tc); % Surface plot
-\end{lstlisting}
+  \end{lstlisting}
 \end{frame}
-
+  
 \begin{frame}[fragile]
   \frametitle{Sample results}
   Solved for a $20\times20$ system with $T_b=\left[10\ 20\ 30\ 40\right]$.\vskip1em
@@ -416,13 +445,34 @@ surf(xc,yc,Tc); % Surface plot
 \end{frame}
 
 \begin{frame}[fragile]
+  \frametitle{LU decomposition of a sparse matrix}
+  \begin{columns}
+  \column{0.35\textwidth}
+    \begin{lstlisting}
+>> [L,U,P] = lu(A)
+>> subplot(1,2,1)
+>> spy(L)
+>> subplot(1,2,2)
+>> spy(U)
+    \end{lstlisting}
+  \column{0.65\textwidth}
+  \pause
+  \begin{itemize}
+    \item With LU decomposition we produce matrices that are less sparse than the original matrix.
+    \item Sparse storage often required, and also numerical techniques that fully utilizes this!
+  \end{itemize}\vskip2em
+  \includegraphics[width=\columnwidth]{img/sparse_lu}
+  \end{columns}
+\end{frame}
+  
+\begin{frame}[fragile]
   \frametitle{LU decomposition}
   \begin{itemize}
     \item LU decomposition and Gaussian elimination on a matrix like $A$ requires more memory (with 3D problems, the offset in the diagonal would even be bigger!)
     \item In general extra memory allocation will not be a problem for MATLAB
     \item MATLAB is clever, in that sense that it attempts to reorder equations, to move elements closer to the diagonal)
   \end{itemize} \pause
-  Alternatives for Gaussian elimination
+  Alternatives for elimination methods
   \begin{itemize}
     \item Use iterative methods when systems are large and sparse.
     \item Often such systems are encountered when we want to solve PDE’s of higher dimensions
@@ -440,10 +490,10 @@ surf(xc,yc,Tc); % Surface plot
     \item Gauss-Seidel method
     \item Succesive over relaxation \vskip2em
     \item \lstinline$bicg$ --- Bi-conjugate gradient method
-    \item \lstinline$pcg$ --- preconditioned conjugate gradient method
-    \item \lstinline$gmres$ --- generalized minimum residuals method
-    \item \lstinline$bicgstab$ --- Bi-conjugate gradient method
-  \end{itemize}
+  \item \lstinline$pcg$ --- preconditioned conjugate gradient method
+  \item \lstinline$gmres$ --- generalized minimum residuals method
+  \item \lstinline$bicgstab$ --- Bi-conjugate gradient method
+\end{itemize}
 \end{frame}
 
 \subsection*{Jacobi method}
@@ -560,13 +610,13 @@ end
 \begin{frame}[fragile]
   \frametitle{Jacobi method: solving a system}
   \begin{itemize}
-   \item Now we can solve AT=b by:
+   \item We can solve $AT=b$, now written generally as $Ax=b$, by:
    \begin{align*}
-   AT&=b\\
-     (D+R)T &= b \\
-      DT &= b -RT \\
-      DT^\text{new} &= b - RT^\text{old} \\
-       T^\text{new} &= D^{-1}(b-RT^\text{old})
+      Ax&=b\\
+     (D+R)x &= b \\
+      Dx &= b -Rx \\
+      Dx^\text{new} &= b - Rx^\text{old} \\
+       x^\text{new} &= D^{-1}(b-Rx^\text{old})
    \end{align*}
    \item Using the $n$ and $n+1$ notation for old and new time steps, we find in general:
    \[
@@ -585,7 +635,7 @@ end
     \node[block2]                 (start) {Set $T^\text{old}$ = a guess};
     \node[block2, right=of start,visible on=<2->] (calc)  {Calculate the new node solution with previous values.};
     \node[block2, right=of calc,visible on=<3->] (check1) {Have all nodes been updated?};
-    \node[block2, right=of check1,,visible on=<5->] (tol) {Tolerance check: $\left(Ax-b \leq \text{tol}\right) $?};
+    \node[block2, right=of check1,,visible on=<5->,text width=2cm] (tol) {Tolerance check: $\mynorm{\frac{x^{n+1}-x^n}{x^n}}_2 \leq \text{tol} $?};
     \node[block2, above=of check1,visible on=<4->] (next) {Move to next node};
     \node[block2, above=of tol,visible on=<6->] (update) {Update $T^\text{old}=T^\text{new}$};
     \node[block2, below=of tol,visible on=<8->] (answer) {Report the answer as $T^\text{new}$};
@@ -607,22 +657,21 @@ end
   \frametitle{The core of the solver}
   The full file is on Canvas, \lstinline$solveJacobi.m$.
   \begin{lstlisting}[numbers=left]
-while ( norm(A*x-b, 2) > tol && it_jac < 1000 )
-  x_old = x;
-  for i=1:N
-    s = 0;
-    for j = 1:N
-      if (j ~= i)
-        % Sum off-diagonal*x_old
-        s = s+A(i,j)*x_old(j);
-      end
+  while ( xDiff > tol && it_jac < 1000 )
+    x_old = x;
+    for i=1:N
+        s = 0;
+        for j = 1:N
+            if (j ~= i)
+                s = s+A(i,j)*x_old(j);
+            end
+        end
+        x(i) = (b(i)-s)/A(i,i);
     end
-    % Compute new x value
-    x(i) = (b(i)-s)/A(i,i);
-  end
-  % Increate number of iterations
-  it_jac = it_jac+1;
+    it_jac = it_jac+1;
+    xDiff = norm((x-x_old)./x,2);
 end
+it_jac
   \end{lstlisting}
   \pause
   Try to call it from the \lstinline$solveLaplaceEq.m$ file, instead of using \lstinline$\$.
@@ -633,7 +682,7 @@ end
   \begin{itemize}
    \item The while loop holds two aspects
    \begin{itemize}
-    \item A convergence criterion (\lstinline$norm(A*x-b, 2)>tol$). Some considerations are:
+    \item A convergence criterion (\lstinline$norm((x-x_old)./x,2) > tol$). Some considerations are:
     \begin{itemize}
       \item $L_1$-norm (sum)
       \item $L_2$-norm (Euclidian distance)
@@ -653,30 +702,23 @@ end
 
 \begin{frame}[fragile]
   \frametitle{The solver using array indices}
-    See commented section in \lstinline$solveJacobi.m$.
+  Make a copy of the Jacobian solver, and replace the for-loop by a vector-operation:
   \begin{lstlisting}[basicstyle=\scriptsize\ttfamily]
-function [x0,it_jac] = solveJacobi(A,b,tol)
-% Set default error
-if nargin < 3
-  tol = 1e-6;
-end
+% While not converged or max_it not reached
+while ( xDiff > tol && it_jac < 1000 )
+  x_old = x;
+  for i=1:N
+    % Sum off-diagonal*x_old
+    offDiagonalIndex = [1:(i-1) (i+1):N];
+    Aij_Xj = A(i,offDiagonalIndex)*x_old(offDiagonalIndex);
 
-x0 = 25*ones(size(b)); % Initial guess
-x = zeros(size(b));    % Pre-allocate vector x
-N = length(A);         % Number of equations
-it_jac = 1;            % Init number of iterations
-
-% --- Initial iteration to get x here ---
-
-while ( norm(x-x0, 1) > tol > tol && it_jac < 1000 )
-  x0 = x;
-  for i = 1:N
-    x(i) = (1/A(i,i))*((b(i) - A(i,[1:i-1,i+1:N]) * x0([1:i-1,i+1:N])));
+    % Compute new x value
+    x(i) = (b(i)-Aij_Xj)/A(i,i);
   end
-  it_jac = it_jac + 1;
+  it_jac = it_jac+1;
+  xDiff = norm((x-x_old)./x,2);
 end
-it_jac
-  \end{lstlisting}
+\end{lstlisting}
 \end{frame}
 
 \begin{frame}[fragile]

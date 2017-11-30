@@ -11,8 +11,6 @@ T(nx,:) = 60; % Right
 T(:,1) = 20; % Bottom
 T(:,ny) = 30;
 T(20:25,20:25) = 100;
-fixedT = zeros(nx,ny);
-fixedT(20:25,20:25) = 1;
 % Set new solution array (including boundary conditions)
 Tnew = T;
 
@@ -20,11 +18,9 @@ Tnew = T;
 [x y] = meshgrid(1:nx, 1:ny);
 
 for iter = 1:1000
-    for i = 2:nx-1
-        for j = 2:ny-1
-            if (fixedT(i,j) ~= 1)
-                Tnew(i,j) = (T(i-1,j)+T(i+1,j)+T(i,j-1)+T(i,j+1))/4.0;
-            end
+    for i = [2:19 26:nx-1]
+        for j = [2:19 26:ny-1]
+            Tnew(i,j) = (T(i-1,j)+T(i+1,j)+T(i,j-1)+T(i,j+1))/4.0;
         end
     end
     surf(x,y,T);

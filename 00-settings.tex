@@ -24,6 +24,8 @@
 
 \input{../matlabstyle.tex}
 
+\pgfplotsset{compat=1.13}
+
 % To have the navigation circles without declaring subsections
 \usepackage{remreset}% tiny package containing just the \@removefromreset command
 \makeatletter
@@ -103,15 +105,16 @@
 % Vector format
 \renewcommand{\vec}[1]{\boldsymbol{#1}}
 \renewcommand{\det}[1]{\text{det}\begin{vmatrix}#1\end{vmatrix}}
+\newcommand{\mynorm}[1]{\left\lVert#1\right\rVert}
 
-\usetikzlibrary{decorations} % Drawing
+\usetikzlibrary{decorations.pathmorphing} % Drawing
+\usetikzlibrary{decorations.shapes}
 \usetikzlibrary{patterns}
 \usetikzlibrary{positioning}
 \usetikzlibrary{shadows}
-\usetikzlibrary{snakes}
+% \usetikzlibrary{snakes}
 \usetikzlibrary{calc}
 \usetikzlibrary{arrows}
-\usetikzlibrary{snakes}
 \usetikzlibrary{fit}
 \usetikzlibrary{fadings}
 \usetikzlibrary{matrix}

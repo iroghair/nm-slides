@@ -1,4 +1,4 @@
-\documentclass[11pt,table,final,fleqn,xcolor={usenames,dvipsnames},unknownkeysallowed]{beamer}
+\documentclass[11pt,table,final,fleqn,xcolor={usenames,dvipsnames},unknownkeysallowed,handout]{beamer}
 \usetheme[]{Frankfurt}
 \usecolortheme{crane}
 
@@ -141,7 +141,7 @@
    \item Use an \emph{integrated development environment}
    \begin{itemize}
      \item Matlab
-     \item MS Visual Studio
+     \item MS Visual Studio/Code
      \item Eclipse
      \item Dev C++
      \item IDLE, Canopy (express)
@@ -595,6 +595,7 @@ s =
 
 \section{Creating algorithms}
 \subsection*{Control statements}
+\againframe<2>{contents}
 \begin{frame}[fragile]
  \frametitle{Building blocks: conditional statements}
   \lstinline$if$-statement: Check whether a (set of) condition(s) is met. \\ 
@@ -772,6 +773,7 @@ end
 
 \section{Functions}
 \subsection*{Introduction}
+\againframe<2>{contents}
 \begin{frame}[fragile]
  \frametitle{Functions - general}
  A function in a programming language is a program fragment that performs a certain task. Creating functions keeps your code clean, re-usable and structured.
@@ -920,11 +922,11 @@ end \end{lstlisting}
     \end{itemize}
  \end{itemize}
    \column{0.5\textwidth}
-   \includegraphics<3>[width=0.8\columnwidth]{inception.jpg}
+   \includegraphics<3>[width=\columnwidth]{img/recursive_functions_dawg.jpg}
  \end{columns}
 \end{frame}
 
-\againframe{recursion}
+% \againframe{recursion}
 
 \begin{frame}[fragile]
  \frametitle{Recursion: example}
@@ -970,6 +972,7 @@ end
 
 \section{Conclusions}
 \subsection*{Conclusions}
+\againframe<2>{contents}
 \begin{frame}[fragile]
   \frametitle{In conclusion...}
   \begin{itemize}

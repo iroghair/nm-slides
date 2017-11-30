@@ -422,11 +422,11 @@ return
     \item There are fundamental problems with Gaussian elimination\pause
     \begin{itemize}
       \item You can add a counter to the algorithm to see how many subtraction and multiplication operations it performs for a given size of matrix A.
-      \item The number of operations to perform Gaussian elimination is $\mathcal{O}(2N^3)$ (where $N$ is the number of equations)
-      \item Exercise: verify this for our script 
+      \item The number of operations to perform Gaussian elimination is $\mathcal{O}(2N^3)$ (where $N$ is the number of equations) 
+      \item Exercise: verify this for our script \pause
       \item LU decomposition takes $\mathcal{O}(2N^3/3)$ flops, 3 times less!
       \item Forward and backward substitution each take $\mathcal{O}(N^2)$
-flops (both cases)
+flops (both cases) 
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -866,7 +866,7 @@ x = A\b
     \item This lecture covered direct methods using elimination techniques.
     \item Gaussian elimination can be slow ($\mathcal{O}(N^3)$)
     \item Back substitution is often faster ($\mathcal{O}(N^2)$)
-    \item LU decomposition means that we don’t have to do Gaussian elimination every time (saves time and effort), but the matrix has to stay the same.
+    \item LU decomposition means that we don't have to do Gaussian elimination every time (saves time and effort), but the matrix has to stay the same.
     \item Matlab has build in routines for solving linear equations (backslash operator \lstinline$\$) and LU decomposition (\lstinline$lu$).
     \item Advanced techniques such as (preconditioned) conjugate gradient or biconjugate gradient solvers are also available.
     \item Next part covers iterative approaches

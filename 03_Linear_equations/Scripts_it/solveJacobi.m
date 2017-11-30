@@ -1,26 +1,35 @@
-function [x0,it_jac] = solveJacobi(A,b,tol)
+function [x,it_jac] = solveJacobi(A,b,tol)
 % Solves a linear system using the Jacobi method
 
 % Set default error
 if nargin < 3
-    tol = 1e-6;
+    tol = 1e-2;
 end
 
-x0 = b;   % Initial guess
-x = zeros(size(b));      % Pre-allocate vector x
-N = length(A);           % Number of equations
-it_jac = 1;              % Init number of iterations
+x = b + 1e-16;          % Set initial guess to b
+xDiff = 1;              % Norm of the difference between x_old and x_new
+N = length(A);          % Number of equations
+it_jac = 1;             % Init number of iterations
 
-for i = 1:N
-    x(i) = (1/A(i,i))*((b(i) - A(i,[1:i-1,i+1:N]) * x0([1:i-1,i+1:N])));
-end
-    
-while ( norm(x-x0, 1) > tol  && it_jac < 1000 )
-    x0 = x;
-    for i = 1:N
-        x(i) = (1/A(i,i))*((b(i) - A(i,[1:i-1,i+1:N]) * x0([1:i-1,i+1:N])));
+% While not converged or max_it not reached
+while ( xDiff > tol && it_jac < 1000 )
+    x_old = x;
+    for i=1:N
+        s = 0;
+        for j = 1:N
+            if (j ~= i)
+                % Sum off-diagonal*x_old
+                s = s+A(i,j)*x_old(j);
+            end
+        end
+        % Compute new x value
+        x(i) = (b(i)-s)/A(i,i);
     end
-    it_jac = it_jac + 1;
+    % Increate number of iterations
+    it_jac = it_jac+1;
+    xDiff = norm((x-x_old)./x,2);
 end
 
 it_jac
+
+end

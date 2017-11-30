@@ -9,3 +9,5 @@
 Slides\ Edwin/*
 *.bak
 *.synctex.gz
+*.fdb_latexmk
+*.fls

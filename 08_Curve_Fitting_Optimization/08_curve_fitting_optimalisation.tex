@@ -1,0 +1,669 @@
+\documentclass[11pt,table,final,fleqn,xcolor={usenames,dvipsnames,table}]{beamer}
+\usetheme[]{Frankfurt}
+
+\input{../00-settings.tex}
+
+% \usepackage{pgfpages}
+% \pgfpagesuselayout{4 on 1}[border shrink=5mm]
+
+\title{Curve fitting, data regression and optimization}
+
+\author[I.~Roghair]{\underline{Ivo~Roghair}, Martin van Sint Annaland}
+
+\institute[SPI]{{Chemical Process Intensification,\\
+  Eindhoven University of Technology}}
+
+\date
+
+
+% BEGIN PRESENTATION
+\begin{document}
+\input{../lstsettings.tex}
+\frame[plain]{
+  \titlepage
+}
+% \part{Curve fitting}
+% \frame{\partpage}
+\section{Introduction}
+\subsection*{}
+\begin{frame}[label=contents]
+  \frametitle{Today's outline}
+  \mode<beamer>{
+    \only<1>{\tableofcontents}
+  }
+  \only<2>{\tableofcontents[currentsection,currentsubsection]}
+\end{frame}
+
+\frame{
+  \frametitle{Overview}
+  \vfill
+  \begin{itemize}
+  \item We are going to fit measurements to models today
+  \item You will also learn what $R^2$ actually means
+  \item We get introduced to constrained and unconstrained optimization.
+  \item We will use the simplex method to solve linear programming problems (LP)
+  \end{itemize}
+  \vfill
+}
+
+\section{Curve fitting}
+\subsection*{}
+\frame{
+  \frametitle{Fitting models to data}
+  \vfill
+  \centering
+  \input{tikzplots/scatter1.tikz}
+  \vfill
+}
+
+\frame{
+  \frametitle{How to fit a model to the data?}
+  We would like to fit the following model to the data:
+  \[
+    \hat{y} = a_1 + a_2x + a_3x^2 + a_4 x^3
+  \]
+  \vfill \pause
+  First step: If we have $N$ data points, we could write the model as the product of a matrix and a vector:
+  \begin{columns}\
+    \column{0.6\textwidth}
+      \[
+      \begin{bmatrix}
+      \hat{y}_1 \\
+      \hat{y}_2 \\
+      \hat{y}_3 \\
+      \vdots \\
+      \hat{y}_N
+    \end{bmatrix}
+    =
+    \left. \begin{bmatrix}
+      1 & x_1 & x_1^2 & x_1^3 \\
+      1 & x_2 & x_2^2 & x_2^3 \\
+      1 & x_3 & x_3^2 & x_3^3 \\
+      \vdots  & \vdots  & \vdots  \\
+      1 & x_N & x_N^2 & x_N^3
+    \end{bmatrix}    
+    \begin{bmatrix}
+      a_1 \\
+      a_2 \\
+      a_3 \\
+      a_4
+    \end{bmatrix} \right.
+      \]
+    \column{0.4\textwidth}
+    \tikz{\node[emphblock,text width=\columnwidth]{
+    \begin{center}
+    $
+      \hat{y} = Xa
+    $
+    \end{center}
+    $X$ is called the design matrix and $a$ are the fit parameters.
+    }}
+  \end{columns}
+  \vfill
+}
+
+\frame{
+  \frametitle{Residuals}
+  Second step: work out the residuals for each data point:
+  \[
+    d_i = \left(y_i - \hat{y}_i\right)
+  \]
+  \pause
+  Third step: work out the sum of squares of the residuals:
+  \[
+    \text{SSE} = \sum_i d_i^2 = \sum_i  \left(y_i - \hat{y}_i\right)
+  \]
+  This can be written using the dot-product operation:
+    \[
+    \text{SSE} = \sum_i d_i^2 = d \cdot d = d^T \cdot d = \left(y_i - \hat{y}_i\right)^T \cdot \left(y_i - \hat{y}_i\right)
+  \]
+}
+
+\frame{
+  \frametitle{Minimizing the sum of squares}
+  Choose the parameter vector such that the sum of squares of the residuals is minimized; the partial derivative with respect to each parameter should be set to zero:
+  \[
+    \frac{\partial}{\partial a_i} \left[ \left(y - \left(Xa\right)^T\right)\left(y - Xa\right) \right]
+  \]
+  \pause
+  In Matlab, we can solve our linear system $\hat{Y} = Xa$ simply by running \lstinline$a = X\\y$.
+  \pause
+  \begin{itemize}
+    \item If there are more data points ($N>4$), we can write an analogue, but maybe a consistent solution does not exist (the system is over specified).
+    \item However, matlab will find values for the vector a which minimize $\norm{y-aX}^2$ , so i.e. a least squares fit.
+  \end{itemize}
+}
+
+% \frame{ 
+%   \frametitle{Using Matlab's linear solver for fitting}
+%   \begin{itemize}
+%     \item If there are more data points ($N>4$), we can write an analogue, but maybe a consistent solution does not exist (the system is over specified).
+%     \item However, matlab will find values for the vector a which minimize $\norm{y-aX}^2$ , so i.e. a least squares fit.
+%   \end{itemize}
+% }
+
+\begin{frame}[fragile] 
+  \frametitle{Fitting our problem: Matlab solver}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+    \begin{lstlisting}
+N=length(x);
+X(:,1) = ones(N,1);
+X(:,2) = x;
+X(:,3) = x.^2;
+X(:,4) = x.^3;
+A =X\y;
+    \end{lstlisting}
+    \column{0.5\textwidth}
+      \input{tikzplots/scatter-model.tikz}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile] 
+  \frametitle{Fitting our problem: Matlab curve-fitting toolbox}
+    \begin{itemize}
+      \item Start the toolbox: \lstinline$cftool$
+      \item Choose the dataset ($x$ and $y$ data)
+      \item Choose the interpolant type (polynomial, exponential, ..., custom)
+      \item Get the coefficients (save to workspace or write them down)
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile] 
+  \frametitle{Fitting our problem: Excel}
+    \begin{itemize}
+      \item Create a column with the independent and dependent data series ($x$ and $y$)
+      \item Create a column that computes $\hat{y}$, keeping the coefficients as separate cells
+      \item Compute the sum of squares of the residuals (another column, sum the results)
+      \item Use the solver to minimize this sum, modifying the coefficient cells
+      \item Note: regression in Excel + display equation is dangerous if you choose the 'line' plot (use scatter if you can)
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile] 
+  \frametitle{How good is the model?}
+  \input{tikzplots/residuals.tikz}
+
+  \begin{itemize}
+    \item For a model to make sense the data points should be scattered randomly around the model predictions, the mean of the residuals $d$ should be zero: $d_i = \left( y_i - \hat{y}_i\right)$
+    \item It’s always good to check if the residuals are not correlated with the measured values, if that is the case, it can indicate that your model is wrong.
+  \end{itemize}
+\end{frame}
+
+\section{Regression}
+\subsection*{}
+\begin{frame}[fragile] 
+  \frametitle{Regression coefficients}
+    \begin{itemize}
+    \item Variance measured in the data (y) is:
+    \[
+      \sigma^2_y = \frac{1}{N} \sum_i \left (y_i - \overline{y}\right)^2
+    \]
+    \item Variance of the residuals is:
+    \[
+      \sigma^2_\text{error} = \frac{1}{N} \sum_i \left (d_i\right)^2
+    \]
+        \item Variance in the model is:
+    \[
+      \sigma^2_\text{model} = \frac{1}{N} \sum_i \left (\hat{y}_i - \overline{\hat{y}}\right)^2
+    \]
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile] 
+  \frametitle{Regression coefficients}
+  Given that the error is uncorrelated we can state that:
+    \[
+      \sigma^2_y = \sigma^2_\text{error}+\sigma^2_\text{model}
+    \]
+    \[
+      R^2 = \frac{\sigma^2_\text{model}}{\sigma^2_y} = 1 - \frac{\sigma^2_\text{error}}{\sigma^2_y}
+    \]
+    \[
+      R^2 = 1 - \frac{\text{SSE}}{\text{SST}}
+    \]
+    \begin{itemize}
+      \item SSE: Sum of errors squared
+      \item SST: Total sum of squares (model)
+      \item SSR: Sum of squares (data)
+   \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile] 
+  \frametitle{Regression coefficients}
+    \begin{itemize}
+      \item An uncorrellated error ($\overline{d} \rightarrow 0$) means that SSE, SST and SSR will have $\chi^2$ -distributions and the ratios will have an F-distribution. If SSR/SSE is large, the model is good!
+      \item There is a chance that the model is rubbish, but that SSR/SSE will yield a good value, Analysis of Variance (ANOVA) will be a good tool to calculate the probability of such a thing happening!
+   \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile] 
+  \frametitle{Back to the example}
+  \begin{columns}
+    \column{0.4\textwidth}
+      \begin{center}
+        The statistics: \\ \vskip1em
+        \input{tikzplots/table.tex}
+      \end{center}
+    \column{0.6\textwidth}
+      \input{tikzplots/scatter-model.tikz}
+  \end{columns}
+\end{frame}
+
+\section{Fitting numerical models}
+\subsection*{}
+\begin{frame}[fragile] 
+  \frametitle{Dynamic fitting of non-linear equations: lsqnonlin}
+  You may encounter situations where the model data is slightly more complicated to obtain (e.g. a numerical model based on ODEs where coefficients are unknown), or you want to perform fitting of multiple functions/coefficients, or just want to automate things via scripts. Matlab's Optimization toolbox gives access to a powerful function \lstinline$lsqnonlin$, least-squares non-linear optimization.
+\end{frame}
+  
+\begin{frame}[fragile] 
+  \frametitle{General use of lsqnonlin}
+  \begin{lstlisting}
+k = lsqnonlin(fun,k0,lb,ub,options)
+  \end{lstlisting}
+  \begin{itemize}
+    \item \lstinline$fun$ is a function handle to the fit criterium (e.g. \lstinline$@myFitCrit$). The fit criterium function \lstinline$myFitCrit$ should return the residuals vector, e.g. $d_i = \left(y_i - \hat{y}_i\right)$. 
+  Here, $y_i$ would again be the measurement data and $\hat{y}$ the solution computed by a model.
+  \item \lstinline$k0$ is the initial guess for the fitting coefficient (or: array of initial guesses when fitting multiple coefficients)
+  \item \lstinline$lb$ and \lstinline$ub$ are the lower and upper boundaries for \lstinline$k0$. These should both be the size of the \lstinline$k0$-array.
+  \item \lstinline$options$ are some fitting options, for more fine-grained control on the fit procedure. Use e.g. \lstinline$options = optimset(’TolX’,1.0E-6,’MaxFunEvals’,1000);$ to create an options object, or leave it empty (\lstinline$options = []$).
+  \end{itemize}  
+\end{frame}
+
+\begin{frame}[fragile] 
+  \frametitle{Example use of lsqnonlin}
+  We have experimental data stored in the file \lstinline$tudataset1.mat$, containing $T$ and $U$ data. We want to fit a model with coefficients $k_1$ and $k_2$ with the following structure:
+  \[
+    \frac{du}{dt} = -k_1 u + k_2
+  \]
+  \pause
+  \begin{itemize}
+    \item First, we need to create a function that contains the ODE:
+    \begin{lstlisting}
+function dudt = simpleode(t,u,k);
+dudt = -k(1)*u + k(2);
+    \end{lstlisting}
+    Note that we supply a vector \lstinline$k$, containing both coefficients for fitting
+    \pause
+    \item We create a fit criterium function:
+    \begin{lstlisting}
+function err = fitcrit(ke,T,U,U0)
+[t,ue] = ode45(@simpleode,T,U0,[],ke);
+err = (ue-U);
+    \end{lstlisting}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile] 
+  \frametitle{Example use of lsqnonlin}
+  Now let's make a script that uses \lstinline$lsqnonlin$ to yield k-values fitted to our dataset:
+  \pause
+  \begin{lstlisting}
+% initial value
+U0 = 1.00;
+% initial guesses for model parameters
+k0 = [1.00 1.00];
+% lower and upper bounds for model parameters
+LB = [0.00 0.00];
+UB = [Inf Inf ];
+% Perform nonlinear least squares fit
+options = optimset('TolX',1.0E-6,'MaxFunEvals',1000);
+[ke,RESNORM,RESIDUAL,EXITFLAG,OUTPUT,LAMBDA,JACOBIAN] = lsqnonlin(@fitcrit,k0,LB,UB,options,T,U,U0);
+    \end{lstlisting}
+    Our fitted coefficients are stored in \lstinline$ke$. Note that we get a lot more data back that allows to check the fitting results in more detail.
+\end{frame}
+
+\begin{frame}[fragile] 
+  \frametitle{Example use of lsqnonlin}
+  \input{tikzplots/lsqnonlinfit.tikz}
+\end{frame}
+
+
+% \section{Curve fitting}
+% \subsection*{}
+% \begin{frame}
+%   \frametitle{Summary}
+%   \begin{itemize}
+%     \item We have seen how fit parameters of a model can fitted to a data set, using the linear least squares method.
+%     \item We found out how to calculate the regression coefficients and how to perform a statistical analysis of the model using ANOVA.
+%     \item We also postulated expressions for the confidence limits for the fit parameters and the predicted points.
+%   \end{itemize}
+% \end{frame}
+
+\section{Optimization}
+\subsection*{}
+\againframe<2>{contents}
+% \frame{\partpage}
+% \section{Introduction}
+% \subsection*{General}
+% \begin{frame}[label=contents]
+%   \frametitle{Today's outline}
+%   \mode<beamer>{
+%     \only<1>{\tableofcontents}
+%   }
+%   \only<2>{\tableofcontents[currentsection,currentsubsection]}
+% \end{frame}
+
+% \begin{frame}
+%   \frametitle{Overview}
+%   \begin{itemize}
+%     \item In this lecture we get introduced to constrained and unconstrained optimization.
+%     \item We will use the simplex method to solve linear programming problems (LP)
+% %     \item We will use the Lagrange multiplier method to solve nonlinear programming problems (NLP’s) • And we will briefly discuss optimal control, using Pontryagin’s principle.
+% %     \item Lastly we will play a little with another optimization platform (AMPL)
+%   \end{itemize}
+% \end{frame}
+
+\begin{frame}
+  \frametitle{What is optimization?}
+  \tikz{\node[emphblock, text width=\textwidth]{Optimization is minimization or maximization of an objective function (also called a performance index or goal function) that may be subject to certain constraints.}}
+  \vskip1em
+  \begin{itemize}
+    \item $\min f(x)$: Goal function
+    \item $g(x) = 0$: Equality constraints
+    \item $h(x) \geq 0$: Inequality constraints
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Optimization Spectrum}
+  % See http://www.tablesgenerator.com/#
+\begin{table}[]
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lll}
+\hline
+\rowcolor[HTML]{C0C0C0} 
+Problem                                                                 & Method                                                                                                                                                                    & Solvers                                                                                                                         \\ \hline
+LP                                                                      & \begin{tabular}[c]{@{}l@{}}Simplex method\\ Barrier methods\end{tabular}                                                                                                  & \begin{tabular}[c]{@{}l@{}}Linprog (Matlab)\\ CPLEX (GAMS, AIMMS, AMPL, OPB)\end{tabular}                                       \\
+\rowcolor[HTML]{EFEFEF} 
+{\color[HTML]{000000} \begin{tabular}[c]{@{}l@{}}NLP\\ QP\end{tabular}} & {\color[HTML]{000000} \begin{tabular}[c]{@{}l@{}}Lagrange multiplier method\\ Successive linear programming\\ Quadratic programming\end{tabular}}                         & {\color[HTML]{000000} \begin{tabular}[c]{@{}l@{}}Fminsearch/fmincon (Matlab)\\ MINOS (GAMS, AMPL)\\ CONOPT (GAMS)\end{tabular}} \\
+\begin{tabular}[c]{@{}l@{}}MIP\\ MILP\\ MINLP\\ MIQP\end{tabular}       & \begin{tabular}[c]{@{}l@{}}Branch and bound\\ Dynamic programming\\ Generalized Benders decomposition\\ Outer approximation method\\ Disjunctive programming\end{tabular} & \begin{tabular}[c]{@{}l@{}}Bintprog (Matlab)\\ DICOPT (GAMS)\\ BARON (GAMS)\end{tabular}                                        \\ \hline
+\end{tabular}
+}
+\end{table}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Factors of concern}
+  \begin{itemize}
+    \item Continuity of the functions
+    \item Convexity of the functions
+    \item Global versus local optima
+    \item Constrained versus unconstrained optima
+  \end{itemize}
+\end{frame}
+
+\section{Linear programming}
+\subsection*{}
+\begin{frame}
+  \frametitle{Linear programming}
+  In linear programming the objective function and the constraints are linear functions.
+  \vskip1em \pause
+  
+  \begin{columns}
+    \column{0.5\textwidth}
+    For example:\\ 
+    \vskip1em      
+      $\max z = f(x_1, x_2)=40x_1 + 88x_2$ \\
+      s.t. (subject to) \\
+      $2x_1 + 8x_2 \leq 60$ \\
+      $5x_1 + 2x_2 \leq 60$ \\
+      $x_1 \geq 0$ \\
+      $x_2 \geq 0$
+    \column{0.5\textwidth}
+      \tikz{\node[emphblock, text width=\textwidth]{If the constraints are satisfied, but the objective function is not maximized/minimized we speak of a feasible solution. \\ \vskip1em
+      If also the objective function is maximized/minimized, we speak of an optimal solution!}}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Plotting the constraints}
+  \centering
+  \input{tikzplots/optim1.tikz}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Plotting the constraints}
+  \centering
+  \input{tikzplots/optim2.tikz}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Normal form of an LP problem}
+   \begin{columns}[T]
+    \column{0.5\textwidth}
+      $\max z = f(x_1, x_2)=40x_1 + 88x_2$ \\
+      s.t. \\
+      $2x_1 + 8x_2 \leq 60$ \\
+      $5x_1 + 2x_2 \leq 60$ \\
+      $x_1 \geq 0$ \\
+      $x_2 \geq 0$
+    \pause
+    \column{0.5\textwidth}
+      $\max z = f(x) = 40x_1 + 88x_2$ \\
+      s.t. \\
+      $2x_1 + 8x_2 + x_3 = 60$ \\
+      $5x_1 + 2x_2 + x_4 = 60$ \\
+      $x_i \geq 0 \qquad i \in 1,2,3,4$\\
+      \vskip1em
+      \tikz{\node[emphblock, text width=\columnwidth]{$x_3$ and $x_4$ are called slack variables, they are non auxiliary variables introduced for the purpose of converting inequalities in to equalities}}
+  \end{columns}
+  \end{frame}
+
+  \begin{frame}
+  \frametitle{The simplex method}
+  We can formulate our earlier example to the normal form and consider it as the following augmented matrix with $T_0 = \left[z \quad x_1 \quad x_2 \quad x_3 \quad x_4 \quad b\right]$:
+  \vskip1em
+   \[
+T_0 = \begin{bmatrix}
+1 & -40 & -88 & 0 & 0 & 0\\ 
+0 & 2 & 8 & 1 & 0 & 60\\
+0 & 5 & 2 & 0 & 1 &60 
+\end{bmatrix}
+   \]
+   This matrix is called the (initial) simplex table. Each simplex table has two kinds of variables, the basic variables (columns having only one nonzero entry) and the nonbasic variables
+\end{frame}
+
+\begin{frame}
+  \frametitle{The simplex method}
+     \[
+T_0 = \begin{bmatrix}
+1 & -40 & -88 & 0 & 0 & 0\\ 
+0 & 2 & 8 & 1 & 0 & 60\\
+0 & 5 & 2 & 0 & 1 &60 
+\end{bmatrix}
+   \]
+   Every simplex table has a feasible solution. It can be obtained by setting the nonbasic variables to zero: $x_1 = 0$, $x_2 = 0$, $x_3 = 60/1$, $x_4 = 60/1$, $z = 0$.
+\end{frame}
+
+\begin{frame}
+  \frametitle{The optimal solution?}
+  \begin{itemize}
+    \item The optimal solution is now obtained stepwise by pivoting in such way that z reaches a maximum. 
+    \item The big question is, how to choose your pivot equation ...
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Step 1: Selection of the pivot column}
+  Select as the column of the pivot, the first column with a negative entry in Row 1. In our example, that’s column 2 (-40)
+     \[
+T_0 = \begin{bmatrix}
+1 & -40 & -88 & 0 & 0 & 0\\ 
+0 & 2 & 8 & 1 & 0 & 60\\
+0 & 5 & 2 & 0 & 1 &60 
+\end{bmatrix}
+   \]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Step 2: Selection of the pivot row}
+  Divide the right sides by the corresponding column entries of the selected pivot column. In our example that is $60/2 = 30$ and $60/5 = 12$.
+     \[
+T_0 = \begin{bmatrix}
+1 & -40 & -88 & 0 & 0 & 0\\ 
+0 & 2 & 8 & 1 & 0 & 60\\
+0 & 5 & 2 & 0 & 1 &60 
+\end{bmatrix}
+   \]
+   Take as the pivot equation the equation that gives the smallest quotient, so $60/5$.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Step 3: Elimination by row operations}
+  \begin{itemize}
+    \item Row 1 = Row 1 + 8 * Row 3
+    \item Row 2 = Row 2 - 0.4 * Row 3
+  \end{itemize}
+     \[
+T_1 = \begin{bmatrix}
+1 & 0 & -72 & 0 & 8 & 480\\ 
+0 & 0 & 7.2 & 1 & -0.4 & 36\\
+0 & 5 & 2 & 0 & 1 &60 
+\end{bmatrix}
+   \]
+   The basic variables are now $x_1$, $x_3$ and the nonbasic variables are $x_2$, $x_4$. Setting the nonbasic variables to zero will give a new feasible solution: $x_1 = 60/5$, $x_2 = 0$, $x_3 = 36/1$, $x_4 = 0$, $z =480$.
+\end{frame}
+
+\begin{frame}
+  \frametitle{The simplex method}
+  \begin{itemize}
+    \item We moved from z = 0 to z = 480. The reason for the increase is because we eliminated a negative term from the eqation, so: elimination should only be applied to negative entries in Row 1, but no others.
+    \item Although we found a feasible solution, we did not find the optimal solution yet (the entry of -72 in our simplex table) $\longrightarrow$ repeat step 1 to 3. 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{The simplex method}
+  Another iteration is required:
+  \begin{itemize}
+    \item Step 1: Select column 3
+    \item Step 2: $36/7.2 = 5$ and $60/2 = 30$ $\longrightarrow$ select 7.2 as the pivot
+    \item Elimination by row operations:
+    \begin{itemize}
+      \item Row 1 = Row 1 + 10*Row 2
+      \item Row 3 = Row 3 - (2/7.2)*Row 2
+    \end{itemize}
+       \[
+T_2 = \begin{bmatrix}
+1 & 0 & 0 & 10 & 4 & 840\\ 
+0 & 0 & 7.2 & 1 & -0.4 & 36\\
+0 & 5 & 0 & -1/36 & 1/0.9 &50 
+\end{bmatrix}
+   \]
+    \item The basic feasible solution: $x_1 = 50/5$, $x_2 = 36/7.2$, $x_3 = 0$, $x_4 = 0$, $z=840$ (no more negative entries: so this solution is also the optimal solution)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Using Matlab for LP problems}
+  \begin{columns}
+    \column{0.5\textwidth}
+    We are going to solve the following LP problem:\\
+    $\min f(x) = -5x_1 -4x_2 - 6x_3$ \\
+    s.t. \\
+    $x_1 - x_2 + x_3 \leq 20$ \\
+    $3x_1 + 2x_2 + 4x_3 \leq 42$ \\
+    $3x_1 + 2x_2 \leq 30$ \\
+    $x_1 \geq 0$ \\
+    $x_2 \geq 0$ \\
+    $x_3 \geq 0$
+    \column{0.5\textwidth}
+    Using the function \lstinline$linprog$:
+    \begin{lstlisting}
+f = [-5; -4; -6]
+A = [1 -1 1; 3 2 4; 3 2 0];
+b = [20; 42; 30];
+lb = zeros(3,1);
+[x,fval,exitflag,output,lambda]
+= linprog(f,A,b,[],[],lb);
+    \end{lstlisting}
+Gives:
+    \begin{lstlisting}
+x = 0.00 15.00 3.00
+lambda.ineqlin = 0 1.50 0.50
+lambda.lower = 1.00 0 0
+    \end{lstlisting}
+  \end{columns}
+\end{frame}
+
+% \section{Non-linear programming}
+% \begin{frame}
+%   \frametitle{Non-linear programming}
+%   \begin{itemize}
+%     \item In nonlinear programming the objective function and the constraints are nonlinear functions. For example: \vskip1em
+%     $\min f(x) = -5x_1^2 + 3x_2^2$ \\
+%     s.t. \\
+%     $g(x) = 2x_1 + x_2 - 5 = 0$ 
+%     \vskip1em \pause
+%     \item Using the Lagrange multiplier method, a Lagrangian function can be defined as:
+%     \[
+%       L(x,v) = f(x) + vg(x)
+%     \] \pause
+%   \item The optimum is found by differentiation of $L$ with respect to $x$ and $v$ and set the equations to zero:
+%   \[
+%     \frac{\partial L}{\partial x} = \frac{\partial f}{\partial x} + v\frac{\partial g}{\partial x} = 0, \, g(x) = 0
+%   \]
+%   \end{itemize}
+% \end{frame}
+% 
+% \begin{frame}
+%   \frametitle{Lagrange multiplier method}
+%    $\min f(x) = -5x_1^2 + 3x_2^2$ \\
+%     s.t. \\
+%     $g(x) = 2x_1 + x_2 - 5 = 0$ \\
+%     \vskip1em \pause
+%     \[
+%       L = 5x_1^2 + 3x_2^2 + v(2x_1 + x_2 - 5)
+%     \]
+%     \pause
+%     \[ 
+% \left.\begin{matrix}
+% \frac{\partial L}{\partial x_1} = 10x_1 + 2v = 0 \\ 
+% \frac{\partial L}{\partial x_2} = 6x_2 + v = 0  \\ 
+% \frac{\partial L}{\partial v} = g(x) = 2x_1 + x_2 - 5 = 0
+% \end{matrix}\right\} v = \frac{150}{17}, x_1=\frac{30}{17}, x_2=\frac{25}{17}
+%     \]
+% \end{frame}
+% 
+% \begin{frame}
+%   \frametitle{LMM for non-linear problems with inequality constraints}
+%    Consider a problem of the following form:
+%    $\min f(x)$ \\
+%     s.t. \\
+%     $h_j(x) = 0 \quad \left{j=1,\ldots,m\right}$
+%     $g_i(x) \geq 0 \quad \left{i=m+1,\ldots,p\right}$ \\
+%     \vskip1em \pause
+%     The Lagrangian function is defined as:
+%     \[
+%       L(x,u,v) = f(x) + \sum_{j=1}^{m} v_j h_j(x)+\sum_{j=m+1}^{p}u_j g_j(x)
+%     \]
+%     The \emph{Karush-Kuhn-Tucker} conditions state that the optimal solution is found 
+% \end{frame}
+\section{Summary}
+\subsection*{}
+\begin{frame}
+  \frametitle{Summary}
+  \begin{itemize}
+    \item Curve fitting: Manual procedures for polynomial fitting in Matlab and Excel
+    \item Curve fitting: Matlab's curve-fitting toolbox
+    \item Curve fitting: Matlab's non-linear least-squares solver \lstinline$lsqnonlin$
+    \item Optimization: An introduction to the Simplex method
+    \item Optimization: Use of the \lstinline$linprog$ solver
+  \end{itemize}
+
+\end{frame}
+
+
+
+\end{document}
+
+
+% References
+% http://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-00sc-introduction-to-computer-science-and-programming-spring-2011/unit-1/lecture-1-introduction-to-6.00/
+% http://www.greenteapress.com/thinkpython/html/thinkpython002.html
+% https://www.youtube.com/channel/UCLMQ21H2ad95faYG3yGCwYA
+%http://stackoverflow.com/questions/4227145/in-matlab-are-variables-really-double-precision-by-default
+%http://www.exploringbinary.com/why-0-point-1-does-not-exist-in-floating-point/
+
