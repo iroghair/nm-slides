@@ -4,11 +4,6 @@ function Z = fact_while(N)
 % N      : value of which the factorial is computed
 % returns: factorial of N
 
-% Catch non-integer case
-if (fix(N)~=N) | (N<0)
-    disp 'Provide a positive integer number!'
-    return;
-end
 
 Z = 1;
 i = 1;

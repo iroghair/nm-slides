@@ -1,7 +1,6 @@
-function [avg,ssm] = myAverage(a,b,c)
+function [myAvg, my_sum] = myAverage(in1, in2, in3)
 
-myvector = [a;b;c];
-% out = mean(myvector);
-ssm = (a + b + c);
-avg = ssm/3;
+my_sum = in1 + in2 + in3;
+myAvg = my_sum / 3;
+
 end

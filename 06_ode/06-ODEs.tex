@@ -1,4 +1,7 @@
-\documentclass[11pt,table,final,fleqn,xcolor={usenames,dvipsnames,table},handout]{beamer}
+% !TEX TS-program = xelatex
+% !TEX encoding = UTF-8 Unicode
+% !TEX spellcheck = en_US
+\documentclass[11pt,table,final,fleqn,xcolor={usenames,dvipsnames,table}]{beamer}
 \usetheme[]{Frankfurt}
 
 \input{../00-settings.tex}
@@ -21,7 +24,7 @@
   \titlepage
 }
 
-\part{Explicit and Implicit methods}
+\part{Explicit methods}
 \frame{\partpage}
 
 \section{Introduction}
@@ -502,7 +505,7 @@
     $ \quad \epsilon_\text{abs} = \norm{\vec{y}_\text{numerical} - \vec{y}_\text{analytical}}_{2,\infty} $
   \end{block}
   \begin{block}{Relative difference}
-    $ \quad \epsilon_\text{rel} = \frac{\norm{\vec{y}_\text{numerical} - \vec{y}_\text{analytical}}_{2,\infty}}{\norm{\vec{y}_\text{analytical}}_{2,\infty}} $
+    $ \quad \epsilon_\text{rel} = \norm{\frac{\vec{y}_\text{numerical} - \vec{y}_\text{analytical}}{\vec{y}_\text{analytical}}}_{2,\infty} $
   \end{block}
 \end{frame}
 
@@ -772,7 +775,7 @@
 %   \footnotesize\selectfont
   Note multivariate Taylor expansion:
   \begin{multline*}
-    f(x_i+h,y_i+k) = f_i + h \left. \frac{\partial f}{\partial x}\right|_i + h\left. \frac{\partial f}{\partial y}\right|_i + \mathcal{O}{(h^2)} \\
+    f(x_i+h,y_i+k) = f_i + h \left. \frac{\partial f}{\partial x}\right|_i + k\left. \frac{\partial f}{\partial y}\right|_i + \mathcal{O}{(h^2)} \\
     \Rightarrow \frac{h}{2}\left(f_i + h\left.\frac{\partial f}{\partial x}\right|_i + h f_i \left. \frac{\partial f}{\partial y} \right|_i \right) = \frac{h}{2} f\left(x_i+h,y_i+hf_i\right) + \mathcal{O}{(h^3)}
   \end{multline*}
   Concluding:
@@ -1174,8 +1177,7 @@ Using $b_1+b_2=1$, $c_2b_2=\frac{1}{2}$, $a_{2,1}b_2=\frac{1}{2} \Rightarrow$ 3 
  \end{cases}\, \mathrm{with}\, k_1 = 0.5,\, k_2 = 1,\, x(0) = 2$
  \vspace*{1ex}
   \begin{block}{Create an ODE function}
-    \begin{lstlisting}[backgroundcolor=]
-function [dxdt] = myEqnFunction(t,x)
+    \begin{lstlisting}[backgroundcolor=]function [dxdt] = myEqnFunction(t,x)
 k1 = 0.5;
 k2 = 1;
 dxdt = (t>10)*k2/x - k1/x^2;
@@ -1183,8 +1185,7 @@ dxdt = (t>10)*k2/x - k1/x^2;
   \end{block}
   \pause
   \begin{block}{Create a solution script}
-    \begin{lstlisting}[backgroundcolor=]
-x_init = 2;         % Initial condition
+    \begin{lstlisting}[backgroundcolor=]x_init = 2;         % Initial condition
 tspan = [0 20];     % Time span
 options = odeset('RelTol',1e-8,'AbsTol',1e-8);
 [t,x] = ode45(@myEqnFunction,tspan,x_init,options);\end{lstlisting}
@@ -1592,10 +1593,10 @@ function [dxdt] = myODE(t,x,a,b,c)
 \begin{frame}
   \frametitle{Systems of ODEs: Implicit methods}
   \begin{block}{Backward Euler method}
-    $ \displaystyle  \vec{y}_{i+1} = \vec{y}_i + h \left(1 - h\left. \frac{d\vec{f}}{d\vec{y}}\right|_i \right)^{-1}\vec{f}(\vec{y}_i)$
+    $ \displaystyle  \vec{y}_{i+1} = \vec{y}_i + h \left(\vec{I} - h\left. \frac{d\vec{f}}{d\vec{y}}\right|_i \right)^{-1}\vec{f}(\vec{y}_i)$
   \end{block}
   \begin{block}{Implicit midpoint method}
-    $ \displaystyle  \vec{y}_{i+1} = \vec{y}_i + h \left(1 - \frac{h}{2}\left. \frac{d\vec{f}}{d\vec{y}}\right|_i \right)^{-1} \vec{f}(\vec{y}_i)$
+    $ \displaystyle  \vec{y}_{i+1} = \vec{y}_i + h \left(\vec{I} - \frac{h}{2}\left. \frac{d\vec{f}}{d\vec{y}}\right|_i \right)^{-1} \vec{f}(\vec{y}_i)$
   \end{block}  
 \end{frame}
 
@@ -1705,7 +1706,7 @@ Backward Euler: always stable, even for $\Delta t > 100$ (but then not very accu
   \frametitle{Demonstration with example}
   \tikz{\node[emphblock,text width=\textwidth] {
   Cure for stiff problems: use implicit methods!
-To find out whether your system is stiff: check whether one of the eigenvalues have an imaginary part};}
+  To find out whether your system is stiff: check whether one of the eigenvalues have an imaginary part};}
 \end{frame}
 
 \begin{frame}[fragile]

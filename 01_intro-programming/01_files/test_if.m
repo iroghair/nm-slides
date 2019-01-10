@@ -1,7 +1,8 @@
-num = floor (10* rand +1) ;
-guess = input ('Your guess please : ') ;
+num = floor (10* rand +1);
+guess = input ('Your guess please : ');
+
 if ( guess ~= num )
-    disp (['Wrong, it was ', num2str(num), '. Kbye. ']) ;
+    disp (['Wrong, it was ', num2str(num), '. Kbye. ']);
 else
-    disp ('Correct !') ;
+    disp ('Correct !');
 end

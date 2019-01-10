@@ -1,0 +1,281 @@
+\documentclass[11pt,table,final,fleqn,xcolor={usenames,dvipsnames},handout]{beamer}
+\usetheme[]{Frankfurt}
+\usecolortheme{crane}
+
+\input{../00-settings.tex}
+
+% PRESENTATION SPECIFICS
+\title{Numerical Methods for Chemical Engineers}
+\subtitle{Study guide for 6E5X0, 2018-2019}
+
+\author[I.~Roghair]{\underline{Ivo~Roghair}, Martin van Sint Annaland}
+
+\institute{Chemical Process Intensification\\Eindhoven University of Technology}
+
+\date{12 November 2018}
+
+% BEGIN PRESENTATION
+\begin{document}
+% \include{../lstsettings.tex}
+
+\frame[plain]{
+  \titlepage
+}
+   
+\section{Introduction}
+\begin{frame}
+ \frametitle{Numerical Methods}
+ \renewcommand{\thefootnote}{$\star$} 
+  {\LARGE ``Simulation and mathematical modeling will power the twenty-first century the way steam powered the nineteenth.''\\
+   {\vspace{1em}\hspace{2em} --- W.H. Press\footnote{\tiny Author of Numerical recipes, in ``The Nature of Mathematical Modeling'' by Neil Gershenfeld }}} \\
+   \vspace{-1em}
+   \flushright\tikz{\node[opacity=0.4] at (4cm,0) {\includegraphics[width=0.5\textwidth]{sengine.jpg}};}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Ptolemy and the almagest}
+ \begin{columns}
+   \column{0.5\textwidth}\centering
+     \includegraphics[width=0.8\columnwidth]{Ptolemy.png}
+   \column{0.5\textwidth}\centering
+     \includegraphics[width=\columnwidth]{Cassini_apparent.png}   
+ \end{columns} \vspace{1em}
+ \tikz{\node[emphblock,text width=\textwidth]{
+   ${\sim}150$ AD. Development of numerical approximations to describe the motions of the heavenly bodies with accuracy matching reality sufficiently.};}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Numerical Methods}
+ \begin{itemize}
+  \item Numerical analysis is concerned with obtaining approximate solutions to problems while maintaining reasonable bounds of error...
+  \item ...because it is often impossible to obtain exact answers ...
+  \item Numerical analysis makes use of algorithms to
+approximate solutions
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Relevance}
+  \begin{itemize}
+  \item Important to the world!
+  \item E.g. in astronomy, construction, agriculture, architecture, ....
+  \item And of course in Engineering!
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{...Chemical Engineering...}
+  \begin{itemize}
+	  \item Description of reactors and separators (dynamic and steady state)
+		\item Computational fluid dynamics
+		\item Thermodynamic equations of state
+		\item Optimizing process performance
+		\item Design and synthesis of processes
+		\item Regression of data, e.g. isotherms, kinetics, ...
+ \end{itemize}
+\end{frame}
+
+\section{About this course}
+\begin{frame}
+ \frametitle{Course Schedule}
+ \begin{tabular}{ccll}
+ \hline
+ Lecture & Date & Topic & Teacher \\ 
+ \hline
+ 1 & 12/11/2017 & Programming and algorithms (1+2) & IR \\ 
+ 2 & 15/11/2017 & Numerical errors & MSA \\ 
+ 3 & 19/11/2017 & Linear eqns: direct methods & IR\\ 
+ 4 & 22/11/2017 & Linear eqns: iterative methods & IR \\ 
+ 5 & 26/11/2017 & Non-linear equations (1) & MSA \\ 
+ 6 & 29/11/2017 & Non-linear equations (2) & MSA\\ 
+ 7 & 03/12/2017 & No lecture & \\ 
+ 8 & 06/12/2017 & No lecture & \\ 
+ 9 & 10/12/2017 & Interpolation + integration & IR \\ 
+ 10 & 13/12/2017 & ODEs (1) & MSA \\
+ 11 & 17/12/2017 & ODEs (2) & MSA \\ 
+ 12 & 20/12/2017 & PDEs & MSA \\ 
+ 13 & 07/01/2018 & Q\&A session & IR \\ 
+ 14 & 10/01/2018 & Regression and optimization & IR \\ 
+ \hline
+ \end{tabular} 
+\end{frame}
+
+\begin{frame}
+ \frametitle{Course Objectives}
+ \begin{itemize}
+  \item Gain experience with programming basics and algorithm design
+  \item Acquire knowledge of and experience with different techniques for the numerical solution of systems of linear and non-linear algebraic and differential equations, as well as data analysis and optimization.
+  \item Being able to solve various numerical problems using Matlab or Excel. 
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Prerequisites}
+  The following courses should give you enough background knowledge to follow this course comfortably:
+ \begin{itemize}
+   \item Calculus
+   \item Linear Algebra
+   \item Some basic MATLAB experience
+     \begin{itemize}
+       \item We will shortly cover some aspects on MATLAB programming in the first lectures. Detailed documents and courses are provided on Canvas, for your own reference.
+     \end{itemize}
+    \end{itemize}
+    You will definitely need a laptop with Matlab and Excel installed!
+\end{frame}
+
+\begin{frame}
+ \frametitle{Course Materials}
+ \begin{itemize}
+  \item Lecture slides
+  \item MATLAB scripts
+  \item Additional articles
+  \item There are some useful books:
+  \begin{itemize}
+    \item Numerical recipes, W.H. Press et al.
+    \item Numerical methods for chemical engineering, K.J. Beers
+    \item Numerical methods for chemical engineers, A. Constantinides
+    \item Essential matlab-for engineers ,B.D. Hahn
+    \item Introduction to Numerical Methods and Matlab Programming for Engineers, T. Young and M.J. Mohlenkamp
+  \end{itemize}
+ \end{itemize}
+  \tikz{\node[emphblock,text width=\textwidth]{
+    Look on Canvas for the slides, exercises, scripts, assignments and additional documentation on MATLAB.
+   };}
+\end{frame}
+
+\section{Assessments}
+\begin{frame}
+ \frametitle{Assessment}
+ \begin{block}{5 assignments}
+  \begin{itemize}
+    \item Each 20\% of the final result
+    \item Done in groups of 2 persons
+    \begin{itemize}
+      \item Form groups via Canvas
+      \item Make sure that you have similar intentions!
+    \end{itemize}
+    \item Short report (template provided, Canvas)
+    % \item Resit: 1 assignment + oral exam can be re-done 
+  \end{itemize}   
+ \end{block}
+ \pause
+ \begin{block}{About the 5th assignment}
+  \begin{itemize}
+    \item Short assignment + oral exam (in groups)
+    \item Oral exam covers \emph{all assignments and topics}
+    \item Individual knowledge is assessed
+    \item Grade needs to be at least a 5.0
+  \end{itemize}   
+ \end{block}
+\end{frame} 
+\begin{frame}
+ \frametitle{Assignment grading}
+ We will use rubrics to grade your reports. The following categories will be looked at. \pause
+    \begin{itemize}[<+->]
+    	\item Use of numerical methods: e.g. built-in solvers vs. show implementation numerical methods
+    	\item Analysis of results: just the number is provided vs. high detail analysis and interpretation
+    	\item Programming skills: unstructured code, difficult to change vs. readable code with comments and UI
+    	\item Visualisation: unreadable graphs with no axes labels or legend vs. publication quality graphs, consistency between datasets
+    \end{itemize} 
+  % \tikz{\node[emphblock,text width=\textwidth]{
+  %   The first assignment will be graded via peer-review.};}
+\end{frame}
+%
+%\begin{frame}
+% \frametitle{Report structure}
+% We want the report to be to the point, describing your approach in solving the numerical problems and giving the results.
+% \begin{enumerate}
+%   \item Introduction: A few lines in your own words on the goal of the assignment. Don't copy/paste the assignment, we know what it says.
+%   \item Results: Provide the results on the question(s) on the assignment. Explain your choices, observations. Make clear graphs (axis labels, readable font). Provide code snippets when you want to illustrate certain nifty tricks, but whole scripts should go in the appendix. Feel free to explore beyond the boundaries of the assignment.
+%   \item Discussion and Conclusion: A few lines! Did you achieve your goals, what have you learned?
+%   \item Appendix: Provide the scripts and possibly figures that did not make it into the report itself.
+% \end{enumerate}
+%\end{frame}
+
+%
+\begin{frame}
+ \frametitle{Assignment handout and deadlines}
+     Hand-in your assignments via Canvas
+    \begin{itemize}
+      \item Deadlines are given on Canvas as well
+      \item Deliver the report in PDF format
+      \item Send along the scripts + necessities in a .zip
+    \end{itemize}
+    \vskip1em
+    \tikz{\node[emphblock,text width=\textwidth]{
+      When delivering your final assignment, suggest a timeslot for the oral exam (e.g. via Canvas/assignment comment section or as Canvas message).
+    };}
+\end{frame}
+% 
+% \begin{frame}
+%  \setbeamercolor{alerted text}{fg=tuered}
+%  \frametitle{Assignment handout and deadlines}
+%  \begin{tabular}{p{0.1\textwidth}ccp{0.4\textwidth}}
+%  \hline
+%  Assign\-ment & Provided & Deadline & Topic \\ 
+%  \hline
+%   1 & 9/11/2015 & 23/11/2015 & Programming and algorithms, numerical errors \\ 
+%  2 & 19/11/2015 & \alert{07/12/2015} & Linear and non-linear equations  \\ 
+%  3 & \alert{03/11/2015} & \alert{17/12/2015} & ODEs, integration and interpolation \\
+%  4 & 10/12/2015 & 04/01/2016 & PDEs \\ 
+%  5 & 04/01/2015 & 17/01/2016 & Regression and optimization \\ 
+%  \hline
+%  \end{tabular} 
+% \end{frame}
+
+\section{Finally...}
+\begin{frame}
+ \frametitle{Contact information}
+ \begin{block}{Ivo Roghair}
+  \begin{itemize}
+%    \item Contact via Canvas is preferred!
+   \item E-mail: \href{mailto:i.roghair@tue.nl}{i.roghair@tue.nl}
+   \item Office: STW 0.37
+   \end{itemize} 
+ \end{block}
+ \vspace{1em}
+  \begin{block}{Martin van Sint Annaland}
+  \begin{itemize}
+   \item E-mail: \href{mailto:m.v.sintannaland@tue.nl}{m.v.sintannaland@tue.nl}
+   \item Office: STW 0.39 
+   \end{itemize} 
+ \end{block}
+ \begin{block}{Dario Balice, Francesco Sabatino, Jasper van Kampen}
+    For help with the exercises, Dario, Francesco and Jasper will help out during the lectures.\\
+  \end{block}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Some last remarks}
+  \begin{itemize}
+   \item Tell us if something is not clear.
+   \item We try to make the lectures interactive, working on examples and creating scripts as we go. It is advised that you work along with us to get the most out of this course!
+   \item The exercises are meant to provide a jump start towards the assignments.
+   \item We will always answer questions on the exercises. We may didactically answer questions on the assignments.
+   \item During the lectures/tutorials we first and foremost work on the exercises. If they are done, you can work on the assignment if you want.
+   \end{itemize} 
+\end{frame}
+
+\begin{frame}
+ \frametitle{Some Acknowledgements}
+ \centering\includegraphics[width=\textwidth]{ack.png}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Some Real Acknowledgements}
+ \begin{itemize}
+  \item To Roel Verstappen of Groningen University
+  \item To Johan Hult of Cambridge University
+  \item To Edwin Zondervan, now at Universit\"at Bremen
+ \end{itemize}
+\end{frame}
+\end{document}
+
+
+% References
+% http://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-00sc-introduction-to-computer-science-and-programming-spring-2011/unit-1/lecture-1-introduction-to-6.00/
+% http://www.greenteapress.com/thinkpython/html/thinkpython002.html
+% https://www.youtube.com/channel/UCLMQ21H2ad95faYG3yGCwYA
+%http://stackoverflow.com/questions/4227145/in-matlab-are-variables-really-double-precision-by-default
+%http://www.exploringbinary.com/why-0-point-1-does-not-exist-in-floating-point/
+

@@ -3,9 +3,6 @@
 
 \input{../00-settings.tex}
 
-% \usepackage{pgfpages}
-% \pgfpagesuselayout{4 on 1}[border shrink=5mm]
-
 \title{Curve fitting, data regression and optimization}
 
 \author[I.~Roghair]{\underline{Ivo~Roghair}, Martin van Sint Annaland}
@@ -14,7 +11,6 @@
   Eindhoven University of Technology}}
 
 \date
-
 
 % BEGIN PRESENTATION
 \begin{document}
@@ -267,7 +263,7 @@ k = lsqnonlin(fun,k0,lb,ub,options)
   Here, $y_i$ would again be the measurement data and $\hat{y}$ the solution computed by a model.
   \item \lstinline$k0$ is the initial guess for the fitting coefficient (or: array of initial guesses when fitting multiple coefficients)
   \item \lstinline$lb$ and \lstinline$ub$ are the lower and upper boundaries for \lstinline$k0$. These should both be the size of the \lstinline$k0$-array.
-  \item \lstinline$options$ are some fitting options, for more fine-grained control on the fit procedure. Use e.g. \lstinline$options = optimset(’TolX’,1.0E-6,’MaxFunEvals’,1000);$ to create an options object, or leave it empty (\lstinline$options = []$).
+  \item \lstinline$options$ are some fitting options, for more fine-grained control on the fit procedure. Use e.g. \lstinline$options = optimset('TolX',1.0E-6,'MaxFunEvals',1000);$ to create an options object, or leave it empty (\lstinline$options = []$).
   \end{itemize}  
 \end{frame}
 
@@ -314,11 +310,29 @@ options = optimset('TolX',1.0E-6,'MaxFunEvals',1000);
     Our fitted coefficients are stored in \lstinline$ke$. Note that we get a lot more data back that allows to check the fitting results in more detail.
 \end{frame}
 
+
 \begin{frame}[fragile] 
   \frametitle{Example use of lsqnonlin}
   \input{tikzplots/lsqnonlinfit.tikz}
 \end{frame}
 
+\begin{frame}[fragile] 
+  \frametitle{Postprocessing of results}
+  The data returned by \lstinline{lsqnonlin} can be used to obtain the 95\% confidence intervals. Recall the command:
+  \begin{lstlisting}
+[ke,RESNORM,RESIDUAL,EXITFLAG,OUTPUT,LAMBDA,JACOBIAN] = lsqnonlin(@fitcrit,k0,LB,UB,options,T,U,U0);
+  \end{lstlisting}
+    Using the residuals and Jacobian we can use \lstinline{nlparci} to get the confidence bounds:
+    \begin{lstlisting}
+cflim = nlparci(ke, RESIDUAL, JACOBIAN);
+
+clc
+disp('model parameters and confidence limits');
+T = table;
+T.ke = ke';
+T.LowerCI = cflim(:,1);
+T.UpperCI = cflim(:,2)\end{lstlisting}
+\end{frame}
 
 % \section{Curve fitting}
 % \subsection*{}

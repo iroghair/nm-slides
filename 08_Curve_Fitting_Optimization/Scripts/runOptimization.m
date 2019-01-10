@@ -8,7 +8,17 @@ LB = [0.00 0.00];
 UB = [ Inf Inf ];
 % Perform nonlinear least squares fit
 options = optimset ('TolX' ,1.0E-6, 'MaxFunEvals' ,1000);
-[ ke , RESNORM , RESIDUAL , EXITFLAG , OUTPUT , LAMBDA , JACOBIAN ] ...
-    = lsqnonlin ( @fitcrit , k0 , LB , UB , options ,T ,U , U0 ) ;
+[ke, RESNORM, RESIDUAL, EXITFLAG, OUTPUT, LAMBDA, JACOBIAN] ...
+    = lsqnonlin(@fitcrit, k0, LB, UB, options,T , U, U0) ;
 
-ke
+cflim = nlparci(ke, RESIDUAL, JACOBIAN);
+
+clc
+disp('model parameters and confidence limits');
+T = table;
+T.ke = ke';
+T.LowerCI = cflim(:,1);
+T.UpperCI = cflim(:,2)
+
+
+

@@ -18,9 +18,9 @@ b = zeros(Nx*Ny,1);                 % Right hand side vector
 
 [A,b] = setBoundaryConditions(A,b,Tb,Nx,Ny);% Set boundary conditions
 
-% tic; T = A\b; toc                                    % Solve matrix
+tic; T = A\b; toc                                    % Solve matrix
 % tic; [T,A,b] = GaussianEliminate_v3(A,b); toc
-tic; [T,L,U] = LUdecomp(A,b); toc
+% tic; [T,L,U] = LUdecomp(A,b); toc
 % % 
 % tic; [T,it_j] = solveJacobi(A,b); toc
 % tic; [T,it_j] = solveJacobi_vec(A,b); toc

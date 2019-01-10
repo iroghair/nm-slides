@@ -20,6 +20,7 @@ for N = Nrange
     % Compute integral: trapezoid method
     IT(counter) = traprule(@myfunc, x0, x1, N);
 
+    IS(counter) = simpson(@myfunc, x0, x1, N);
     counter = counter + 1;
 end
 
@@ -27,4 +28,9 @@ errR = abs(IR-I);
 errL = abs(IL-I);
 errM = abs(IM-I);
 errT = abs(IT-I);
-loglog(Nrange, errR, Nrange, errL, Nrange, errM, Nrange, errT)
+errS = abs(IS-I);
+loglog(Nrange, errR, Nrange, errL, Nrange, errM, Nrange, errT, Nrange, errS)
+xlabel('Intervals [-]')
+ylabel('Absolute error')
+legend('Right', 'Left', 'Mid', 'Trapezoid','Simpson')
+title('Comparison of different Newton-Cotes integration methods')
