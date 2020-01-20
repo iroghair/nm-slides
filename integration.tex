@@ -1,0 +1,370 @@
+\section{Introduction}
+\subsection*{General}
+\begin{frame}[label=contents_integration]
+  \frametitle{Today's outline}
+  \mode<beamer>{
+    \only<1>{\tableofcontents}
+  }
+  \only<2>{\tableofcontents[currentsection,currentsubsection]}
+\end{frame}
+
+\frame{
+  \frametitle{What is numerical integration?}
+  To determine the integral $I(x)$ of an integrand $f(x)$, which can be used to compute the area underneath the integrand between $x=a$ and $x=b$.
+  \[
+    I(x) = \int_a^b f(x)dx
+  \]
+  \pause
+  Today we will outline different numerical integration methods.
+  \vskip2em
+  \begin{itemize}
+    \item Riemann integrals
+    \item Trapezoidal rule
+    \item Simpson's rule
+  \end{itemize}
+}
+\begin{frame}
+  \frametitle{Why do chemical engineers need integration?}
+  \begin{itemize}
+    \colorize<1> \item Obtaining the cumulative particle size distribution from a particle size distribution
+    \colorize<2> \item The concentration outflow over time may be integrated to yield the residence time distribution
+    \colorize<3> \item Integration of a varying product outflow yields the total product outflow
+    \colorize<4> \item Quantitative analysis of mixture components via e.g. GC/MS
+    \colorize<5> \item Not all function have an explicit antiderivative, e.g. $\int e^{x^2} dx$ or $\int \frac{1}{\ln x}dx$
+  \end{itemize}
+\end{frame}
+
+\section{Riemann integrals}
+\againframe<2>{contents_integration}
+\begin{frame}
+  \frametitle{Riemann integrals}
+  \footnotesize\selectfont
+  \tikz{\node[emphblock,text width=\textwidth] {Basic idea: Subdivide the interval $[a,b]$ into $n$ subintervals of equal length $\Delta x = \frac{b-a}{n}$ and use the sum of area to approximate the integral.};}
+  \pause
+  \begin{columns}[T]
+ \column{0.33\textwidth}
+    \begin{center}
+      Left endpoint rule \vskip1em
+      \begin{tikzpicture}[scale=0.5]
+        \input{data/interpolate-graph.tex}
+        
+        \draw [intblock] (1,0) rectangle (x0);
+        \draw [intblock] (2,0) rectangle (x1);
+        \draw [intblock] (3,0) rectangle (x2);
+        \draw [intblock] (4,0) rectangle (x3);
+        
+        \draw [interp,smooth,domain=0:4.69] plot (\x, {0.5*\x*\x*\x-(10/3)*\x*\x+5.5*\x+1});
+        \draw [interp,smooth,opacity=0.4,dashed,domain=-0.15:4.73] plot (\x, {0.5*\x*\x*\x-(10/3)*\x*\x+5.5*\x+1});
+      \end{tikzpicture}
+      \[
+        L_n = \sum_{i=1}^n f(x_{i-1})\Delta x_i
+      \]
+    \end{center}
+    \pause
+    \column{0.33\textwidth}
+    \begin{center}
+      Right endpoint rule \vskip1em
+      \begin{tikzpicture}[scale=0.5]
+        \input{data/interpolate-graph.tex}
+        \draw [intblock] (0,0) rectangle (x1);
+        \draw [intblock] (1,0) rectangle (x2);
+        \draw [intblock] (2,0) rectangle (x3);
+        \draw [intblock] (3,0) rectangle (x4);
+        
+        \draw [interp,smooth,domain=0:4.69] plot (\x, {0.5*\x*\x*\x-(10/3)*\x*\x+5.5*\x+1});
+        \draw [interp,smooth,opacity=0.4,dashed,domain=-0.15:4.73] plot (\x, {0.5*\x*\x*\x-(10/3)*\x*\x+5.5*\x+1});
+      \end{tikzpicture}
+      \[
+        R_n = \sum_{i=1}^n f(x_i)\Delta x_i
+      \]
+
+    \end{center}
+    \pause
+    \column{0.33\textwidth}
+      \begin{center}
+        Midpoint rule \vskip1em
+        \begin{tikzpicture}[scale=0.5]
+          \input{data/interpolate-graph.tex}
+          
+          \draw [intblock] (0,0) rectangle (1,2.9792);
+          \node [intdot] at (0.5, 2.9792) {};
+          \draw [intblock] (1,0) rectangle (2,3.4375);
+          \node [intdot] at (1.5, 3.4375) {};
+          \draw [intblock] (2,0) rectangle (3,1.7292);
+          \node [intdot] at (2.5, 1.7292) {};
+          \draw [intblock] (3,0) rectangle (4,0.8542);
+          \node [intdot] at (3.5, 0.8542) {};
+          
+          \draw [interp,smooth,domain=0:4.69] plot (\x, {0.5*\x*\x*\x-(10/3)*\x*\x+5.5*\x+1});
+          \draw [interp,smooth,opacity=0.4,dashed,domain=-0.15:4.73] plot (\x, {0.5*\x*\x*\x-(10/3)*\x*\x+5.5*\x+1});
+        \end{tikzpicture}
+        \[
+          M_n = \sum_{i=1}^n f(\bar{x}_i)\Delta x_i
+        \]
+        with $\bar{x}_i = \frac{x_{i-1}+x_i}{2}$
+      \end{center}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Errors in Riemann integrals}
+  We define the exact integral as $ I = \int_a^b f(x)dx$, and $L_n$, $R_n$ and $M_n$ represent the left, right and midpoint rule approximations of $I$ based on $n$ intervals.
+  \vskip1em \pause
+  Writing $f^{(k)}_\text{max}$ for the maximum value of the $k$-th derivative, the upper-bounds of the errors by Riemann integrals are: \vskip1em
+  \begin{itemize}
+    \colorize<2> \item $\displaystyle \abs{I - L_n} \leq \frac{f^{(1)}_\text{max} (b - a)^2}{2n}$
+    \colorize<3> \item $\displaystyle \abs{I - R_n} \leq \frac{f^{(1)}_\text{max} (b - a)^2}{2n}$
+    \colorize<4> \item $\displaystyle \abs{I - M_n} \leq \frac{f^{(2)}_\text{max} (b - a)^3}{24n^2}$
+  \end{itemize}
+  \vskip1em
+  \onslide<5>{%
+Note that while $\abs{I - L_n}$ and $\abs{I - R_n}$ give the same \emph{upper-bounds} of the error, this does not mean the same error. Rather, the error is of opposite sign!}
+\end{frame}
+
+\section{Trapezoid rule}
+\againframe<2>{contents_integration}
+\begin{frame}
+  \frametitle{Trapezoid rule}
+  \footnotesize\selectfont
+  Since the sign of the approximation error of the left and right endpoint rules is opposite, we can take the average of these approximations:
+  \[
+    T_n = \frac{L_n + R_n}{2}
+  \]
+  \pause
+  \begin{columns}
+\column{0.5\textwidth}
+  The total area is obtained by geometric reconstruction of trapezoids:
+  \[
+    T_n = \sum_{i=1}^n \frac{f(x_{i+1})+f(x_i)}{2}\Delta x_i
+  \]
+\onslide<3>{%
+Note that this can be rewritten for equidistant intervals:
+\begin{equation*}
+  T_n = \frac{b-a}{2n} \left( f(x_0) + 2f(x_1) + \ldots + 2f(x_{n-1}) + f(x_n) \right)
+\end{equation*}}
+\column{0.5\textwidth}
+   \begin{tikzpicture}[scale=0.8]
+        \input{data/interpolate-graph.tex}
+        \draw [intblock] (0,0) -- (1,0) -- (x1.center) -- (x0.center) -- cycle;
+        \draw [intblock] (1,0) -- (2,0) -- (x2.center) -- (x1.center) -- cycle;
+        \draw [intblock] (2,0) -- (3,0) -- (x3.center) -- (x2.center) -- cycle;
+        \draw [intblock] (3,0) -- (4,0) -- (x4.center) -- (x3.center) -- cycle;
+        
+        \draw [interp,smooth,domain=0:4.69] plot (\x, {0.5*\x*\x*\x-(10/3)*\x*\x+5.5*\x+1});
+        \draw [interp,smooth,opacity=0.4,dashed,domain=-0.15:4.73] plot (\x, {0.5*\x*\x*\x-(10/3)*\x*\x+5.5*\x+1});
+    \end{tikzpicture}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Error in trapezoid integration}
+  The trapezoid rule result over $n$ intervals $T_n$ approximates the exact integral $I=\int_a^b f(x)dx$. The upper-bounds of the error is given as:  
+  \[
+    \abs{I - T_n} \leq \frac{f^{(2)}_\text{max} (b-a)^3}{12n^2}
+  \]
+  \pause
+  Recall that the midpoint rule approximates with an upper-bound error of
+  \[
+    \abs{I - M_n} \leq \frac{f^{(2)}_\text{max} (b - a)^3}{24n^2}
+  \]
+  \pause
+  \tikz{\node[emphblock,text width=\textwidth] {The midpoint rule approximation has lower error bounds than the trapezoid rule. A linear function is, however, better approximated by the trapezoid rule.}; }
+\end{frame}
+
+\section{Simpson's rule}
+\againframe<2>{contents_integration}
+\begin{frame}
+  \frametitle{Towards higher-order integration}
+  Compare how the midpoint and trapezoid functions behave on convex and concave parts of a graph.\vskip1em
+  \begin{columns}
+  \column{0.5\textwidth}
+  \centering Midpoint rule
+  \begin{tikzpicture}[scale=0.6]
+      \input{data/interpolate-graph.tex}
+      
+      \draw<2> [intblock,draw=tueorange,fill=tueorange] (0,0) rectangle (1,2.9792);
+      \node<2> [intdot,draw=tueorange,fill=tueorange] at (0.5, 2.9792) {};
+      \draw<1> [intblock] (0,0) rectangle (1,2.9792);
+      \node<1> [intdot] at (0.5, 2.9792) {};
+      \draw<1> [intblock] (1,0) rectangle (2,3.4375);
+      \node<1> [intdot] at (1.5, 3.4375) {};
+      \draw<1> [intblock] (2,0) rectangle (3,1.7292);
+      \node<1> [intdot] at (2.5, 1.7292) {};
+%       \draw<1> [intblock] (3,0) rectangle (4,0.8542);
+%       \node<1> [intdot] at (3.5, 0.8542) {};
+      \draw [intblock] (3,0) rectangle (4,0.8542);
+      \node [intdot] at (3.5, 0.8542) {};
+      
+      \draw [interp,smooth,domain=0:4.69] plot (\x, {0.5*\x*\x*\x-(10/3)*\x*\x+5.5*\x+1});
+      \draw [interp,smooth,opacity=0.4,dashed,domain=-0.15:4.73] plot (\x, {0.5*\x*\x*\x-(10/3)*\x*\x+5.5*\x+1});
+    \end{tikzpicture}
+  \column{0.5\textwidth}
+  \centering Trapezoid rule
+    \begin{tikzpicture}[scale=0.6]
+      \input{data/interpolate-graph.tex}
+      \draw<2> [intblock,draw=tueorange,fill=tueorange] (0,0) -- (1,0) -- (x1.center) -- (x0.center) -- cycle;
+      \draw<1> [intblock] (0,0) -- (1,0) -- (x1.center) -- (x0.center) -- cycle;
+      \draw<1> [intblock] (1,0) -- (2,0) -- (x2.center) -- (x1.center) -- cycle;
+      \draw<1> [intblock] (2,0) -- (3,0) -- (x3.center) -- (x2.center) -- cycle;
+%       \draw<1> [intblock] (3,0) -- (4,0) -- (x4.center) -- (x3.center) -- cycle;
+      \draw [intblock] (3,0) -- (4,0) -- (x4.center) -- (x3.center) -- cycle;
+      
+      \draw [interp,smooth,domain=0:4.69] plot (\x, {0.5*\x*\x*\x-(10/3)*\x*\x+5.5*\x+1});
+      \draw [interp,smooth,opacity=0.4,dashed,domain=-0.15:4.73] plot (\x, {0.5*\x*\x*\x-(10/3)*\x*\x+5.5*\x+1});
+  \end{tikzpicture}
+  \end{columns}
+  \pause
+  \tikz{\node[emphblock,text width=\textwidth]{\color{tueorange}In convex parts (bending down), the midpoint rule tends to overestimate the integral (trapezoid underestimates). \color{tuefuchsia}In concave parts (bending up), the midpoint rule tends to underestimate the integral (trapezoid overestimates).};}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Towards higher-order integration}
+  The errors of the midpoint rule and trapezoid rule behave in a similar way, but have opposite signs.
+  \begin{itemize}
+    \item Midpoint: $\displaystyle \abs{I - M_n} \leq \frac{f^{(2)}_\text{max}(b - a)^3}{24n^2}$
+    \item Trapezoid: $\displaystyle \abs{I - T_n} \leq \frac{f^{(2)}_\text{max} (b-a)^3}{12n^2}$
+  \end{itemize}
+  \pause
+  For a quadratic function, the errors relate as:
+  \[
+    \abs{I-M_n} = \frac{1}{2}\abs{I-T_n} 
+  \]
+  \pause
+  Taking the weighted average of these two yields the Simpson's rule:
+  \[
+    S_{2n} = \frac{2}{3}M_n + \frac{1}{3}T_n
+  \]
+  The $2n$ means we have $2n$ subintervals: the $n$ trapezoid intervals are subdivided by the midpoint rule.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Simpson's rule}
+  Consider the interval $i\in[x_0,x_2]$, subdivided in three equidistant interpolation points: $x_0,x_1,x_2$. \vskip1ex
+  \begin{itemize}
+    \item Midpoint: $\displaystyle M_i = f(\frac{x_0+x_2}{2})2\Delta x = f(x_1)2\Delta x$
+    \item Trapezoid: $\displaystyle T_i = \frac{f(x_0)+f(x_2)}{2}2\Delta x$
+    \item Simpson:  $\displaystyle S_i = \frac{2}{3}M_i + \frac{1}{3}T_i$
+  \end{itemize}
+  Note that $M_i$ and $T_i$ were computed on interval $x_2-x_0=2\Delta x$. 
+  \vskip1ex \pause
+  Now we have:
+  \begin{align*}
+    S_i &= \frac{2}{3}\left[f(x_1)2\Delta x\right] + \frac{1}{3}\left[\frac{f(x_0)+f(x_2)}{2}2\Delta x\right] \\
+    &= \frac{4\Delta x}{3}f(x_1) + \frac{\Delta x}{3}f(x_0)+f(x_2)
+    \onslide<3>{=\color{tuered} \frac{\Delta x}{3}\left( f(x_0) + 4f(x_1) + f(x_2)\right)}
+  \end{align*}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Simpson's rule}
+  We write $f(x_k) = f_k$. The integral of an interval $i\in[x_0,x_2]$ is approximated as:
+  \[
+    S_i = \frac{\Delta x}{3}\left( f_0 + 4f_1 + f_2\right)
+  \]
+  \pause
+  The next interval, $S_{j}$ with $j\in[x_2,x_4]$ with midpoint $x_3=\frac{x_2+x_4}{2}$ is approximated as:
+  \[
+    S_j = \frac{\Delta x}{3}\left( f_2 + 4f_3 + f_4\right)
+  \]
+  \pause
+  If we sum these two intervals we obtain:
+  \begin{align*}
+    I \approx S_i + S_j &= \left[\frac{\Delta x}{3}\left( f_0 + 4f_1 + f_2\right)\right] +  \left[\frac{\Delta x}{3}\left( f_2 + 4f_3 + f_4\right)\right] \\
+    &= \frac{\Delta x}{3}\left(f_0 + 4f_1+2f_2 +4f_3 + f4 \right)
+  \end{align*}
+\end{frame}
+\begin{frame}
+  \frametitle{Simpson's rule}
+  \rowcolors[]{50}{white}{white}
+  In general, Simpson's rule can be written as:
+%   \hspace*{-2em}
+  \begin{flalign*}
+    \int_a^b f(x)dx &\approx \sum^n_{\begin{matrix}
+                             k=2 & \\
+                             k\, \text{even}
+                           \end{matrix}} \frac{\Delta x}{3}\left( f_{k-2} + 4f_{k-1} + f_k\right) &\\
+                           &= \frac{\Delta x}{3}\left(f_0 + 4f_1 +2f_2+4f_3+2f_4+\ldots+2f_{n-2}+4f_{n-1}+f_n \right) &
+  \end{flalign*}
+  \pause
+  The error is given by:
+  \[
+    \abs{I-S_n} \leq \frac{f^{(4)}_\text{max}(b-a)^5}{180n^4}
+  \]
+  if integrand $f$ is differentiable on $[a,b]$.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Simpson's rule: example}
+  \footnotesize\selectfont
+  Recall our example data, described by $f(x)=\frac{x^3}{2}-\frac{10x^2}{3}+\frac{11x}{2}+1$ \\
+  $ I = \int_0^4 \frac{x^3}{2}-\frac{10x^2}{3}+\frac{11x}{2}+1 = \frac{80}{9} \approx 8.888\ldots$
+  \begin{columns}
+    \column{0.5\textwidth}
+    \begin{itemize}
+      \item<2-> \color{tuered}Interpolating $x_0$, $x_1$ and $x_2$:  $ p_{2a}(x) = -\frac{11}{6}x^2+4\frac{1}{2}x+1 $ \\
+      $\int_0^2 p_{2a} = \frac{55}{9} \approx 6.1111$
+      \item<3-> \color{tuelblue} Interpolating $x_2$, $x_3$ and $x_4$: $ p_{2b}(x) = \frac{7x^2}{6}-7\frac{1}{2}x+13 $ \\
+      $\int_2^4 p_{2b} = \frac{25}{9} \approx 2.777\ldots$
+      \item<4-> Adding the separate integrals: \\
+      $\int_0^2 p_{2a} + \int_2^4 p_{2b} = \frac{80}{9}$
+    \end{itemize}
+    \column{0.50\textwidth}
+    \centering
+    \begin{tikzpicture}[domain=-1:6,scale=0.8]
+      \input{data/interpolate-graph.tex}
+      % Polynomial interpolant
+      \draw<2->[graph,domain=0:2,draw=tuered,fill=tuered,fill opacity=0.5] (0,0) -- plot (\x, {-(11/6)*\x*\x+(4.5)*\x+1}) -- (2,0) -- cycle;
+      \draw<3->[graph,domain=2:4,draw=tuelblue,fill=tuelblue,fill opacity=0.5] (2,0) -- plot (\x, {(7/6)*\x*\x-7.5*\x + 13}) -- (4,0) -- cycle;
+    \end{tikzpicture}
+  \end{columns}
+  \onslide<5->{
+  Using Simpson's rule:
+  $ I \approx \frac{\Delta x}{3}\left(f_0 + 4f_1 +2f_2+4f_3+f_4 \right) = \frac{1}{3}\left(1+4\cdot3.6667+2\cdot2.6667+4\cdot1.0000+1.6667\right) = 8.88888 = \frac{80}{9}$
+  }
+  \onslide<6>{\tikz{\node[emphblock,text width=\textwidth]{Simpson's method is of fourth order, and it gives exact approximations of third order polynomials!};}}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Integration in Matlab}
+  Integration can be done numerically in Matlab.
+  \begin{itemize}
+    \item \lstinline$trapz(x,y)$ uses the trapezoid rule to integrate the data. Make sure you use the \lstinline$x$ variable if your data is not spaced with $\Delta x=1$. Can handle non-equidistant data.
+    \item Integration of functions can be done using the \lstinline$integral(fun,xmin,xmax)$ function:
+    \begin{lstlisting}
+fun = @(x) exp(-x.^2);
+I = integral(fun,0,10)
+I =
+   0.886226925452758
+    \end{lstlisting}
+  \end{itemize}
+\end{frame}
+
+\section{Conclusion}
+\againframe<2>{contents_integration}
+\begin{frame}
+  \frametitle{What hasn't been discussed?}
+  This course is by no means complete, and further reading is possible.
+   \begin{itemize}
+      \item Legendre polynomials: Another way of performing the polynomial interpolation
+      \item Gaussian quadrature: A third-order integration method that requires only two base points (in contrast to the third order Simpson's method, which requires three points)
+      \item Adaptive techniques: Parts of a function that are relatively steady (no wild oscillations) and differentiable can be integrated with much larger step sizes than other parts of the function.
+      \item Simpson's 3/8-rule: Yet another integration technique, requiring an additional data point
+   \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Summary}
+  \begin{itemize}
+    \item Interpolation is used to obtain data between existing data points
+    \begin{itemize}
+      \item (Bi-)Linear, polynomial and spline interpolation methods
+      \item Construction of Newton polynomials
+      \item Oscillations of high-order polynomials
+    \end{itemize}
+    \item Several techniques for numerical integration were discussed:
+    \begin{itemize}
+      \item Riemann sums, trapezoid rule, Simpson's rule
+      \item Upper-bound errors were given for each technique
+    \end{itemize}
+  \end{itemize}
+\end{frame}

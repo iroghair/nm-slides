@@ -1,0 +1,287 @@
+\section{Introduction}
+\subsection*{General}
+
+\begin{frame}
+ \frametitle{Numerical Methods}
+ \renewcommand{\thefootnote}{$\star$} 
+  {\LARGE ``Simulation and mathematical modeling will power the twenty-first century the way steam powered the nineteenth.''\\
+   {\vspace{1em}\hspace{2em} --- W.H. Press\footnote{Author of Numerical recipes, in ``The Nature of Mathematical Modeling'' by Neil Gershenfeld }}} \\
+  \vspace{-1cm}
+  \flushright\tikz{\node[opacity=0.4] at (4cm,-0.5) {\includegraphics[width=0.5\textwidth]{sengine.jpg}};}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Ptolemy and the almagest}
+ \begin{columns}
+   \column{0.5\textwidth}\centering
+     \includegraphics[height=0.7\columnwidth]{Ptolemy.png}
+   \column{0.5\textwidth}\centering
+     \includegraphics[width=0.8\columnwidth]{Cassini_apparent.png}   
+ \end{columns} \vspace{1em}
+ \tikz{\node[emphblock,text width=\textwidth]{
+   ${\sim}150$ AD. Development of numerical approximations to describe the motions of the heavenly bodies with accuracy matching reality sufficiently.};}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Numerical Methods}
+ \begin{itemize}
+  \item Numerical analysis is concerned with obtaining approximate solutions to problems while maintaining reasonable bounds of error...
+  \item ...because it is often impossible to obtain exact answers ...
+  \item Numerical analysis makes use of algorithms to
+approximate solutions
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Used in many fields... Including Chemical Engineering}
+  \begin{itemize}
+	  \item Description of reactors and separators (dynamic and steady state)
+		\item Computational fluid dynamics
+		\item Thermodynamic equations of state
+		\item Optimizing process performance
+		\item Design and synthesis of processes
+		\item Regression of data, e.g. isotherms, kinetics, ...
+ \end{itemize}
+\end{frame}
+
+\section{About this course}
+\subsection{About}
+\begin{frame}
+ \frametitle{Course Schedule}
+ \centering
+ \begin{tabular}{ccll}
+ \hline
+ Lecture & Date & Topic & Teacher \\ 
+ \hline
+ 1 & 11/11/2019 & Programming and algorithms (1) & IR \\ 
+ 2 & 14/11/2019 & Programming and algorithms (2) & IR \\ 
+ 3 & 18/11/2019 & Numerical errors & IR \\ 
+ 4 & 21/11/2019 & Linear eqns: direct methods & IR\\ 
+ 5 & 25/11/2019 & Linear eqns: iterative methods & IR \\ 
+ 6 & 28/11/2019 & Non-linear equations (1) & MSA \\ 
+ 7 & 2/12/2019 & Non-linear equations (2) & MSA\\ 
+ 9 & 5/12/2019 & Interpolation + integration & IR \\ 
+ 10 & 9/12/2019 & ODEs (1) & MSA \\
+ 11 & 12/12/2019 & ODEs (2) & MSA \\ 
+ 12 & 16/12/2019 & PDEs & MSA \\ 
+ 13 & 19/12/2019 & Regression and Optimization & IR \\ 
+ \hline
+ \end{tabular} 
+\end{frame}
+
+\begin{frame}
+ \frametitle{Course Objectives}
+ \begin{itemize}
+  \item Gain experience with programming basics and algorithm design
+  \item Acquire knowledge of and experience with various techniques for the numerical solution of systems of linear and non-linear algebraic and differential equations, as well as data analysis and optimization.
+  \item Being able to solve various numerical problems using Matlab or Excel. 
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Prerequisites}
+  The following courses should give you enough background knowledge to follow this course comfortably:
+ \begin{itemize}
+   \item Calculus
+   \item Linear Algebra
+   \item Some basic MATLAB experience
+     \begin{itemize}
+       \item We will shortly cover some aspects on MATLAB programming in the first lectures. Detailed documents and courses are provided on Canvas, for your own reference.
+     \end{itemize}
+    \end{itemize}
+    You will definitely need a laptop with Matlab and Excel installed!
+\end{frame}
+
+\begin{frame}
+ \frametitle{Course Materials}
+ \begin{itemize}
+  \item Lecture slides
+  \item MATLAB scripts
+  \item Additional articles
+  \item There are some useful books:
+  \begin{itemize}
+    \item Numerical recipes, W.H. Press et al.
+    \item Numerical methods for chemical engineering, K.J. Beers
+    \item Numerical methods for chemical engineers, A. Constantinides
+    \item Essential matlab-for engineers ,B.D. Hahn
+    \item Introduction to Numerical Methods and Matlab Programming for Engineers, T. Young and M.J. Mohlenkamp
+  \end{itemize}
+ \end{itemize}
+  \tikz{\node[emphblock,text width=\textwidth]{
+    Look on Canvas for the slides, exercises, scripts, assignments and additional documentation on MATLAB.
+   };}
+\end{frame}
+
+\section{Assessments}
+\subsection{Assessments}
+\begin{frame}
+ \frametitle{Assessment}
+ \begin{block}{4 assignments}
+  \begin{itemize}
+    \item Each 20\% of the final result
+    \item Done in groups of 2 persons
+    \begin{itemize}
+      \item Form groups via Canvas
+      \item Make sure that you have similar intentions!
+    \end{itemize}
+    \item Short report (template provided, Overleaf and Canvas)
+  \end{itemize}   
+ \end{block}
+ \pause
+ \begin{block}{Practical and oral exam}
+  \begin{itemize}
+    \item Short practical assignment + oral exam (in groups)
+    \item Oral exam covers \emph{all assignments and topics}
+    \item Individual knowledge is assessed
+    \item Grade needs to be at least a 5.0
+  \end{itemize}   
+ \end{block}
+\end{frame}
+
+\begin{frame}
+\frametitle{Assignment grading: peer assessment \& feedback}
+This course is a pilot to peer-assessment. After the deadline, each \emph{person} will grade 2 other assignments (or each group assesses 4). Rubrics are available to maintain a consistent assessment among different groups. Criteria are:
+\begin{columns}
+    \column{0.5\textwidth}\centering
+        \begin{itemize}
+            \item Assignment
+            \item Algorithm design
+            \item Code quality
+            \item Verification, validation and analysis
+        \end{itemize}
+    \column{0.5\textwidth}\centering
+        \begin{itemize}
+            \item Visualisation
+            \item Report
+            \item Creativity
+        \end{itemize}
+\end{columns}
+\vskip1em
+The assessment is done within 1 week using rubrics, additional feedback should be supplied to establish its validity.
+
+The final grade will be the averaged grade from the 4 peer-assessments, provided that the feedback is in check:
+\begin{itemize}
+    \item Outliers and challenged assessments are evaluated and possibly dismissed from the average by a TA/instructor
+    \item When statistics are poor, the assignment will be graded by the instructor
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Assignment grading: peer assessment \& feedback}
+\begin{itemize}
+    \item Along with the rubrics, you will give each other specific comments for improvement: What are you impressed with; why did you score a certain criteria low; how to improve the code or  visuals, etc. Give at least 3 tips and 3 tops.
+    \item Grades for an assignment are released only when proper assessment and feedback have been given.
+    \item A rebuttal process is in place to allow to challenge a particular assessment. Rebuttals are turned in through an additional assignment. A rebuttal should convince us and provide evidence why a certain accusation or statement is false.
+    \item We are getting help from student assistants to make the process go smoothly. I will give a possible solution after the deadline.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Peer assessment in the past}
+  \begin{columns}
+    \column{0.5\textwidth}\centering
+      \includegraphics[height=0.8\columnwidth]{histogram-TS-crop}
+    \column{0.5\textwidth}\centering
+      \includegraphics[width=0.8\columnwidth]{scatter}   
+  \end{columns}
+ \end{frame}
+
+ \begin{frame}
+  \frametitle{Peer assessment summary}
+  Complete document can be read through Canvas, here's the summary:
+  \begin{itemize}
+    \item The assignment and report template are released along with the grading rubrics
+    \item Canvas automatically performs a plagiarism check
+    \item The lecturer will give a short overview of how the assignment could have been solved (point of reference)
+    \item Students have 1 week for double-blind peer assessment
+    \item Students have the opportunity to respond to their reviewers (rebuttal)
+    \item Lecturers and TAs will randomly check the review quality, as well as the reports that have very low or very high marks or large deviations among reviews coarsely. I will provide a full correction when no suitable peer-reviews have been done.
+    \item If a student fails to produce a good, timely peer-review, their grade for the assignment will be marked NA.
+  \end{itemize}
+ \end{frame}
+%
+\begin{frame}
+ \frametitle{Assignment handout and deadlines}
+     Hand-in your assignments via Canvas
+    \begin{itemize}
+      \item Deadlines are given on Canvas as well
+      \item Deliver the report in PDF format
+      \item Send along the scripts + necessities in a .zip
+      \item Use your student ID instead of your name for identification purposes
+    \end{itemize}
+\end{frame}
+
+
+\section{Finally...}
+\subsection{Information}
+\begin{frame}
+ \frametitle{Course Philosophy}
+ \begin{itemize}
+  \item This is a hard course! It will take a lot of hours, especially if you have no coding experience.
+  \item We are here to help you. To have nice discussions, to show alternative ways, etc. Clarify language subtleties, or suggestions. Not to give away the answers.
+  \item We encourage research and independent learning. It comes down to paying attention, repetition of the concepts, and practice practice practice! 
+  \item We try to make the lectures interactive, working on examples and creating scripts as we go. It is advised that you work along with us to get the most out of this course!
+  \item It is ok to discuss the general approach to solving the problem, or to get a hint, or several hints, if you get stuck while solving a problem, but work out the details of the solution in your own group.
+  \item It is {\textbf{not ok}} to take someone else’s solution and simply copy their scripts, answers, etc.
+  \item Take regular breaks! Better 6 times per hour a short break than 1 time per hour a long break. Use keyboard shortcuts, or a mouse if you must. Set up screen brightness to a pleasant value. Stretch.
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Contact information}
+ \begin{block}{Ivo Roghair}
+  \begin{itemize}
+%    \item Contact via Canvas is preferred!
+   \item E-mail: \href{mailto:i.roghair@tue.nl}{i.roghair@tue.nl}
+   \item Office: STW 0.37
+   \end{itemize} 
+ \end{block}
+ \vspace{1em}
+  \begin{block}{Martin van Sint Annaland}
+  \begin{itemize}
+   \item E-mail: \href{mailto:m.v.sintannaland@tue.nl}{m.v.sintannaland@tue.nl}
+   \item Office: STW 0.39 
+   \end{itemize} 
+ \end{block}
+%  \begin{block}{Dario Balice, Francesco Sabatino, Jasper van Kampen}
+%     For help with the exercises, Dario, Francesco and Jasper will help out during the lectures.\\
+%   \end{block}
+\end{frame}
+
+% \begin{frame}
+%  \frametitle{Some last remarks}
+%   \begin{itemize}
+%   \item Tell us if something is not clear.
+%   \item We try to make the lectures interactive, working on examples and creating scripts as we go. It is advised that you work along with us to get the most out of this course!
+%   \item The exercises are meant to provide a jump start towards the assignments.
+%   \item We will always answer questions on the exercises. We may didactically answer questions on the assignments.
+%   \item During the lectures/tutorials we first and foremost work on the exercises. If they are done, you can work on the assignment if you want.
+%   \end{itemize} 
+% \end{frame}
+
+\begin{frame}
+ \frametitle{Some Acknowledgements}
+ \centering\includegraphics[width=\textwidth]{ack.png}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Some Real Acknowledgements}
+ For inspiration, examples and exercises:
+ \begin{itemize}
+  \item To Roel Verstappen of Groningen University
+  \item To Johan Hult of Cambridge University
+  \item To Edwin Zondervan of Universit\"at Bremen
+  \item To edX: MITx course  "Introduction to Computer Science and Programming Using Python"
+ \end{itemize}
+\end{frame}
+% \end{document}
+
+
+% References
+% http://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-00sc-introduction-to-computer-science-and-programming-spring-2011/unit-1/lecture-1-introduction-to-6.00/
+% http://www.greenteapress.com/thinkpython/html/thinkpython002.html
+% https://www.youtube.com/channel/UCLMQ21H2ad95faYG3yGCwYA
+%http://stackoverflow.com/questions/4227145/in-matlab-are-variables-really-double-precision-by-default
+%http://www.exploringbinary.com/why-0-point-1-does-not-exist-in-floating-point/
+
