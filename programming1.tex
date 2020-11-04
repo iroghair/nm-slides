@@ -927,6 +927,42 @@ end \end{lstlisting}
 \end{frame}
 
 \begin{frame}[fragile]
+ \frametitle{Functions - stack}
+ Calling functions from each other creates a 'stack', like a stack of cards. The stack works with first in, last out (FILO) principle.
+ \begin{columns}
+ \column{0.5\textwidth}
+    \begin{lstlisting}
+function [] = a()
+disp('Start of a()');
+b();
+disp('End of a()');
+end
+
+function [] = b()
+disp('Start of b()');
+c();
+disp('End of b()');
+end
+
+function [] = c()
+disp('Start of c()');
+disp('End of c()');
+end
+    \end{lstlisting}
+    \column{0.5\textwidth}
+    \begin{lstlisting}
+>> stackcheck
+Start of a()
+Start of b()
+Start of c()
+End of c()
+End of b()
+End of a()
+    \end{lstlisting}
+ \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
  \frametitle{Exercise: create a function}
  Compute $N! = N\cdot(N-1)\cdot(N-2)\cdots 2\cdot 1$\\ \vskip1em
  Create a function of our while-loop approach with N the argument: \\
@@ -1015,7 +1051,7 @@ end \end{lstlisting}
    \column{0.5\textwidth}
    \begin{itemize}
     \item<1-> In order to understand recursion, one must first understand recursion
-    \item<2-> A recursive function is called by itself (a function within a function)
+    \item<2-> A recursive function includes a call to itself (a function within a function)
     \begin{itemize}
       \item<3-> This could lead to infinite calls;
       \item<3-> A base case is required so that recursion is stopped;
