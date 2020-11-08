@@ -53,18 +53,18 @@ approximate solutions
  \hline
  Lecture & Date & Topic & Teacher \\ 
  \hline
- 1 & 11/11/2019 & Programming and algorithms (1) & IR \\ 
- 2 & 14/11/2019 & Programming and algorithms (2) & IR \\ 
- 3 & 18/11/2019 & Numerical errors & IR \\ 
- 4 & 21/11/2019 & Linear eqns: direct methods & IR\\ 
- 5 & 25/11/2019 & Linear eqns: iterative methods & IR \\ 
- 6 & 28/11/2019 & Non-linear equations (1) & MSA \\ 
- 7 & 2/12/2019 & Non-linear equations (2) & MSA\\ 
- 9 & 5/12/2019 & Interpolation + integration & IR \\ 
- 10 & 9/12/2019 & ODEs (1) & MSA \\
- 11 & 12/12/2019 & ODEs (2) & MSA \\ 
- 12 & 16/12/2019 & PDEs & MSA \\ 
- 13 & 19/12/2019 & Regression and Optimization & IR \\ 
+ 1  & 09/11/2020 & Programming and algorithms (1)       & IR \\ 
+ 2  & 12/11/2020 & Programming and algorithms (2)       & IR \\ 
+ 3  & 16/11/2020 & Numerical errors                     & IR \\ 
+ 4  & 19/11/2020 & Interpolation, integration           & IR \\ 
+ 5  & 23/12/2020 & Curve fitting, regression            & IR \\ 
+ 6  & 26/11/2020 & Linear eqns: direct methods          & IR\\ 
+ 7  & 30/11/2020 & Linear eqns: iterative methods       & IR \\ 
+ 8  & 03/11/2020 & Non-linear equations (1)             & MSA \\ 
+ 9  & 07/12/2020 & Non-linear equations (2)             & MSA\\ 
+ 10 & 20/12/2020 & Ordinary differential equations (1)  & MSA \\
+ 11 & 14/12/2020 & Ordinary differential equations (2)  & MSA \\ 
+ 12 & 17/12/2020 & Partial differential equations       & MSA \\ 
  \hline
  \end{tabular} 
 \end{frame}
@@ -86,7 +86,7 @@ approximate solutions
    \item Linear Algebra
    \item Some basic MATLAB experience
      \begin{itemize}
-       \item We will shortly cover some aspects on MATLAB programming in the first lectures. Detailed documents and courses are provided on Canvas, for your own reference.
+       \item We will cover some aspects on MATLAB programming in the first lectures. Detailed documents and courses are provided on Canvas, for your own reference.
      \end{itemize}
     \end{itemize}
     You will definitely need a laptop with Matlab and Excel installed!
@@ -95,15 +95,15 @@ approximate solutions
 \begin{frame}
  \frametitle{Course Materials}
  \begin{itemize}
-  \item Lecture slides
+  \item Lecture slides + lecture recordings
   \item MATLAB scripts
   \item Additional articles
-  \item There are some useful books:
+  \item There are some useful books for those seeking more in-depth knowledge and alternative methods, not mandatory:
   \begin{itemize}
     \item Numerical recipes, W.H. Press et al.
     \item Numerical methods for chemical engineering, K.J. Beers
     \item Numerical methods for chemical engineers, A. Constantinides
-    \item Essential matlab-for engineers ,B.D. Hahn
+    \item Essential matlab-for engineers, B.D. Hahn
     \item Introduction to Numerical Methods and Matlab Programming for Engineers, T. Young and M.J. Mohlenkamp
   \end{itemize}
  \end{itemize}
@@ -118,61 +118,50 @@ approximate solutions
  \frametitle{Assessment}
  \begin{block}{4 assignments}
   \begin{itemize}
-    \item Each 20\% of the final result
-    \item Done in groups of 2 persons
-    \begin{itemize}
-      \item Form groups via Canvas
-      \item Make sure that you have similar intentions!
-    \end{itemize}
+    \item Each 15\% of the final result
+    \item Done in groups of 2 persons, see Canvas$\,\to\,$People
     \item Short report (template provided, Overleaf and Canvas)
+    \item Questions on the assignments should be asked in-class, not through private message/mail/etc.
   \end{itemize}   
  \end{block}
  \pause
- \begin{block}{Practical and oral exam}
+ \begin{block}{Final exam}
   \begin{itemize}
-    \item Short practical assignment + oral exam (in groups)
-    \item Oral exam covers \emph{all assignments and topics}
-    \item Individual knowledge is assessed
-    \item Grade needs to be at least a 5.0
+    \item Practical and theoretical questions, covering \emph{all topics}
+    \item Exam taken on your own computer (ANS with proctorio+Matlab), opt-out through on-campus exam with screen sharing, camera surveillance and invigilators.
+    \item You can use the slides and Matlab documentation
+    \item Sample exam will be released before Christmas
+    \item Grade of the final exam needs to be at least a 5.0
   \end{itemize}   
  \end{block}
 \end{frame}
 
 \begin{frame}
-\frametitle{Assignment grading: peer assessment \& feedback}
-This course is a pilot to peer-assessment. After the deadline, each \emph{person} will grade 2 other assignments (or each group assesses 4). Rubrics are available to maintain a consistent assessment among different groups. Criteria are:
-\begin{columns}
-    \column{0.5\textwidth}\centering
-        \begin{itemize}
-            \item Assignment
-            \item Algorithm design
-            \item Code quality
-            \item Verification, validation and analysis
-        \end{itemize}
-    \column{0.5\textwidth}\centering
-        \begin{itemize}
-            \item Visualisation
-            \item Report
-            \item Creativity
-        \end{itemize}
-\end{columns}
-\vskip1em
-The assessment is done within 1 week using rubrics, additional feedback should be supplied to establish its validity.
-
-The final grade will be the averaged grade from the 4 peer-assessments, provided that the feedback is in check:
+\frametitle{Assignment grading: peer assessment \& feedback (1)}
 \begin{itemize}
-    \item Outliers and challenged assessments are evaluated and possibly dismissed from the average by a TA/instructor
-    \item When statistics are poor, the assignment will be graded by the instructor
+  \item Assignments are graded through supervised peer-assessment. After the deadline, each \emph{person} will grade 2 other assignments. Rubrics are available to maintain a consistent assessment among different groups. Criteria are:
+    \begin{itemize}
+      \item Functionality
+      \item Code style
+      \item Visualisation
+      \item Analysis
+    \end{itemize}
+  \item The assessment should be done within 3 days using rubrics, additional feedback should be supplied to establish its validity. We will assess the quality of the feedback, and grade it by a multiplier (0.8-1.2).
+  \item You can challenge one or more reviews by submitting a rebuttal; 
+
+  \item The final grade will be the averaged grade from the remaining peer-assessments (group), multiplied by the peer-review quality (individual), with a max. of 10.
+  \item When statistics are poor ($\leq 2$ reviews), the assignment will be graded by the instructor, which discards all remaining peer-reviews.
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Assignment grading: peer assessment \& feedback}
+\frametitle{Assignment grading: peer assessment \& feedback (2)}
 \begin{itemize}
     \item Along with the rubrics, you will give each other specific comments for improvement: What are you impressed with; why did you score a certain criteria low; how to improve the code or  visuals, etc. Give at least 3 tips and 3 tops.
     \item Grades for an assignment are released only when proper assessment and feedback have been given.
-    \item A rebuttal process is in place to allow to challenge a particular assessment. Rebuttals are turned in through an additional assignment. A rebuttal should convince us and provide evidence why a certain accusation or statement is false.
-    \item We are getting help from student assistants to make the process go smoothly. I will give a possible solution after the deadline.
+    \item Rebuttals are turned in through an additional assignment. A rebuttal should convince us and provide evidence and in-depth argumentation why a particular review is flawed. We will evaluate the rebuttals and discard a peer-review if it is indeed disproportionate.
+    \item We are getting help from student assistants to make the process go smoothly. I will show a possible solution after the deadline.
+    \item Grading with rubrics: don't be afraid to use the full spectrum.
 \end{itemize}
 
 \end{frame}
@@ -194,9 +183,9 @@ The final grade will be the averaged grade from the 4 peer-assessments, provided
     \item The assignment and report template are released along with the grading rubrics
     \item Canvas automatically performs a plagiarism check
     \item The lecturer will give a short overview of how the assignment could have been solved (point of reference)
-    \item Students have 1 week for double-blind peer assessment
-    \item Students have the opportunity to respond to their reviewers (rebuttal)
-    \item Lecturers and TAs will randomly check the review quality, as well as the reports that have very low or very high marks or large deviations among reviews coarsely. I will provide a full correction when no suitable peer-reviews have been done.
+    \item Students have 3 days for double-blind peer assessment
+    \item Students have the opportunity to challenge their reviewers (rebuttal)
+    \item Lecturers and TAs will check the review quality, as well as the reports that have very low or very high marks or large deviations among reviews coarsely. I will provide a full correction when no suitable peer-reviews have been done.
     \item If a student fails to produce a good, timely peer-review, their grade for the assignment will be marked NA.
   \end{itemize}
  \end{frame}
@@ -244,9 +233,6 @@ The final grade will be the averaged grade from the 4 peer-assessments, provided
    \item Office: STW 0.39 
    \end{itemize} 
  \end{block}
-%  \begin{block}{Dario Balice, Francesco Sabatino, Jasper van Kampen}
-%     For help with the exercises, Dario, Francesco and Jasper will help out during the lectures.\\
-%   \end{block}
 \end{frame}
 
 % \begin{frame}

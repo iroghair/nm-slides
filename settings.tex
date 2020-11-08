@@ -1,7 +1,5 @@
 \input{packages}
 
-\input{matlabstyle}
-
 % Presentation settings
 % \rowcolors[]{1}{maincolor!20}{maincolor!10}
 
@@ -19,63 +17,26 @@
 % Create a frame number at the bottom, and remove the section numbers from the table of contents
 \setbeamertemplate{footline}[frame number]
 
-
-% \setbeamertemplate{section in toc}[circle unnumbered]
-
-% \setbeamertemplate{section in toc}
-% {\leavevmode\leftskip=2ex%
-%   \llap{%
-%     \usebeamerfont*{section number projected}%
-%     \usebeamercolor{section number projected}%
-%     \begin{pgfpicture}{-1ex}{0ex}{1ex}{2ex}
-    %       \color{bg}
-    %       \pgfpathcircle{\pgfpoint{0pt}{.75ex}}{2.2ex}
-    %       \pgfusepath{fill}
-    %       \pgftext[base]{\color{fg}\inserttocsectionnumber}
-%     \end{pgfpicture}\kern1.25ex%
-%   }%
-%   \inserttocsection\par}
-% \setbeamertemplate{subsection in toc}
-%   {\leavevmode\leftskip=2em$\bullet$\hskip1em\inserttocsubsection\par}
-
-% \makeatletter
-% \setbeamertemplate{section in toc}
-% {\leavevmode\leftskip=2.75ex%
-%   \llap{%
-%     \normalsize%
-%     \begin{pgfpicture}{-1ex}{-0.7ex}{1ex}{1ex}
-    %       \color{bg}
-    %       \pgfpathcircle{\pgfpoint{0pt}{.75ex}}{2.2ex}
-%       \pgfusepath{fill}
-%       \pgftext[base]{\color{fg}\inserttocsectionnumber}
-%     \end{pgfpicture}%
-%     \kern1.25ex}%
-%   \inserttocsection\par
-% }
-% \setbeamertemplate{subsection in toc}
-%   {\leavevmode\leftskip=2em$\bullet$\hskip1em\inserttocsubsection\par}
-% \makeatother
-
 \newenvironment{hints}
-    {
-    \tikz{ \draw[line cap=rect] (0,0) -- (\linewidth-\pgflinewidth,0); }
-    % \footnotesize\begin{color}{gray}
+{
+  \tikz{ \draw[line cap=rect] (0,0) -- (\linewidth-\pgflinewidth,0); }
+  % \footnotesize\begin{color}{gray}
     }
     { 
-    % \end{color}
-    \tikz{ \draw[line cap=rect] (0,0) -- (\linewidth-\pgflinewidth,0); }
-    }
-
+      % \end{color}
+\tikz{ \draw[line cap=rect] (0,0) -- (\linewidth-\pgflinewidth,0); }
+}
+    
 % Set up lectures
 \AtBeginLecture{
-    % Create a part to restart the smoothbars (circles on top)
-    \part{\insertlecture}
-    % Insert the titlepage (title and subtitle should be given before the new lecture starts)
-    \frame[plain]{
-        \titlepage
-  } 
+  % Create a part to restart the smoothbars (circles on top)
+  \part{\insertlecture}
+  % Insert the titlepage (title and subtitle should be given before the new lecture starts)
+  \frame[plain]{
+    \titlepage
   }
-  
+}
+        
 \sisetup{detect-all}
 
 \input{customcommands}
@@ -84,7 +45,8 @@
 
 \input{tikzstyles}
 
-
+\input{matlabstyle}
+        
 \setbeamertemplate{section in toc}
 {\leavevmode\leftskip=2ex%
   \llap{%

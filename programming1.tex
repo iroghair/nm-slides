@@ -52,25 +52,6 @@
  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]
- \frametitle{Getting started}
-  Start Matlab, and enter the following commands on the command line. Evaluate the output.
-  \pause
-  \begin{lstlisting}
->> 2 + 3        % Some simple calculations
->> 2*3
->> 2*3^2        % Powers are done with ^ (*@ \pause @*)
->> a = 2        % Storing values into the workspace
->> b = 3
->> c = (2*3)^2  % Parentheses set priority
->> 8/a-b (*@ \pause @*)
->> sin(a)       % Mathematical functions can be used 
->> sin(0.5*pi)  % pi is an internal Matlab variable
->> 1/0          % Infinity is a thing ...
->> sqrt(-1)     % ... as are imaginary numbers
-  \end{lstlisting}
-\end{frame}
-
 \begin{frame}
  \frametitle{Introduction to programming}
  \begin{block}{What is a program?}
@@ -90,81 +71,6 @@
     \end{enumerate}
   \end{block}
 \end{frame}
-
-% \begin{frame}
-%  \frametitle{Getting started}
-%  \begin{itemize}
-%    \item Use an \emph{integrated development environment}
-%    \begin{itemize}
-%      \item Matlab
-%      \item MS Visual Studio/Code
-%      \item Eclipse
-%      \item Dev C++
-%      \item IDLE, Canopy (express)
-%    \end{itemize}
-%    \item Create a simple program:
-%    \begin{itemize}
-%      \item Hello world
-%      \item Find the roots of a parabola
-%      \item Find the greatest common divisor of two numbers
-%    \end{itemize}
-%  \end{itemize}
-% \end{frame}
-
-% \begin{frame}
-%  \frametitle{Some often used programming languages}
-%  \fontsize{7.2pt}{7.2}\selectfont
-%  \begin{columns}[T]
-%    \column{0.45\textwidth}
-%    \begin{block}<1->{Python}
-%      \begin{itemize}
-%        \item Many functionalities available
-%        \item Smooth learning curve
-%        \item Slow compared to compiled languages
-%        \item Many freely available editors
-%      \end{itemize}
-%    \end{block}
-%     \begin{block}<2->{Pascal}
-%      \begin{itemize}
-%        \item Limited number of libraries available
-%        \item Steep learning curve
-%        \item Compiled language, may be fast
-%        \item Some free compilers (fpc)
-%      \end{itemize}
-%    \end{block}
-%    \column{0.45\textwidth}
-%    \begin{block}<3->{C / C++ / C\#}
-%      \begin{itemize}
-%        \item Many functionalities available 
-%        \item Steeper learning curve
-%        \item Needs compilation, very fast (HPC)
-%        \item Freely available (gcc, MSVC)
-%      \end{itemize}
-%    \end{block}
-%    \begin{block}<4->{Spreadsheet (Excel, Google Docs, ...)}
-%      \begin{itemize}
-%        \item High availability
-%        \item Low learning curve
-%        \item Very limited for larger problems, unbeatable for quick calculations
-%        \item Not always free
-%      \end{itemize}
-%    \end{block}
-%  \end{columns}
-%     \begin{block}<5>{Matlab}
-%      \begin{columns}[T]
-%      \column{0.5\textwidth}
-%      \begin{itemize}
-%        \item Many functionalities built-in (80+ toolkits!)
-%        \item Slow compared to compiled languages
-%        \end{itemize}
-%        \column{0.5\textwidth}
-%        \begin{itemize}
-%        \item Fairly smooth learning curve
-%        \item Needs a license (alternatives: SciLab, GNU Octave)
-%      \end{itemize}
-%      \end{columns}
-%    \end{block}
-% \end{frame}
 
 \begin{frame}
 \frametitle{Versatility of Matlab}
@@ -201,20 +107,78 @@ result = regionprops(F);
 \centering\includegraphics[width=0.7\textwidth]{cftool.png}
 \end{frame}
 
-\begin{frame}
-\frametitle{Matlab help}
+\begin{frame}[fragile]
+  \frametitle{Getting started}
+   Start Matlab, and enter the following commands on the command line. Evaluate the output.
+   \pause
+   \begin{lstlisting}
+ >> 2 + 3        % Some simple calculations
+ >> 2*3
+ >> 2*3^2        % Powers are done with ^ (*@ \pause @*)
+ >> a = 2        % Storing values into the workspace
+ >> b = 3
+ >> c = (2*3)^2  % Parentheses set priority
+ >> 8/a-b (*@ \pause @*)
+ >> sin(a)       % Mathematical functions can be used 
+ >> sin(0.5*pi)  % pi is an internal Matlab variable
+ >> 1/0          % Infinity is a thing ...
+ >> sqrt(-1)     % ... as are imaginary numbers
+   \end{lstlisting}
+ \end{frame}
+ 
+ \begin{frame}[fragile]
+   \frametitle{Printing and formatting results}
+   You can control the display format of the output of a command using the \lstinline$format$ statement. This only involves the way the numbers are printed on the screen, behind the scenes the accuracy is the same (some 15 digits).
+   \begin{lstlisting}
+ >> format short % This is the default setting
+ >> a = 19/4
+ >> b = a^(-6)
+ >> format long
+ >> c = sqrt(21)
+ >> d = exp(-c)
+ >> format long e
+ >> d = exp(-c)
+ >> format short compact
+ >> d
+   \end{lstlisting}\pause
+   A semi-colon at the end of a line suppresses output entirely:
+   \begin{lstlisting}
+ >> f = pi/4;
+   \end{lstlisting}
+ \end{frame}
+ 
+ \begin{frame}[fragile]
+  \frametitle{A few helpful things}
+  \begin{itemize}[<+->]
+    \item Using the \keystroke{$\uparrow$} and \keystroke{$\downarrow$} keys, you can cycle through recent commands
+    \item Typing part of a command and pressing \keystroke{Tab} completes the command and lists the possibilities
+    \item If a computation takes too long, you can press \keystroke{Ctrl}+\keystroke{C} to stop the program and return to the command line. Note that you may end up with incomplete results in the workspace.
+    \item Sequences of commands (programs, scripts) are contained as m-files, plain text files with the \lstinline$.m$ extension.
+    \item Such m-files must be in the \emph{current working directory} or in the Matlab \emph{path}, the locations where Matlab searches for a command. If you try to run a script that is not in the path, Matlab will suggest to add that directory to the \emph{path}, or to switch to that directory. Type \lstinline$path$ to view the current path.
+    \item Anything following a \lstinline$%$ symbol is regarded as a comment
+    \item In a script, pressing \keystroke{Ctrl}+\keystroke{R} comments the current line (or selection), \keystroke{Ctrl}+\keystroke{T} does the opposite.
+    \item Clear the workspace by \lstinline$clear$, clear the command window by \lstinline$clc$.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Matlab help, documentation, resources}
 \begin{itemize}[<+->]
-  \item Matlab documentation: \lstinline$doc$ or \lstinline$help$ function
-  \item Canvas module: Matlab Crash Course
+  \item You can look for a command with a particular purpose using the \lstinline$lookfor$ command:
+  \begin{lstlisting}
+>> lookfor inverse
+  \end{lstlisting}
+  \item Refer to the Matlab documentation using \lstinline$doc$ (pops up a new window) or \lstinline$help$ function
+  \begin{itemize}
+    \item Try for instance: \lstinline$help inv$ or \lstinline$help help$.
+  \end{itemize}
+  \item We supplied a number of basic Canvas modules: Matlab Crash Course, including small exercises.
   \item Matlab Academy: \url{https://matlabacademy.mathworks.com}
   \item Introduction to Numerical Methods and Matlab Programming for Engineers. T. Young and M.J. Mohlenkamp (2015). GNU-licensed document, online
-%   \item Interactive Matlab Course. Pieter van Zutven (2010). See also \url{http://www.imc.tue.nl/}
-  \item Search the web!
+  \item Search the web, Reddit, YouTube, etc.
 \end{itemize}
-\vspace{-2em}
-\flushright\tikz{\node[] at (4cm,-2cm) {\includegraphics[width=0.5\textwidth]{help.jpg}};}
 \end{frame}
-%
+
 \section{Data structures}
 \subsection*{Introduction}
 \againframe<2>{contents_prog1}
@@ -341,6 +305,9 @@ x =
   \item Find a way to define the vector without typing all individual elements\pause
   \item Investigate the meaning of the following commands:
   \begin{lstlisting}
+>> x(3)
+>> x(1:5)
+>> x(1:end-1)
 >> y = x(5:end)
 >> y(4)
 >> y(4) = []
@@ -349,10 +316,34 @@ x =
 >> std(x)
 >> max(x)
 >> fliplr(x)
+>> x(end:-1:1)
 >> diff(x)
   \end{lstlisting}
  \end{itemize}
 \end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Practice}
+  Given a vector 
+  \[ 
+     x = \left[2 \ 4 \ 6 \ 8 \ 10 \ 12 \ 14 \ 16 \ 18 \ 20 \ 30 \ 40 \ 50 \ 60 \ 70 \ 80 \right]
+  \]
+  \begin{itemize}
+   \item Find a way to define the vector without typing all individual elements\pause
+   \item Investigate the meaning of the following commands:
+   \begin{lstlisting}
+ >> y = x(5:end)
+ >> y(4)
+ >> y(4) = []
+ >> sum(x)
+ >> mean(x)
+ >> std(x)
+ >> max(x)
+ >> fliplr(x)
+ >> diff(x)
+   \end{lstlisting}
+  \end{itemize}
+ \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Operations on vectors (1)}
@@ -384,10 +375,62 @@ To compute elementwise POWER, use POWER (.^) instead.
   \end{lstlisting}\pause
   All kinds of mathematical functions on vectors typically operate on elements:
   \begin{lstlisting}
->> x = linspace(0,2*pi,100);
->> s = sin(x)
->> e = exp(x)
+    >> x = linspace(0,2*pi,100);
+    >> s = sin(x)
+    >> e = exp(x)
   \end{lstlisting}
+\end{frame}
+
+\subsection*{Matrices}
+\begin{frame}[fragile]
+  \frametitle{Matrices in Matlab}
+  \begin{columns}[T]
+   \column{0.35\textwidth}
+    Matrix A is defined as:
+    \[
+    A = \begin{bmatrix}
+      8 & 1 & 6 \\
+      3 & 5 & 7 \\
+      4 & 9 & 2
+    \end{bmatrix}\]
+    \pause
+    \column{0.65\textwidth}
+    In Matlab:
+  \begin{lstlisting}
+>> A = [ 8 1 6; 3 5 7; 4 9 2]
+  \end{lstlisting}
+  \end{columns}
+  \pause
+  Elements can be accessed/manipulated by the following syntax:
+  \begin{lstlisting}
+>> A(3,1) % Third row, first column, also A(3)
+>> A(3,:) = [2 4 8] % Set entire third row
+>> A(:,3) % Print third column
+>> A(A>5) = 2 % Set elements by condition
+  \end{lstlisting}\pause
+  There are a few functions that help creating matrices:
+  \begin{lstlisting}
+>> A = zeros(4)  % A 4x4 matrix with zeros
+>> A = ones(4,1) % A 4-element vector with ones
+>> A = eye(3)    % Identity matrix of 3x3
+>> A = rand(3,4) % A 3x4 matrix with random numbers
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Practice}
+ \begin{itemize}
+  \item Find a \emph{short} Matlab expression to create the following matrix:
+  \[
+   A = \begin{bmatrix}
+        1 & 2 & 3 & 4 & 5 & 6 & 7\\
+        9 & 7 & 5 & 3 & 1 & -1 & -3 \\
+        4 & 8 & 16 & 32 & 64 & 128 & 256 \\
+       \end{bmatrix}
+  \]\pause
+  \item Investigate the command \lstinline$max(A)$. What does it give?
+%   \item How to obtain the maximum for each row?
+ \end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -408,27 +451,12 @@ To compute elementwise POWER, use POWER (.^) instead.
     \end{longtable}
 \end{frame}
 
-\begin{frame}[fragile]
-  \frametitle{Printing results}
-  You can prevent displaying the outcome of a command by adding a semi-colon at the end of a line:
-  \begin{lstlisting}
->> c = linspace(0,10,11);
->> length(c)
->> c
->> size(c)
-  \end{lstlisting}\pause
-  Altering the display format can be done using the \lstinline$format$ command:
-  \begin{lstlisting}
->> format compact % loose
->> format long    % short
-  \end{lstlisting}
-\end{frame}
-
 \section{Plotting}
 \subsection*{Simple plotting}
+\againframe<2>{contents_prog1}
 \begin{frame}[fragile]
   \frametitle{Simple plotting}
-  Make a plot of the following table
+  Let's make a plot of the following table
    \begin{longtable}{l!{\vrule}ccccc}
 %    \rowcolors[]{1}{maincolor!20}{maincolor!10}
       T ($^\circ$C) & 5   &  20  & 30   & 50   & 55 \\
@@ -490,66 +518,39 @@ To compute elementwise POWER, use POWER (.^) instead.
   \end{lstlisting}
 \end{frame}
 
-\subsection*{Matrices}
 \begin{frame}[fragile]
-  \frametitle{Matrices in Matlab}
-  \begin{columns}[T]
-   \column{0.35\textwidth}
-    Matrix A is defined as:
-    \[
-    A = \begin{bmatrix}
-      8 & 1 & 6 \\
-      3 & 5 & 7 \\
-      4 & 9 & 2
-    \end{bmatrix}\]
-    \pause
-    \column{0.65\textwidth}
-    In Matlab:
-  \begin{lstlisting}
->> A = [ 8 1 6; 3 5 7; 4 9 2]
-  \end{lstlisting}
-  \end{columns}
-  \pause
-  Elements can be accessed/manipulated by the following syntax:
-  \begin{lstlisting}
->> A(3,1) % Third row, first column, also A(3)
->> A(3,:) = [2 4 8] % Set entire third row
->> A(:,3) % Print third column
->> A(A>5) = 2 % Set elements by condition
-  \end{lstlisting}\pause
-  There are a few functions that help creating matrices:
-  \begin{lstlisting}
->> A = zeros(4)  % A 4x4 matrix with zeros
->> A = ones(4,1) % A 4-element vector with ones
->> A = eye(3)    % Identity matrix of 3x3
->> A = rand(3,4) % A 3x4 matrix with random numbers
-  \end{lstlisting}
+  \frametitle{Multiple graph plotting}
+  \begin{itemize}
+    \item A new figure window can be created using the \lstinline$figure$ command. 
+    \item The command \lstinline$subplot(m,n,p)$ divides the figure window into blocks using \lstinline$m$ rows and \lstinline$n$ columns. The number or vector \lstinline$p$ indicates which block (from left to right, top to bottom) or blocks are used for the axis.
+    \item Graph operators (e.g. axis labels, title, hold on, etc) act on the active subplot
+    \begin{lstlisting}
+      x = linspace(0,2*pi,1000)
+      y1 = sin(x);
+      y2 = cos(x);
+      y3 = tan(x);
+      subplot(2,2,1); plot(x,y); title('sin(x)');
+      subplot(2,2,1); plot(x,y1); title('sin(x)');
+      subplot(2,2,3); plot(x,y2); title('cos(x)')
+      subplot(2,2,[2 4]); plot(x,y3); title('tan(x)'); axis([0 2*pi -10 10])
+    \end{lstlisting}
+  \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
- \frametitle{Practice}
- \begin{itemize}
-  \item Find a \emph{short} Matlab expression to create the following matrix:
-  \[
-   A = \begin{bmatrix}
-        1 & 2 & 3 & 4 & 5 & 6 & 7\\
-        9 & 7 & 5 & 3 & 1 & -1 & -3 \\
-        4 & 8 & 16 & 32 & 64 & 128 & 256 \\
-       \end{bmatrix}
-  \]\pause
-  \item Investigate the command \lstinline$max(A)$. What does it give?
-%   \item How to obtain the maximum for each row?
- \end{itemize}
+  \frametitle{Multiple graph plotting}
+  \begin{center}
+    \includegraphics[width=0.8\textwidth]{subplot-demo}
+  \end{center}
+
 \end{frame}
-
-
 
 \section{Creating algorithms}
 \subsection*{Control statements}
 \againframe<2>{contents_prog1}
 \begin{frame}[fragile]
  \frametitle{Building blocks: conditional statements}
-  \lstinline$if$-statement: Check whether a (set of) condition(s) is met. \\ 
+  \lstinline$if$-statement: Check whether a (set of) condition(s) is met, based on relational operations. \\ 
   \vskip1em \pause
   \begin{lstlisting}
 num = floor (10 * rand + 1);
@@ -567,6 +568,7 @@ end
       \begin{longtable}{l!{\vrule}l}
       \hline
       \lstinline$==$& is equal to \\ 
+      \lstinline$~=$& is not equal to \\ 
       \lstinline$<=$& is less than or equal to\\
       \lstinline$>=$&is  greater than or equal to\\
       \lstinline$<$& is less than \\
@@ -577,8 +579,9 @@ end
       Combining conditional statements
       \begin{longtable}{l!{\vrule}l}
       \hline
-      \lstinline$&&$& and \\ 
-      \lstinline$||$& or\\
+      \lstinline$&$& and \\ 
+      \lstinline$|$& or\\
+      \lstinline$~$& negation (switches true/false)\\
       \lstinline$xor$& exclusive or\\
       \hline
     \end{longtable}  
@@ -592,9 +595,9 @@ end
 a = 3;
 b = 9;
 
-if (a < b) && (b <= 10)
+if (a < b) & (b <= 10)
     disp('a is smaller than 10 (by deduction)')
-elseif ((a >= b) && (b > 10))
+elseif ((a >= b) & (b > 10))
         disp('a is larger than 10 (by deduction)')
 else
     disp('We cannot deduce if a is smaller than 10 or not, unless we perform a direct comparison')
@@ -608,6 +611,76 @@ else
 end
 \end{lstlisting}
 \end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Building blocks: logical indexing}
+   Relational operators return a type "logical", i.e. true (1) or false (0). You can use this to select subsets of existing vectors. 
+   \vskip2em
+   \begin{columns}
+    \column{0.5\textwidth} 
+    Simple demonstration:
+    \begin{lstlisting}
+>> x = linspace(-3,3,7) % Create a base vector
+x =
+    -3    -2    -1     0     1     2     3
+>> x>0 % Illustrate logical result
+ans =
+  1×7 logical array
+   0   0   0   0   1   1   1
+>> x2 = x(x>0) % Create a subset
+x2 =
+     1     2     3
+    \end{lstlisting}\pause
+    \column{0.5\textwidth} 
+    You can use the same logical index for different vectors (in script-format):
+    \begin{lstlisting}
+% Create a base vector
+x  = linspace(-4*pi,4*pi,1000);
+y = (sin(x)+0.2*x)+1;
+% Select only values where y>0 and plot
+xs = x(y>0); ys = y(y>0);
+plot(x,y,xs,ys)
+    \end{lstlisting}
+  \end{columns}
+ \end{frame}
+
+ \begin{frame}[fragile]
+  \frametitle{Practice relational operations and logical indexing}
+  \begin{enumerate}
+    \item Let \lstinline$x = [1 5 2 8 9 0 1]$ and \lstinline$y = [5 2 2 6 0 0 2]$. Execute and explain the results of the following commands:
+    \begin{columns}
+      % \column{0.05\textwidth}
+      \column{0.25\textwidth}
+        \begin{itemize}
+          \item \lstinline$x > y$
+          \item \lstinline$y < x$
+          \item \lstinline$x == y$
+        \end{itemize}
+      \column{0.25\textwidth}
+        \begin{itemize}
+          \item \lstinline$x <= y$
+          \item \lstinline$y >= x$
+          \item \lstinline$x | y$
+        \end{itemize}
+      \column{0.25\textwidth}
+        \begin{itemize}
+          \item \lstinline$x & (~y)$
+          \item \lstinline$(x > y) | (y < x)$
+          \item \lstinline$(x > y) & (y < x)$
+        \end{itemize}
+    \end{columns}
+    \vskip1em
+  \item Clear the workspace. Let \lstinline$x = 1:10$ and \lstinline$y = [3 5 6 1 8 2 9 4 0 7]$. The exercises here show the techniques of logical-indexing. Execute and interpret the results of the following commands:
+    \begin{itemize}
+      \item \lstinline$(x > 3) & (x < 8)$
+      \item  \lstinline$x(x > 5)$
+      \item  \lstinline$y(x <= 4)$
+      \item  \lstinline$x((x < 2)|(x>=8))$
+      \item  \lstinline$y((x < 2)|(x>=8))$
+      \item  \lstinline$x(y<0)$
+    \end{itemize}
+  \end{enumerate}
+ \end{frame}
 
 \begin{frame}[fragile]
  \frametitle{Building blocks: case selection}
@@ -707,145 +780,20 @@ end
 \end{frame}
 
 \begin{frame}[fragile]
- \frametitle{Practice algorithm: Fourier series for heat equation}
- The unsteady 1D heat equation is given as:
- \[
-    \frac{\partial T}{\partial t} = k\frac{\partial^2 T}{\partial x^2}
- \]
-We can express the temperature profile $T(x,t)$ using a Fourier sine series. For an initial profile T(x,0) = 20 and fixed boundary values T(0,t) = T(L,t) = 0, the solution is given as:
- \[
-    T(x,t) = \sum_{n=1}^{n=\infty}\frac{40(1-(-1)^n)}{n\pi}  \sin\left(\frac{n\pi x}{L}\right) \exp\left(-kt\frac{n \pi}{L}^2\right)
- \]
- \begin{itemize}
-     \item Create a script to solve this equation using loops and/or conditional statements
- \end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
- \frametitle{Fourier series for heat equation (1)}
- A simple construct with a double loop.
-  \begin{lstlisting}
-L = 2;
-k = 0.004;
-t = 3;
-x = 0:0.1:L;
-s = 0;
-
-for n = 1:50
-    for i = 1:length(x)
-        pt(i) = 40*(1-(-1)^n)/(n*pi) * sin(n*pi*x(i)/L) * exp(-k*t*(n*pi/L)^2);
-    end
-    s = s + pt;
-end
-
-plot(x,s)
-  \end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
- \frametitle{Fourier series for heat equation (2-1)}
-We can also solve the equation for the entire x-range in 1 go. \lstinline$part$ and $s$ are both vectors. This is more efficient.
-  \begin{lstlisting}
-L =  2;
-x = linspace(0,L,101);
-k = 0.004;
-t = 3;
-
-s = 0;
-for n = 1:50
-    part = 40*(1-(-1)^n)/(n*pi) * sin(n*pi*x/L) * exp(-k*t*(n*pi/L)^2);
-    s = s + part;
-end
-
-plot(x,s)
-  \end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
- \frametitle{Fourier series for heat equation (2-2)}
-We can break the for-loop when the calculations are precise enough using an if-statement and a break-command.
-  \begin{lstlisting}
-L = 2;
-x = linspace(0,L,101);
-k = 0.004;
-t = 3;
-
-s = 0;
-for n = 1:2:50
-    part = 40*(1-(-1)^n)/(n*pi) * sin(n*pi*x/L) * exp(-k*t*(n*pi/L)^2);
-    s = s + part;
-    if (max(abs(part)) < 1e-6)
-        n
-        break
-    end
-end
-
-plot(x,s)
-  \end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
- \frametitle{Fourier series for heat equation (3-1)}
-We can run a while-loop for indeterminate iterations to ensure a certain precision while keeping computational demands to a minimum:
-  \begin{lstlisting}
-L =  2;
-x = linspace(0,2,101);
-k = 0.004;
-t = 3;
-
-s = 0;
-n = 1;
-part = 1;
-while (max(abs(part))>1e-6)
-    part = 40*(1-(-1)^n)/(n*pi) * sin(n*pi*x/L) * exp(-k*t*(n*pi/L)^2)
-    s = s + part;
-    n = n + 2;
-end
-
-n
-plot(x,s)
-  \end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
- \frametitle{Fourier series for heat equation (3-2)}
-The \lstinline$drawnow$ command makes sure a plot is drawn before subsequent commands are executed. This gives us insight in the iteration process:
-  \begin{lstlisting}
-L =  2;
-x = linspace(0,2,101);
-k = 0.004;
-t = 3;
-
-s = 0;
-n = 1;
-part = 1;
-while (max(abs(part))>1e-6)
-    part = 40*(1-(-1)^n)/(n*pi) * sin(n*pi*x/L) * exp(-k*t*(n*pi/L)^2)
-    s = s + part;
-    n = n + 2;
-    plot(x,s)
-    pause(0.4)
-    drawnow
-end
-
-n
-  \end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
  \frametitle{Input and output}
- Many programs require some input to function correctly. A combination of the following is common:
+ Many programs require some input (data) to function correctly. A combination of the following is common:
  \begin{itemize}[<+->]
    \item Input may be given in a parameters file (``hard-coded'')
    \item Input may be entered via the keyboard
    \begin{lstlisting}
->> a = input('Please enter the number ');
-   \end{lstlisting}
-   \item Input may be read from a file, e.g.
-    \begin{lstlisting}
->> data = getfield(importdata('myData.txt', ' ', 4), 'data');
->> numdata = xlsread('myExcelDataFile.xls');
-   \end{lstlisting}
+    >> a = input('Please enter the number ');
+  \end{lstlisting}
+  \item Input may be read from a file, e.g.
+  \begin{lstlisting}
+    >> data = getfield(importdata('myData.txt', ' ', 4), 'data');
+    >> numdata = xlsread('myExcelDataFile.xls');
+  \end{lstlisting}
+  Importdata also has a GUI equivalent (right-click on file, select \emph{Import Data})
    \item There are many more advanced functions, e.g. \lstinline$fread$, \lstinline$fgets$, ...
  \end{itemize}
 \end{frame}
@@ -879,52 +827,63 @@ n
  \frametitle{Functions - general}
  A function in a programming language is a program fragment that performs a certain task. Creating functions keeps your code clean, re-usable and structured.
  \begin{itemize}
-   \colorize<2-> \item You can use functions supplied by the programming language, and define functions yourself
-   \colorize<3-> \item Functions take one or more input parameters (\emph{arguments}), and \emph{return} an output (result).
-   \begin{itemize}
-     \colorize<3-> \item If functions do not return a result, it is called a procedure
-   \end{itemize}
-   \colorize<4-> \item In Matlab, functions are defined as follows (2 output variables and 3 input arguments):
+   \colorize<2> \item You can use functions supplied by the programming language, and define functions yourself
+   \colorize<3> \item Functions take one or more input parameters (\emph{arguments}), and \emph{return} an output (result).
+  %  \begin{itemize}
+  %    \colorize<3-> \item If functions do not return a result, it is called a procedure
+  %  \end{itemize}
+   \colorize<4> \item In Matlab, functions are defined as follows (2 output and 3 input arguments):
   \begin{overlayarea}{\textwidth}{2em}
-   \begin{onlyenv}<4>
+   \begin{onlyenv}<4->
     \begin{lstlisting}
 function [out1, out2] = myFunction(in1, in2, in3)
     \end{lstlisting}
     \end{onlyenv}
-   \end{overlayarea}
+   \end{overlayarea} 
+   \item\colorize<5> In the function body, you can perform operations on the input parameters (\lstinline$in1$, \lstinline$in2$ and \lstinline$in3$. 
+   \item\colorize<6> Inside a function, other values are not available (local workspace). Analogously, any variables created are not available after the function returns, except for those explicitly defined as output arguments.
+   \item\colorize<7> The name of the function and the name of the file should be identical and (just like variables) be unique.
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
- \frametitle{Functions - locality and arguments}
- \begin{itemize}
-   \item You are supplying arguments to a function because it does not have acces to previously defined variables. This is called \emph{locality}.
-   \begin{itemize}
-     \item This does not include global variables - but they're evil!
-     \item Local variables created in a function are not accessible to other functions unless they are returned or supplied as an argument!
-   \end{itemize}
- \end{itemize}
- \vskip1em \pause
- Example: write a function that takes 3 variables, and returns the average: \pause
-  \begin{columns}[T]
-   \column{0.5\textwidth}
-   \begin{block}<2->{Approach 1}
- \begin{lstlisting}
-function res = avg1(a,b,c)
-    mySum = a + b + c;
-    res = mySum / 3;
-end \end{lstlisting}
-   \end{block}
-   \column{0.5\textwidth}
-   \begin{block}<3->{Approach 2}
-       \begin{lstlisting}
-function res = avg2(a,b,c)
-    data = [a; b; c];
-    res = mean(data);
-end \end{lstlisting}
-   \end{block}
- \end{columns}
-\end{frame}
+  \frametitle{Functions - Exercise}
+  Example: write a function that takes 3 variables, and returns the average: \pause
+   \begin{columns}[T]
+    \column{0.5\textwidth}
+    \begin{block}<2->{Approach 1}
+  \begin{lstlisting}
+ function res = avg1(a,b,c)
+     mySum = a + b + c;
+     res = mySum / 3;
+ end \end{lstlisting}
+    \end{block}
+    \column{0.5\textwidth}
+    \begin{block}<3->{Approach 2}
+        \begin{lstlisting}
+ function res = avg2(a,b,c)
+     data = [a; b; c];
+     res = mean(data);
+ end \end{lstlisting}
+    \end{block}
+  \end{columns}
+ \end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Functions - definition overview}
+  \includegraphics[width=\textwidth]{format-func.png}\footnote{Source: Pekalska, Meinsma and Zwart, Programming with Matlab manual, University of Twente, 2018.}
+ \end{frame}
+
+% \begin{frame}[fragile]
+%  \frametitle{Functions - locality and arguments}
+%  \begin{itemize}
+%    \item You are supplying arguments to a function because it does not have acces to previously defined variables. This is called \emph{locality}.
+%    \begin{itemize}
+%      \item This does not include global variables - but they're evil!
+%      \item Local variables created in a function are not accessible to other functions unless they are returned or supplied as an argument!
+%    \end{itemize}
+%  \end{itemize}
+% \end{frame}
 
 \begin{frame}[fragile]
  \frametitle{Functions - stack}
@@ -1107,35 +1066,6 @@ end
  \end{lstlisting}
 \end{frame}
 
-\begin{frame}[fragile]
- \frametitle{Fourier series for heat equation (as a function)}
-A rudimentary function (i.e. no comments or checks) to get the heat equation profile for a given length, heat diffusivity and time:
-  \begin{lstlisting}
-function [s,x] = fourier_series_heat_eqn(L,k,t)
-x = linspace(0,L,101);
-
-s = 0;
-n = 1;
-part = 1;
-while (max(abs(part))>1e-6)
-    part = 40*(1-(-1)^n)/(n*pi) * sin(n*pi*x/L) * exp(-k*t*(n*pi/L)^2);
-    s = s + part;
-    n = n + 2;
-end
-  \end{lstlisting}
-  
-Calling the function from a different script multiple times to plot a transient profile:
-\begin{lstlisting}
-for t = 0.01:0.01:30
-    [solution,xvec] = fourier_series_heat_eqn(2,0.004,t);
-    plot(xvec,solution)
-    xlabel('Position [m]');
-    ylabel('Temperature [^\circC]');
-    drawnow
-end
-\end{lstlisting}
-\end{frame}
-
 \section{Conclusions}
 \subsection*{Conclusions}
 \againframe<2>{contents_prog1}
@@ -1147,13 +1077,255 @@ end
   \end{itemize}
   \pause
     \begin{itemize}
-    \colorize<3> \item For now: exercises 1-4 (basics), 5+6 (advanced).
+    \colorize<3> \item For now: exercises on slide deck and Matlab modules
     \colorize<4> \item Preparation for next lecture: familiarize with the concepts, use Canvas course or Matlab Academy.
   \end{itemize}
 \end{frame}
 
+\section{Exercises}
+\subsection*{Exercise 1}
+\begin{frame}[fragile]
+  \frametitle{Practice vectors and matrices}
+  \begin{enumerate}
+    \item Create a vector \lstinline$x$ with the elements:
+    \begin{itemize}
+      \item $[2,4,6,8,\ldots,16]$
+      \item $[0, \frac{1}{2}, \frac{2}{3}, \frac{3}{4}, \ldots, \frac{99}{100}]$
+    \end{itemize}
+    \item Create a vector \lstinline$x$ with the elements: $x_n = \frac{(-1)^n}{2n-1}$ for $n=1,2,3,\ldots,200$. Find the sum of the first 50 elements $x_1,\ldots,x_{50}$.
+    \item Let \lstinline$x = 20:10:200$. Create a vector \lstinline$y$ of the same length as \lstinline$x$ such that:
+    \begin{itemize}
+      \item $y_i = x_i - 3$
+      \item $y_i = x_i$ for every even index $i$ and $y_i = x_i + 11$ for every odd index $i$.
+    \end{itemize}
+    \item Let \lstinline$T = [3 4; 1 8; -4 3]$ and \lstinline$ A = [diag(-1:2:3),T; -4 4 1 2 1]$. Perform
+    the following operations on A:
+    \begin{itemize}
+      \item Retrieve a vector consisting of the 2nd and 4th elements of the 3rd row.
+      \item Find the minimum of the 3rd column.
+      \item Find the maximum of the 2nd row.
+      \item Compute the sum of the 2nd column
+      \item Compute the mean of the row 1 and the mean of row 4
+    \end{itemize}
+  \end{enumerate}
+ \end{frame}
 
-% \end{document}
+ \begin{frame}[fragile]
+  \frametitle{Practice plotting}
+  \begin{enumerate}
+    \item Plot the functions $f(x)=x,\ g(x)=x^3,\ h(x)=e^x$ and $z(x)=e^{x^2}$ over the interval $[0,4]$ on the normal scale and on the log-log scale. Use an appropriate sampling to get smooth curves. Describe your plots by using the functions: \lstinline$xlabel$, \lstinline$ylabel$, \lstinline$title$ and \lstinline$legend$.
+    \vskip1em
+    \item Make a plot of the functions: $f(x)=sin(1/x)$ and $f(x)=cos(1/x)$ over the interval $[0.01,0.1]$. How do you create \lstinline$x$ so that the plots look sufficiently smooth?
+  \end{enumerate}
+ \end{frame}
+
+ \begin{frame}[fragile]
+  \frametitle{Practice control flow and loops (1)}
+  \begin{enumerate}
+    \item Write a function that uses two logical input arguments with the following behaviour:
+    \begin{align*}
+       f(\text{true},\text{true}) \mapsto \text{false} \\
+      f(\text{false},\text{true}) \mapsto \text{true} \\ 
+      f(\text{true},\text{false}) \mapsto \text{true} \\
+      f(\text{false},\text{false}) \mapsto \text{false} \\
+    \end{align*}
+    \item Write a function that computes the factorial of x:
+    \[ f(x) = x! = 1 \times 2 \times 3 \times 4 \times \ldots \times x \]
+    \begin{itemize}
+      \item Using a loop-construction
+      \item Using recursion
+    \end{itemize}
+  \end{enumerate}
+ \end{frame}
+
+ \begin{frame}[fragile]
+  \frametitle{Practice control flow and loops (2)}
+  \begin{enumerate}
+    \item Write a function that computes the exponential function using the Taylor series
+    \[  e^x = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \ldots \]
+    until the last term is smaller than $10^{-6}$.
+    \item Use a script to compute the result of the following series:
+    \[
+      f_n = \sum_{n=1}^{\infty} \frac{1}{\pi^2 n^2}
+    \]
+    This should give you an indication of the fraction this series converges to.
+    \begin{itemize}
+      \item Now plot in two vertically aligned subplots i) The result as a function of $n$, and ii) the difference with the earlier mentioned fraction as a function of n. For the latter, consider carefully the axis scale!
+      \item Use \lstinline$tic$ and \lstinline$toc$ to compare the computing times with $\pi^2$ inside vs outside the loop.
+    \end{itemize}
+  \end{enumerate}
+ \end{frame}
+
+ \begin{frame}[fragile]
+  \frametitle{Practice logical indexing}
+  \begin{enumerate}
+    \item Let \lstinline$x = linspace(-4,4,1000)$, $y_1 = 3x^2 - 4x - 6$ and $y_2 = 1.5x - 1$. Use logical indexing to determine function $y_3 = \mathrm{max}(\mathrm{max}(y_1,y_2),0)$. Plot the function.
+    \item Consider these data concerning the age (in years), length (in cm) and weight (in kg) of twelve adult men: \lstinline$A = [41 25 33 29 64 34 47 38 49 32 26 26]; H = [165 186 177 190 156 174 164 205 184 190 165 171]; W = [75 90 97 60 74 65 101 85 91 75 87 70];$.
+    \begin{itemize}
+      \item Calculate the average of all vectors (age, weight and length).
+      \item Combine the command \lstinline$length$ with logical indexing to determine how many men in the group are taller than 182 cm.
+      \item What is the average age of men with a body-mass index ($B \equiv \frac{W}{L^2}$ with $W$ in kg and $L$ in m) larger than 25? And for men with a $B<25$?
+      \item How many men are older than the average and at the same time have a BMI below 25?
+    \end{itemize}
+  \end{enumerate}
+ \end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Practice algorithm: Fourier series for heat equation}
+  The unsteady 1D heat equation is given as:
+  \[
+     \frac{\partial T}{\partial t} = k\frac{\partial^2 T}{\partial x^2}
+  \]
+ We can express the temperature profile $T(x,t)$ using a Fourier sine series. For an initial profile T(x,0) = 20 and fixed boundary values T(0,t) = T(L,t) = 0, the solution is given as:
+  \[
+     T(x,t) = \sum_{n=1}^{n=\infty}\frac{40(1-(-1)^n)}{n\pi}  \sin\left(\frac{n\pi x}{L}\right) \exp\left(-kt\frac{n \pi}{L}^2\right)
+  \]
+  \begin{itemize}
+      \item Create a script to solve this equation using loops and/or conditional statements
+  \end{itemize}
+ \end{frame}
+ 
+%  \begin{frame}[fragile]
+%   \frametitle{Fourier series for heat equation (1)}
+%   A simple construct with a double loop.
+%    \begin{lstlisting}
+%  L = 2;
+%  k = 0.004;
+%  t = 3;
+%  x = 0:0.1:L;
+%  s = 0;
+ 
+%  for n = 1:50
+%      for i = 1:length(x)
+%          pt(i) = 40*(1-(-1)^n)/(n*pi) * sin(n*pi*x(i)/L) * exp(-k*t*(n*pi/L)^2);
+%      end
+%      s = s + pt;
+%  end
+ 
+%  plot(x,s)
+%    \end{lstlisting}
+%  \end{frame}
+ 
+%  \begin{frame}[fragile]
+%   \frametitle{Fourier series for heat equation (2-1)}
+%  We can also solve the equation for the entire x-range in 1 go. \lstinline$part$ and $s$ are both vectors. This is more efficient.
+%    \begin{lstlisting}
+%  L =  2;
+%  x = linspace(0,L,101);
+%  k = 0.004;
+%  t = 3;
+ 
+%  s = 0;
+%  for n = 1:50
+%      part = 40*(1-(-1)^n)/(n*pi) * sin(n*pi*x/L) * exp(-k*t*(n*pi/L)^2);
+%      s = s + part;
+%  end
+ 
+%  plot(x,s)
+%    \end{lstlisting}
+%  \end{frame}
+ 
+%  \begin{frame}[fragile]
+%   \frametitle{Fourier series for heat equation (2-2)}
+%  We can break the for-loop when the calculations are precise enough using an if-statement and a break-command.
+%    \begin{lstlisting}
+%  L = 2;
+%  x = linspace(0,L,101);
+%  k = 0.004;
+%  t = 3;
+ 
+%  s = 0;
+%  for n = 1:2:50
+%      part = 40*(1-(-1)^n)/(n*pi) * sin(n*pi*x/L) * exp(-k*t*(n*pi/L)^2);
+%      s = s + part;
+%      if (max(abs(part)) < 1e-6)
+%          n
+%          break
+%      end
+%  end
+ 
+%  plot(x,s)
+%    \end{lstlisting}
+%  \end{frame}
+ 
+%  \begin{frame}[fragile]
+%   \frametitle{Fourier series for heat equation (3-1)}
+%  We can run a while-loop for indeterminate iterations to ensure a certain precision while keeping computational demands to a minimum:
+%    \begin{lstlisting}
+%  L =  2;
+%  x = linspace(0,2,101);
+%  k = 0.004;
+%  t = 3;
+ 
+%  s = 0;
+%  n = 1;
+%  part = 1;
+%  while (max(abs(part))>1e-6)
+%      part = 40*(1-(-1)^n)/(n*pi) * sin(n*pi*x/L) * exp(-k*t*(n*pi/L)^2)
+%      s = s + part;
+%      n = n + 2;
+%  end
+ 
+%  n
+%  plot(x,s)
+%    \end{lstlisting}
+%  \end{frame}
+ 
+%  \begin{frame}[fragile]
+%   \frametitle{Fourier series for heat equation (3-2)}
+%  The \lstinline$drawnow$ command makes sure a plot is drawn before subsequent commands are executed. This gives us insight in the iteration process:
+%    \begin{lstlisting}
+%  L =  2;
+%  x = linspace(0,2,101);
+%  k = 0.004;
+%  t = 3;
+ 
+%  s = 0;
+%  n = 1;
+%  part = 1;
+%  while (max(abs(part))>1e-6)
+%      part = 40*(1-(-1)^n)/(n*pi) * sin(n*pi*x/L) * exp(-k*t*(n*pi/L)^2)
+%      s = s + part;
+%      n = n + 2;
+%      plot(x,s)
+%      pause(0.4)
+%      drawnow
+%  end
+ 
+%  n
+%    \end{lstlisting}
+%  \end{frame}
+
+%  \begin{frame}[fragile]
+%   \frametitle{Fourier series for heat equation (as a function)}
+%  A rudimentary function (i.e. no comments or checks) to get the heat equation profile for a given length, heat diffusivity and time:
+%    \begin{lstlisting}
+%  function [s,x] = fourier_series_heat_eqn(L,k,t)
+%  x = linspace(0,L,101);
+ 
+%  s = 0;
+%  n = 1;
+%  part = 1;
+%  while (max(abs(part))>1e-6)
+%      part = 40*(1-(-1)^n)/(n*pi) * sin(n*pi*x/L) * exp(-k*t*(n*pi/L)^2);
+%      s = s + part;
+%      n = n + 2;
+%  end
+%    \end{lstlisting}
+   
+%  Calling the function from a different script multiple times to plot a transient profile:
+%  \begin{lstlisting}
+%  for t = 0.01:0.01:30
+%      [solution,xvec] = fourier_series_heat_eqn(2,0.004,t);
+%      plot(xvec,solution)
+%      xlabel('Position [m]');
+%      ylabel('Temperature [^\circC]');
+%      drawnow
+%  end
+%  \end{lstlisting}
+%  \end{frame}
+
+\end{document}
 
 
 % References
