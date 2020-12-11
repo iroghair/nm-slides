@@ -1,13 +1,17 @@
+
 *.aux
-*.out
+*.fls
 *.log
 *.nav
+*.out
 *.snm
-*.toc
 *.vrb
-*.tex.backup
-Slides\ Edwin/*
-*.bak
-*.synctex.gz
-*.fdb_latexmk
-*.fls
+*.log
+Slides.synctex(busy)
+Slides.toc
+Slides.upa
+Slides.fdb_latexmk
+Slides.blg
+Slides.synctex.gz
+tikz-playground.pdf
+Slides.pdf

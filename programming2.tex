@@ -1,4 +1,5 @@
-\section{Coding in style}
+\part{Matlab programming II}
+\section{Coding style}
 \subsection*{Introduction}
 \begin{frame}[label=contents_prog2]
   \frametitle{Today's outline}
@@ -8,31 +9,42 @@
   \only<2>{\tableofcontents[currentsection]}
 \end{frame}
 
-\begin{frame}
-  \frametitle{If anything sticks today, let it be this}
+\subsection*{Program design}
+\begin{frame}[label=workrightfast]
+  \frametitle{Make a habit of the following adage}
   \begin{center}
-    {\LARGE Your code will not be understood by anyone\\}
-  \pause
-  \vskip1em
-  That includes future-you
-  \vskip2em
+    \includegraphics[width=0.8\textwidth]{workrightfast.pdf}
   \end{center}
 \end{frame}
 
-\subsection*{Organization}
-\begin{frame}
-\frametitle{Code organization}
-  \begin{itemize}
-    \item Optimization of a code is time-consuming and complicated
-    \item The more you optimize your code, the less readable it becomes
-    \item But... You can write it in a such way that it will be flexible and easy to maintain
-    \item Especially important in team work
-    \item Any person has its own handwriting. Any programmer has its own coding style.
-\end{itemize}
- \tikz{\node[emphblock,text width=\textwidth]{The coding style $\equiv$ handwriting...};}
-
+\begin{frame}[label=work-explain]
+  \frametitle{Make it work}
+  Use the building blocks of previous lecture to create an algorithm:
+  \begin{enumerate}
+    \colorize<1> \item \emph{Problem analysis}\\ Contextual understanding of the nature of the problem to be solved
+    \colorize<2> \item \emph{Problem statement}\\ Develop a detailed statement of the mathematical problem to be solved with the program
+    \colorize<3> \item \emph{Processing scheme}\\ Define the inputs and outputs of the program
+    \colorize<4> \item \emph{Algorithm}\\ A step-by-step procedure of all actions to be taken by the program (\emph{pseudo-code})
+    \colorize<5> \item \emph{Program the algorithm}\\ Convert the algorithm into a computer language, and debug until it runs
+    \colorize<6> \item \emph{Evaluation}\\ Test all of the options and conduct a validation study
+  \end{enumerate}
+  \vskip1em
+  Now it's time to make it right!
 \end{frame}
 
+% \subsection*{Program design and coding style}
+% \begin{frame}
+%   \frametitle{It's a bit disturbing but...}
+%   \begin{center}
+%     {\LARGE Your code will not be understood by anyone\\}
+%   \pause
+%   \vskip1em
+%   That includes future-you
+%   \vskip2em
+%   \end{center}
+% \end{frame}
+
+\subsection*{Example code}
 \begin{frame}[fragile]
  \frametitle{Interpret the following code}
  \begin{lstlisting}
@@ -155,7 +167,7 @@ end
 \end{frame}
 
 \begin{frame}[fragile]
- \frametitle{Get rid of obscure constants in the code}
+ \frametitle{Get rid of magic numbers in the code}
  \begin{columns}[T]
     \column{0.5\textwidth}
      \begin{lstlisting}[basicstyle=\scriptsize\ttfamily]
@@ -242,7 +254,7 @@ end
  \end{columns}
 \end{frame}
 
-\subsection*{Comments}
+\subsection*{Aspects of a good program}
 \begin{frame}
   \frametitle{Writing readable code}
   Good code reads like a book.\vskip2em \pause
@@ -250,7 +262,8 @@ end
     \item When it doesn't, make sure to use comments. In Matlab, everything following \lstinline$ \% is a comment$
     \item Prevent ``smart constructions'' in the code
     \item Re-use working code (i.e. create functions for well-defined tasks).
-    \item Documentation is also useful, but hard to maintain.\pause\ (Matlab comes with a function that generates reports from comments)
+    \item Documentation is also useful, but hard to maintain.
+    \item Matlab comes with a function that generates reports from comments
   \end{itemize}
 \end{frame}
 
@@ -287,6 +300,7 @@ end\end{lstlisting}
 
 \begin{frame}[fragile]
  \frametitle{Adding comments to our program}
+ \centering\tikz{\node[emphblock, text width=0.7\textwidth]{Use comments to document design and purpose (functionality), not mechanics (implementation).};}
  \begin{lstlisting}
 IAmFree = checkSchedule();
 if (IAmFree == true)
@@ -307,20 +321,20 @@ end
  \end{lstlisting}
 \end{frame}
 
-\begin{frame}
-  \frametitle{If anything sticks today, let it be this}
-  \begin{center}
-    {\LARGE Your code will not be understood by anyone\\}
-  \pause
-  \vskip1em
-  That includes future-you
-  \vskip2em
-  \end{center}
-  \pause
-  \tikz{\node[emphblock, text width=\textwidth]{Use comments and code to document design and purpose (functionality), not mechanics (implementation).};}
-  \vskip1em\pause
-  \tikz{\node[emphblock, text width=\textwidth]{Use consistent and sensible naming of functions and variables.};}
-\end{frame}
+% \begin{frame}
+%   \frametitle{If anything sticks today, let it be this}
+%   \begin{center}
+%     {\LARGE Your code will not be understood by anyone\\}
+%   \pause
+%   \vskip1em
+%   That includes future-you
+%   \vskip2em
+%   \end{center}
+%   \pause
+%   \tikz{\node[emphblock, text width=\textwidth]{Use comments and code to document design and purpose (functionality), not mechanics (implementation).};}
+%   \vskip1em\pause
+%   \tikz{\node[emphblock, text width=\textwidth]{Use consistent and sensible naming of functions and variables.};}
+% \end{frame}
 
 \begin{frame}
   \frametitle{What else makes a good program?}
@@ -342,7 +356,7 @@ Funny thing is: This list does not mention that the program should be actually w
 
 \begin{frame}[fragile]
   \frametitle{Portability}
-  It should work on your neighbors laptop. Well, that is guaranteed anyway. There is a little caveat though, what if your neighbor is stupid?
+  It should work on your neighbors laptop. Well, that is guaranteed anyway. There is a little caveat though, what if your neighbor is stupid and has a polluted workspace?
   \vspace*{2em}
   \begin{lstlisting}
    % trust no one! nuke all evidence! no witnesses!
@@ -355,7 +369,7 @@ Funny thing is: This list does not mention that the program should be actually w
 
 \begin{frame}[fragile]
   \frametitle{Readability}
-  Don’t use stupid variable or function names. Rule of thumb: use verbs for functions and nouns for variables.
+  Don’t use meaningless variable or function names. Rule of thumb: use verbs for functions and nouns for variables.
   \vspace*{2em}
   \begin{lstlisting}
    % stupid names
@@ -381,6 +395,26 @@ Funny thing is: This list does not mention that the program should be actually w
       \item Pre-allocate your matrices, that means, making it as large as the maximum required size for your particular problem
       \item Use tic/toc to test the execution times
   \end{itemize}
+  \begin{columns}
+    \column{0.5\textwidth}
+    \begin{lstlisting}
+x = linspace(0,10,1000001);
+tic; 
+for cr = 1:length(x)
+    y(cr) = sin(2*pi*x(cr));
+end; 
+toc
+    \end{lstlisting}
+    \column{0.5\textwidth}
+    \begin{lstlisting}
+x = linspace(0,10,1000001);
+tic; 
+
+y = sin(2*pi*x);
+
+toc
+    \end{lstlisting}
+  \end{columns}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -388,20 +422,21 @@ Funny thing is: This list does not mention that the program should be actually w
   \begin{itemize}
       \item Compartmentalize your code.
       \item Write functions whenever possible.
+      \begin{itemize}
+        \item If you have $>15$ lines of code, you can probably replace it by one or more functions.
+        \item In principle, it should not even matter how function works, as long as it gives the expected output.\\ \vskip1ex
+        \begin{tikzpicture}[node distance = 3cm, auto]
+          % Place nodes
+          \node [emphblock] (function) {Function};
+          \node [emphblock, left of=function] (input) {Input};
+          \node [emphblock, right of=function] (output) {Output};
+          % Draw edges
+          \draw [line,->] (input) -> (function);
+          \draw [line,->] (function) -> (output);
+      \end{tikzpicture}\vskip1ex
+      \end{itemize}
       \item Put critical variables at the beginning of your program.
-  \end{itemize}
-  \tikz{\node[emphblock, text width=\textwidth]{If you have >15 lines of code, you can probably replace it by one or more functions.};}\vspace*{2em}
-  
-  \begin{tikzpicture}[node distance=2cm]
-    % nodes
-    \node[emphblock] (A) at (0, 0) {Input};
-    \node[emphblock] (B) at (5, 0) {Function};
-    \node[emphblock] (C) at (10, 0) {Output};
-    % arrows
-    % \draw[>=stealth'] (A.east) -- (B.west) (B.west) -- (C).east;
-  \end{tikzpicture}
-
-  In principle, I don’t even care what happens inside the function, as long as it gives the expected output.
+  \end{itemize}  
 \end{frame}
 
 \begin{frame}[fragile]
@@ -443,13 +478,15 @@ plot(D,P);
 
 \begin{frame}[fragile]
   \frametitle{Generalization}
-    If you code is working for one problem, it should also work for similar problem, in another company, on another planet. Pro-tip: Separate data from algorithms.\\
+    If you code is working for one problem, it should also work for a similar problem, in another company, on another planet. \\ \vskip1em
+    
+    Pro-tip: Separate data from algorithms.\\
     
     To be honest: I rarely see students making this mistake.
     
 \begin{lstlisting}
 % stupid code
-A = [1 2 3; 4 5 6; 7 8 9] % hardcode data in the program
+A = [1 2 3; 4 5 6; 7 8 9]       % hardcode data in the program
     
 % smart code
 load('some_random_dataset.dat') % or the arguably better fopen functions
@@ -503,7 +540,34 @@ load('some_random_dataset.dat') % or the arguably better fopen functions
     \end{columns}
 \end{frame}
 
-\section{Error management}
+\againframe{workrightfast}
+
+\begin{frame}[fragile,label=wrf-explain]
+  \frametitle{Make a habit of the following adage}
+  \begin{enumerate}
+    \colorize<1> \item \emph{Make it work}\\ 
+    Create an algorithm that does the intended job. Make sure it works, and works repeatedly. Test and verify frequently. Add \emph{todo} comments when you're not sure about a certain decision.
+    \colorize<2> \item \emph{Make it right}\\ 
+    Refactor the code to improve the code design. Insert functions, comments, compartmentalize it. Get rid of magic numbers, use sensible variable names. Check input. Test and verify. Align with the team!
+    \colorize<3> \item \emph{Make it fast}\\ 
+    Measure and tune the performance of your code (profiling tool). In Matlab, vectorized calculations are much (!) faster than for-loops. Use sensible numerical techniques (e.g. higher-order integration).
+  \end{enumerate}
+  Program by iterating over these aspects multiple times, starting at the fine-grained level, working your way up.
+\end{frame}
+
+% \begin{frame}
+% \frametitle{Code organization}
+%   \begin{itemize}
+%     \item Optimization of a code is time-consuming and complicated
+%     \item The more you optimize your code, the less readable it becomes
+%     \item But... You can write it in a such way that it will be flexible and easy to maintain
+%     \item Especially important in team work
+%     \item Any person has its own handwriting. Any programmer has its own coding style.
+% \end{itemize}
+%  \tikz{\node[emphblock,text width=\textwidth]{The coding style $\equiv$ handwriting...};}
+% \end{frame}
+
+\section{Debugging and profiling}
 \subsection*{Errors in programming}
 \againframe<2>{contents_prog2}
 \begin{frame}
@@ -621,9 +685,30 @@ load('some_random_dataset.dat') % or the arguably better fopen functions
 % \end{frame}
 
 %  
-\subsection*{Debugging}
+\subsection*{Debugging and profiling}
 \begin{frame}
-\frametitle{A convenient tool: the debugger}
+  \frametitle{Validation}
+  \begin{itemize}
+    \item Testcases: run the program with parameters such that a known result is (should be) produced.
+    \item Testcases: what happens when unforeseen input is encountered?
+    \begin{itemize}
+      \item More or fewer arguments than anticipated? (Matlab uses \lstinline$varargin$ and \lstinline$nargin$ to create a varying number of input arguments, and to check the number of given input arguments
+      \item Other data types than anticipated? How does the program handle this? Warnings, error messages (crash), NaN or worse: a program that silently continues?
+    \end{itemize}
+    \item For physical modeling, we typically look for analytical solutions
+    \begin{itemize}
+      \item Sometimes somewhat stylized cases
+      \item Possible solutions include Fourier-series
+      \item Experimental data
+    \end{itemize}
+    \vskip1ex
+  \end{itemize}
+  \pause
+  \tikz{\node[emphblock] {\large But: validation can only tell you \emph{if} something is wrong, not \emph{where} it went wrong.}}
+\end{frame}
+
+\begin{frame}
+\frametitle{The debugger (1)}
 \begin{itemize}
   \colorize<1-> \item No-one can write a 1000-line code without making errors
   \begin{itemize}
@@ -645,7 +730,7 @@ load('some_random_dataset.dat') % or the arguably better fopen functions
 \end{frame}
 
 \begin{frame}
-\frametitle{A convenient tool: the debugger}
+  \frametitle{The debugger (2)}
 The debugger can help you to:
 \begin{itemize}
   \item Pause a program at a certain line: set a \emph{breakpoint}
@@ -657,30 +742,88 @@ The debugger can help you to:
     \item Run until a certain condition is met (conditional breakpoint)
     \item Run until the current function exits
   \end{itemize}
-  \item Note: You may end up in the source code of Matlab functions!\pause
-  \item Check Canvas (Matlab Crash Course section) for a movie that demonstrates the debugger.
+  \item Note: You may end up in the source code of Matlab functions!
+  \item Check Canvas (Matlab Crash Course section) for a demonstration of the debugger.
 \end{itemize}
 \end{frame}
-% 
-\begin{frame}
-  \frametitle{About testcases (validation)}
-  \begin{itemize}
-    \item Testcases: run the program with parameters such that a known result is (should be) produced.
-    \item Testcases: what happens when unforeseen input is encountered?
-    \begin{itemize}
-      \item More or fewer arguments than anticipated? (Matlab uses \lstinline$varargin$ and \lstinline$nargin$ to create a varying number of input arguments, and to check the number of given input arguments
-      \item Other data types than anticipated? How does the program handle this? Warnings, error messages (crash), NaN or worse (a continuing program)?
-    \end{itemize}
-    \item For physical modeling, we typically look for analytical solutions
-    \begin{itemize}
-      \item Sometimes somewhat stylized cases
-      \item Possible solutions include Fourier-series
-      \item Experimental data
-    \end{itemize}
 
+\begin{frame}[fragile]
+  \frametitle{Recursive Fibonacci}
+  \begin{itemize}
+    \item Create a program that computes the $n$-th Fibonacci number using recursion:\\
+    $F_n = F_{n-1} + F_{n-2}$ with $F_1 = 1$ and $F_2 = 1$
+    \pause
+    \lstset{numbers=left}
+  \begin{lstlisting}
+function out = fibonacci_recursive(N)
+%FIBONACCI_RECURSIVE Prints out the Nth Fibonacci number to the screen
+%SYNTAX: fibonacci_recursive(N)
+
+if (N>2)
+    Nminus1 = fibonacci_recursive(N-1);
+    Nminus2 = fibonacci_recursive(N-2);
+    out = Nminus1 + Nminus2;
+elseif (N==1) || (N==2)
+    out = 1;
+else
+    error('Input argument was invalid')
+end
+  \end{lstlisting}
+  \pause
+    \item Place a breakpoint line 5 (click on dash or press \keystroke{F12}), run \lstinline$fibonacci_recursive(5)$
+    \item Explore the function of step \keystroke{F10}, step into \keystroke{F11}, and how the local workspace changes
+    \item Stop the debugger (red stop button on top, or \keystroke{Shift}+\keystroke{F5})
+    \item Right-click the breakpoint, select \emph{Set/modify condition}, enter \lstinline$N==2$, run again.
   \end{itemize}
 \end{frame}
-% 
+
+\begin{frame}<handout:2>[fragile]
+  \frametitle{Profiling the code}
+  We can use the commands \lstinline$tic$ and \lstinline$toc$ to record the time spent in the enclosed code:
+  \mode<beamer>
+    \begin{onlyenv}<1>
+      \lstset{showlines=true}
+    \begin{lstlisting}
+% Script to call fibonacci recursive for different values of N and 
+% display the time to process
+
+max_N = 32;
+
+for i = 1:max_N
+    tic
+    i
+    fibonacci_recursive(i);
+    toc;
+end
+
+
+    \end{lstlisting}
+  \end{onlyenv}
+  \mode<all>
+  \begin{onlyenv}<2->
+    \begin{lstlisting}
+% Script to call fibonacci recursive for different values and record the
+% time to process
+
+max_N = 32;
+
+for i = 1:max_N
+    tic
+    i
+    fibonacci_recursive(i);
+    recorded_time(i) = toc;
+end
+
+plot(1:max_N,recorded_time)
+        \end{lstlisting}
+      \end{onlyenv}
+      \uncover<3>{
+      \begin{itemize}
+        \item The time needed for a computation increases exponentially. Indeed, this may not be the fastest way to compute the Fibonacci sequence.
+        \item In order to see where the computation time is spent, use the \emph{Run and Time} feature in Matlab (home tab).
+      \end{itemize}}
+\end{frame}
+
 \section{Visualisation}
 \subsection*{Plotting}
 \againframe<2>{contents_prog2}
@@ -717,14 +860,37 @@ xlabel('X'); ylabel('Y'); title('Absolute error');
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Plotting (2)}
-  Easy plotting of functions can be done using the ezplot function: \lstinline$ezplot('x-sin(x)', [0 2*pi])$:
-  \\
-  {\centering\includegraphics[width=0.5\textwidth]{show_ezplot-utc}}\\
-  Be careful with steep gradients: \lstinline$ezplot('x-sin(1/x)', [0 1])$% (use \lstinline$fplot$ instead)
-  \\
-  \centering\includegraphics[width=0.5\textwidth]{show_ezplot2-utc}
+  \frametitle{Animating plots}
+  The \lstinline$drawnow$ command holds the execution of your program until the graph is updated. It allows to have a live view of a simulation result.
+  \begin{lstlisting}
+x = -5:0.1:5;
+y = x.^2-4*x+3;
+y2 = y + (2-4*rand(size(y)));
+for i = 1:length(x)
+    subplot(2,1,1); 
+    plot(x(1:i),y(1:i),'-',x(1:i),y2(1:i),'r.');
+    xlabel('X'); ylabel('Y'); title('Graph and Scatter');
+    axis([min(x) max(x) min(y) max(y)])
+    
+    subplot(2,1,2); 
+    plot(x(1:i),abs(y(1:i)-y2(1:i)),'r-');
+    xlabel('X'); ylabel('Y'); title('Absolute error');
+    axis([min(x) max(x) 0 2])
+
+    drawnow
+end
+      \end{lstlisting}
 \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Plotting (2)}
+%   Easy plotting of functions can be done using the ezplot function: \lstinline$ezplot('x-sin(x)', [0 2*pi])$:
+%   \\
+%   {\centering\includegraphics[width=0.5\textwidth]{show_ezplot-utc}}\\
+%   Be careful with steep gradients: \lstinline$ezplot('x-sin(1/x)', [0 1])$% (use \lstinline$fplot$ instead)
+%   \\
+%   \centering\includegraphics[width=0.5\textwidth]{show_ezplot2-utc}
+% \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Other plotting tools}
@@ -737,15 +903,17 @@ xlabel('X'); ylabel('Y'); title('Absolute error');
 %       \item Vectorplots: \lstinline$quiver(x,y,vx,vy)$
     \end{itemize}
    \column{0.4\textwidth}
-    \includegraphics<1>[width=\columnwidth]{show_errorbar-utc}
-    \includegraphics<2>[width=\columnwidth]{show_ezplot3-utc}
-    \includegraphics<3>[width=\columnwidth]{show_hist-utc}
+      \includegraphics<1>[width=\columnwidth]{show_errorbar-utc}
+      \mode<beamer>{
+        \includegraphics<2>[width=\columnwidth]{show_ezplot3-utc}
+        \includegraphics<3>[width=\columnwidth]{show_hist-utc}
+    }
 %     \includegraphics<3>[width=\columnwidth]{show_quiver-utc}
  \end{columns}
 \end{frame}
 
 \subsection*{Multi-dimensional data}
-\begin{frame}[fragile]
+\begin{frame}<handout:3>[fragile]
   \frametitle{Multi-dimensional data}
   Matlab typically requires the definition of rectangular grid coordinates using \lstinline$meshgrid$:\\
   \begin{overlayarea}{\textwidth}{6cm}
@@ -765,23 +933,27 @@ z = x .* y .* exp(-x.^2 - y.^2);
    \column{0.4\textwidth}
    \begin{center}
       \includegraphics<2>[width=\columnwidth]{show_surf}
-      \includegraphics<3>[width=\columnwidth]{show_contour}
-      \includegraphics<4>[width=\columnwidth]{show_waterfall}
-      \includegraphics<5>[width=\columnwidth]{show_ribbon}
+      \mode<beamer>{
+        \includegraphics<3>[width=\columnwidth]{show_contour}
+        \includegraphics<4>[width=\columnwidth]{show_waterfall}
+        \includegraphics<5>[width=\columnwidth]{show_ribbon}
+      }
    \end{center}
     \only<2>{
       \lstinline$surf(x,y,z);$
     }
-    \only<3>{
-      \lstinline$v=-0.5:0.05:0.5;$ \\
-      \lstinline$contour(x,y,z,v,'ShowText', 'on');$
-    }
-    \only<4>{
-    \lstinline$waterfall(x,y,z);$\\
-    \lstinline$colormap(winter);$
-    }
-    \only<5>{
-    \lstinline$ribbon(z);$
+    \mode<beamer>{
+      \only<3>{
+        \lstinline$v=-0.5:0.05:0.5;$ \\
+        \lstinline$contour(x,y,z,v,'ShowText', 'on');$
+      }
+      \only<4>{
+      \lstinline$waterfall(x,y,z);$\\
+      \lstinline$colormap(winter);$
+      }
+      \only<5>{
+      \lstinline$ribbon(z);$
+      }
     }
  \end{columns}
  \end{overlayarea}
@@ -813,7 +985,7 @@ quiver(x,y,dx,dy,'k');
   \end{columns}
 \end{frame}
 
-\section{Functions: the sequel}
+\section{Functions: revisited}
 \againframe<2>{contents_prog2}
 \subsection*{Function handles}
 \begin{frame}[fragile]
@@ -891,46 +1063,38 @@ x = fminbnd(fun,x1,x2)
   \end{lstlisting}
   \pause
   Various related functions are \lstinline$fzero$, \lstinline$feval$, \lstinline$fsolve$, \lstinline$fminsearch$. They will be discussed later in the course.
-%   fzero
-%   feval
-%   fsolve
-%   fminsearch
-%   f
 \end{frame}
 
-\section{Algorithms}
-\subsection*{Introduction}
+\section{Concluding remarks}
+\subsection*{Advanced}
 \againframe<2>{contents_prog2}
-\begin{frame}[fragile]
-  \frametitle{Algorithm design}
-  \begin{enumerate}
-    \colorize<1> \item \emph{Problem analysis}\\ Contextual understanding of the nature of the problem to be solved
-    \colorize<2> \item \emph{Problem statement}\\ Develop a detailed statement of the mathematical problem to be solved with the program
-    \colorize<3> \item \emph{Processing scheme}\\ Define the inputs and outputs of the program
-    \colorize<4> \item \emph{Algorithm}\\ A step-by-step procedure of all actions to be taken by the program (\emph{pseudo-code})
-    \colorize<5> \item \emph{Program the algorithm}\\ Convert the algorithm into a computer language, and debug until it runs
-    \colorize<6> \item \emph{Evaluation}\\ Test all of the options and conduct a validation study
-  \end{enumerate}
-\end{frame}
-% 
-% \begin{frame}
-%  \frametitle{Algorithm design}
-%  \item Translate your problem to a formal procedure (recipe, pseudo-code)\pause
-%    \begin{itemize}
-%     \item What steps do I need to do? 
-%     \item Can you break down a step further?
-%     \item Is the order of the steps of importance?
-%     \item Can I re-use certain parts? 
-%   \end{itemize}
-% \end{frame}
-
-\subsection*{Example parabola}
 \begin{frame}
-  \frametitle{Example: finding the roots of a parabola}
+  \frametitle{Advanced concepts}
+  \begin{itemize}
+    \item Object oriented programming: classes and objects
+    \item Memory management: some programming languages require you to allocate computer memory yourself (e.g. for arrays)
+    \item External libraries: in many cases, someone already built the general functionality you are looking for
+    \item Compiling and scripting (``interpreted''); compiling means converting a program to computer-language before execution. Interpreted languages do this on the fly.
+    \item Parallellization: Distributing expensive calculations over multiple processors or GPUs.
+  \end{itemize}\pause
+     \only<beamer>{
+       \tikzstyle{every picture}-=[remember picture]
+       \begin{tikzpicture}[remember picture,overlay]{
+   \node at (current page.center) {\includegraphics[width=\textwidth]{fullnerd2.png}};}
+       \end{tikzpicture}}
+ \end{frame}
+
+\againframe{workrightfast}
+\againframe{wrf-explain}
+
+\subsection*{Exercise}
+\begin{frame}<handout:1-2>
+  \frametitle{Exercise: finding the roots of a parabola}
   We are writing a program that finds for us the roots of a parabola. We use the form
   \[
     y = ax^2 + bx + c
   \]
+  \pause
   What is our program in pseudo-code? \pause
   \begin{enumerate}[<+->]
     \item Input data ($a$, $b$ and $c$)
@@ -949,7 +1113,7 @@ x = fminbnd(fun,x1,x2)
   \end{enumerate}
 \end{frame}
 
-\begin{frame}[plain,fragile]
+\begin{frame}<handout:0>[plain,fragile]
   \frametitle{Example: finding the roots of a parabola}
   \small\selectfont
   \begin{lstlisting}[basicstyle=\scriptsize\ttfamily]
@@ -965,6 +1129,7 @@ if (a==0)
     x = -c/b;
 end
 
+% Compute determinant
 D = b^2 - 4*a*c;
 if (D<0)
     disp('Complex roots'); return;
@@ -980,7 +1145,6 @@ end
   \end{lstlisting}
 \end{frame}
 
-
 \begin{frame}[fragile]
   \frametitle{Example: finding the roots of a parabola}
   \begin{lstlisting}
@@ -990,6 +1154,9 @@ ans =
    -0.6458
   \end{lstlisting}
 \end{frame}
+
+
+
 %
 %\subsection*{Projectile}
 %\begin{frame}[fragile]
@@ -1214,36 +1381,3 @@ ans =
 %    \includegraphics[width=0.8\textwidth]{projectile-utc}
 %  \end{center}
 %\end{frame}
-
-\begin{frame}
- \frametitle{Advanced concepts}
- \begin{itemize}
-   \item Object oriented programming: classes and objects
-   \item Memory management: some programming languages require you to allocate computer memory yourself (e.g. for arrays)
-   \item External libraries: in many cases, someone already built the general functionality you are looking for
-   \item Compiling and scripting (``interpreted''); compiling means converting a program to computer-language before execution. Interpreted languages do this on the fly.
-   \item Profiling, optimization, parallellization: Checking where your program spends the most of its time, optimizing (or parallellizing) that part.
- \end{itemize}\pause
-    \only<beamer>{
-      \tikzstyle{every picture}-=[remember picture]
-      \begin{tikzpicture}[remember picture,overlay]{
-	\node[xshift=0cm,yshift=0cm, anchor=center] at (current page.center) {\includegraphics[width=\textwidth]{fullnerd2.png}};}
-      \end{tikzpicture}}
-\end{frame}
-
-\section{Conclusions}
-\subsection*{Conclusions}
-\againframe<2>{contents_prog2}
-\begin{frame}[fragile]
-  \frametitle{In conclusion...}
-  \begin{itemize}
-    \colorize<1> \item Matlab: A versatile development environment, with excellent vector and matrix computations
-    \colorize<2> \item Programming basics: variables, operators and functions, locality of variables, recursive operations
-  \end{itemize}
-  \pause
-    \begin{itemize}
-    \colorize<3> \item For now: exercises 1-4 (basics), 5+6 (advanced).
-    \colorize<4> \item Preparation for next lecture: familiarize with the concepts, especially part 1 of these slides.
-  \end{itemize}
-  \pause
-\end{frame}

@@ -1,3 +1,4 @@
+\part{Matlab programming I}
 \section{Introduction}
 \subsection*{General}
 \begin{frame}[label=contents_prog1]
@@ -1115,7 +1116,7 @@ end
   \begin{enumerate}
     \item Plot the functions $f(x)=x,\ g(x)=x^3,\ h(x)=e^x$ and $z(x)=e^{x^2}$ over the interval $[0,4]$ on the normal scale and on the log-log scale. Use an appropriate sampling to get smooth curves. Describe your plots by using the functions: \lstinline$xlabel$, \lstinline$ylabel$, \lstinline$title$ and \lstinline$legend$.
     \vskip1em
-    \item Make a plot of the functions: $f(x)=sin(1/x)$ and $f(x)=cos(1/x)$ over the interval $[0.01,0.1]$. How do you create \lstinline$x$ so that the plots look sufficiently smooth?
+    \item Make a plot of the functions: $f(x)=sin(1/x)$ and $g(x)=cos(1/x)$ over the interval $[0.01,0.1]$. How do you create \lstinline$x$ so that the plots look sufficiently smooth?
   \end{enumerate}
  \end{frame}
 
@@ -1151,7 +1152,7 @@ end
     This should give you an indication of the fraction this series converges to.
     \begin{itemize}
       \item Now plot in two vertically aligned subplots i) The result as a function of $n$, and ii) the difference with the earlier mentioned fraction as a function of n. For the latter, consider carefully the axis scale!
-      \item Use \lstinline$tic$ and \lstinline$toc$ to compare the computing times with $\pi^2$ inside vs outside the loop.
+      % \item Use \lstinline$tic$ and \lstinline$toc$ to compare the computing times with $\pi^2$ inside vs outside the loop.
     \end{itemize}
   \end{enumerate}
  \end{frame}
@@ -1172,11 +1173,11 @@ end
 
 \begin{frame}[fragile]
   \frametitle{Practice algorithm: Fourier series for heat equation}
-  The unsteady 1D heat equation is given as:
+  The unsteady 1D heat equation in 1D in a slab of material is given as:
   \[
      \frac{\partial T}{\partial t} = k\frac{\partial^2 T}{\partial x^2}
   \]
- We can express the temperature profile $T(x,t)$ using a Fourier sine series. For an initial profile T(x,0) = 20 and fixed boundary values T(0,t) = T(L,t) = 0, the solution is given as:
+ We can express the temperature profile $T(x,t)$ in the slab using a Fourier sine series. For an initial profile T(x,0) = 20 and fixed boundary values T(0,t) = T(L,t) = 0, the solution is given as:
   \[
      T(x,t) = \sum_{n=1}^{n=\infty}\frac{40(1-(-1)^n)}{n\pi}  \sin\left(\frac{n\pi x}{L}\right) \exp\left(-kt\frac{n \pi}{L}^2\right)
   \]
@@ -1325,7 +1326,7 @@ end
 %  \end{lstlisting}
 %  \end{frame}
 
-\end{document}
+% \end{document}
 
 
 % References

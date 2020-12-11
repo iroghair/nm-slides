@@ -1,3 +1,4 @@
+\part{Regression and optimization}
 \section{Introduction}
 \subsection*{}
 \begin{frame}[label=contents_opt]
@@ -23,7 +24,7 @@
 \section{Curve fitting}
 \subsection*{}
 \againframe<2>{contents_opt}
-\begin{frame}[fragile]{Let's do an 'experiment' to gather data}
+\begin{frame}[fragile,label={slidedatacreate}]{Let's do an 'experiment' to gather data}
     \begin{lstlisting}
 %% Generate linear space of control points
 N = 100;                % Number of data points
@@ -137,6 +138,7 @@ plot(x,y,'x');
 
 \begin{frame}[fragile] 
   \frametitle{Fitting our problem: Matlab solver}
+  As a follow-up of the script provided in slide~\ref{slidedatacreate}
   \begin{columns}[T]
     \column{0.5\textwidth}
     \begin{lstlisting}
@@ -223,13 +225,13 @@ A =X\y';
    \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile] 
-  \frametitle{Regression coefficients}
-    \begin{itemize}
-      \item An uncorrellated error ($\overline{d} \rightarrow 0$) means that SSE, SST and SSR will have $\chi^2$ -distributions and the ratios will have an F-distribution. If SSR/SSE is large, the model is good!
-      \item There is a chance that the model is rubbish, but that SSR/SSE will yield a good value, Analysis of Variance (ANOVA) will be a good tool to calculate the probability of such a thing happening!
-   \end{itemize}
-\end{frame}
+% \begin{frame}[fragile] 
+%   \frametitle{Regression coefficients}
+%     \begin{itemize}
+%       \item An uncorrellated error ($\overline{d} \rightarrow 0$) means that SSE, SST and SSR will have $\chi^2$ -distributions and the ratios will have an F-distribution. If SSR/SSE is large, the model is good!
+%       \item There is a chance that the model is rubbish, but that SSR/SSE will yield a good value, Analysis of Variance (ANOVA) will be a good tool to calculate the probability of such a thing happening!
+%    \end{itemize}
+% \end{frame}
 
 \begin{frame}[fragile] 
   \frametitle{Back to the example}
@@ -255,6 +257,29 @@ A =X\y';
 \section{Fitting numerical models}
 \subsection*{}
 \againframe<2>{contents_opt}
+\begin{frame}[fragile] 
+\frametitle{Curve fitting from commandline: lsqcurvefit}
+Matlab offers various non-linear parameter and curve fitting tools that can be run from the commandline. The function \lstinline$lsqcurvefit$ allows to fit a model to a given dataset. Again, based on the data generated in slide~\ref{slidedatacreate}:
+  \begin{lstlisting}
+% Initial guess of coefficients
+a0 = [1 2 1 3];
+
+% Perform fitting, store resulting coeffs in a_fit
+a_fit = lsqcurvefit(@curve_fit_model, a0, x, y)
+
+% Run the model once more, with fitted coefficients
+y_model = curve_fit_model(a_fit, x);
+
+plot(x,y_model, '-r')
+  \end{lstlisting}
+  We just need a function that captures the model that we want to fit. This can be an inline function or a separate file:
+  \begin{lstlisting}
+function [y] = curve_fit_model(a,xdata)
+y = a(1)*xdata.^3+a(2)*xdata.^2 + a(3)*xdata + a(4);
+end
+  \end{lstlisting}
+\end{frame}
+
 \begin{frame}[fragile] 
   \frametitle{Dynamic fitting of non-linear equations: lsqnonlin}
   You may encounter situations where the model data is slightly more complicated to obtain (e.g. a numerical model based on ODEs where coefficients are unknown), or you want to perform fitting of multiple functions/coefficients, or just want to automate things via scripts. Matlab's Optimization toolbox gives access to a powerful function \lstinline$lsqnonlin$, least-squares non-linear optimization.
@@ -317,7 +342,6 @@ options = optimset('TolX',1.0E-6,'MaxFunEvals',1000);
     Our fitted coefficients are stored in \lstinline$ke$. Note that we get a lot more data back that allows to check the fitting results in more detail.
 \end{frame}
 
-
 \begin{frame}[fragile] 
   \frametitle{Example use of lsqnonlin}
   \centering\input{tikzplots/lsqnonlinfit.tikz}
@@ -340,6 +364,80 @@ T.ke = ke';
 T.LowerCI = cflim(:,1);
 T.UpperCI = cflim(:,2)\end{lstlisting}
 \end{frame}
+
+
+
+
+\begin{frame}[fragile] 
+  \frametitle{Second example: lsqnonlin}
+  The model does not have to be an ODE. It can be any model that is part of the fitting goal function. Let's consider an (adapted) version of the Laplace equation solver, where we can set a single, central node to a certain temperature:
+    \begin{lstlisting}
+function T = solveLaplaceEq(Nx,Ny,Tb,Tint)
+% Solves the Laplace equation for steady-state heat conduction
+
+e = ones(Nx*Ny,1);
+A = spdiags([e,e,-4*e,e,e],[-Nx,-1,0,1,Nx],Nx*Ny,Nx*Ny);
+b = zeros(Nx*Ny,1);                 % Right hand side vector
+
+[A,b] = setBoundaryConditions(A,b,Tb,Nx,Ny);
+
+% Set a central node to Tint
+ind = round(Nx * (Ny/2));   % Find index in center
+A(ind,:) = 0;               % Reset matrix for boudary cells
+A(ind,ind) = 1;             % Add a 1 on the diagonal
+b(ind) = Tint;              % Set rhs to desired T
+
+T = A\b;
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile] 
+  \frametitle{Second example: lsqnonlin}
+  Now let's make a goal function based on our model and the desired setpoint (the mean temperature in the domain):
+  \begin{lstlisting}
+function [err] = fitcrit_laplace(actuate_T, Nx, Ny, boundary_T, setpoint_T)
+% Compute model:
+T = solveLaplaceEq(Nx, Ny, boundary_T, actuate_T);
+
+% Compute error (deviation of mean T with desired setpoint T)
+err = mean(T,'all') - setpoint_T;
+end
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile] 
+  \frametitle{Second example: lsqnonlin}
+\begin{itemize}
+  \item Set up system parameters
+  \item Run the fitting procedures
+  \item Compute and plot the final solution
+\end{itemize}
+  \begin{lstlisting}
+% Set up parameters
+Nx = 35; Ny = 35;
+Tb = [40 10 40 10];     % Fixed boundary temperatures
+T0 = 0;                 % Initial guess 
+T_set = 20;             % Setpoint
+UB = Inf; LB = -Inf;    % Upper and lower bounds
+
+opts = optimoptions('lsqnonlin', 'Display', 'iter');
+
+% Run fitting
+T_fit = lsqnonlin(@(T) fitcrit_laplace(T,Nx,Ny,Tb,T_set),T0, LB, UB, opts)
+% Is the same as:
+% T_fit = lsqnonlin(@fitcrit_laplace, T0, LB, UB, opts, Nx, Ny, Tb, T_set)
+
+% Compute again and plot
+T_model = solveLaplaceEq(Nx, Ny, Tb, T_fit);
+T_plot = reshape(T_model,[Nx Ny]);       % Reshape x-vec to mat Nx,Ny
+[x,y] = meshgrid(1:Ny,1:Nx);             % Get position arrays
+surf(x,y,T_plot)                         % Surface plot
+mean(T_model)
+    \end{lstlisting}
+\end{frame}
+
+
+
 
 % \section{Curve fitting}
 % \subsection*{}
@@ -668,7 +766,7 @@ lambda.lower = 1.00 0 0
 \begin{frame}
   \frametitle{Summary}
   \begin{itemize}
-    \item Curve fitting: Manual procedures for polynomial fitting in Matlab and Excel
+    \item Curve fitting: Manual procedures for polynomial fitting in Matlab
     \item Curve fitting: Matlab's curve-fitting toolbox
     \item Curve fitting: Matlab's non-linear least-squares solver \lstinline$lsqnonlin$
     \item Optimization: An introduction to the Simplex method

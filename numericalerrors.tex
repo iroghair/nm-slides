@@ -1,3 +1,4 @@
+\part{Numerical errors}
 \section{Introduction}
 \subsection*{General}
 \begin{frame}[label=contents_err]
@@ -71,7 +72,7 @@ loglog(v,abs(y));     % Double log plot, values on y-axis must be positive.
 
 \begin{frame}<1-2>[label=errors]
   \frametitle{Errors in computer simulations}
-  In this course we will outline different numerical errors that may appear in computer simulations, and how these errors can affect the simulation results.
+  In this lecture I will outline different numerical errors that can appear in computer simulations, and how these errors can affect the simulation results.
   \vskip2em
   \pause
   \begin{itemize}[<+->]
@@ -89,7 +90,7 @@ loglog(v,abs(y));     % Double log plot, values on y-axis must be positive.
   \begin{columns}
     \column{0.6\textwidth}
     \uncover<3->{\begin{block}{Verification}
-    Verification is the process of mathematically and computationally assuring that the model computes what you have entered.    
+    Verification is the process of mathematically and computationally assuring that the model computes the equations you intended to implement.
     \end{block}
     }
     \uncover<7->{
@@ -653,7 +654,7 @@ loglog(v,abs(y));     % Double log plot, values on y-axis must be positive.
      \uncover<2->{, \quad 
      y = \left[\begin{aligned}
        2.0 \\%[0.3em]
-       2.0 
+       -2.0 
      \end{aligned}\right]} $
 \begin{columns}[T]
   \column{0.5\textwidth}
@@ -917,8 +918,8 @@ p = 20
 \begin{frame}[fragile]
   \frametitle{Symbolic math: root finding }
   A root finding method searches for the values where a function reaches zero. We will cover the numerical methods later, here we show how to use root finding with symbolic math in Matlab.
-  \begin{columns}[T]
-   \column{0.5\textwidth}
+  % \begin{columns}[T]
+  %  \column{0.5\textwidth}
    \begin{block}{Symbolic math function}
   \[ f(x) =   \frac{3}{x^2 + 3x} - 2 \]
   \pause
@@ -931,19 +932,19 @@ ans =
  - 15^(1/2)/2 - 3/2
     \end{lstlisting}
    \end{block}
-    \pause   
-   \column{0.5\textwidth}
-  \begin{block}{Function as a string}
-\[ f(x) = x^2 - 4x + 2 \]
-    \pause
-    \begin{lstlisting}
->> solve('x^2 - 4*x + 2')
-ans =
- 2^(1/2) + 2
- 2 - 2^(1/2)
-    \end{lstlisting}
-  \end{block}
-  \end{columns}
+%     \pause   
+%    \column{0.5\textwidth}
+%   \begin{block}{Function as a string}
+% \[ f(x) = x^2 - 4x + 2 \]
+%     \pause
+%     \begin{lstlisting}
+% >> solve('x^2 - 4*x + 2')
+% ans =
+%  2^(1/2) + 2
+%  2 - 2^(1/2)
+%     \end{lstlisting}
+%   \end{block}
+%   \end{columns}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -971,7 +972,7 @@ ans = 0.0000000000000056843418860808014869689938467514
 \begin{frame}
   \frametitle{Summary}
   \begin{itemize}
-    \colorize<1> \item Numerical errors mar arise due to truncation, roundoff and break errors, which may seriously affect the accuracy of your solution
+    \colorize<1> \item Numerical errors may arise due to truncation, roundoff and break errors, which may seriously affect the accuracy of your solution
     \colorize<2> \item Errors may propagate and accumulate, leading to smaller accuracy
     \colorize<3> \item Ill-conditioned problems and unstable methods have to be identified so that proper measures can be taken
     \colorize<4> \item Symbolic math computations may be performed to solve certain equations algebraically, bypassing numerical errors, but this is not always possible.

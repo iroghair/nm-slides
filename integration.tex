@@ -1,3 +1,4 @@
+\part{Numerical integration}
 \section{Introduction}
 \subsection*{General}
 \begin{frame}[label=contents_integration]
@@ -329,10 +330,17 @@ Note that this can be rewritten for equidistant intervals:
   Integration can be done numerically in Matlab.
   \begin{itemize}
     \item \lstinline$trapz(x,y)$ uses the trapezoid rule to integrate the data. Make sure you use the \lstinline$x$ variable if your data is not spaced with $\Delta x=1$. Can handle non-equidistant data.
+    \begin{lstlisting}
+>> x = linspace(-2,2,2001);
+>> y = 1./(x.^2+1);
+>> I = trapz(x,y)
+I =
+    2.2143
+\end{lstlisting}
     \item Integration of functions can be done using the \lstinline$integral(fun,xmin,xmax)$ function:
     \begin{lstlisting}
-fun = @(x) exp(-x.^2);
-I = integral(fun,0,10)
+>> fun = @(x) exp(-x.^2);
+>> I = integral(fun,0,10)
 I =
    0.886226925452758
     \end{lstlisting}
@@ -345,7 +353,6 @@ I =
   \frametitle{What hasn't been discussed?}
   This course is by no means complete, and further reading is possible.
    \begin{itemize}
-      \item Legendre polynomials: Another way of performing the polynomial interpolation
       \item Gaussian quadrature: A third-order integration method that requires only two base points (in contrast to the third order Simpson's method, which requires three points)
       \item Adaptive techniques: Parts of a function that are relatively steady (no wild oscillations) and differentiable can be integrated with much larger step sizes than other parts of the function.
       \item Simpson's 3/8-rule: Yet another integration technique, requiring an additional data point
@@ -355,16 +362,37 @@ I =
 \begin{frame}
   \frametitle{Summary}
   \begin{itemize}
-    \item Interpolation is used to obtain data between existing data points
-    \begin{itemize}
-      \item (Bi-)Linear, polynomial and spline interpolation methods
-      \item Construction of Newton polynomials
-      \item Oscillations of high-order polynomials
-    \end{itemize}
     \item Several techniques for numerical integration were discussed:
     \begin{itemize}
       \item Riemann sums, trapezoid rule, Simpson's rule
       \item Upper-bound errors were given for each technique
+      \item Built-in Matlab functions were illustrated
     \end{itemize}
+    \item Continue with characterization of convergence of the integration methods in the tutorials!
   \end{itemize}
 \end{frame}
+
+\section{Tutorials}
+\subsection*{Integration tutorials}
+\begin{frame}[fragile]
+  \frametitle{Integration tutorials}
+  \begin{enumerate}
+    \item Implement a function to integrate a mathematical function for a specific number of integration intervals. Implement it as a function, which can be called with arguments:
+    \begin{itemize}
+      \item Function (handle) to integrate
+      \item Integration boundaries (as separate arguments or as $2 \times 1$ vector)
+      \item Number of integration intervals
+    \end{itemize}
+    For instance: \lstinline$function result = leftrule(func, x0, x1, N)$.\\
+    \item Set up a function to integrate:
+    \begin{lstlisting}
+function [f] = myfunction(x)
+f = x.^2 - 4*x + 6 + sin(5*x);
+end
+    \end{lstlisting}
+    \item Integrate the function, e.g. \lstinline$int_left = leftrule(@myfunction, 0, 10, 25)$
+    \item Assess how the number of intervals affects the deviation from the true integral value. 
+    \item Create a log-log plot of the deviation vs. number of intervals used.
+    \item Do this for all methods discussed\footnote{Riemann left, right, midpoint, trapezoid and Simpson} and compare their performance in a graph
+  \end{enumerate}
+ \end{frame}

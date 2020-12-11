@@ -1,0 +1,37 @@
+\documentclass[10pt]{minimal}
+
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usetikzlibrary{decorations.pathreplacing}
+
+
+% For Matlab script colors
+\definecolor{mygreen}{RGB}{28,172,0} % color values Red, Green, Blue
+\definecolor{mylilas}{RGB}{170,55,241}
+
+\lstset{language=Matlab,%
+    basicstyle=\ttfamily,
+    breaklines=true,%
+    identifierstyle=\color{black},%
+    stringstyle=\color{mylilas},
+    commentstyle=\color{mygreen},%
+    showstringspaces=false
+}
+
+\begin{document}
+\begin{tikzpicture}
+  \node[] (code) {\begin{lstlisting}
+function res = average(x)
+%AVERAGE computes the average value of a vector
+%SYNTAX: res=average(x)
+
+%Note to self: this is a boring function
+n   = length(x);
+res = sum(x)/n;
+return
+  \end{lstlisting}} ;
+  \draw[->] (code.north) -- (code.south);
+\end{tikzpicture}
+\end{document}
