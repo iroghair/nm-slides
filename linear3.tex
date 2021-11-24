@@ -236,7 +236,7 @@
   \]
   Create a \emph{banded} matrix $A$: the main diagonal $k$ contains -4, whereas the bands at $k-1$, $k+1$, $k-N_x$ and $k+N_x$ contain a 1. Boundary cells just contain a 1 on the main diagonal so that the temperature is equal to $T_b$ (e.g. $T_1 = 1T_b$).\\
   \vskip1em
-  \hspace*{-2em}
+  \hspace*{8em}
   ${
     \begin{bmatrix}
       1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \cdots & 0\\
@@ -527,6 +527,7 @@ xlabel('x'); ylabel('y'); zlabel('T')
     \]\pause
     \item In the Jacobi scheme the iteration proceeds as follows:
     \begin{enumerate}
+      \setlength{\itemindent}{1cm}
       \item Start with an initial guess for the values of $T$ at each node\pause
       \item Compute updated values and store a new vector:
         \[

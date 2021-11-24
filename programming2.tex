@@ -190,6 +190,9 @@ end
  \end{lstlisting}
     \column{0.5\textwidth}
      \begin{lstlisting}[basicstyle=\scriptsize\ttfamily,emph={minBooksNeeded,maxShelfSize},emphstyle=\color{red}]
+maxShelfSize = 5;
+minBooksNeeded = 5;
+
 IAmFree = checkSchedule();
 if (IAmFree == true)
   books = countBooks();
@@ -234,6 +237,9 @@ end
  \end{lstlisting}
     \column{0.7\textwidth}
      \begin{lstlisting}
+maxShelfSize = 5;
+minBooksNeeded = 5;
+
 IAmFree = checkSchedule();
 if (IAmFree == true)
   books = countBooks();
@@ -780,7 +786,7 @@ end
 \begin{frame}<handout:2>[fragile]
   \frametitle{Profiling the code}
   We can use the commands \lstinline$tic$ and \lstinline$toc$ to record the time spent in the enclosed code:
-  \mode<beamer>
+  \mode<presentation>
     \begin{onlyenv}<1>
       \lstset{showlines=true}
     \begin{lstlisting}
@@ -904,7 +910,7 @@ end
     \end{itemize}
    \column{0.4\textwidth}
       \includegraphics<1>[width=\columnwidth]{show_errorbar-utc}
-      \mode<beamer>{
+      \mode<presentation>{
         \includegraphics<2>[width=\columnwidth]{show_ezplot3-utc}
         \includegraphics<3>[width=\columnwidth]{show_hist-utc}
     }
@@ -933,7 +939,7 @@ z = x .* y .* exp(-x.^2 - y.^2);
    \column{0.4\textwidth}
    \begin{center}
       \includegraphics<2>[width=\columnwidth]{show_surf}
-      \mode<beamer>{
+      \mode<presentation>{
         \includegraphics<3>[width=\columnwidth]{show_contour}
         \includegraphics<4>[width=\columnwidth]{show_waterfall}
         \includegraphics<5>[width=\columnwidth]{show_ribbon}
@@ -942,7 +948,7 @@ z = x .* y .* exp(-x.^2 - y.^2);
     \only<2>{
       \lstinline$surf(x,y,z);$
     }
-    \mode<beamer>{
+    \mode<presentation>{
       \only<3>{
         \lstinline$v=-0.5:0.05:0.5;$ \\
         \lstinline$contour(x,y,z,v,'ShowText', 'on');$

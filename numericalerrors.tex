@@ -134,30 +134,31 @@ loglog(v,abs(y));     % Double log plot, values on y-axis must be positive.
     \column{0.5\textwidth}
     \begin{center}
       \mode<beamer>{
-	\includegraphics<1>[width=0.7\columnwidth]{ptolemy1-1}
-	\includegraphics<2>[width=0.7\columnwidth]{ptolemy1-2}
-	\includegraphics<3>[width=0.7\columnwidth]{ptolemy1-3}
-	\includegraphics<4>[width=0.7\columnwidth]{ptolemy1-4}
-	\includegraphics<5>[width=0.7\columnwidth]{ptolemy1-5}
-	\includegraphics<6>[width=0.7\columnwidth]{ptolemy1-6}
+	\includegraphics<1>[width=0.65\columnwidth]{ptolemy1-1}
+	\includegraphics<2>[width=0.65\columnwidth]{ptolemy1-2}
+	\includegraphics<3>[width=0.65\columnwidth]{ptolemy1-3}
+	\includegraphics<4>[width=0.65\columnwidth]{ptolemy1-4}
+	\includegraphics<5>[width=0.65\columnwidth]{ptolemy1-5}
+	\includegraphics<6>[width=0.65\columnwidth]{ptolemy1-6}
       }
-      \includegraphics<7->[width=0.7\columnwidth]{ptolemy1-7}
+      \includegraphics<7->[width=0.65\columnwidth]{ptolemy1-7}
     \end{center}
     \column{0.5\textwidth}
     \begin{center}
       \mode<beamer>{
-	\includegraphics<7>[width=0.7\columnwidth]{ptolemy2-0}
-	\includegraphics<8>[width=0.7\columnwidth]{ptolemy2-1}
-	\includegraphics<9>[width=0.7\columnwidth]{ptolemy2-2}
-	\includegraphics<10>[width=0.7\columnwidth]{ptolemy2-3}
-	\includegraphics<11>[width=0.7\columnwidth]{ptolemy2-4}
-	\includegraphics<12>[width=0.7\columnwidth]{ptolemy2-5}
-	\includegraphics<13>[width=0.7\columnwidth]{ptolemy2-6}
+	\includegraphics<7>[width=0.65\columnwidth]{ptolemy2-0}
+	\includegraphics<8>[width=0.65\columnwidth]{ptolemy2-1}
+	\includegraphics<9>[width=0.65\columnwidth]{ptolemy2-2}
+	\includegraphics<10>[width=0.65\columnwidth]{ptolemy2-3}
+	\includegraphics<11>[width=0.65\columnwidth]{ptolemy2-4}
+	\includegraphics<12>[width=0.65\columnwidth]{ptolemy2-5}
+	\includegraphics<13>[width=0.65\columnwidth]{ptolemy2-6}
       }
-      \includegraphics<14>[width=0.7\columnwidth]{ptolemy2-7}
+      \includegraphics<14>[width=0.65\columnwidth]{ptolemy2-7}
     \end{center}
   \end{columns}
-  \begin{itemize}
+    \begin{itemize}
+      \setlength{\itemindent}{2cm}
     \item<7-> The perceived orbit of Mars from Earth shows a zig-zag (in contrast to the Sun, Mercury, Venus)
     \item<14> Even though they were not 'right', Earth-centered models (Ptolemy) were still valid
   \end{itemize}
@@ -313,19 +314,19 @@ loglog(v,abs(y));     % Double log plot, values on y-axis must be positive.
   \centering 
   Addition: \vskip1em
   \begin{columns}
-  \column{0.2\textwidth}
+  \column{0.3\textwidth}
     $ 0 + 0 = 0$\\
     $ 0 + 1 = 1$\\
     $ 1 + 0 = 1$\\
     \alert{$ 1 + 1 = 0$ (carry one)}\pause
-    \column{0.3\textwidth}
+    \column{0.25\textwidth}
       \begin{tabular}{cccc}
 	  & 1 & 4 & 5 \\
 	+ &   & 2 & 3 \\
 	\hline
 	  & 1 & 6 & 8 \\
       \end{tabular}\pause
-    \column{0.5\textwidth}
+    \column{0.45\textwidth}
       \begin{tabular}{ccccccccc}
 	  & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 1\\
 	+ & 0 & 0 & 0 & 1 & 0 & 1 & 1 & 1 \\
@@ -335,21 +336,23 @@ loglog(v,abs(y));     % Double log plot, values on y-axis must be positive.
   \end{columns}
   \pause
 \centering 
-  Subtraction: \\ \vskip1em
+\vskip2em  
+Subtraction: \\ 
+\vskip1em
   \begin{columns}
-  \column{0.2\textwidth}
+  \column{0.3\textwidth}
     $ 0 - 0 = 0$\\
     $1 - 0 = 1$\\
     $1 - 1 = 0$\\
     \alert{$0 - 1 = 1$ (borrow one)}\pause
-    \column{0.3\textwidth}
+    \column{0.25\textwidth}
       \begin{tabular}{cccc}
 	  & 1 & 4 & 5 \\
 	- &   & 2 & 3 \\
 	\hline
 	  & 1 & 2 & 2 \\
       \end{tabular}\pause
-    \column{0.5\textwidth}
+    \column{0.45\textwidth}
       \begin{tabular}{ccccccccc}
 	  & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 1\\
 	- & 0 & 0 & 0 & 1 & 0 & 1 & 1 & 1 \\
@@ -357,6 +360,7 @@ loglog(v,abs(y));     % Double log plot, values on y-axis must be positive.
 	  & 0 & 1 & 1 & 1 & 1 & 0 & 1 & 0 \\
       \end{tabular}
   \end{columns}
+  \vskip1em
   \begin{itemize}
     \item Multiplication and division are more expensive, and more elaborate
   \end{itemize}
@@ -389,7 +393,7 @@ loglog(v,abs(y));     % Double log plot, values on y-axis must be positive.
    \item In Matlab, integers of the type \lstinline$int32$ are represented by 32-bit words ($\lambda = 31$).
    \item The set of numbers that an \lstinline$int32$ $z$ can represent is:
    \[ -2^{31} \leq z \leq 2^{31} - 1 \approx 2\times 10^{9} \]
-   \item If, during a calculation, an integer number becomes larger than $2^\lambda-1$, the computer reports an \alert{overflow}\footnote{Matlab does not perform actual integer overflows, it just stops at the maximum.}
+   \item If, during a calculation, an integer number becomes larger than $2^\lambda-1$, the computer reports an \alert{overflow} with most programming languages. Matlab does not perform actual integer overflows, it just stops at the maximum.
    \item How can a computer identify an overflow?
   \end{itemize}
 }
@@ -630,10 +634,10 @@ loglog(v,abs(y));     % Double log plot, values on y-axis must be positive.
     \draw [->] (func) -- (out) node[midway,above] {$y + \delta y$};
   \end{tikzpicture}\pause
   \begin{columns}
-  \column{0.5\textwidth}
+  \column{0.55\textwidth}
   \[ y(x+\delta x) - y(x) \approx y'(x)\delta x \] 
   Propagated error on the basis of Taylor expansion
-  \column{0.5\textwidth}
+  \column{0.45\textwidth}
   \[ C = \operatorname*{max}_{\delta x} \left( \left | \frac{\delta y / y}{\delta x / x} \right| \right) \]
   Condition criterion, $C<10$ error development small
   \end{columns}
@@ -772,7 +776,7 @@ end
       $37$ & $3.080\cdot10^{-08}$ & $2.995\cdot10^{-08}$ \\
       $38$ & $1.714\cdot10^{-08}$ & $1.851\cdot10^{-08}$ \\
       $39$ & $1.366\cdot10^{-08}$ & $1.144\cdot10^{-08}$ \\
-      $40$ & $3.485\cdot10^{-08}$ & $7.071\cdot10^{-08}$ \\ \hline
+      $40$ & $3.485\cdot10^{-08}$ & $7.071\cdot10^{-09}$ \\ \hline
     \end{longtable} 
     \begin{itemize}
       \colorize<2> \item The recurrent approach enlarges errors from earlier calculations!

@@ -1,4 +1,4 @@
-
+*.dvi
 *.aux
 *.fls
 *.log
@@ -7,6 +7,7 @@
 *.snm
 *.vrb
 *.log
+*.toc
 Slides.synctex(busy)
 Slides.toc
 Slides.upa
@@ -15,3 +16,5 @@ Slides.blg
 Slides.synctex.gz
 tikz-playground.pdf
 Slides.pdf
+Slides_pdf/**
+Handouts_pdf/**

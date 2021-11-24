@@ -790,9 +790,9 @@ end
   First order upwind: 
   $\displaystyle \left.-u\frac{dc}{dx}\right|_i  = \left\{ 
   \begin{array}{l l}
-    -u\dfrac{c_i-c_{i-1}}{\Delta x} & \quad \text{if $u\geq 0$}\\
+    -u \dfrac{c_i-c_{i-1}}{\Delta x} & \quad \text{if $u\geq 0$}\\
     \phantom{.}\\
-    -u\dfrac{c_{i+1}-c_i}{\Delta x} & \quad \text{if $u < 0$}\\
+    -u \dfrac{c_{i+1}-c_i}{\Delta x} & \quad \text{if $u < 0$}\\
   \end{array} \right.$
   \pause
   Stable if $\text{Co} = \frac{u\Delta t}{\Delta x} < 1$ (with $\text{Co}$ the Courant number). However, only $1^\text{st}$ order accurate (large smearing of concentration fronts). Higher order upwind requires TVD schemes (trick of the trade)...
@@ -820,9 +820,9 @@ end
   \frac{c_i^{n+1}-c_i^{n}}{\Delta t} &= -u\frac{c_{i+1}-c_{i-1}}{2\Delta x} \\
     \Rightarrow c_i^{n+1} &= \left\{ 
   \begin{array}{l l}
-    c_i^{n} -u\dfrac{c_i-c_{i-1}}{\Delta x} & \quad \text{if $u\geq 0$}\\
+    c_i^{n} -u \Delta t \dfrac{c_i-c_{i-1}}{\Delta x} & \quad \text{if $u\geq 0$}\\
     \phantom{.}\\
-    c_i^{n}-u\dfrac{c_{i+1}-c_i}{\Delta x} & \quad \text{if $u < 0$}\\
+    c_i^{n}-u \Delta t \dfrac{c_{i+1}-c_i}{\Delta x} & \quad \text{if $u < 0$}\\
   \end{array} \right.
   \end{align*}
 \end{frame}

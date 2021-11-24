@@ -2,7 +2,8 @@
 % !TEX encoding = UTF-8 Unicode
 % !TEX spellcheck = en_US
 
-\documentclass[10pt,table,final,fleqn,xcolor={usenames,dvipsnames},aspectratio=169]{beamer}
+\documentclass[10pt,table,final,fleqn,xcolor={usenames,dvipsnames},aspectratio=169,handout]{beamer}
+\useoutertheme[subsection=false]{miniframes}
 \usetheme[]{Frankfurt}
 \usecolortheme{crane}
 
@@ -11,12 +12,19 @@
 \author[I.~Roghair]{Dr.ir.~Ivo~Roghair, Prof.dr.ir.~Martin van Sint Annaland}
 \institute{Chemical Process Intensification group\\Eindhoven University of Technology}
 \date{\small Numerical Methods (6E5X0), 2020-2021}
+\logo { 
+\begin{tikzpicture}[overlay,remember picture]
+\node[anchor=south west] at (current page.south west){
+    \includegraphics[width=3cm]{TUe-logo-descriptor-line-scarlet-cmyk.pdf}
+};
+\end{tikzpicture}
+}
 
 % Set the following option to compile only a single lecture, or comment for all lectures
-\includeonlylecture{programming1}
+\input{includes}
 % Same for frame, use [label=current] at a frame we are compiling
 % \includeonlyframes{current}
-    
+     
 \begin{document}
 
 \title{Numerical Methods for Chemical Engineers}
