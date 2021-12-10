@@ -299,6 +299,7 @@
   \end{center}
 \end{frame}
 
+{\nologo
 \begin{frame}
   \frametitle{Problems with Euler's method}
   The question is: What step size, or how many steps to use?
@@ -376,6 +377,7 @@
      \centering Reaction rate: $k = 50$ \si{s^{-1}}
   \end{columns}
 \end{frame}
+}
 
 \begin{frame}
   \frametitle{Accuracy}
@@ -493,6 +495,7 @@
   \end{itemize}
 \end{frame}
 
+{\nologo
 \begin{frame}
   \frametitle{Computing the rate of convergence}
   \footnotesize\selectfont
@@ -516,6 +519,7 @@
   \tikz{\node[emphblock,text width=0.9\textwidth] {$ \displaystyle
     \Rightarrow r = \frac{\log\left( \frac{\epsilon_2}{\epsilon_1}\right)}{\log\left( \frac{\Delta x_2}{\Delta x_1}\right)} = \frac{\log\left( \frac{\epsilon_2}{\epsilon_1}\right)}{\log\left( \frac{N_1}{N_2}\right)} \quad \text{in the limit of} \quad \Delta x \rightarrow 0 \quad \text{or} \quad N \rightarrow \infty $};}
 \end{frame}
+}
 
 \begin{frame}[fragile]
   \frametitle{Computing the rate of convergence}
@@ -745,6 +749,7 @@
   \end{align*}
 \end{frame}
 
+{\nologo
 \begin{frame}
   \frametitle{Runge-Kutta methods --- derivation}
 %   \footnotesize\selectfont
@@ -790,6 +795,7 @@ Comparison with Taylor:
 Using $b_1+b_2=1$, $c_2b_2=\frac{1}{2}$, $a_{2,1}b_2=\frac{1}{2} \Rightarrow$ 3 eqns and 4 unknowns $\Rightarrow$ multiple possibilities!
 
 \end{frame}
+}
 
 \begin{frame}
   \frametitle{Runge-Kutta methods --- derivation}
@@ -975,6 +981,7 @@ Using $b_1+b_2=1$, $c_2b_2=\frac{1}{2}$, $a_{2,1}b_2=\frac{1}{2} \Rightarrow$ 3 
 \end{frame}
 
 \subsection{RK4 method}
+{\nologo
 \begin{frame}
   \frametitle{RK4 method (classical fourth order Runge-Kutta method)}
   \vskip1em
@@ -1002,6 +1009,7 @@ Using $b_1+b_2=1$, $c_2b_2=\frac{1}{2}$, $a_{2,1}b_2=\frac{1}{2} \Rightarrow$ 3 
     y_{i+1} &= y_i + h\left(\frac{1}{6}k_1 + \frac{1}{3}\left(k_2 + k_3\right) + \frac{1}{6}k_4\right)
   \end{align*}
 \end{frame}
+}
 
 
 \begin{frame}
@@ -1170,6 +1178,7 @@ options = odeset('RelTol',1e-8,'AbsTol',1e-8);
 \vfill
 \end{frame}
 
+{\nologo
 \begin{frame}[fragile]
   \frametitle{Solving ODEs in Matlab: example 2}
   Plot the solution:
@@ -1193,6 +1202,7 @@ plot(t,x,'r-x')
   \end{center}
   Note the refinement in regions where large changes occur.
 \end{frame}
+}
 
 \begin{frame}[fragile]
   \frametitle{Solving ODEs in Matlab: example}

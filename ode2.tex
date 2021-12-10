@@ -281,6 +281,7 @@ options = odeset('RelTol',1e-4,'AbsTol',[1e-4 1e-4]);
 \vfill
 \end{frame}
 
+{\nologo
 \begin{frame}[fragile]
   \frametitle{Solving systems of ODEs in Matlab: example}
   Plot the solution:
@@ -302,6 +303,7 @@ plot(t,x(:,1),'r-x',t,x(:,2),'b-o')
     \end{tikzpicture}
   \end{center}
 \end{frame}
+}
 
 \begin{frame}[fragile]
   \frametitle{Solving systems of ODEs in Matlab: repeated notes}
@@ -489,6 +491,7 @@ ode15s(@stiff_ode, [0 1], [1 0]);
   \end{itemize}
 \end{frame}
 
+{\nologo
 \begin{frame}[fragile]
 \frametitle{Implicit methods in Matlab}
 \begin{center}
@@ -517,6 +520,7 @@ ode15s(@stiff_ode, [0 1], [1 0]);
 \end{center}
 The explicit solver requires 1245 data points (default settings), the implicit solver just 48!
 \end{frame}
+}
 
 \begin{frame}<handout:0>[fragile]
 \frametitle{Implicit methods in Matlab: Generic backward Euler}
@@ -634,6 +638,7 @@ How to make a generic Backward Euler implementation? Recall the update formula:
   }
 \end{frame}
 
+{\nologo
 \begin{frame}
   \frametitle{BVP: example in Excel}  
   \scriptsize\selectfont
@@ -688,6 +693,7 @@ How to make a generic Backward Euler implementation? Recall the update formula:
     \hline
   \end{longtable}
 \end{frame}
+}
 
 \begin{frame}
   \frametitle{BVP: example in Excel}  
@@ -748,6 +754,7 @@ ylabel('Flux')
   \end{lstlisting}
 \end{frame}
 
+{\nologo
 \begin{frame}[fragile]
   \frametitle{BVP: example in Matlab}
   That seems to work! Now we want to fit the value for $q$ at $x=0$ (defined below as \lstinline$bcq$), such that the concentration at $x=\delta$ equals zero. We create a function with the output defined as the deviation from the target value:
@@ -771,6 +778,7 @@ end
     \item The function returns \lstinline$f$, the difference between the computed and desired concentration at $x=\delta$.
   \end{itemize}
 \end{frame}
+}
 
 \begin{frame}[fragile]
   \frametitle{BVP: example in Matlab}
