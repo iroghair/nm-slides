@@ -783,7 +783,7 @@ end
   \end{itemize}
 \end{frame}
 
-\begin{frame}<handout:2>[fragile]
+\begin{frame}<handout:0->[fragile]
   \frametitle{Profiling the code}
   We can use the commands \lstinline$tic$ and \lstinline$toc$ to record the time spent in the enclosed code:
   \mode<presentation>
@@ -801,9 +801,7 @@ for i = 1:max_N
     fibonacci_recursive(i);
     toc;
 end
-
-
-    \end{lstlisting}
+\end{lstlisting}
   \end{onlyenv}
   \mode<all>
   \begin{onlyenv}<2->

@@ -791,9 +791,19 @@ end
 \begin{frame}[fragile]
   \frametitle{Summary}
   \begin{itemize}
-   \item Partial differential equations can be written as sparse systems of linear equations
-   \item Sparse systems can be handled with a direct method like Gaussian elimination
-    \item If you have systems of more than 1 dimension, a direct method still can be used, if there are no memory issues, otherwise an iterative method may be attractive.
-    \item The Jacobi method was introduced. Many other methods are based on the Jacobi method (SOR method, for example)
+    \item Partial differential equations can be discretized into sparse systems of linear equations
+    \item Sparse matrices can be stored in memory efficiently using specialised formats (e.g. compressed row storage)
+    \item The Jacobi and Gauss–Seidel methods were introduced as iterative methods; other methods are based on the same principle (successive over-relaxation method, for example)
+    \item Various implementation issues were discussed, e.g. vectorised computing, convergence tolerances
   \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Direct methods vs. Iterative methods}
+  \begin{itemize}
+    \item Iterative methods converge \emph{gradually} to a solution while direct methods (possibly with partial pivoting) factorise a (set of) matrix(ces) which allow to compute the solution by \emph{substitution}.
+    \item Direct methods generally use more memory, since they need to store also the result matrices.
+    \item A strictly (or irreducibly) diagonally dominant matrix is a prerequisite for convergence of the Jacobi and Gauss-Seidel method.
+    \item For real-life situations; 1D problems are generally solved with direct methods (LU decomposition). If you have systems of more than 1 dimension, a direct method still can be used, if there are no memory issues, otherwise an iterative method would be more attractive.
+\end{itemize}
 \end{frame}
