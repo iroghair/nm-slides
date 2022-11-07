@@ -148,6 +148,7 @@ result = regionprops(F);
    \end{lstlisting}
  \end{frame}
  
+ {\nologo
  \begin{frame}[fragile]
   \frametitle{A few helpful things}
   \begin{itemize}[<+->]
@@ -161,6 +162,7 @@ result = regionprops(F);
     \item Clear the workspace by \lstinline$clear$, clear the command window by \lstinline$clc$.
   \end{itemize}
 \end{frame}
+}
 
 \begin{frame}[fragile]
 \frametitle{Matlab help, documentation, resources}
@@ -549,6 +551,7 @@ To compute elementwise POWER, use POWER (.^) instead.
 \section{Creating algorithms}
 \subsection*{Control statements}
 \againframe<2>{contents_prog1}
+{\nologo
 \begin{frame}[fragile]
  \frametitle{Building blocks: conditional statements}
   \lstinline$if$-statement: Check whether a (set of) condition(s) is met, based on relational operations. \\ 
@@ -588,6 +591,7 @@ end
     \end{longtable}  
   \end{columns}
 \end{frame}
+}
 
 \begin{frame}[fragile]
  \frametitle{Building blocks: conditional statements}
@@ -870,11 +874,13 @@ function [out1, out2] = myFunction(in1, in2, in3)
   \end{columns}
  \end{frame}
 
+ {\nologo
 \begin{frame}[fragile]
   \frametitle{Functions - definition overview}
   \includegraphics[width=\textwidth]{format-func.png}\footnote{Source: Pekalska, Meinsma and Zwart, Programming with Matlab manual, University of Twente, 2018.}
  \end{frame}
-
+ }
+ 
 % \begin{frame}[fragile]
 %  \frametitle{Functions - locality and arguments}
 %  \begin{itemize}
