@@ -721,11 +721,12 @@ y =
 
 \frame{
   \frametitle{The Golden mean}
+  The Golden Mean is a well known ratio and one of the solutions of $\phi^2=\phi+1$, such that $\phi=\frac{1+\sqrt{5}}{2}$, and $\phi-1 = \phi^{-1}$. Many relations to compute $\phi$ have been established (which pose often an interesting source for creating small test programs).
   \begin{itemize}
    \colorize<1> \item Let's evaluate the following recurrent relationship:
     \[ y_{n+1} = y_{n-1} - y_n \]
-    \[ y_0 = 1, \quad y_1 = \frac{2}{1+\sqrt{5}} \]
-    \colorize<2> \item You can prove (by substitution) that:
+    \[ y_0 = 1, \quad y_1 = 1-\phi = \phi^{-1} = \frac{2}{1+\sqrt{5}} \]
+    \colorize<2> \item Alternatively, a closed form power law relation exists, which again computes $y_n$:
     \[ y_n = x^{-n}, \quad n=0,1,2,\ldots, \quad x = \frac{1 + \sqrt{5}}{2} \]
   \end{itemize}
 }
@@ -736,51 +737,65 @@ y =
     \column{0.5\textwidth}
       \begin{block}{Recurrent version}
         \begin{lstlisting}
-% initialise
+function [y] = goldenMeanRecurrent(Ntot)
+% y = single(Ntot);
+
+% Initialise
 y(1) = 1;
-y(2) = 2 / (1 + sqrt(5));
+y(2) = 2 / (1+sqrt(5));
 
 % Perform recurrent approach
-for n = 2:39
-    y(n+1) = y(n-1)-y(n);
+for n = 2:Ntot
+    y(n+1) = y(n-1) - y(n);
+end
+
 end
         \end{lstlisting}
       \end{block}
     \pause
     \column{0.5\textwidth}
-      \begin{block}{Powerlaw version}
+      \begin{block}{Power law version}
         \begin{lstlisting}
-% initialise
-x = (1 + sqrt(5))/2;
-y2(1) = x^0; % n = 1
+function [y] = goldenMeanPowerlaw(Ntot)
+% y = single(Ntot);
 
-% Perform powerlaw apprach
-for n = 0:39
-    y2(n+1) = x^-n
+% Initialise
+x = (1 + sqrt(5))/2;
+
+% Perform power law approach
+y = x.^-(0:Ntot);
 end
         \end{lstlisting}
       \end{block}
   \end{columns}
+  \pause
+  \begin{itemize}
+    \item Compare the outcomes: \lstinline$plot(goldenMeanPowerlaw(40) - goldenMeanRecurrent(40))$ \pause
+    \item See what happens if you use single precision (uncomment the second line of both functions).
+  \end{itemize}
+  \vskip1em
 \end{frame}
 % 
 \begin{frame}[fragile]
   \frametitle{The Golden mean}
-    \begin{longtable}{c!{\vrule}cc}
+  \begin{longtable}{c!{\vrule}cc}
     \hline
-      $n$   & Recurrent & Powerlaw \\ \hline
-      $1$   & $1.0000$ & $1.0000$ \\
+      $n$   & Recurrent & Power law \\ \hline
+      $0$   & $1.0000$ & $1.0000$ \\
       $1$   & $0.6180$ & $0.6180$ \\
       $2$   & $0.3820$ & $0.3820$ \\
       $3$   & $0.2361$ & $0.2361$ \\
       $\ldots$ & $\ldots$ & $\ldots$ \\
-      $37$ & $3.080\cdot10^{-08}$ & $2.995\cdot10^{-08}$ \\
-      $38$ & $1.714\cdot10^{-08}$ & $1.851\cdot10^{-08}$ \\
-      $39$ & $1.366\cdot10^{-08}$ & $1.144\cdot10^{-08}$ \\
-      $40$ & $3.485\cdot10^{-08}$ & $7.071\cdot10^{-09}$ \\ \hline
+      $37$ & $1.714\cdot10^{-08}$ & $1.851\cdot10^{-08}$ \\
+      $38$ & $1.366\cdot10^{-08}$ & $1.144\cdot10^{-08}$ \\
+      $39$ & $3.485\cdot10^{-08}$ & $7.071\cdot10^{-09}$ \\
+      $40$ & $1.017\cdot10^{-08}$ & $4.370\cdot10^{-09}$ \\ \hline
     \end{longtable} 
     \begin{itemize}
       \colorize<2> \item The recurrent approach enlarges errors from earlier calculations!
+      \colorize<3> \item Note: the formal series starts at $n=0$, but Matlab stores the first result with index 1. Make sure to distinguish the difference, in many recurrent operations it is crucial to start with $n=0$!
     \end{itemize}
+    \vskip2em
 \end{frame}
 
 \frame{
