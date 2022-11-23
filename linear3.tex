@@ -414,6 +414,7 @@ surf(xc,yc,Tc); % Surface plot
   \end{center}
 \end{frame}
 
+{\nologo
 \begin{frame}[fragile]
   \frametitle{Exercise: Verify the numerical solution using Fourier-series}
   A Fourier-series expansion for the steady-state heat conduction in a flat plate is given for a domain: $x,y\in[0,1]$ , with fixed-temperature boundaries $T\big|_{x=0} = T\big|_{x=1} = T\big|_{y=0}=0$ and $T\big|_{y=1}=1$:
@@ -460,6 +461,7 @@ subplot(1,3,3); surf(x,y,Tex-Tnum);
 xlabel('x'); ylabel('y'); zlabel('T')
     \end{lstlisting}
 \end{frame}
+}
 
 \begin{frame}[fragile]
   \frametitle{LU decomposition of a sparse matrix}
