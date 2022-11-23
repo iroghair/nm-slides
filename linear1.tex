@@ -30,7 +30,7 @@
       x + y +  z &= 4 \\
       2x + y + 3z &= 7 \\
       3x + y + 6z &= 5
-    \end{align*}
+    \end{align*} \pause
     \item Matrix mapping $Mx=b$:\vspace{-1ex} \[ 
       \begin{bmatrix}
 	1 & 1 & 1\\ 
@@ -48,6 +48,7 @@
 	5 
       \end{bmatrix} 
       \]
+      \pause
     \item Linear combination:\vspace{-1ex} \[ 
       x \begin{bmatrix}
 	1\\
@@ -254,7 +255,7 @@ C_{11} &= \tikzmarkin[mat2=style orange]{pm3}+1\tikzmarkend{pm3}\ \cdot\ \det{\b
 
 \begin{frame}<handout:0|beamer:1->[fragile]
   \frametitle{Exercise: performance of inverse computation}
-  Create a script that generates matrices with random elements of various sizes $N\times N$. Compute the inverse of each matrix, and use \lstinline$tic$ and \lstinline$toc$ to see the computing time for each inversion. Plot the time as a function of the matrix size $N$. \pause
+  Create a script that generates matrices with random elements of various sizes $N\times N$ (e.g. values of $N\in\left\{10,20,50,100,200,\ldots,5000,10000\right\}$). Compute the inverse of each matrix, and use \lstinline$tic$ and \lstinline$toc$ to see the computing time for each inversion. Plot the time as a function of the matrix size $N$. \pause
     \begin{lstlisting}
 % Generate random matrices of various sizes 's'. 
 % Invert the matrices and store the time required 
@@ -276,7 +277,7 @@ ylabel('Time [s]')
 
 \begin{frame}<beamer:0|handout:1>[fragile]
   \frametitle{Exercise: performance of inverse computation}
-  Create a script that generates matrices with random elements of various sizes $N\times N$. Compute the inverse of each matrix, and use \lstinline$tic$ and \lstinline$toc$ to see the computing time for each inversion. Plot the time as a function of the matrix size $N$. 
+  Create a script that generates matrices with random elements of various sizes $N\times N$ (e.g. values of $N\in\left\{10,20,50,100,200,\ldots,5000,10000\right\}$). Compute the inverse of each matrix, and use \lstinline$tic$ and \lstinline$toc$ to see the computing time for each inversion. Plot the time as a function of the matrix size $N$.
   \vskip2em
   \begin{hints}
   Hints:

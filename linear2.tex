@@ -518,13 +518,14 @@ d_{31} & d_{32} & 1
 \begin{bmatrix}
 A_{11} & A_{12} & A_{13}\\ 
 0 & A'_{22} & A'_{23} \\ 
-0 & A'_{32}  & A''_{33} = A'_{33}-d_{32}A'_{23}
+0 & 0  & A''_{33} = A'_{33}-d_{32}A'_{23}
 \end{bmatrix}
 \]\pause
-This finishes the LU decomposition!
+We now have a lower matrix $L$ and an upper matrix $U$. This finishes the LU decomposition! 
 \end{frame}
 
 \subsection*{Pivoting in LU decomposition}
+{\nologo
 \begin{frame}[fragile]
 \frametitle{Pivoting during decomposition}
 Suppose we have arrived at the situation below, where $A'_{32}>A'_{22}$:
@@ -577,6 +578,7 @@ A_{11} & A_{12} & A_{13}\\
 Multiplying with a permutation matrix will swap the rows of a matrix. The permutation matrix is just an identity matrix, whose rows
 have been interchanged.
 \end{frame}
+}
 % 
 % \begin{frame}[fragile]
 % \frametitle{Pivoting during decomposition}
