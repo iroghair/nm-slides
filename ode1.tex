@@ -1171,7 +1171,7 @@ dxdt = (t>10)*k2/x - k1/x^2;
   \begin{block}{Create a solution script}
     \begin{lstlisting}[backgroundcolor=]x_init = 2;         % Initial condition
 tspan = [0 20];     % Time span
-xinit = 2;          % Initial condition
+x_init = 2;          % Initial condition
 options = odeset('RelTol',1e-8,'AbsTol',1e-8);
 [t,x] = ode45(@myEqnFunction,tspan,x_init,options);\end{lstlisting}
   \end{block}
