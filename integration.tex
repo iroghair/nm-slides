@@ -107,6 +107,7 @@
   \end{columns}
 \end{frame}
 
+{\nologo
 \begin{frame}
   \frametitle{Errors in Riemann integrals}
   We define the exact integral as $ I = \int_a^b f(x)dx$, and $L_n$, $R_n$ and $M_n$ represent the left, right and midpoint rule approximations of $I$ based on $n$ intervals.
@@ -119,8 +120,9 @@
   \end{itemize}
   \vskip1em
   \onslide<5>{%
-Note that while $\abs{I - L_n}$ and $\abs{I - R_n}$ give the same \emph{upper-bounds} of the error, this does not mean the same error. Rather, the error is of opposite sign!}
+  Note that while $\abs{I - L_n}$ and $\abs{I - R_n}$ give the same \emph{upper-bounds} of the error, this does not mean the same error. Rather, the error is of opposite sign!}
 \end{frame}
+}
 
 \section{Trapezoid rule}
 \againframe<2>{contents_integration}
@@ -218,6 +220,7 @@ Note that this can be rewritten for equidistant intervals:
   \tikz{\node[emphblock,text width=\textwidth]{\color{tueorange}In convex parts (bending down), the midpoint rule tends to overestimate the integral (trapezoid underestimates). \color{tuefuchsia}In concave parts (bending up), the midpoint rule tends to underestimate the integral (trapezoid overestimates).};}
 \end{frame}
 
+{\nologo
 \begin{frame}
   \frametitle{Towards higher-order integration}
   The errors of the midpoint rule and trapezoid rule behave in a similar way, but have opposite signs.
@@ -229,17 +232,18 @@ Note that this can be rewritten for equidistant intervals:
   For a quadratic function, the errors relate as:
   \[
     \abs{I-M_n} = \frac{1}{2}\abs{I-T_n} 
-  \]
-  \pause
-  Taking the weighted average of these two yields the Simpson's rule:
-  \[
-    S_{2n} = \frac{2}{3}M_n + \frac{1}{3}T_n
-  \]
-  The $2n$ means we have $2n$ subintervals: the $n$ trapezoid intervals are subdivided by the midpoint rule.
+    \]
+    \pause
+    Taking the weighted average of these two yields the Simpson's rule:
+    \[
+      S_{2n} = \frac{2}{3}M_n + \frac{1}{3}T_n
+      \]
+      The $2n$ means we have $2n$ subintervals: the $n$ trapezoid intervals are subdivided by the midpoint rule.
 \end{frame}
-
-\begin{frame}
-  \frametitle{Simpson's rule}
+}
+    
+    \begin{frame}
+      \frametitle{Simpson's rule}
   Consider the interval $i\in[x_0,x_2]$, subdivided in three equidistant interpolation points: $x_0,x_1,x_2$. \vskip1ex
   \begin{itemize}
     \item Midpoint: $\displaystyle M_i = f(\frac{x_0+x_2}{2})2\Delta x = f(x_1)2\Delta x$
@@ -374,6 +378,7 @@ I =
 
 \section{Tutorials}
 \subsection*{Integration tutorials}
+{\nologo
 \begin{frame}[fragile]
   \frametitle{Integration tutorials}
   \begin{enumerate}
@@ -386,13 +391,14 @@ I =
     For instance: \lstinline$function result = leftrule(func, x0, x1, N)$.\\
     \item Set up a function to integrate:
     \begin{lstlisting}
-function [f] = myfunction(x)
-f = x.^2 - 4*x + 6 + sin(5*x);
-end
+      function [f] = myfunction(x)
+      f = x.^2 - 4*x + 6 + sin(5*x);
+      end
     \end{lstlisting}
     \item Integrate the function, e.g. \lstinline$int_left = leftrule(@myfunction, 0, 10, 25)$
     \item Assess how the number of intervals affects the deviation from the true integral value. 
     \item Create a log-log plot of the deviation vs. number of intervals used.
     \item Do this for all methods discussed\footnote{Riemann left, right, midpoint, trapezoid and Simpson} and compare their performance in a graph
   \end{enumerate}
- \end{frame}
+\end{frame}
+}
