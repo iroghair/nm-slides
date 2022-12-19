@@ -766,23 +766,24 @@ end
     }
 \end{frame}
 
+{\nologo
 \begin{frame}
   \frametitle{Extension with convection terms}
   \rowcolors[]{20}{white}{white}
   Solution: upwind discretization, like CSTR's in series:
   \begin{center}
     \begin{tikzpicture}
-  %     \draw[help lines] (0,0) grid (6,6);
+      %     \draw[help lines] (0,0) grid (6,6);
       \foreach \x [count=\xi from 0,count=\ci from 1] in {0,1.5,3} {
-	\draw[line,-,top color=white!80,bottom color=tuelblue!80,] 
-	(\x,2.5-\xi*0.5)[rounded corners=14pt]--  node[pos=0.42](in\xi){} (\x,1-\xi*0.5)  -- node[midway,below](m\xi) {$c_\ci$} (\x+1,1-\xi*0.5) [rounded corners=8pt] -- node[near start](out\xi){}(\x+1,2.5-\xi*0.5) --  cycle;
-	\draw (\x+0.5,3-\xi*0.5) -- (\x+0.5,1.5-\xi*0.5);
-	\draw (\x+0.4,1.5-\xi*0.5) ellipse [x radius=0.1, y radius=0.05];
-	\draw (\x+0.6,1.5-\xi*0.5) ellipse [x radius=0.1, y radius=0.05];
-	}
-	
-      \draw[line,<-] (in0.center) -- node[near end,above] {$c_L$} ++(-0.5,0);
-      \draw[line,->] (out0.center) -- (in1.center);
+        \draw[line,-,top color=white!80,bottom color=maincolor!80,] 
+        (\x,2.5-\xi*0.5)[rounded corners=14pt]--  node[pos=0.42](in\xi){} (\x,1-\xi*0.5)  -- node[midway,below](m\xi) {$c_\ci$} (\x+1,1-\xi*0.5) [rounded corners=8pt] -- node[near start](out\xi){}(\x+1,2.5-\xi*0.5) --  cycle;
+        \draw (\x+0.5,3-\xi*0.5) -- (\x+0.5,1.5-\xi*0.5);
+        \draw (\x+0.4,1.5-\xi*0.5) ellipse [x radius=0.1, y radius=0.05];
+        \draw (\x+0.6,1.5-\xi*0.5) ellipse [x radius=0.1, y radius=0.05];
+        }
+        
+        \draw[line,<-] (in0.center) -- node[near end,above] {$c_L$} ++(-0.5,0);
+        \draw[line,->] (out0.center) -- (in1.center);
       \draw[line,->] (out1.center) -- (in2.center);
       \draw[line,->] (out2.center) -- node[near end,above] {$c_R$}++(0.5,0);
     \end{tikzpicture}
@@ -805,45 +806,45 @@ end
   \rowcolors{1}{}{}
   \begin{columns}[T]
     \column{0.35\textwidth}
-      \tikz{\node[emphblock,text width=\columnwidth,minimum height=8em] {Unsteady convection:\\ \vskip0.5em $\displaystyle \frac{\partial c}{\partial t} = -u\frac{\partial c}{\partial x} $};}
+    \tikz{\node[emphblock,text width=\columnwidth,minimum height=8em] {Unsteady convection:\\ \vskip0.5em $\displaystyle \frac{\partial c}{\partial t} = -u\frac{\partial c}{\partial x} $};}
     \column{0.65\textwidth}
-      \tikz{\node[emphblock,text width=\columnwidth,minimum height=8em] {Upwind scheme for first derivative:\\ \vskip0.5em $\displaystyle \left.-u\frac{dc}{dx}\right|_i  = \left\{ 
-  \begin{array}{l l}
+    \tikz{\node[emphblock,text width=\columnwidth,minimum height=8em] {Upwind scheme for first derivative:\\ \vskip0.5em $\displaystyle \left.-u\frac{dc}{dx}\right|_i  = \left\{ 
+      \begin{array}{l l}
     -u\dfrac{c_i-c_{i-1}}{\Delta x} & \quad \text{if $u\geq 0$}\\
     \phantom{.}\\
     -u\dfrac{c_{i+1}-c_i}{\Delta x} & \quad \text{if $u < 0$}\\
   \end{array} \right.$};}
-  \end{columns}
-  \pause \vskip1em
-  Forward Euler discretization of temporal and spatial domain:
-  \begin{align*}
+\end{columns}
+\pause \vskip1em
+Forward Euler discretization of temporal and spatial domain:
+\begin{align*}
   \frac{c_i^{n+1}-c_i^{n}}{\Delta t} &= -u\frac{c_{i+1}-c_{i-1}}{2\Delta x} \\
     \Rightarrow c_i^{n+1} &= \left\{ 
-  \begin{array}{l l}
-    c_i^{n} -u \Delta t \dfrac{c_i-c_{i-1}}{\Delta x} & \quad \text{if $u\geq 0$}\\
-    \phantom{.}\\
-    c_i^{n}-u \Delta t \dfrac{c_{i+1}-c_i}{\Delta x} & \quad \text{if $u < 0$}\\
-  \end{array} \right.
-  \end{align*}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Upwind scheme: example}
-  \footnotesize\selectfont
+      \begin{array}{l l}
+        c_i^{n} -u \Delta t \dfrac{c_i-c_{i-1}}{\Delta x} & \quad \text{if $u\geq 0$}\\
+        \phantom{.}\\
+        c_i^{n}-u \Delta t \dfrac{c_{i+1}-c_i}{\Delta x} & \quad \text{if $u < 0$}\\
+      \end{array} \right.
+    \end{align*}
+  \end{frame}
+  
+  \begin{frame}
+    \frametitle{Upwind scheme: example}
+    \footnotesize\selectfont
     Unsteady convection through a pipe:\\
     $ \displaystyle \frac{\partial c}{\partial t} = -u\frac{\partial c}{\partial x} \quad \text{with} \quad u=0.1 \si{\meter\per\second} \Rightarrow c_i^{n+1} = c_i^{n} -u\dfrac{c_i-c_{i-1}}{\Delta x}\Delta t$
-  \begin{columns}
-    \column{0.5\textwidth}
-    \onslide<2->{
-      \begin{center}
-	Using 100 grid cells
+    \begin{columns}
+      \column{0.5\textwidth}
+      \onslide<2->{
+        \begin{center}
+          Using 100 grid cells
 	\vskip1ex
 	\hspace*{-1cm}
 	\begin{tikzpicture}
 	  \begin{axis}[every axis/.append style={font=\tiny},
 	    width=\columnwidth, height=4cm, grid = major,grid style={dashed, gray!30},axis background/.style={fill=white},
 	    ymax=1.2,ylabel={$c$ [\si{\mol\per\cubic\meter}]},xlabel={$x$ [\si{\meter}]},ylabel near ticks,xlabel near ticks]
-
+      
 	    \only<2->{\addplot[graph,draw=tuered] table [y index={2}] {data/conv_upwind1.dat};}
 	    \only<2->{\addplot[graph,sharp plot,draw=tuered,dashed] table [y index={2}] {data/conv_ex.dat};}
 	    \only<3->{\addplot[graph,draw=tueblue] table [y index={4}] {data/conv_upwind1.dat};}
@@ -853,66 +854,67 @@ end
 	  \end{axis} 
 	\end{tikzpicture}
 	\vskip1em
-	  \begin{tikzpicture}[scale=0.35,myshade/.style={left color=maincolor!80,right color=white!80,fill opacity=0.5},myfill/.style={fill=maincolor!80,fill opacity=0.5}]
-	    \shade[myshade] (0,0) arc (270:90:0.5 and 1.5) -- (8.5,3) -- (8.5,0) -- cycle;
-	    
-	    \draw[line,dashed,color=gray] (0,0) arc (-90:90:0.5 and 1.5);			% Right ellipse background
-	    \draw[line] (0,0) arc (270:90:0.5 and 1.5) -- (8.5,3) arc (90:270:0.5 and 1.5) -- cycle;	% Cilinder body
-
-	    \draw[line] (8.5,0) arc (-90:90:0.5 and 1.5);% Right ellipse
-	    \draw[|-,line] (0,-0.5) -- (8.5,-0.5);
-	    \draw[|->,line] (8.5,-0.5) -- (9.5,-0.5);
-	    \draw (0,-1.5) node {$x=0$};
-	    \draw (8.5,-1.5) node {$x=\ell$};
-	  \end{tikzpicture}    
-	\end{center}
-      }
-    \column{0.5\textwidth}
-      \onslide<5->{
-      \begin{center}
-	Using 1000 grid cells
-	\vskip1ex
-	\hspace*{-1cm}
-	\begin{tikzpicture}
-	  \begin{axis}[every axis/.append style={font=\tiny},
-	    width=\columnwidth, height=4cm, grid = major,grid style={dashed, gray!30},axis background/.style={fill=white},
-	    ymax=1.2,ylabel={$c$ [\si{\mol\per\cubic\meter}]},xlabel={$x$ [\si{\meter}]},ylabel near ticks,xlabel near ticks]
-
-	  \only<5->{\addplot[graph,draw=tuered] table [y index={2}] {data/conv_upwind.dat};}
-	  \only<5->{\addplot[graph,sharp plot,draw=tuered,dashed] table [y index={2}] {data/conv_ex.dat};}
-	  \only<6->{\addplot[graph,draw=tueblue] table [y index={4}] {data/conv_upwind.dat};}
-	  \only<6->{\addplot[graph,sharp plot,draw=tueblue,dashed] table [y index={4}] {data/conv_ex.dat};}
-	  \only<7->{\addplot[graph,draw=tuegreen] table [y index={6}] {data/conv_upwind.dat};}
-	  \only<7->{\addplot[graph,sharp plot,draw=tuegreen,dashed] table [y index={6}] {data/conv_ex.dat};}
-	\end{axis} 
-      \end{tikzpicture}
-      \vskip1em
-      \begin{tikzpicture}[font={\footnotesize},scale=0.35,myshade/.style={left color=maincolor!80,right color=white!80,fill opacity=0.5},myfill/.style={fill=maincolor!80,fill opacity=0.5}]
-	\fill[myfill] (0,0) arc (270:90:0.5 and 1.5) -- (3.01,3) -- (3.01,0) -- cycle;
-	\shade[myshade] (3,3) -- (3,0) -- (3.5,0) -- (3.5,3) -- cycle;
-	\draw[line,dashed,color=gray] (0,0) arc (-90:90:0.5 and 1.5);			% Right ellipse background
-	\draw[line] (0,0) arc (270:90:0.5 and 1.5) -- (8.5,3) arc (90:270:0.5 and 1.5) -- cycle;	% Cilinder body
-
-	\draw[line] (8.5,0) arc (-90:90:0.5 and 1.5);% Right ellipse
-	\draw[|-,line] (0,-0.5) -- (8.5,-0.5);
-	\draw[|->,line] (8.5,-0.5) -- (9.5,-0.5);
-	\draw (0,-1.5) node {$x=0$};
-	\draw (8.5,-1.5) node {$x=\ell$};
-      \end{tikzpicture}    
+  \begin{tikzpicture}[scale=0.35,myshade/.style={left color=maincolor!80,right color=white!80,fill opacity=0.5},myfill/.style={fill=maincolor!80,fill opacity=0.5}]
+    \shade[myshade] (0,0) arc (270:90:0.5 and 1.5) -- (8.5,3) -- (8.5,0) -- cycle;
+    
+    \draw[line,dashed,color=gray] (0,0) arc (-90:90:0.5 and 1.5);			% Right ellipse background
+    \draw[line] (0,0) arc (270:90:0.5 and 1.5) -- (8.5,3) arc (90:270:0.5 and 1.5) -- cycle;	% Cilinder body
+    
+    \draw[line] (8.5,0) arc (-90:90:0.5 and 1.5);% Right ellipse
+    \draw[|-,line] (0,-0.5) -- (8.5,-0.5);
+    \draw[|->,line] (8.5,-0.5) -- (9.5,-0.5);
+    \draw (0,-1.5) node {$x=0$};
+    \draw (8.5,-1.5) node {$x=\ell$};
+  \end{tikzpicture}    
+\end{center}
+}
+\column{0.5\textwidth}
+\onslide<5->{
+  \begin{center}
+    Using 1000 grid cells
+    \vskip1ex
+    \hspace*{-1cm}
+    \begin{tikzpicture}
+      \begin{axis}[every axis/.append style={font=\tiny},
+        width=\columnwidth, height=4cm, grid = major,grid style={dashed, gray!30},axis background/.style={fill=white},
+        ymax=1.2,ylabel={$c$ [\si{\mol\per\cubic\meter}]},xlabel={$x$ [\si{\meter}]},ylabel near ticks,xlabel near ticks]
+        
+        \only<5->{\addplot[graph,draw=tuered] table [y index={2}] {data/conv_upwind.dat};}
+        \only<5->{\addplot[graph,sharp plot,draw=tuered,dashed] table [y index={2}] {data/conv_ex.dat};}
+        \only<6->{\addplot[graph,draw=tueblue] table [y index={4}] {data/conv_upwind.dat};}
+        \only<6->{\addplot[graph,sharp plot,draw=tueblue,dashed] table [y index={4}] {data/conv_ex.dat};}
+        \only<7->{\addplot[graph,draw=tuegreen] table [y index={6}] {data/conv_upwind.dat};}
+        \only<7->{\addplot[graph,sharp plot,draw=tuegreen,dashed] table [y index={6}] {data/conv_ex.dat};}
+      \end{axis} 
+    \end{tikzpicture}
+    \vskip1em
+    \begin{tikzpicture}[font={\footnotesize},scale=0.35,myshade/.style={left color=maincolor!80,right color=white!80,fill opacity=0.5},myfill/.style={fill=maincolor!80,fill opacity=0.5}]
+      \fill[myfill] (0,0) arc (270:90:0.5 and 1.5) -- (3.01,3) -- (3.01,0) -- cycle;
+      \shade[myshade] (3,3) -- (3,0) -- (3.5,0) -- (3.5,3) -- cycle;
+      \draw[line,dashed,color=gray] (0,0) arc (-90:90:0.5 and 1.5);			% Right ellipse background
+      \draw[line] (0,0) arc (270:90:0.5 and 1.5) -- (8.5,3) arc (90:270:0.5 and 1.5) -- cycle;	% Cilinder body
+      
+      \draw[line] (8.5,0) arc (-90:90:0.5 and 1.5);% Right ellipse
+      \draw[|-,line] (0,-0.5) -- (8.5,-0.5);
+      \draw[|->,line] (8.5,-0.5) -- (9.5,-0.5);
+      \draw (0,-1.5) node {$x=0$};
+      \draw (8.5,-1.5) node {$x=\ell$};
+    \end{tikzpicture}    
     \end{center}
-  }
+    }
   \end{columns}
 \end{frame}
+}
 
 \begin{frame}<handout:0>[fragile]
   \frametitle{Central difference and upwind in Matlab}
   \footnotesize\selectfont
   The results from the previous slides were computed using this script:
   \begin{lstlisting}[basicstyle=\scriptsize\ttfamily,]
-Nx = 1000;          % Nc grid points
-Nt = 10000;         % Nt time steps
-u = 0.001;          % m/s
-c_in = 1.0;         % mol/m3
+    Nx = 1000;          % Nc grid points
+    Nt = 10000;         % Nt time steps
+    u = 0.001;          % m/s
+    c_in = 1.0;         % mol/m3
 t_end = 100.0;      % s
 x_end = 0.1;        % m
 
