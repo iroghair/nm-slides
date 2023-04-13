@@ -233,27 +233,29 @@ C_{11} &= \tikzmarkin[mat2=style orange]{pm3}+1\tikzmarkend{pm3}\ \cdot\ \det{\b
 }
 
 \begin{frame}[fragile]
-  \frametitle{Solving a linear system in Matlab using the inverse}
+  \frametitle{Solving a linear system in Python using the inverse}
   \begin{itemize}
-    \item Create the matrix:
+    \item Create the matrix $A$:
     \begin{lstlisting}
->> A = [1 1 1; 2 1 3; 3 1 6];     
+import numpy as np
+A = np.array([[1,1,1],[2,1,3],[3,1,6]])  
     \end{lstlisting}\pause
-    \item Create solution vector:
+    \item Create solution vector (column vector):
     \begin{lstlisting}
->> b = [4; 7; 5]; 
+b = np.array([[4,7,5]]).T
     \end{lstlisting}\pause
-    \item Get the matrix inverse:
+    \item Get the matrix inverse; we use the SciPy package:
     \begin{lstlisting}
->> Ainv = inv(A); 
+from scipy import linalg
+Ainv = linalg.inv(A)
     \end{lstlisting}\pause
     \item Compute the solution:
     \begin{lstlisting}
->> x = Ainv * b   
+solution = Ainv.dot(b) 
     \end{lstlisting}\pause
-    \item Matlab's internal direct solver:
+    \item Recommended approach: use the dedicated linear solver:
     \begin{lstlisting}
->> x = A\b
+solution_generic = linalg.solve(A,b)
     \end{lstlisting}
     \item \tikzmarkin[txt=style white]{bb}These are black boxes! We are going over some methods later!\tikzmarkend{bb}
   \end{itemize}
