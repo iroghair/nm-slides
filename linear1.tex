@@ -235,53 +235,110 @@ C_{11} &= \tikzmarkin[mat2=style orange]{pm3}+1\tikzmarkend{pm3}\ \cdot\ \det{\b
 \begin{frame}[fragile]
   \frametitle{Solving a linear system in Python using the inverse}
   \begin{itemize}
-    \item Create the matrix $A$:
+    \item Set the scene by importing the right modules:
     \begin{lstlisting}
 import numpy as np
-A = np.array([[1,1,1],[2,1,3],[3,1,6]])  
+import numpy.linalg as la # scipy.linalg also works!
+    \end{lstlisting}
+    \item Create the matrix $A$ (explicit indication of datatype):
+    \begin{lstlisting}
+A = np.array([[1,1,1],[2,1,3],[3,1,6]],dtype=np.float64)
     \end{lstlisting}\pause
     \item Create solution vector (column vector):
     \begin{lstlisting}
-b = np.array([[4,7,5]]).T
+b = np.array([[4.,7.,5.]]).T # Check b.shape!
     \end{lstlisting}\pause
-    \item Get the matrix inverse; we use the SciPy package:
+    \item Get the matrix inverse; we use the linalg sub:
     \begin{lstlisting}
-from scipy import linalg
 Ainv = linalg.inv(A)
     \end{lstlisting}\pause
-    \item Compute the solution:
-    \begin{lstlisting}
-solution = Ainv.dot(b) 
-    \end{lstlisting}\pause
-    \item Recommended approach: use the dedicated linear solver:
-    \begin{lstlisting}
-solution_generic = linalg.solve(A,b)
-    \end{lstlisting}
-    \item \tikzmarkin[txt=style white]{bb}These are black boxes! We are going over some methods later!\tikzmarkend{bb}
+    \item Compute the solution:\\
+    \begin{tabular}{ll}
+      \begin{lstlisting}[linewidth=0.5\textwidth]
+solution = Ainv.dot(b)
+print(f'The solution is:\n {solution}')
+      \end{lstlisting}      
+      &
+        \begin{lstlisting}[style=output,linewidth=0.5\textwidth]
+The solution is:
+[[13.]
+[-4.]
+[-5.]]
+        \end{lstlisting}
+      \end{tabular}
   \end{itemize}
 \end{frame}
 
+\begin{frame}[fragile]
+  \frametitle{Solving a linear system in Python: recommended approach}
+  \begin{columns}
+    \column{0.5\textwidth}
+      NumPy approach
+      \begin{lstlisting}
+# solve_system_np.py
+import numpy as np
+import numpy.linalg as npla
+
+A = np.array([[1.,1.,1.],[2.,1.,3.],[3.,1.,6.]])
+b = np.array([[4.,7.,5.]]).T
+x = npla.solve(A,b)
+print(f'Solution using np linalg:\n {x}')
+        \end{lstlisting}
+        \begin{lstlisting}[style=output]
+Solution using np linalg:
+[[13.]
+[-4.]
+[-5.]]
+        \end{lstlisting}
+    \column{0.5\textwidth}
+    SciPy approach
+    \begin{lstlisting}
+# solve_system_sp.py
+import numpy as np
+import scipy.linalg as spla
+
+A = np.array([[1.,1.,1.],[2.,1.,3.],[3.,1.,6.]])
+b = np.array([[4.,7.,5.]]).T
+x = spla.solve(A,b)
+print(f'Solution using sp linalg:\n {x}')      
+      \end{lstlisting}
+      \begin{lstlisting}[style=output]
+Solution using sp linalg:
+[[13.]
+[-4.]
+[-5.]]
+    \end{lstlisting}
+  \end{columns}
+  Paraphrased from the NumPy manual:
+  There is overlap in the functionality provided by the SciPy and NumPy submodules. SciPy contains functions not found in \lstinline$numpy.linalg$. Some functions that exist in both have augmented functionality in \lstinline$scipy.linalg$. Some functions in NumPy, however, have more flexible broadcasting options.
+\end{frame}
+{\nologo
 \begin{frame}<handout:0|beamer:1->[fragile]
   \frametitle{Exercise: performance of inverse computation}
   Create a script that generates matrices with random elements of various sizes $N\times N$ (e.g. values of $N\in\left\{10,20,50,100,200,\ldots,5000,10000\right\}$). Compute the inverse of each matrix, and use \lstinline$tic$ and \lstinline$toc$ to see the computing time for each inversion. Plot the time as a function of the matrix size $N$. \pause
     \begin{lstlisting}
-% Generate random matrices of various sizes 's'. 
-% Invert the matrices and store the time required 
-% for the inversion. Plot the times vs 's'
-s = [10:10:90 100:100:1000 2000:1000:5000 10000]
-for n = 1:length(s) (*@ \pause @*)
-    s(n)
-    A = rand(s(n)); (*@ \pause @*)
-    tic;
-    Ainv = inv(A);
-    t_inv(n) = toc;
-end
-loglog(s,t_inv)
-xlabel('N')
-ylabel('Time [s]')
-    \end{lstlisting}
+import numpy as np
+import scipy.linalg as spla
+from time import time
+import matplotlib.pyplot as plt
 
+matrix_sizes = list(range(10,100,10)) + list(range(100,1100,100)) + list(range(2000,6000,1000)) + [10000]
+
+for size in matrix_sizes: (*@ \pause @*)
+    print(f'Currently processing matrix size: {size}x{size}')
+    random_matrix = np.random.random((size,size)) (*@ \pause @*)
+    start_time = time()
+    spla.inv(random_matrix)
+    total_time = time() - start_time
+    time_to_inv.append(total_time)
+    (*@ \pause @*)
+plt.loglog(matrix_sizes,time_to_inv, 'r-x')
+plt.xlabel('Matrix size')
+plt.ylabel('Time to invert [s]')
+plt.show()
+  \end{lstlisting}
 \end{frame}
+}
 
 \begin{frame}<beamer:0|handout:1>[fragile]
   \frametitle{Exercise: performance of inverse computation}
