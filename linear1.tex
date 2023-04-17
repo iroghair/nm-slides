@@ -252,13 +252,13 @@ b = np.array([[4.,7.,5.]]).T # Check b.shape!
     \begin{lstlisting}
 Ainv = npla.inv(A)
     \end{lstlisting}\pause
-    \item Compute the solution:  %
+    \item Compute the solution:  \vspace{-1em}
     \begin{multicols}{2}
 \begin{lstlisting}[linewidth=0.45\textwidth]
-solution = Ainv.dot(b)
+solution = Ainv.dot(b) # Alt: Ainv@b
 print(f'The solution is:\n {solution}')
 \end{lstlisting}      \break
-\begin{lstlisting}[style=output,linewidth=0.45\textwidth]
+\begin{lstlisting}[language=sh,style=output,linewidth=0.45\textwidth]
 The solution is:
 [[13.]
 [-4.]
@@ -311,6 +311,26 @@ Solution using sp linalg:
   Paraphrased from the NumPy manual:
   There is overlap in the functionality provided by the SciPy and NumPy submodules. SciPy contains functions not found in \lstinline$numpy.linalg$. Some functions that exist in both have augmented functionality in \lstinline$scipy.linalg$. Some functions in NumPy, however, have more flexible broadcasting options.
 \end{frame}
+
+\begin{frame}<beamer:0|handout:1>[fragile]
+  \frametitle{Exercise: performance of inverse computation}
+  Create a script that generates matrices with random elements of various sizes $N\times N$ (e.g. values of $N\in\left\{10,20,50,100,200,\ldots,5000,10000\right\}$). Compute the inverse of each matrix, and use \lstinline$tic$ and \lstinline$toc$ to see the computing time for each inversion. Plot the time as a function of the matrix size $N$.
+  \vskip2em
+  \begin{hints}
+  Hints:
+  \begin{itemize}
+      \item Create an array that contains the sizes of the systems $n$
+      \item Loop over the array elements to:
+      \begin{itemize}
+          \item Create a random matrix of size $n\times n$
+          \item Perform the matrix inversion
+          \item Record the time required
+      \end{itemize}
+      \item Plot the time required for inversion vs size of the system on a double-log scale
+  \end{itemize}
+  \end{hints}
+\end{frame}
+
 {\nologo
 \begin{frame}<handout:0|beamer:1->[fragile]
   \frametitle{Exercise: performance of inverse computation}
@@ -339,25 +359,6 @@ plt.show()
 \end{frame}
 }
 
-\begin{frame}<beamer:0|handout:1>[fragile]
-  \frametitle{Exercise: performance of inverse computation}
-  Create a script that generates matrices with random elements of various sizes $N\times N$ (e.g. values of $N\in\left\{10,20,50,100,200,\ldots,5000,10000\right\}$). Compute the inverse of each matrix, and use \lstinline$tic$ and \lstinline$toc$ to see the computing time for each inversion. Plot the time as a function of the matrix size $N$.
-  \vskip2em
-  \begin{hints}
-  Hints:
-  \begin{itemize}
-      \item Create an array that contains the sizes of the systems $n$
-      \item Loop over the array elements to:
-      \begin{itemize}
-          \item Create a random matrix of size $n\times n$
-          \item Perform the matrix inversion
-          \item Record the time required
-      \end{itemize}
-      \item Plot the time required for inversion vs size of the system on a double-log scale
-  \end{itemize}
-  \end{hints}
-\end{frame}
-
 \begin{frame}[fragile]
   \frametitle{Exercise: sample results}
   Each computer produces slightly different results because of background tasks, different matrices, etc. This is especially noticable for small systems.
@@ -384,38 +385,38 @@ plt.show()
   \tikzmarkin[txt=style white]{complexity}The time increases by 3 orders of magnitude, for every magnitude in $N$. The \emph{computational complexity} of matrix inversion scales with $\mathcal{O}(N^3)$!\tikzmarkend{complexity}
 \end{frame}
 
-\begin{frame}[fragile]
-  \frametitle{Solving a linear system in Excel using the inverse}\vspace{-1em}
-  \[
-   Ax=b \qquad \begin{bmatrix}1&1&1\\2&1&3\\3&1&6\end{bmatrix}\begin{bmatrix}x_1\\x_2\\x_3\end{bmatrix}=\begin{bmatrix}4\\7\\5\end{bmatrix}
-  \]\vspace{-1em}
-  \begin{itemize}
-    \item Create matrix \ \tikzmarkin[mat=style green]{A}$A$\tikzmarkend{A} \ in $3\times 3$ cells
-    \item Create right hand side vector \ \tikzmarkin[mat=style cyan]{b}$b$\tikzmarkend{b} \ in 3 vertical cells\pause
-    \item Compute the inverse \ \tikzmarkin[mat=style orange]{I}$I$\tikzmarkend{I} \ :
-    \begin{itemize}
-      \item Select an empty area of $3 \times 3$ cells
-      \item Type \lstinline$=MINVERSE($
-      \tikzmarkin[txt=style green]{A2}\lstinline$B2:D4$\tikzmarkend{A2}
-      \lstinline$)$ (In Dutch Excel: \lstinline$INVERSEMAT$)
-      \item Close with Ctrl+Shift+Enter
-    \end{itemize}\pause
-    \item Solution:
-    \begin{itemize}
-      \item Select 3 vertical cells
-      \item Type \lstinline$=MMULT($
-      % First part, contains the inverse
-      \tikzmarkin[txt=style orange]{I2}\lstinline$H2:J4$\tikzmarkend{I2}
-      % Semicolon
-      \lstinline$;$
-      % Second part, contains the RHS
-      \tikzmarkin[txt=style cyan]{b2}\lstinline$B6:B8$\tikzmarkend{b2}
-      % Finish the command
-      \lstinline$)$ (In Dutch Excel: \lstinline$PRODUCTMAT$. The semicolon may be a comma.)
-      \item Close with Ctrl+Shift+Enter
-    \end{itemize}    
-  \end{itemize}
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Solving a linear system in Excel using the inverse}\vspace{-1em}
+%   \[
+%    Ax=b \qquad \begin{bmatrix}1&1&1\\2&1&3\\3&1&6\end{bmatrix}\begin{bmatrix}x_1\\x_2\\x_3\end{bmatrix}=\begin{bmatrix}4\\7\\5\end{bmatrix}
+%   \]\vspace{-1em}
+%   \begin{itemize}
+%     \item Create matrix \ \tikzmarkin[mat=style green]{A}$A$\tikzmarkend{A} \ in $3\times 3$ cells
+%     \item Create right hand side vector \ \tikzmarkin[mat=style cyan]{b}$b$\tikzmarkend{b} \ in 3 vertical cells\pause
+%     \item Compute the inverse \ \tikzmarkin[mat=style orange]{I}$I$\tikzmarkend{I} \ :
+%     \begin{itemize}
+%       \item Select an empty area of $3 \times 3$ cells
+%       \item Type \lstinline$=MINVERSE($
+%       \tikzmarkin[txt=style green]{A2}\lstinline$B2:D4$\tikzmarkend{A2}
+%       \lstinline$)$ (In Dutch Excel: \lstinline$INVERSEMAT$)
+%       \item Close with Ctrl+Shift+Enter
+%     \end{itemize}\pause
+%     \item Solution:
+%     \begin{itemize}
+%       \item Select 3 vertical cells
+%       \item Type \lstinline$=MMULT($
+%       % First part, contains the inverse
+%       \tikzmarkin[txt=style orange]{I2}\lstinline$H2:J4$\tikzmarkend{I2}
+%       % Semicolon
+%       \lstinline$;$
+%       % Second part, contains the RHS
+%       \tikzmarkin[txt=style cyan]{b2}\lstinline$B6:B8$\tikzmarkend{b2}
+%       % Finish the command
+%       \lstinline$)$ (In Dutch Excel: \lstinline$PRODUCTMAT$. The semicolon may be a comma.)
+%       \item Close with Ctrl+Shift+Enter
+%     \end{itemize}    
+%   \end{itemize}
+% \end{frame}
 
 
 \section{Towards larger systems}
@@ -468,7 +469,8 @@ plt.show()
    \item 3 independent columns
    \item In Matlab:
    \begin{lstlisting}
->> rank(M)
+import numpy.linalg as npla
+npla.matrix_rank(A)
    \end{lstlisting}
   \end{itemize}
   \column{0.5\textwidth}
@@ -490,11 +492,31 @@ plt.show()
 \begin{frame}[fragile]
   \frametitle{Solutions of linear systems}
   The solution of a system of linear equations may or may not exist, and it may or may not be unique. Existence of solutions can be determined by comparing the rank of the Matrix $M$ with the rank of the augmented matrix $M_a$:
-  \begin{lstlisting}
->> rank(A)
->> rank([A b])
-  \end{lstlisting}
-  Our system: $Mx = b$\\
+  \begin{columns}
+    \column{0.5\textwidth}
+    \begin{lstlisting}
+import numpy as np
+import numpy.linalg as npla
+
+M = np.array([[5.,3.,2.],[0.,9.,1.],[0.,0.,1.]])
+print(f'{M} has rank: {npla.matrix_rank(M)}\n')
+
+b = np.array([[3.],[4.],[5.]])
+M_aug = np.hstack((M,b))
+print(f'{M_aug} has rank: {npla.matrix_rank(M_aug)}')
+    \end{lstlisting}
+    \column{0.5\textwidth}
+    \begin{lstlisting}[style=output]
+[[5. 3. 2.]
+ [0. 9. 1.]
+ [0. 0. 1.]] has rank: 3
+
+[[5. 3. 2. 3.]
+ [0. 9. 1. 4.]
+ [0. 0. 1. 5.]] has rank: 3
+    \end{lstlisting}
+  \end{columns}
+  Our system: $Mx = b$
   \[ 
     M = \begin{bmatrix}
     M_{11} & M_{12} & M_{13}\\ 
