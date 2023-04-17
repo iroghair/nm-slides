@@ -1,3 +1,1 @@
-temp = b(column);
-b(column) = b(index);
-b(index) = temp;
+b[[col,imax],:] = b[[imax,col]]

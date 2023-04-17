@@ -1,2 +1,2 @@
-A(column,:) = A(index,:);
-A(index,:) = temp;
+A[[col,imax],:] = A[[imax,col],:]
+# Alternatively: A[col,:], A[imax,:] = A[imax,:], A[col,:]
