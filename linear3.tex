@@ -20,13 +20,18 @@
     \item Linear systems where equations depend on a limited number of variables (e.g. spatial discretization)
     \item Storing zeros is not very efficient:
     \begin{lstlisting}
->> A = eye(10000);
->> whos A
->> S = sparse(A);
->> whos S
+# sparse_system_size.py
+import sys
+import numpy as np
+import scipy.sparse as sparse
+N = 10000
+full_identity_matrix = np.eye(N)
+full_size_in_memory = sys.getsizeof(full_identity_matrix)
+sparse_identity_matrix = sparse.eye(N)
+sparse_size_in_memory = sys.getsizeof(sparse_identity_matrix)
+print(f'Full: {full_size_in_memory/1024**2} MB; sparse: {sparse_size_in_memory} b.')
     \end{lstlisting}
-    \item Can you think of a way to achieve this?
-    \item Sparse matrix formats: Yale, CRS, CCS
+    \item Sparse matrix formats: e.g. Yale, CRS, CSC
 \end{itemize}
 \end{frame}
 
@@ -37,9 +42,9 @@
   \begin{itemize}
     \item Example: Yale storage format, storing 3 vectors:
     \begin{itemize}
-      \item \lstinline$A = [5 8 3 6]$
-      \item \lstinline$IA = [0 1 2 3 4]$
-      \item \lstinline$JA = [0 1 2 1]$
+      \item \lstinline$A = np.array([5 8 3 6])$
+      \item \lstinline$IA = np.array([0 1 2 3 4])$
+      \item \lstinline$JA = np.array([0 1 2 1])$
     \end{itemize}
   \end{itemize}
   \column{0.4\textwidth}
@@ -272,23 +277,26 @@
 
 \begin{frame}[fragile]
   \frametitle{Creating the linear system}
-  \vskip-1em
+  \vskip-3em
   \[
    T_{k-N_x} + T_{k-1} - 4T_k + T_{k+1} + T_{k+N_x} = 0
   \]
-  Create a \emph{banded} matrix $A$ in Matlab, by setting the coefficients for the internal cells:
+  Create a \emph{banded} matrix $A$ by setting the coefficients for the internal cells:
   \begin{lstlisting}
-Nx=5;  %number of points along x direction
-Ny=5;  %number of points in the y direction
-Nc=Nx*Ny; % Total number of points
+# create_sparse_system.py
+import numpy as np
+import scipy.sparse as sps
 
-e = ones(Nc,1);
-A = spdiags([e,e,-4*e,e,e],[-Nx,-1,0,1,Nx],Nc,Nc);
-b = zeros(Nc,1);
+Nx = 5 # Number of points along x direction
+Ny = 5 # Number of points in the y direction
+Nc = Nx*Ny # Total number of points
+A = sps.diags([1,1,-4,1,1],[-Nx,-1,0,1,Nx],shape=(Nc,Nc))
+A = sps.csr_matrix(A)
+b = np.zeros([Nc,1])
   \end{lstlisting}
-  The function \lstinline$spdiags$ uses the following arguments:
+  The function \lstinline$sps.diags$ uses the following arguments:
   \begin{itemize}
-   \item The coefficients that have to be put on the diagonals arranged as columns in a matrix
+   \item The coefficients that have to be put on the diagonals
    \item The position of the bands with respect to the main diagonal
    \item Size of the resulting matrix (in our case square $N_xN_y \times N_xN_y$)
   \end{itemize}
@@ -302,13 +310,16 @@ b = zeros(Nc,1);
   \begin{itemize}
    \item Let's check the matrix layout:
    \begin{lstlisting}
->> spy(A)
+import matplotlib.pyplot as plt
+# ... (generate banded matrix) ... 
+plt.spy(A)
+plt.show()
    \end{lstlisting}
     \item This command shows the non-zero values of a matrix
     \item Apart from the main diagonal, there are offset bands!
   \end{itemize}
   \column{0.5\textwidth}
-    \includegraphics[width=\columnwidth]{sparse_matlab}
+    \includegraphics[width=\columnwidth]{mplspy}
   \end{columns}
 \end{frame}
 
@@ -321,96 +332,107 @@ b = zeros(Nc,1);
       T_{k,\text{boundary}} = \text{Some fixed value}
       \]
       \item However, we have set all nodes to be a function of their neighbors...
-      \item Find the boundary node indices using $k = i + Nx(j-1)$
+      \item Find the boundary node indices using $k = i + j\times Nx$ %$k = i + Nx(j-1)$
       \begin{itemize}
-        \item \lstinline$i = 1$, \lstinline$j = 1:Ny$
-        \item \lstinline$i = Nx$, \lstinline$j = 1:Ny$
-        \item \lstinline$j = 1$, \lstinline$i = 1:Nx$
-        \item \lstinline$j = Ny$, \lstinline$i = 1:Nx$
+        \item $i = 0$, $j = 0\rightarrow Ny-1$
+        \item $i = Nx-1$, $j = 0\rightarrow Ny-1$
+        \item $j = 0$, $i = 0\rightarrow Nx-1$
+        \item $j = Ny-1$, $i = 1\rightarrow Nx-1$
       \end{itemize}
       \item Reset the row in $A$ to zeros, set $A_{kk}$ = 1
       \item Set value in rhs: $b_k = T_{k,\text{boundary}}$
-      \item Boundary conditions are often more elaborate to implement! See \lstinline$setBoundaryConditions.m$.
+      \item Boundary conditions are often more elaborate to implement!
   \end{itemize}
 \end{frame}
   
 \begin{frame}[fragile]
   \frametitle{Partial implementation of the boundary conditions}
-  See \lstinline$setBoundaryConditions.m$.
+  See \lstinline$extend_sparse_system.py$.
   \begin{lstlisting}[]
-function [A,b] = setBoundaryConditions(A,b,Tb,Nx,Ny)
+def get_boundary_condition_indices(Nx,Ny):
+    idxS = np.arange(0,Nx)    # Bottom row
+    idxN = (Ny-1)*(Nx)+idxS   # Top row
+    idxW = np.arange(Ny)*(Nx) # Left column
+    idxE = idxW+(Nx-1)        # Right column
+    boundary_cells = {"south": idxS, "north": idxN, 'west': idxW, 'east': idxE,
+    'total': np.unique(np.concatenate((idxS,idxW,idxE,idxN)))}
+    return boundary_cells
 
-% Set boundary conditions over x-direction
-for i=1:Nx
-    j = 1;
-    ind = i + Nx * (j-1);
-    A(ind,:) = 0;   % Reset matrix for boundary cells
-    A(ind,ind) = 1; % Add a 1 on the diagonal
-    b(ind) = Tb(1);
-    j = Ny;
-    ind = i + Nx * (j-1);
-    A(ind,:) = 0;   % Reset matrix for boundary cells
-    A(ind,ind) = 1; % Add a 1 on the diagonal
-    b(ind) = Tb(2);
-end
+def set_boundary_conditions(A,b,Tb,Nx,Ny):
+    bc_idx = get_boundary_condition_indices(Nx,Ny)
 
-%% Repeat for y-direction
+    # For all the boundary cells:
+    A[bc_idx['total'],:] = 0 # Reset matrix coefficients in row
+    A[bc_idx['total'],bc_idx['total']] = 1 # Add a 1 on the main diagonal
+    # Set temperature for each side separately
+    b[bc_idx['north']] = Tb['N']
+    b[bc_idx['south']] = Tb['S']
+    b[bc_idx['east']] = Tb['E']
+    b[bc_idx['west']] = Tb['W']
+    
+    return A,b 
   \end{lstlisting}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{How applying boundary conditions affects the linear system}
-  \begin{lstlisting}[]
-function [A,b] = setBoundaryConditions(A,b,Tb,Nx,Ny)
-  \end{lstlisting}
-  \pause
-  \begin{itemize}
-    \item Make sure that matrix \lstinline$A$ and right hand side vector \lstinline$b$ are in your workspace, as well as \lstinline$Nx$ and \lstinline$N_y$
-    \item Create a vector that holds the temperature at each boundary:
-    \begin{lstlisting}
->> T = [10 20 30 40];
-    \end{lstlisting}
-    \item Call the function, store $A$ and $b$ in new variables:
-    \begin{lstlisting}
->> [A2,b2] = setBoundaryConditions(A,b,T,Nx,Ny);
-    \end{lstlisting}
-    \item Check the new structure of the matrix and the right hand side:
-    \begin{lstlisting}
->> subplot(1,2,1); spy(A2);
->> subplot(1,2,2); spy(b2);
-    \end{lstlisting}
-  \end{itemize}
+  \begin{columns}
+    \column{0.5\textwidth}
+      \begin{itemize}
+        \item Create a dictionary that holds the temperature at each boundary:
+        \begin{lstlisting}
+Tb = {'N': 10, 'S': 20, 'E': 30, 'W': 40}
+        \end{lstlisting}
+        \item Call the function and (note that A and b are changed because they are passed by reference):
+        \begin{lstlisting}
+set_boundary_conditions(A,b, Tb, Nx, Ny)
+        \end{lstlisting}
+        \item Check the new structure of the matrix and the right hand side:
+        \begin{lstlisting}
+f, (ax1,ax2) = plt.subplots(1, 2,sharey='all')
+ax1.spy(A)
+ax2.spy(sps.csr_array(b))
+plt.show()
+        \end{lstlisting}
+      \end{itemize}
+    \column{0.5\textwidth}
+      \includegraphics[width=\columnwidth]{figures/spab.pdf}
+  \end{columns}
 \end{frame}
 
 \subsection*{Solving the equation}
 \begin{frame}[fragile]
   \frametitle{A full program, including solver}
-  The program and auxiliary functions are on Canvas (\lstinline$solveLaplaceEq.m$)
   \begin{lstlisting}[linewidth=1.05\textwidth]
-function [x,y,T,A] = solveLaplaceEq(Nx,Ny)
-% Solves the steady-state Laplace equation 
-
-Tb = [10 20 30 40]; % Fixed boundary temperatures
-
-% Fill sparse matrix with [1 1 -4 1 1]
-e = ones(Nx*Ny,1);
-A = spdiags([e,e,-4*e,e,e],[-Nx,-1,0,1,Nx],Nx*Ny,Nx*Ny);
-b = zeros(Nx*Ny,1);
-
-[A,b] = setBoundaryConditions(A,b,Tb,Nx,Ny);
-
-T = A\b;  % Solve matrix
-Tc = reshape(T,[Nx,Ny]); % Reshape x-vec to mat Nx,Ny
-[xc yc] = meshgrid(1:Nx,1:Ny); % Get position arrays
-surf(xc,yc,Tc); % Surface plot
+    # Setup
+    Nx, Ny = 50, 50 # Number of points along x, y direction
+    Tb = {'N': 10, 'S': 20, 'E': 30, 'W': 40}
+    
+    # Create linear system
+    Nc = Nx*Ny # Total number of points
+    A = sps.diags([1,1,-4,1,1],[-Nx,-1,0,1,Nx],shape=(Nc,Nc))
+    A = sps.csr_matrix(A)
+    b = np.zeros([Nc,1])
+    set_boundary_conditions(A,b, Tb, Nx, Ny)
+    
+    # Solve
+    T_solution = sps.linalg.spsolve(A,b)
+    
+    # Postprocessing
+    x,y = np.meshgrid(range(Nx), range(Ny))
+    fig, ax = plt.subplots(1,1,subplot_kw=dict(projection='3d'))
+    surf = ax.plot_surface(x,y,T_solution.reshape(Nx,Ny),cmap=cm.inferno,linewidth=0.1,edgecolor='black')
+    fig.colorbar(surf, shrink=0.5, aspect=5,label='Temperature [$^\circ$C]')
+    ax.set(xlabel='X [a.u.]', ylabel='Y [a.u.]', zlabel='T [$^\circ$C]')
+    plt.show()
   \end{lstlisting}
 \end{frame}
   
 \begin{frame}[fragile]
   \frametitle{Sample results}
-  Solved for a $20\times20$ system with $T_b=\left[10\ 20\ 30\ 40\right]$.\vskip1em
+  Solved for a $50\times50$ system with \lstinline$Tb = {'N': 10, 'S': 20, 'E': 30, 'W': 40}$
   \begin{center}
-    \includegraphics[width=0.6\textwidth]{laplace_20x20}
+    \includegraphics[width=0.7\textwidth]{laplace_py_50x50}
   \end{center}
 \end{frame}
 
@@ -432,47 +454,55 @@ Compute and plot the exact temperature profile in the 2D plate, and compare it w
   \end{itemize}
   \end{hints}
 \end{frame}
+}
 
 \begin{frame}<beamer:1-|handout:0>[fragile]
   \frametitle{Exercise: Verify the numerical solution using Fourier-series}
     \begin{lstlisting}
 % Generate the mesh
-Nx = 35; Ny = 35;
-[x y] = meshgrid(linspace(0,1,Nx),linspace(0,1,Ny));
-T = zeros(size(x)); (*@ \pause @*)
+Nx, Ny = 25, 25
+T_boundaries = {'N': 1, 'S': 0, 'E': 0, 'W': 0}
+x,y = np.meshgrid(np.linspace(0,1,Nx),np.linspace(0,1,Ny))
+T = np.zeros_like(x) (*@ \pause @*)
 % Fourier series expansion
-for n = 1:100
-    m = 2*n-1;
-    T = T + (sin(m*pi*x).*sinh(m*pi*y))./(m*sinh(m*pi));
-end
-Tex = T*4/pi; (*@ \pause @*)
-% Compute numerical solution and post-process
+for n in range(1,50):
+    m = 2*n-1
+    T = T + (np.sin(m*np.pi*x) * np.sinh(m*np.pi*y)) / (m*np.sinh(m*np.pi))
+T_exact = T*4/np.pi (*@ \pause @*)
 
-% First plot is created inside solveLaplaceEq, which also returns Tnum
-figure; subplot(1,3,1)
-[xc,yc,Tnum] = solveLaplaceEq(Nx,Ny) 
+# Compute numerical solution and difference
+T_numerical = run_specific_case(Nx=Nx, Ny=Ny,Tb=T_boundaries).reshape(Nx,Ny)
+T_diff = np.abs(T_numerical.reshape(Nx,Ny) - T_exact)
 
-% Plot exact (Fourier)
-subplot(1,3,2); surf(x,y,Tex);
-xlabel('x'); ylabel('y'); zlabel('T')
+# Postprocessing (surface plot)
+fig, (ax1,ax2,ax3) = plt.subplots(1,3,subplot_kw=dict(projection='3d'))
+surf1 = ax1.plot_surface(x,y,T_numerical,cmap=cm.magma,linewidth=0.1,edgecolor='black', alpha=.7)
+surf2 = ax2.plot_surface(x,y,T_exact,cmap=cm.magma,linewidth=0.1,edgecolor='black', alpha=.7)
+surf3 = ax3.plot_surface(x,y,T_diff,cmap=cm.magma,linewidth=0.1,edgecolor='black', alpha=.7)
 
-% Plot difference
-subplot(1,3,3); surf(x,y,Tex-Tnum);
-xlabel('x'); ylabel('y'); zlabel('T')
+plt.show()
     \end{lstlisting}
 \end{frame}
-}
+
 
 \begin{frame}[fragile]
   \frametitle{LU decomposition of a sparse matrix}
   \begin{columns}
   \column{0.35\textwidth}
     \begin{lstlisting}
->> [L,U,P] = lu(A)
->> subplot(1,2,1)
->> spy(L)
->> subplot(1,2,2)
->> spy(U)
+# lu_spy_sparse.py
+Nx, Ny = 5, 5
+Nc = Nx*Ny
+A = sps.diags([1,1,-4,1,1],[-Nx,-1,0,1,Nx],shape=(Nc,Nc))
+
+P, L, U = spla.lu(A.todense()) (*@ \pause @*)
+
+fig,(ax1,ax2) = plt.subplots(1,2)
+ax1.spy(sps.lil_matrix(L))
+ax1.set_title('LU Lower matrix')
+ax2.spy(sps.lil_matrix(U))
+ax2.set_title('LU Upper matrix')
+plt.show()
     \end{lstlisting}
   \column{0.65\textwidth}
   \pause
@@ -480,7 +510,7 @@ xlabel('x'); ylabel('y'); zlabel('T')
     \item With LU decomposition we produce matrices that are less sparse than the original matrix.
     \item Sparse storage often required, and also numerical techniques that fully utilizes this!
   \end{itemize}\vskip2em
-  \includegraphics[width=\columnwidth]{sparse_lu}
+  \includegraphics[width=0.9\columnwidth]{LU_spy}
   \end{columns}
 \end{frame}
   
@@ -488,8 +518,8 @@ xlabel('x'); ylabel('y'); zlabel('T')
   \frametitle{LU decomposition}
   \begin{itemize}
     \item LU decomposition and Gaussian elimination on a matrix like $A$ requires more memory (with 3D problems, the offset in the diagonal would even be bigger!)
-    \item In general extra memory allocation will not be a problem for MATLAB
-    \item MATLAB is clever, in that sense that it attempts to reorder equations, to move elements closer to the diagonal)
+    % \item In general extra memory allocation will not be a problem for MATLAB
+    % \item MATLAB is clever, in that sense that it attempts to reorder equations, to move elements closer to the diagonal)
   \end{itemize} \pause
   Alternatives for elimination methods
   \begin{itemize}
@@ -508,10 +538,10 @@ xlabel('x'); ylabel('y'); zlabel('T')
     \item Jacobi method
     \item Gauss-Seidel method
     \item Succesive over relaxation \vskip2em
-    \item \lstinline$bicg$ --- Bi-conjugate gradient method
-  \item \lstinline$pcg$ --- preconditioned conjugate gradient method
-  \item \lstinline$gmres$ --- generalized minimum residuals method
-  \item \lstinline$bicgstab$ --- Bi-conjugate gradient method
+    \item \lstinline$scipy.sparse.bicg$ --- Bi-conjugate gradient method
+    \item \lstinline$scipy.sparse.bicgstab$ --- Bi-conjugate gradient (stabilized) method
+    \item \lstinline$scipy.sparse.cg$ --- Conjugate gradient method
+    \item \lstinline$scipy.sparse.gmres$ --- Generalized minimum residuals method
 \end{itemize}
 \end{frame}
 
@@ -544,31 +574,59 @@ xlabel('x'); ylabel('y'); zlabel('T')
 \begin{frame}[fragile]
   \frametitle{Jacobi method for Laplace's equation}
   \vskip-1em
-  See \lstinline$laplace_jacobi.m$ (from Canvas)
-  \begin{lstlisting}[basicstyle=\scriptsize\ttfamily]
-% Grid size
-nx = 40; ny = 40; (*@ \pause @*)
-% The temperature field + boundaries at old and new times
-T = zeros(nx,ny);
-T(1,:) = 40;  % Left 
-T(nx,:) = 60; % Right
-T(:,1) = 20;  % Bottom
-T(:,ny) = 30; % Top (*@ \pause @*)
-Tnew = T; (*@ \pause @*)
-% For plotting
-[x y] = meshgrid(1:nx, 1:ny); (*@ \pause @*)
-for iter = 1:1000 
-  for i = 2:nx-1
-    for j = 2:ny-1 
-      Tnew(i,j) = (T(i-1,j)+T(i+1,j)+T(i,j-1)+T(i,j+1))/4.0;
-    end
-  end (*@ \pause @*)
-  surf(x,y,Tnew);
-  title(['Iteration: ' num2str(iter)]);
-  drawnow
-  T = Tnew; % Update T
-end
-  \end{lstlisting}
+  \begin{columns}
+    \column{0.6\textwidth}
+    \begin{lstlisting}[basicstyle=\scriptsize\ttfamily]
+  # Grid size
+  Nx,Ny = 40,40 (*@ \pause @*)
+  # The temperature field + boundaries
+  T = np.zeros([Nx,Ny])
+  T[0,:] = 40    # Left 
+  T[Nx-1,:] = 60 # Right
+  T[:,0] = 20    # Bottom
+  T[:,Ny-1] = 30 # Top 
+  Tnew = T.copy() (*@ \pause @*)
+  
+  T_stored = []
+  store_it = [0,20,80,320] (*@ \pause @*)
+  
+  for iter in range(400):
+      for i in range(1,Nx-1):
+          for j in range(1,Ny-1): 
+              Tnew[i,j] = (T[i-1,j]+T[i+1,j]+T[i,j-1]+T[i,j+1])/4
+      T = Tnew
+
+      if iter in store_it:
+          T_stored.append(T.copy())
+    \end{lstlisting}
+    \vfill 
+    \column{0.4\textwidth}
+      \begin{lstlisting}[firstnumber=22]
+# For plotting
+x,y = np.meshgrid(range(Nx),range(Ny))
+fig,axxs = plt.subplots(2,2,
+    subplot_kw=dict(projection='3d'))
+axxs.shape = (axxs.size)
+for idx, ax in np.ndenumerate(axxs):
+    ax.plot_surface(x,y,T_stored[idx[0]])
+    ax.set_title(f'Iteration: {store_it[idx[0]]}')
+
+plt.tight_layout()
+plt.show()
+      \end{lstlisting}
+      \begin{itemize}
+        \item Computation occurs on l. 17
+        \item Use the copy() operator to store intermediate results
+        \item Axes of multiple subplots are returned as \lstinline$np.array$, which we can iterate (l. 24+27)
+      \end{itemize}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Laplace equation solved using Jacobi iterations}
+  \begin{center}
+    \includegraphics[width=0.8\textwidth]{figures/laplace_iter_jacobi.pdf}
+  \end{center}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -655,7 +713,7 @@ end
     \node[block2]                 (start) {Set $T^\text{old}$ = a guess};
     \node[block2, right=of start,visible on=<2->] (calc)  {Calculate the new node solution with previous values.};
     \node[block2, right=of calc,visible on=<3->] (check1) {Have all nodes been updated?};
-    \node[block2, right=of check1,,visible on=<5->,text width=2cm] (tol) {Tolerance check: $\mynorm{\frac{x^{n+1}-x^n}{x^n}}_2 \leq \text{tol} $?};
+    \node[block2, right=of check1,,visible on=<5->,text width=2cm] (tol) {Tolerance check: $\frac{\mynorm{x^{n+1}-x^n}}{\mynorm{x^n}} \leq \text{tol} $?};
     \node[block2, above=of check1,visible on=<4->] (next) {Move to next node};
     \node[block2, above=of tol,visible on=<6->] (update) {Update $T^\text{old}=T^\text{new}$};
     \node[block2, below=of tol,visible on=<8->] (answer) {Report the answer as $T^\text{new}$};
@@ -675,26 +733,28 @@ end
 
 \begin{frame}[fragile]
   \frametitle{The core of the solver}
-  The full file is on Canvas, \lstinline$solveJacobi.m$.
+  The solvers are shared in the library \lstinline$iterative_solvers.py$.
   \begin{lstlisting}[numbers=left]
-  while ( xDiff > tol && it_jac < 1000 )
-    x_old = x;
-    for i=1:N
-        s = 0;
-        for j = 1:N
-            if (j ~= i)
-                s = s+A(i,j)*x_old(j);
-            end
-        end
-        x(i) = (b(i)-s)/A(i,i);
-    end
+# While not converged or max_it not reached
+while xdiff >= tol and it_jac < max_it:
+    x_old = x.copy()
+    for i in range(N):
+        s = 0
+        for j in range(N):
+            if not j == i:
+                # Sum off-diagonal*x_old
+                s = s+A[i,j] * x_old[j]
+        # Compute new x value
+        x[i] = (b[i]-s)/A[i,i]
+
+    # Increase number of iterations
     it_jac = it_jac+1;
-    xDiff = norm((x-x_old)./x,2);
-end
-it_jac
+    xdiff = np.linalg.norm((x-x_old))/np.linalg.norm(x)
+
+return x,it_jac
   \end{lstlisting}
   \pause
-  Try to call it from the \lstinline$solveLaplaceEq.m$ file, instead of using \lstinline$\$.
+  Try to call it for the Laplace equation, instead of using \lstinline$spla.linalg.solve$.
 \end{frame}
 
 \begin{frame}[fragile]
@@ -702,7 +762,7 @@ it_jac
   \begin{itemize}
    \item The while loop holds two aspects
    \begin{itemize}
-    \item A convergence criterion (\lstinline$norm((x-x_old)./x,2) > tol$). Some considerations are:
+    \item A convergence criterion ($\frac{||(x-x_\mathrm{old}||}{||x||} \leq tol$). Some considerations are:
     \begin{itemize}
       \item $L_1$-norm (sum)
       \item $L_2$-norm (Euclidian distance)
@@ -724,29 +784,30 @@ it_jac
   \frametitle{The solver using array indices}
   Make a copy of the Jacobian solver, and replace the for-loop by a vector-operation:
   \begin{lstlisting}[basicstyle=\scriptsize\ttfamily]
-% While not converged or max_it not reached
-while ( xDiff > tol && it_jac < 1000 )
-  x_old = x;
-  for i=1:N
-    % Sum off-diagonal*x_old
-    offDiagonalIndex = [1:(i-1) (i+1):N];
-    Aij_Xj = A(i,offDiagonalIndex)*x_old(offDiagonalIndex);
+# While not converged or max_it not reached
+while xdiff >= tol and it_jac < max_it:
+    x_old = x.copy()
+    for i in range(N):
+        off_diag_idx = np.delete(np.arange(0,N),i)
+        Aij_Xj = A[i,off_diag_idx]@x_old[off_diag_idx]
 
-    % Compute new x value
-    x(i) = (b(i)-Aij_Xj)/A(i,i);
-  end
-  it_jac = it_jac+1;
-  xDiff = norm((x-x_old)./x,2);
-end
+        # Compute new x value
+        x[i] = (b[i]-Aij_Xj)/A[i,i]
+
+    # Increase number of iterations
+    it_jac = it_jac+1;
+    xdiff = np.linalg.norm((x-x_old)/x);
+
+return x,it_jac
 \end{lstlisting}
 \end{frame}
 
-\begin{frame}[fragile]
-  \frametitle{Iterations 1, 2, 3 and 10}
-  \includegraphics[width=0.35\textwidth]{it1} \hspace{0.5cm}
-  \includegraphics[width=0.35\textwidth]{it2}\\
-  \includegraphics[width=0.35\textwidth]{it3} \hspace{0.5cm} \includegraphics[width=0.35\textwidth]{it10}
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Iterations 1, 2, 3 and 10}
+%   \includegraphics[width=0.35\textwidth]{it1} \hspace{0.5cm}
+%   \includegraphics[width=0.35\textwidth]{it2}\\
+%   \includegraphics[width=0.35\textwidth]{it3} \hspace{0.5cm} \includegraphics[width=0.35\textwidth]{it10}
+% \end{frame}
 
 \subsection*{Gauss-Seidel method}
 \begin{frame}[fragile]
@@ -760,7 +821,7 @@ end
     \item Do not create a \lstinline$Tnew$ array (save memory!)
     \item Do not store the solution in \lstinline$Tnew$, but simply in \lstinline$T$
     \item Do not perform the update step \lstinline$T=Tnew$
-    \item See \lstinline$laplace_gaussseidel.m$ for the algorithm.\pause
+    \item See \lstinline$solve_laplace_gauss_seidel_basic.py$ for the algorithm.\pause
    \end{itemize}
    \item The straightforward script works well for the current Laplace equation, but we define the generic Gauss-Seidel algorithm on the following slides.
   \end{itemize}
@@ -787,6 +848,34 @@ end
   \end{itemize}
 \end{frame}
 
+\begin{frame}[fragile]
+  \frametitle{Implementation of the Gauss-Seidel method}
+  The noteworthy differences with Jacobi are on lines 7--12:
+  \begin{lstlisting}[basicstyle=\scriptsize\ttfamily]
+# While not converged or max_it not reached
+while xdiff >= tol and it_gs < max_it:
+    x_old = x.copy()
+    for i in range(N):
+        s = 0
+        for j in range(N):
+            if j < i:
+                # Sum off-diagonal*x
+                s = s+A[i,j] * x[j]
+            elif j > i:
+                # Sum off-diagonal*x_old
+                s = s+A[i,j] * x_old[j]
+
+        # Compute new x value
+        x[i] = (b[i]-s)/A[i,i]
+
+    # Increase number of iterations
+    it_gs = it_gs+1
+    xdiff = np.linalg.norm((x-x_old))/np.linalg.norm(x)
+
+return x,it_gs
+\end{lstlisting}
+\end{frame}
+
 \section{Summary}
 \subsection*{Summary}
 \againframe<2>{contents_lin3}
@@ -807,5 +896,26 @@ end
     \item Direct methods generally use more memory, since they need to store also the result matrices.
     \item A strictly (or irreducibly) diagonally dominant matrix is a prerequisite for convergence of the Jacobi and Gauss-Seidel method.
     \item For real-life situations; 1D problems are generally solved with direct methods (LU decomposition). If you have systems of more than 1 dimension, a direct method still can be used, if there are no memory issues, otherwise an iterative method would be more attractive.
-\end{itemize}
+  \end{itemize}
+\end{frame}
+
+\section{Exercises}
+\subsection*{Exercises}
+\againframe<2>{contents_lin3}
+\begin{frame}[fragile]
+  \frametitle{Exercises}
+  \begin{enumerate}
+    \item Compute the computational complexity of the solvers discussed:
+    \begin{itemize}
+      \item Gauss-Jordan elimination and backsubstitution
+      \item LU decomposition
+      \item Jacobi
+      \item Gauss-Seidel
+    \end{itemize}
+    \item Change the Gauss-Seidel solver function to its vectorized form and demonstrate the speed gains
+    \item Implement the Successive over-relaxation method 
+    \item Implement a Richardson iteration solver: 
+      \[ x^{{(k+1)}}=x^{{(k)}}+\omega \left(b-Ax^{{(k)}}\right) \]
+      with $\omega$ a scalar between 0 and 1.
+  \end{enumerate}
 \end{frame}
