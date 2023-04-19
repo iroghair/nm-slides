@@ -62,7 +62,7 @@ print(f'Full: {full_size_in_memory/1024**2} MB; sparse: {sparse_size_in_memory} 
     \item \lstinline$A$ stores the non-zero values
     \item \lstinline$IA$ stores the index in A of the first non-zero in row i
     \item \lstinline$JA$ stores the column index
-    \item Note: zero-based indices are used here!
+    % \item Note: zero-based indices are used here!
 \end{itemize}
 \end{frame}
 
@@ -298,7 +298,7 @@ b = np.zeros([Nc,1])
   \begin{itemize}
    \item The coefficients that have to be put on the diagonals
    \item The position of the bands with respect to the main diagonal
-   \item Size of the resulting matrix (in our case square $N_xN_y \times N_xN_y$)
+   \item Shape of the resulting matrix (in our case square $N_xN_y \times N_xN_y$)
   \end{itemize}
 \end{frame}
 
@@ -504,6 +504,7 @@ ax2.spy(sps.lil_matrix(U))
 ax2.set_title('LU Upper matrix')
 plt.show()
     \end{lstlisting}
+    Note: the \lstinline$spla.lu$ function cannot process a sparse matrix, hence conversion to dense.
   \column{0.65\textwidth}
   \pause
   \begin{itemize}
@@ -599,7 +600,7 @@ plt.show()
       if iter in store_it:
           T_stored.append(T.copy())
     \end{lstlisting}
-    \vfill 
+    \vspace{2em}
     \column{0.4\textwidth}
       \begin{lstlisting}[firstnumber=22]
 # For plotting
@@ -614,11 +615,12 @@ for idx, ax in np.ndenumerate(axxs):
 plt.tight_layout()
 plt.show()
       \end{lstlisting}
+      \pause
       \begin{itemize}
         \item Computation occurs on l. 17
         \item Use the copy() operator to store intermediate results
         \item Axes of multiple subplots are returned as \lstinline$np.array$, which we can iterate (l. 24+27)
-      \end{itemize}
+      \end{itemize}\vspace{2ex}
   \end{columns}
 \end{frame}
 
@@ -850,7 +852,7 @@ return x,it_jac
 
 \begin{frame}[fragile]
   \frametitle{Implementation of the Gauss-Seidel method}
-  The noteworthy differences with Jacobi are on lines 7--12:
+  The noteworthy differences with the Jacobi method are on lines 7--12:
   \begin{lstlisting}[basicstyle=\scriptsize\ttfamily]
 # While not converged or max_it not reached
 while xdiff >= tol and it_gs < max_it:
