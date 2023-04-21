@@ -240,6 +240,7 @@
   }
 \end{frame}
 
+
 \begin{frame}
   \frametitle{Euler's method - example}
   First order reaction in a batch reactor:
@@ -265,11 +266,11 @@
 
 \begin{frame}
   \frametitle{Euler's method - example}
-%   Accuracy: Results are shown for $N=20,4-,80,\ldots,320$ using $k = 1 \si{s^{-1}$
+  %   Accuracy: Results are shown for $N=20,4-,80,\ldots,320$ using $k = 1 \si{s^{-1}$
   \begin{center}
     \begin{tikzpicture}
       \begin{axis}[every axis/.append style={font=\footnotesize},
-    width=\textwidth, height=7cm,     % size of the image
+        width=\textwidth, height=7cm,     % size of the image
     grid = major,
     grid style={dashed, gray!30},
     xmin=0,     % start the diagram at this x-coordinate
@@ -288,15 +289,86 @@
     legend style={draw=none,fill=none,font=\tiny,at={(0.5,1.0)},anchor=south},
     legend columns=5
     ]
-
-      \addplot[graph,mark=x] table [id=EE_20]{data/ODE_EulerExpl_20.dat};  \addlegendentry{20 points}
+    
+    \addplot[graph,mark=x] table [id=EE_20]{data/ODE_EulerExpl_20.dat};  \addlegendentry{20 points}
       \only<2->{\addplot[graph,draw=tueyellow] table [id=EE_20]{data/ODE_EulerExpl_40.dat}; } \addlegendentry{40 points}
       \only<3->{\addplot[graph,draw=tuelblue] table [id=EE_20]{data/ODE_EulerExpl_80.dat}; } \addlegendentry{80 points}
       \only<4->{\addplot[graph,draw=tuegreen] table [id=EE_20]{data/ODE_EulerExpl_160.dat};} \addlegendentry{160 points}
       \only<5->{\addplot[graph,draw=tuelila] table [id=EE_20]{data/ODE_EulerExpl_320.dat};} \addlegendentry{320 points}
     \end{axis}
-    \end{tikzpicture}
+  \end{tikzpicture}
   \end{center}
+\end{frame}
+
+\begin{frame}<handout:0|beamer:1->[fragile]
+  \frametitle{Euler's method - implementation}
+  A basic function of Euler's method is given in \lstinline$ode_scalar_explicit.py$:
+  \begin{lstlisting}
+def euler_basic(func, c0, t0, tend, n=100):
+    dt = (tend - t0)/n
+    t,c = t0, c0
+    print(f"t: {t:1.2f}, c: {c:1.6f}")
+    for i in range(n):
+        k1 = func(c, t)
+        t += dt
+        c += dt*k1
+        print(f"t: {t:1.2f}, c: {c:.6f}")
+  \end{lstlisting}
+  \pause
+  \begin{columns}
+    \column{0.65\textwidth}
+    \vspace*{-2em}\\
+  We define the ODE function to be solved, e.g. $\frac{dc}{dt} = -kc$ with $k=1$, and pass it as an argument to \lstinline$euler_basic$:
+  \begin{lstlisting}
+def first_order_react(c,t):
+    dcdt = -c
+    return dcdt
+
+euler_basic(first_order_react, 1, 0, 2, 100)
+  \end{lstlisting}
+    \column{0.3\textwidth}
+      \begin{lstlisting}[style=output]
+t: 0.00, c: 1.000000
+t: 0.20, c: 0.800000
+t: 0.40, c: 0.640000
+t: 0.60, c: 0.512000
+t: 0.80, c: 0.409600
+t: 1.00, c: 0.327680
+t: 1.20, c: 0.262144
+t: 1.40, c: 0.209715
+t: 1.60, c: 0.167772
+t: 1.80, c: 0.134218
+t: 2.00, c: 0.107374
+      \end{lstlisting}
+  \end{columns}
+\end{frame}
+
+\begin{frame}<handout:0|beamer:1->[fragile]
+  \frametitle{Euler's method - implementation}
+  By storing the intermediate results we can return the results for post processing:
+  \begin{lstlisting}
+import numpy as np
+def euler(func, c0, t0, tend, n=100):
+    dt = (tend - t0)/n
+    t = np.linspace(t0,tend,n+1)
+    c = np.zeros(n+1)
+    c[0] = c0
+    for i in range(n):
+        k1 = func(c[i], t[i]) 
+        c[i+1] = c[i] + dt*k1
+    return c,t
+  \end{lstlisting}
+  \pause
+  The function \lstinline$euler$ can be imported from \lstinline$ode_scalar_explicit.py$:
+  \begin{lstlisting}
+from ode_scalar_explicit import euler
+c, t = euler(first_order_react, 1, 0, 2, 100)
+print(np.vstack([t,c]).T)
+  \end{lstlisting}
+  Alternatively, we can pass a \emph{lambda function} in-place:
+  \begin{lstlisting}
+c, t = euler(lambda c, t: -1.0*c, 1, 0, 2, 100)
+  \end{lstlisting} 
 \end{frame}
 
 {\nologo
@@ -499,7 +571,7 @@
 \begin{frame}
   \frametitle{Computing the rate of convergence}
   \footnotesize\selectfont
-  When the analytical solution is available, choose \tikz{\node[circle,draw=none,fill=tuelblue,inner sep=0.7pt,text=white]{\scriptsize 1};} or \tikz{\node[circle,draw=none,fill=tuelblue,inner sep=0.7pt,text=white]{\scriptsize 2};} for a particular number of grid points $N$:
+  When the analytical solution is available, choose \tikz{\node[circle,draw=none,fill=scharlaken,inner sep=0.7pt,text=white]{\scriptsize 1};} or \tikz{\node[circle,draw=none,fill=scharlaken,inner sep=0.7pt,text=white]{\scriptsize 2};} for a particular number of grid points $N$:
   \begin{enumerate}
   \footnotesize\selectfont
     \item Compute the relative or absolute error vector $\overline{\varepsilon}$. Take the norm to compute a single error value $\epsilon$ following:
@@ -1100,90 +1172,103 @@ Using $b_1+b_2=1$, $c_2b_2=\frac{1}{2}$, $a_{2,1}b_2=\frac{1}{2} \Rightarrow$ 3 
   Use a special fourth and a fifth order Runge Kutta method to approximate $y_{i+1}$
   \begin{itemize}
     \item The fourth order method is special because we want to use the same positions for the evaluation for computational efficiency.
-    \item RK45 is the preferred method (minimum number of function evaluations) (this is built in Matlab as \lstinline$ode45$).
+    \item RK45 is the preferred method (minimum number of function evaluations) (this is the default method in \lstinline$scipy.integrate.solve_ivp$).
   \end{itemize}
 \end{frame}
 
-\section{Solving ODEs in Matlab}
+\section{Solving ODEs in Python}
 \againframe<2>{contents_ode1}
-\subsection*{Solving ODEs in Matlab}
+\subsection*{Solving ODEs in Python}
 \begin{frame}
-  \frametitle{Solving ODEs in Matlab}
-  Matlab provides convenient procedures to solve (systems of) ODEs automatically.
+  \frametitle{Solving ODEs in Python}
+  SciPy provides convenient procedures to solve (systems of) ODEs automatically.
   \vskip1em
   The procedure is as follows:
   \begin{enumerate}
     \item Create a function that specifies the ODE(s). Specifically, this function returns the $\frac{dy}{dx}$ value (vector).
-    \item Initialise solver variables and settings (e.g. step size, initial conditions, tolerance), in a separate script
-    \item Call the ODE solver function, using a \emph{function handle} to the ODE function described in point 1.
+    \item Initialise solver variables and settings (e.g. step size, initial conditions, tolerance)
+    \item Call the ODE solver function, passing the ODE function as argument
     \begin{itemize}
-      \item The ODE solver will return the vector for the independent variable, and a solution vector (matrix for systems of ODEs).
+      \item The ODE solver will return a solution oject (e.g. \lstinline$sol$), with attribute \lstinline$sol.t$ as the independent variable vector, and a \lstinline$sol.y$ the solution vector (or matrix for systems of ODEs).
     \end{itemize}
   \end{enumerate}
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Solving ODEs in Matlab: example 1}
+  \frametitle{Solving ODEs in Python: example 1}
   We solve the system: $\displaystyle \frac{dx}{dt} = -k_1 x + k_2, k_1 = 0.2, k_2=2.5$
   \begin{itemize}
-    \item Create an anonymous function handle:
+    \item Create a lambda function:
     \begin{lstlisting}
->> myEqn = @(t,x) (-0.2*x + 2.5)
+dydx = lambda x,y: (-0.2*y + 2.5)
     \end{lstlisting}
-    \item Solve with a call to \lstinline$ode45(function_handle, timespan, initial_condition)$:
+    \item Solve with a call to \lstinline$solve_ivp(function, timespan, initial_condition)$:
     \begin{lstlisting}
->> ode45(myEqn, [0 40], 0);
+from scipy.integrate import solve_ivp
+sol = solve_ivp(dydx, tspan, y0)
     \end{lstlisting}
-    \item By omitting the output of this function, the graph is automatically drawn.
-  \end{itemize}
-  \vspace*{1ex}
-  \centering\begin{tikzpicture}
-    \begin{axis}[%every axis/.append style={font=\footnotesize},
-      width=0.7\textwidth, height=4cm,     % size of the image
-      grid = major,grid style={dashed, gray!30},
-      axis background/.style={fill=white},
-      axis x line=middle,axis y line=middle,ylabel=$x$,xlabel=$t$]
+    \item Draw the results by calling the relevant Matplotlib commands:
+    \begin{columns}
+      \column{0.3\textwidth}
+      \begin{lstlisting}
+import matplotlib.pyplot as plt
+plt.plot(sol.t, sol.y[0,:])
+plt.show()
+      \end{lstlisting}
+      \column{0.45\textwidth}
+      \vspace*{2ex}\\
 
-      \addplot[graph,mark=x] table []{data/ODE_matlabsolve_single.dat};  
-      \addlegendentry{$x_1$}
-    %  \addlegendentry{$x_2$}
-    \end{axis}
-  \end{tikzpicture}
-\vfill
+      \begin{tikzpicture}
+        \begin{axis}[%every axis/.append style={font=\footnotesize},
+          width=0.95\columnwidth, height=4cm,     % size of the image
+          grid = major,grid style={dashed, gray!30},
+          axis background/.style={fill=white},
+          axis x line=middle,axis y line=middle,ylabel=$y$,xlabel=$x$]
+          
+          \addplot[graph,mark=x] table []{data/ODE_matlabsolve_single.dat};  
+          \addlegendentry{$\frac{dy}{dx}$}
+        \end{axis}
+      \end{tikzpicture}
+      % \vfill
+    \end{columns}
+  \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Solving ODEs in Matlab: example 2}
+  \frametitle{Solving ODEs in Python: example 2}
   We solve the system: $\displaystyle \frac{dx}{dt} = \begin{cases}
     -\frac{k_1}{x^2} \quad\ \quad t \leq 10\\
     \frac{k_2}{x} - \frac{k_1}{x^2} \quad  t > 10\\
  \end{cases}\, \text{with }\, k_1 = 0.5,\, k_2 = 1,\, x(0) = 2$
  \vspace*{1ex}
   \begin{block}{Create an ODE function}
-    \begin{lstlisting}[backgroundcolor=]function [dxdt] = myEqnFunction(t,x)
-function [dxdt] = myEqnFunction(t,x)
-k1 = 0.5;
-k2 = 1;
-dxdt = (t>10)*k2/x - k1/x^2;
-\end{lstlisting}
+    \begin{lstlisting}
+def myEqnFunction(t,x):
+    k1 = 0.5;
+    k2 = 1;
+    dxdt = int(t>10)*k2/x - k1/x**2;
+    return dxdt
+    \end{lstlisting}
   \end{block}
   \pause
   \begin{block}{Create a solution script}
     \begin{lstlisting}[backgroundcolor=]x_init = 2;         % Initial condition
-tspan = [0 20];     % Time span
-x_init = 2;          % Initial condition
-options = odeset('RelTol',1e-8,'AbsTol',1e-8);
-[t,x] = ode45(@myEqnFunction,tspan,x_init,options);\end{lstlisting}
+tspan = [0, 20]
+x_init = [2]
+sol = solve_ivp(myEqnFunction, tspan, x_init, rtol=1e-8, atol=1e-6)
+    \end{lstlisting}
   \end{block}
 \vfill
 \end{frame}
 
 {\nologo
 \begin{frame}[fragile]
-  \frametitle{Solving ODEs in Matlab: example 2}
+  \frametitle{Solving ODEs in Python: example 2}
   Plot the solution:
   \begin{lstlisting}
-plot(t,x,'r-x')
+plt.plot(sol.t, sol.y[0,:],'r-x')
+plt.grid()
+plt.show()
   \end{lstlisting}
   \pause
   \begin{center}
@@ -1205,39 +1290,38 @@ plot(t,x,'r-x')
 }
 
 \begin{frame}[fragile]
-  \frametitle{Solving ODEs in Matlab: example}
-  A few notes on working with \lstinline$ode45$ and other solvers. If we want to give additional arguments (e.g. \lstinline$k1$ and \lstinline$k2$) to our ODE function, we can list them in the function line:
+  \frametitle{Solving ODEs in Python: example}
+  A few notes on working with \lstinline$scipy.integrate.solve_ivp$ and other ODE solvers. If we want to give additional arguments (e.g. \lstinline$k1$ and \lstinline$k2$) to our ODE function, we can list them in the function line:
   \begin{lstlisting}
-function [dxdt] = myEqn(t,x,k1,k2)
+func = lambda t,x,k1,k2: k1*x+k2
+# or
+def func(t,x,k1,k2):
+    return k1*x+k2
   \end{lstlisting}
-  The additional arguments can now be set in the solver script by \emph{adding them after the options}:
+  The additional arguments can now be set in the solver script by \emph{adding them as \lstinline$args$ list}:
   \begin{lstlisting}
-[t,x] = ode45(@myEqn,tspan,x_0,options,k1,k2);
+sol = solve_ivp(func,[0,5],[1],args=(k1, k2))
     \end{lstlisting}
   \pause
-  \begin{itemize}
-    \item Of course, in the solver script, the variables do not have to be called \lstinline$k1$ and \lstinline$k2$:
+   Of course, in the solver script, the variables do not have to be called \lstinline$k1$ and \lstinline$k2$:
       \begin{lstlisting}
-[t,x] = ode45(@myODE,tspan,x_0,options,q,u);
+sol = solve_ivp(func,[0,5],[1],args=(q, u))
     \end{lstlisting}
-    \item These variables may be of any type (vectors, matrix, struct). Especially a struct is useful to carry many values in 1 variable.
-  \end{itemize}
+   These variables may be of any type (scalar, vector, dictionary, list). For carrying over many variables, a dictionary is useful and descriptive.
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Solving systems of ODEs in Matlab: example}
-  You have noticed that the step size in $t$ varied. This is because we have given just the begin and end times of our time span:
+  \frametitle{Solving systems of ODEs in Python: example}
+  You have noticed that the step size in $t$ varies. This is because we have given just the begin and end times of our time span:
   \begin{lstlisting}
-tspan = [0 10];
+tspan = [0, 5];
   \end{lstlisting}
   \pause
-  You can also solve at specific steps, by supplying all steps explicitly, e.g.:
+  You can also obtain the solution at specific points, by supplying a list \lstinline$t_eval$:
   \begin{lstlisting}
-tspan = linspace(0,10,101); 
+sol = solve_ivp(func,tspan,[1],args=(some_k1, some_k2),t_eval=np.linspace(tspan[0],tspan[1],31))
     \end{lstlisting}
-  This example provides 101 explicit time steps between 0 and 10 seconds.
-  \vskip1em
-  Note that the results are interpolated to these data points afterwards; you do not influence the efficiency and accuracy of the solver algorithm this way!
+  This example provides 31 explicit time steps between 0 and 5 seconds. Note that the results are interpolated to these data points afterwards; you do not influence the efficiency and accuracy of the solver algorithm this way!
   \vfill
 \end{frame}
 
