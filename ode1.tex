@@ -1289,7 +1289,7 @@ plt.show()
 \end{frame}
 }
 
-\begin{frame}[fragile]
+\begin{frame}[label=ode_pass_arguments,fragile]
   \frametitle{Solving ODEs in Python: example}
   A few notes on working with \lstinline$scipy.integrate.solve_ivp$ and other ODE solvers. If we want to give additional arguments (e.g. \lstinline$k1$ and \lstinline$k2$) to our ODE function, we can list them in the function line:
   \begin{lstlisting}
