@@ -311,6 +311,7 @@ Conversion = 0.64075343
   \begin{itemize}
     \item Create an ODE function:
     \begin{lstlisting}
+# Example scipy solve_ivp/Example scipy solve_ivp vector.py
 def func(t, x, a, b):
     #output can be of list or np.array type:
     dxdt = np.zeros(2)
@@ -330,7 +331,7 @@ sol = solve_ivp(func, tspan, x_init, args=(-1,-2), rtol=1e-12)
 \vfill
 \end{frame}
 
-{\nologo
+% {\nologo
 \begin{frame}[fragile]
   \frametitle{Solving systems of ODEs in Python: example}
   Plot the solution (note: the solution is attribute \lstinline|sol.y|):
@@ -343,18 +344,18 @@ plt.plot(sol.t, sol.y[1], 'b-o', linewidth=2)
   \begin{center}
     \begin{tikzpicture}
       \begin{axis}[%every axis/.append style={font=\footnotesize},
-        width=\textwidth, height=7cm,     % size of the image
+        width=\textwidth, height=6cm,     % size of the image
         grid = major,grid style={dashed, gray!30},
         axis background/.style={fill=white},
         axis x line=middle,axis y line=middle,ylabel=$x$,xlabel=$t$]
 
-        \addplot[graph,mark=x] table []{data/ODE_matlabsolve1.dat};  \addlegendentry{$x_0$}
+        \addplot[graph,mark=x,draw=scharlaken] table []{data/ODE_matlabsolve1.dat};  \addlegendentry{$x_0$}
         \addplot[graph,mark=o,draw=tueblue,mark options={fill=white}] table []{data/ODE_matlabsolve2.dat};  \addlegendentry{$x_1$}
       \end{axis}
     \end{tikzpicture}
   \end{center}
 \end{frame}
-}
+% }
 
 \againframe{ode_pass_arguments}
 % \begin{frame}[fragile]
@@ -516,13 +517,13 @@ Backward Euler: always stable, even for $\Delta t > 100$ (but then not very accu
 
 \begin{frame}[fragile]
   \frametitle{Implicit methods in Python}
-  Matlab offers a solver that detects stiff systems, using \lstinline$method='LSODA'$. 
-  $$
+  SciPy offers a solver that detects stiff systems, using \lstinline$method='LSODA'$. 
+  \[
     \frac{dc_1}{dt} = 998c_1 + 1998c_2 \quad 
     \frac{dc_2}{dt} = -999c_1 -1999c_2,\, c_1(0) = 1,\, c_2(0) = 0
-  $$
+  \]%
   \begin{itemize}
-    \item Create the ode function
+    \item Create the ode function (see \lstinline$slide_example_solve_ivp_implicit.py$)
     \begin{lstlisting}
 function [dcdt] = stiff_ode(t,c)
 dcdt = zeros(2,1); % Pre-allocation
@@ -773,7 +774,7 @@ How to make a generic Backward Euler implementation? Recall the update formula:
 
 \end{frame}
 
-\begin{frame}[fragile]
+\begin{frame}[fragile,label=diffreactsystem]
   \frametitle{BVP: example in Python}
   We first program the system of ODEs in a separate function:
   \begin{align*}
@@ -781,9 +782,10 @@ How to make a generic Backward Euler implementation? Recall the update formula:
     \frac{dq}{dx} &= -k_Rc
   \end{align*}
   \begin{lstlisting}
-def diffReactSystem(x, y, **param):
+# slides_example_bvp_1.py
+def diffReactSystem(x, y, param):
     c, q = y
-    f = np.zeros(y.size)
+    f = np.zeros_like(y)
     f[0] = -q/param['Diff']
     f[1] = -param['kR']*c
     return f
@@ -794,76 +796,77 @@ def diffReactSystem(x, y, **param):
 
 \begin{frame}[fragile,label={diffReactODEtrial}]
   \frametitle{BVP: example in Python}
-  Let's first try to solve the ODE system using \lstinline$scipy.linalg.solve_ivp$:
+  Let's first try to solve the ODE system using \lstinline$scipy.integrate.solve_ivp$: 
   \begin{lstlisting}
+# slides_example_bvp_1.py
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
-from scipy.optimize import root_scalar
 
-def func(q0, **param):
-    sol = solve_ivp(lambda x, y: diffReactSystem(x, y, **param), [0, param['delta']], [param['cAiL'], q0])
-    return sol.y[0,-1]
+### Definition of diffReactSystem here (see slide (*@\ref{diffreactsystem} @*))
 
 # Set up parameters
-param = {'cAiL': 1.0, 'Diff':1e-8, 'kR': 10, 'delta': 1e-4, 'N': 100}
+q0 = 1e-3  # Initial guess flux@t=0
+param = {'cAiL': 1.0,'Diff':1e-8,'kR': 10,'delta': 1e-4,'N': 100}
 
-# Solve such that c(delta)=0:
-sol = root_scalar(lambda x: func(x, **param), method='brentq', bracket=[0,1], xtol=1e-15, rtol=1e-15)
-q0 = sol.root
-print(f"q0 = {q0}")
+# Solve ODE system
+sol = solve_ivp(lambda x, y: diffReactSystem(x, y, param), # ODE func with params
+                                      [0, param['delta']], # Time span
+                                      [param['cAiL'], q0]) # Initial conditions
 
-# Fill in found q0 in ode
-sol = solve_ivp(lambda x, y: dydx(x, y, **param),[0, param['delta']], [param['cAiL'], q0], t_eval = np.linspace(0, param['delta'], 101), dense_output=True)    
+fig,ax1 = plt.subplots()
+ax1.plot(sol.t,sol.y[0,:],'-b',label='Concentration $mol/m^3$')
+ax2 = ax1.twinx() # Create y-y axis
+ax2.plot(sol.t,sol.y[1,:],'-r',label='Flux $mol/m^2/s$')
+fig.legend(bbox_to_anchor=(0.5, 0.5))
+plt.show()   
   \end{lstlisting}
 \end{frame}
 
-{\nologo
-\begin{frame}[fragile]
+\begin{frame}[label=diffreactfitcrit,fragile]
   \frametitle{BVP: example in Python}
   That seems to work! Now we want to fit the value for $q$ at $x=0$ (defined below as \lstinline$bcq$), such that the concentration at $x=\delta$ equals zero. We create a function with the output defined as the deviation from the target value:
   \begin{lstlisting}
-function f = diffReactCrit(bcq, ps)
-% Solve ODE using fitting parameter bcq (boundary condition for q),
-% other parameters are defined in ps
-[t,y] = ode45(@diffReactSystem, [0 ps.delta], [ps.C_a_L bcq],[],ps);
-% Extract concentration and flux for clarity
-c = y(:,1);
-q = y(:,2);
-% We subtract the desired value from the concentration at x=delta (0 in this case)
-f = c(end) - 0; 
-end
+# slides_example_bvp_2.py
+def diffReactFitCriterium(bcq, param):
+    # Solve the ODE system using changeable parameter bcq 
+    # (boundary condition for q), other parameters are defined in param
+    sol = solve_ivp(lambda x, y: diffReactSystem(x, y, param), [0, param['delta']], [param['cAiL'], bcq])
+    # Return the last value of the concentration (column 0 in y) at x=delta (hence [-1])
+    return sol.y[0,-1] - 0
   \end{lstlisting}
   \pause
   Note the following:
   \begin{itemize}
     \item We use the interval $0\leq x \leq \delta$
-    \item Boundary conditions are given as: $c(x=0)=1$ and $q(x=0)=$ \lstinline$bcq$, which is given as an argument to the function (i.e. changable from `outside'!)
-    \item The function returns \lstinline$f$, the difference between the computed and desired concentration at $x=\delta$.
+    \item Boundary conditions are given as: $c(x=0)=1$ and $q(x=0)=$ \lstinline$bcq$, which is given as a separate argument to the function (i.e. changable from `outside'!)
+    \item The function returns the concentration at $x=\delta$
   \end{itemize}
 \end{frame}
-}
 
 \begin{frame}[fragile]
   \frametitle{BVP: example in Python}
-  Finally, we should solve the system so that we obtain the right boundary condition $q=$ \lstinline$bcq$ such that $c(x=\delta)=0$. We can use the built-in function \lstinline$fzero$ to do this:
+  Finally, we should solve the system so that we obtain the right boundary condition $q=$ \lstinline$bcq$ such that $c(x=\delta)=0$. We can use the \lstinline$scipy.optimize.root_scalar$ function to do this. Extend the script from slide~\ref{diffReactODEtrial} by:
   \begin{lstlisting}
-%% Set up parameters
-ps.D = 1e-8;     % Diffusion constant
-ps.kR = 10;      % Reaction rate
-ps.delta = 1e-4; % Film thickness
-ps.C_a_L = 1;    % Liquid side interface concentration
-ps.q0 = 2e-4;    % Initial guess for q(x=0)
+# slides_example_bvp_2.py
+from scipy.optimize import root_scalar
 
-%% Fit boundary condition for q on x=0 such that c(end)=0
-fitted_q = fzero(@diffReactCrit,ps.q0,[],ps)
+### Define diffReactSystem, diffReactFitCriterium, parameters
 
-%% Solve ODE once more such that we can plot the final data
-[t,y] = ode45(@diffReactSystem, [0 ps.delta], [ps.C_a_L fitted_q],[],ps);
+# Solve such that c(delta)=0:
+sol = root_scalar(lambda x: diffReactFitCriterium(x, param), 
+                  method='brentq',bracket=[0,1], xtol=1e-15, rtol=1e-15)
+q0 = sol.root
+print(f"{q0 = }")
+
+# Solve ODE once more such that we can plot the final data
+sol = solve_ivp(lambda x, y: diffReactSystem(x, y,param), 
+                [0, param['delta']], [param['cAiL'], q0], 
+                t_eval = np.linspace(0, param['delta'], 101))
   \end{lstlisting}
   Postprocessing of the data can be done similar to the example in slide~\ref{diffReactODEtrial}.
 %   \vskip1em
-%   \tikz \node[emphblock,text width=\textwidth] {Compare the analytical solution: \\
+%   \tikz \node[emphblock,text width=\textwidth]   {Compare the analytical solution: \\
 %   $\displaystyle q = k_L E_A C_{A,i,L} \quad$ with \begin{minipage}{0.7\textwidth}
 %       \begin{align*}
 %   E_A &= \frac{\text{Ha}}{\tanh \text{Ha}} &\quad \text{(Activation energy)} \\
