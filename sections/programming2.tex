@@ -74,7 +74,7 @@ else:
  \pause
  \begin{columns}[T]
     \column{0.5\textwidth}
-     \begin{lstlisting}[language=Python]
+     \begin{lstlisting}[language=Python,basicstyle=\small]
 s = checksc()
 if s:
 a = cb()
@@ -89,7 +89,7 @@ brn()
 gtbs()
  \end{lstlisting}
     \column{0.5\textwidth}
-     \begin{lstlisting}[language=Python]
+     \begin{lstlisting}[language=Python,basicstyle=\small]
 s = checksc()
 if s:
     a = cb()
@@ -111,7 +111,7 @@ else:
  Making use of descriptive variable and function names enhances the readability and understanding of the code. 
  \begin{columns}[T]
     \column{0.5\textwidth}
-\begin{lstlisting}[language=Python]
+\begin{lstlisting}[language=Python, basicstyle=\scriptsize]
 s = checksc()
 if s:
     a = cb()
@@ -126,7 +126,7 @@ else:
     gtbs()
  \end{lstlisting}
     \column{0.5\textwidth}
-     \begin{lstlisting}[language=Python]
+     \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
 isAvailable = checkSchedule()
 if isAvailable:
     bookCount = countBooks()
@@ -148,7 +148,7 @@ else:
  Magic numbers are constant values without a name, which can reduce code readability. Replacing them with named constants can enhance the understanding of the code.
  \begin{columns}[T]
     \column{0.5\textwidth}
-     \begin{lstlisting}[language=Python,basicstyle=\scriptsize\ttfamily]
+     \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
 isAvailable = checkSchedule()
 if isAvailable:
     bookCount = countBooks()
@@ -163,7 +163,7 @@ else:
     visitBookStore()
  \end{lstlisting}
     \column{0.5\textwidth}
-     \begin{lstlisting}[language=Python,basicstyle=\scriptsize\ttfamily,emph={MIN_BOOKS_REQUIRED,MAX_SHELF_SPACE},emphstyle=\color{red}]
+     \begin{lstlisting}[language=Python,basicstyle=\scriptsize,emph={MIN_BOOKS_REQUIRED,MAX_SHELF_SPACE},emphstyle=\color{red}]
 MAX_SHELF_SPACE = 5
 MIN_BOOKS_REQUIRED = 5
 
@@ -243,28 +243,28 @@ else:
   \begin{itemize}[<+->]
    \item Useless:
    \begin{lstlisting}
- # Start program 
+# Start program 
    \end{lstlisting}
    \item Obvious:
    \begin{lstlisting}
- if (a > 5)   # Check if a is greater than 5
-     ... 
+if (a > 5)   # Check if a is greater than 5
+    ... 
  \end{lstlisting}
    \item Too much about the life:
    \begin{lstlisting}[basicstyle=\tiny\ttfamily]
- # Well... I do not know how to explain what is going on
- # in the snippet below. I tried to code in the night 
- # with some booze and it worked then, but now I have a 
- # strong hangover and some parameters still need to be
- # worked out...
+# Well... I do not know how to explain what is going on
+# in the snippet below. I tried to code in the night 
+# with some booze and it worked then, but now I have a 
+# strong hangover and some parameters still need to be
+# worked out...
    \end{lstlisting}
  
    \item ...
    \begin{lstlisting}[basicstyle=\tiny\ttfamily]
- # You may think that this function is obsolete, and doesn't seem to
- # do anything. And you would be correct. But when we remove this 
- # function for some reason the whole program crashes and we can't 
- # figure out why, so here it will stay.
+# You may think that this function is obsolete, and doesn't seem to
+# do anything. And you would be correct. But when we remove this 
+# function for some reason the whole program crashes and we can't 
+# figure out why, so here it will stay.
    \end{lstlisting}
   \end{itemize}
  \end{frame}
@@ -273,21 +273,21 @@ else:
   \frametitle{Adding comments to our Python program}
   \centering\tikz{\node[emphblock, text width=0.7\textwidth]{Use comments to document design and purpose (functionality), not mechanics (implementation).};}
   \begin{lstlisting}
- IAmFree = checkSchedule()
- if IAmFree:
-     # Count books and amount of free space on a shelf. 
-     # If minimum number of books I need is less than a 
-     # shelf capacity, go shopping and buy additional 
-     # literature. If the amount of books after the 
-     # shopping is too big, use boxes to store them.
-     books = countBooks()
-     shelfSize = countFreeSpaceShelf()
-     
-     ...
-     
- else:
-     burnBooks()
-     goToBookStore()
+IAmFree = checkSchedule()
+if IAmFree:
+    # Count books and amount of free space on a shelf. 
+    # If minimum number of books I need is less than a 
+    # shelf capacity, go shopping and buy additional 
+    # literature. If the amount of books after the 
+    # shopping is too big, use boxes to store them.
+    books = countBooks()
+    shelfSize = countFreeSpaceShelf()
+    
+    ...
+    
+else:
+    burnBooks()
+    goToBookStore()
  \end{lstlisting}
  \end{frame}
  
@@ -331,14 +331,14 @@ Funny thing is: This list does not mention that the program should be actually w
   Don't use meaningless variable or function names. Rule of thumb: use verbs for functions and nouns for variables.
   \vspace*{2em}
   \begin{lstlisting}[language=Python]
-   # stupid names
-   x = 5;
-   xx = myfunction(x);
-   
-   # proper names
-   number_dams = 6;
-   beaver_workforce = allocate_beavers();
-   dams = build_dams(beaver_workforce, number_dams);
+# stupid names
+x = 5;
+xx = myfunction(x);
+
+# proper names
+number_dams = 6;
+beaver_workforce = allocate_beavers();
+dams = build_dams(beaver_workforce, number_dams);
   \end{lstlisting}
 \end{frame}
 
@@ -416,7 +416,9 @@ print(f'Execution time: {end_time - start_time} seconds')
 \begin{frame}[fragile]
   \frametitle{Structural}
     Write code as though it were paragraphs in a story.
-    \begin{lstlisting}[language=Python]
+    \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
+from dependencies import * # importing all dependencies
+
 # Step 0: Define variables
 n_steps = 10000  # number of steps
 n_walks = 1000  # number of random walk samples
@@ -494,7 +496,7 @@ def f(a, b=None):
     Properly document your code. Write your comments in a clear and concise fashion. Help your future self: Write clear and concise documentation.
     \begin{columns}
     \column{0.6\textwidth}
-    \begin{lstlisting}[language=Python]
+    \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
 def f(a, b=None):
     """
     Add two values together.
@@ -737,7 +739,7 @@ A debugger can help you to:
     $F_n = F_{n-1} + F_{n-2}$ with $F_1 = 1$ and $F_2 = 1$
     \pause
     \lstset{numbers=left}
-  \begin{lstlisting}[language=Python]
+  \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
 def fibonacci_recursive(N):
     """
     Prints out the Nth Fibonacci number to the screen.
@@ -784,20 +786,24 @@ for i in range(1, max_N+1):
   \end{onlyenv}
   \mode<all>
   \begin{onlyenv}<2->
-    \begin{lstlisting}
-% Script to call fibonacci recursive for different values and record the
-% time to process
+    \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
+# Script to call fibonacci recursive for different values and record the
+# time to process
 
-max_N = 32;
+import time
+import matplotlib.pyplot as plt
+max_N = 32
+recorded_time = []
 
-for i = 1:max_N
-    tic
-    i
-    fibonacci_recursive(i);
-    recorded_time(i) = toc;
-end
+for i in range(1, max_N+1):
+    start_time = time.time()
+    print(i)
+    fibonacci_recursive(i)
+    end_time = time.time()
+    recorded_time.append(end_time - start_time)
 
-plot(1:max_N,recorded_time)
+plt.plot(range(1, max_N+1), recorded_time)
+plt.show()
         \end{lstlisting}
       \end{onlyenv}
       \uncover<3>{
@@ -812,7 +818,7 @@ plot(1:max_N,recorded_time)
 \begin{frame}[fragile]
   \frametitle{Advanced plotting: Animating plots}
   The \texttt{fig.canvas.draw()} and \texttt{fig.canvas.flush\_events()} methods hold the execution of your program until the graph is updated, facilitating a live view of the simulation result.
-  \begin{lstlisting}[language=Python]
+  \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
 import numpy as np
 import matplotlib.pyplot as plt
 

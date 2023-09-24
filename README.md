@@ -27,14 +27,15 @@ Example:
  - [ ] ode2
  - [ ] optimization
  - [ ] pde
- - [ ] programming1
+ - [x] programming1
  - [ ] programming2
  - [ ] programming2_old
 
 ## Todo (by priority)
 1. Test all the scripts
 2. Fix the issue with the table of contents not showing
-3. Replace all the matlab generated images
-4. Add animations to appropriate slides
-5. Place important scripts in a specific folder instead of in text
-6. Make rendering work with old make-file
+3. Correct debugger information in programming2? (Ask ivo about which IDE)
+4. Replace all the matlab generated images
+5. Add animations to appropriate slides
+6. Place important scripts in a specific folder instead of in text
+7. Make rendering work with old make-file

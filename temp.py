@@ -1,12 +1,19 @@
-2 + 3        # Some simple calculations
-2 * 3
-2 * 3**2     # Powers are done using ** (*@ \pause @*)
-a = 2        # Storing values into the workspace
-b = 3
-c = (2 * 3)**2  # Parentheses set priority
-8 / a - b  #(*@ \pause @*)
-import math  # Mathematical functions can be used 
-math.sin(a)  
-math.sin(0.5 * math.pi)  # math.pi is an internal Python variable
-import cmath  # for working with complex numbers
-cmath.sqrt(-1)  # ... as are imaginary numbers    
+import numpy as np
+import matplotlib.pyplot as plt
+
+x = np.linspace(0, 4*np.pi, 100)
+y = np.sin(x)
+
+fig, ax = plt.subplots()
+line, = ax.plot(x, y, '-')
+
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_title('Animating a Sine Wave')
+plt.show(block=False)
+
+for i in range(len(x)):
+    line.set_data(x[:i+1], y[:i+1])
+    fig.canvas.draw()
+    fig.canvas.flush_events()
+    plt.pause(0.01)
