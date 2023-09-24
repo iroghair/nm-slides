@@ -1,1 +1,1 @@
-temp = A(column,:);
+temp = A[column,:]

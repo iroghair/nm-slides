@@ -1,2 +1,2 @@
-A(column,:) = A(index,:);
-A(index,:) = temp;
+A[column,:] = A[index,:]
+A[index,:] = temp

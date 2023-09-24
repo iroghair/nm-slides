@@ -1,0 +1,65 @@
+\input{preamble/packages}
+
+% Presentation settings
+% \rowcolors[]{1}{maincolor!20}{maincolor!10}
+
+\pgfplotsset{compat=1.16}
+
+% \makeatletter
+% \@removefromreset{subsection}{section}
+% \makeatother
+% \setcounter{subsection}{1}
+
+% For convenient figure inclusion
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
+\graphicspath{ {figures/}}
+
+% Create a frame number at the bottom, and remove the section numbers from the table of contents
+\setbeamertemplate{footline}[frame number]
+
+\newenvironment{hints}
+{
+  \tikz{ \draw[line cap=rect] (0,0) -- (\linewidth-\pgflinewidth,0); }
+  % \footnotesize\begin{color}{gray}
+    }
+    { 
+      % \end{color}
+\tikz{ \draw[line cap=rect] (0,0) -- (\linewidth-\pgflinewidth,0); }
+}
+    
+% Set up lectures
+\AtBeginLecture{
+  % Create a part to restart the smoothbars (circles on top)
+  \part{\insertlecture}
+  % Insert the titlepage (title and subtitle should be given before the new lecture starts)
+  \frame[plain]{
+    \titlepage
+  }
+}
+        
+\sisetup{detect-all}
+
+\input{preamble/customcommands}
+
+\input{preamble/colors}
+
+\input{preamble/tikzstyles}
+
+\input{preamble/codestyle}
+        
+\setbeamertemplate{section in toc}
+{\leavevmode\leftskip=2ex%
+  \llap{%
+    \usebeamerfont*{section number projected}%
+    \usebeamercolor{section number projected}%
+    \begin{pgfpicture}{-1ex}{0ex}{1ex}{2ex}
+      \color{bg}
+      \pgfpathcircle{\pgfpoint{0pt}{.75ex}}{1ex}
+      \pgfusepath{fill}
+      % \pgftext[base]{\color{fg}\inserttocsectionnumber}
+    \end{pgfpicture}\kern1.25ex%
+  }%
+  \inserttocsection\par}
+\setbeamertemplate{subsection in toc}
+  {\leavevmode\leftskip=2em$\bullet$\hskip1em\inserttocsubsection\par}
+\renewcommand*\familydefault{\sfdefault}  % Use sans font
