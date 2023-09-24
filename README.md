@@ -13,3 +13,28 @@ Where the filename does not have to contain the extension. This will automatical
 Example:
 
 `python -m render introduction`
+
+## Completed sections:
+ - [ ] integration
+ - [ ] interpolation
+ - [x] introduction
+ - [ ] linear1
+ - [ ] linear2
+ - [ ] linear3
+ - [ ] nonlin
+ - [ ] numericalerrors
+ - [ ] ode1
+ - [ ] ode2
+ - [ ] optimization
+ - [ ] pde
+ - [ ] programming1
+ - [ ] programming2
+ - [ ] programming2_old
+
+## Todo (by priority)
+1. Test all the scripts
+2. Fix the issue with the table of contents not showing
+3. Replace all the matlab generated images
+4. Add animations to appropriate slides
+5. Place important scripts in a specific folder instead of in text
+6. Make rendering work with old make-file
