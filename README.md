@@ -9,3 +9,7 @@ To compile simply use:
 `python render.py <filename>`
 
 Where the filename does not have to contain the extension. This will automatically open the resulting slide as well.
+
+Example:
+
+`python -m render introduction`
