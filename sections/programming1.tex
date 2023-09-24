@@ -508,17 +508,15 @@ True
 
 \begin{frame}[fragile]
   \frametitle{Loops in Python (2)}
-  The `while` loop keeps going as long as a condition is `True`:
+  The `while` loop keeps going as long as a condition is \lstinline{True}:
   \begin{lstlisting}[language=Python,numbers=none]
 >> i = 0
->> while i < 5:
+>> while i < 3:
 >>     print(i)
 >>     i += 1
 0
 1
 2
-3
-4
   \end{lstlisting}\pause
   Use `break` to exit a loop prematurely, and `continue` to skip to the next iteration:
   \begin{lstlisting}[language=Python,numbers=none]
@@ -536,7 +534,9 @@ True
  \frametitle{Practice}
  Given a list
  
- \lstinline$my_list = [1, 3, 7, 8, 9]$
+ \[
+  \texttt{my\_list} = [1, 3, 7, 8, 9] 
+ \]
 
  \begin{itemize}
   \item Use a for loop to print each element of the list.\pause
@@ -549,15 +549,15 @@ True
 \subsection*{Control Statements}
 \begin{frame}[fragile]
   \frametitle{Control Statements in Python (1)}
-  The `if` statement is used to execute a block of code if a condition is true:
-  \begin{lstlisting}[language=Python]
+  The \lstinline{if} statement is used to execute a block of code if a condition is true:
+  \begin{lstlisting}[language=Python, numbers=none]
 >> x = 5
 >> if x > 0:
 >>     print("x is positive")
 x is positive
   \end{lstlisting}\pause
-  Use `elif` to specify additional conditions, and `else` to define what to do if no conditions are met:
-  \begin{lstlisting}[language=Python]
+  Use \lstinline{elif} to specify additional conditions, and \lstinline{else} to define what to do if no conditions are met:
+  \begin{lstlisting}[language=Python, numbers=none]
 >> if x > 10:
 >>     print("x is greater than 10")
 >> elif x == 10:
@@ -571,7 +571,7 @@ x is less than 10
 \begin{frame}[fragile]
   \frametitle{Control Statements in Python (2)}
   Nesting allows for more complex conditionals:
-  \begin{lstlisting}[language=Python]
+  \begin{lstlisting}[language=Python, numbers=none]
 >> if x > 0:
 >>     if x % 2 == 0:
 >>         print("x is positive and even")
@@ -581,8 +581,8 @@ x is less than 10
 >>     print("x is non-positive")
 x is positive but odd
   \end{lstlisting}\pause
-  The `in` keyword can be used to check membership in a sequence:
-  \begin{lstlisting}[language=Python]
+  The \lstinline{in} keyword can be used to check membership in a sequence:
+  \begin{lstlisting}[language=Python, numbers=none]
 >> my_list = [1, 2, 3, 4, 5]
 >> if 3 in my_list:
 >>     print("3 is in the list")
@@ -597,8 +597,8 @@ x is positive but odd
     \text{my\_list = [1, 3, 7, 8, 9]}
  \]
  \begin{itemize}
-  \item Use an `if` statement to check if 5 is in `my\_list`, and print a message indicating the result.\pause
-  \item Write a nested `if` statement that checks if `my\_list[2]` is even or odd, and prints a corresponding message.
+  \item Use an \lstinline{if} statement to check if 5 is in \lstinline{my_list}, and print a message indicating the result.\pause
+  \item Write a nested \lstinline{if} statement that checks if \lstinline{my_list[2]} is even or odd, and prints a corresponding message.
  \end{itemize}
 \end{frame}
 
@@ -606,23 +606,23 @@ x is positive but odd
 \subsection*{Functions}
 \begin{frame}[fragile]
   \frametitle{Functions in Python (1)}
-  Functions are defined using the `def` keyword followed by the function name and a list of parameters in parentheses. The function body starts after the colon:
-  \begin{lstlisting}[language=Python]
+  Functions are defined using the \lstinline{def} keyword followed by the function name and a list of parameters in parentheses. The function body starts after the colon:
+  \begin{lstlisting}[language=Python, numbers=none]
 >> def greet(name):
 >>     print(f"Hello, {name}!")
   \end{lstlisting}\pause
   Call the function with the necessary arguments:
-  \begin{lstlisting}[language=Python]
+  \begin{lstlisting}[language=Python, numbers=none]
 >> greet("Alice")
 Hello, Alice!
   \end{lstlisting}\pause
-  Functions can return values using the `return` keyword:
-  \begin{lstlisting}[language=Python]
+  Functions can return values using the stinline{return} keyword:
+  \begin{lstlisting}[language=Python, numbers=none]
 >> def add(a, b):
 >>     return a + b
   \end{lstlisting}\pause
   Capture the return value in a variable:
-  \begin{lstlisting}[language=Python]
+  \begin{lstlisting}[language=Python, numbers=none]
 >> result = add(2, 3)
 >> print(result)
 5
@@ -632,41 +632,66 @@ Hello, Alice!
 \begin{frame}[fragile]
   \frametitle{Functions in Python (2)}
   Default argument values can be specified, making the argument optional:
-  \begin{lstlisting}[language=Python]
+  \begin{lstlisting}[language=Python, numbers=none]
 >> def greet(name, greeting="Hello"):
 >>     print(f"{greeting}, {name}!")
   \end{lstlisting}\pause
   Call the function with or without the optional argument:
-  \begin{lstlisting}[language=Python]
+  \begin{lstlisting}[language=Python, numbers=none]
 >> greet("Bob")
 Hello, Bob!
 >> greet("Bob", "Good morning")
 Good morning, Bob!
   \end{lstlisting}\pause
   Python supports functions with a variable number of arguments:
-  \begin{lstlisting}[language=Python]
+  \begin{lstlisting}[language=Python, numbers=none]
 >> def my_function(*args):
->>     for arg in args:
->>         print(arg)
+>>     print(args)
   \end{lstlisting}\pause
   Call the function with a varying number of arguments:
-  \begin{lstlisting}[language=Python]
+  \begin{lstlisting}[language=Python, numbers=none]
 >> my_function(1, 2, 3, "Hello")
-1
-2
-3
-Hello
+(1, 2, 3, "Hello")
   \end{lstlisting}
 \end{frame}
 
+
 \begin{frame}[fragile]
- \frametitle{Practice}
- \begin{itemize}
-  \item Define a function that takes a list of numbers as its argument and returns the maximum number in the list.\pause
-  \item Modify the function to return both the maximum and minimum numbers in the list (as a tuple).\pause
-  \item Create a function that takes a string as its argument and returns the string reversed.
- \end{itemize}
-\end{frame}
+  \frametitle{Practice}
+  \begin{columns}[T]
+   \begin{column}{0.5\textwidth}
+    \begin{enumerate}
+     \item Define a function that takes a list of numbers as its argument and returns the maximum number in the list.\pause
+     \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
+def max_num(lst):
+    return max(lst)
+     \end{lstlisting}
+    \end{enumerate}
+    \pause
+    \begin{enumerate}
+       \setcounter{enumi}{1}
+     \item Modify the function to return both the maximum and minimum numbers in the list (as a tuple).\pause
+     \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
+def max_min_num(lst):
+    return max(lst), min(lst)
+     \end{lstlisting}
+    \end{enumerate}
+   \end{column}
+   \pause
+   \begin{column}{0.5\textwidth}
+    \begin{enumerate}
+       \setcounter{enumi}{2}
+     \item Create a function that takes a string as its argument and returns the string reversed.\pause
+     \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
+def reverse_str(s):
+    return s[::-1]
+     \end{lstlisting}
+    \end{enumerate}
+   \end{column}
+  \end{columns}
+ \end{frame}
+
+ 
 
 %% SCOPE
 \begin{frame}
@@ -686,62 +711,104 @@ Hello
 
 \begin{frame}[fragile]
   \frametitle{Examples Variable Scope}
-
-  \begin{itemize}
-    \item \textbf{Local Scope}:
-    \begin{lstlisting}[language=Python]
+  \begin{columns}[T]
+  
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item \textbf{Local Scope}:
+        \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
 def my_func():
     local_var = 100  # Local scope
     print(local_var)
-    \end{lstlisting}
-    
-    \item \textbf{Enclosing Scope}:
-    \begin{lstlisting}[language=Python]
+        \end{lstlisting}
+
+        \item \textbf{Enclosing Scope}:
+        \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
 def outer_func():
     outer_var = 200  # Enclosing scope
 
     def inner_func():
         print(outer_var)
-    
-    inner_func()
-    \end{lstlisting}
 
-    \item \textbf{Global Scope}:
-    \begin{lstlisting}[language=Python]
+    inner_func()
+        \end{lstlisting}
+      \end{itemize}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item \textbf{Global Scope}:
+        \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
 global_var = 300  # Global scope
 
 def another_func():
     print(global_var)
-    \end{lstlisting}
-  \end{itemize}
+        \end{lstlisting}
+
+        \item \textbf{Built-in Scope}:
+        \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
+print(max, min, len, str, int, list)
+        \end{lstlisting}
+      \end{itemize}
+    \end{column}
+
+  \end{columns}
 \end{frame}
 
 
-\begin{frame}
+\begin{frame}[fragile]
   \frametitle{Exercise Variable Scope}
-  
-  \begin{enumerate}
-    \item Modify \texttt{my\_func} to print \texttt{global\_var} without passing it as a parameter.
-    \item Inside \texttt{inner\_func}, define a new variable \texttt{outer\_var} and assign it a different value. What will \texttt{outer\_func} print when called?
-  \end{enumerate}
+  \begin{columns}[T]
+
+    \begin{column}{0.5\textwidth}
+      \begin{enumerate}
+        \item Modify \texttt{my\_func} to print \texttt{global\_var} without passing it as a parameter.\pause
+        \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
+def my_func():
+    print(global_var)
+        \end{lstlisting}
+        You can print \texttt{global\_var} directly in \texttt{my\_func}, as global variables are accessible from local scopes.
+      \end{enumerate}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \begin{enumerate}
+        \setcounter{enumi}{1}
+        \item Inside \texttt{inner\_func}, define a new variable \texttt{outer\_var} and assign it a different value. What will \texttt{outer\_func} print when called? \pause
+        \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
+def outer_func():
+    outer_var = 200
+
+    def inner_func():
+        outer_var = 500
+        print(outer_var)
+
+    inner_func()
+        \end{lstlisting}
+        \texttt{outer\_func} will print \texttt{500}, the local \texttt{outer\_var} inside \texttt{inner\_func}.
+      \end{enumerate}
+    \end{column}
+
+  \end{columns}
 \end{frame}
+
 
 
 %% Modules
 \subsection*{Modules}
 \begin{frame}[fragile]
   \frametitle{Using Modules in Python (1)}
-  Modules are files containing Python code, used to organize functionalities and reuse code across projects. To use a module, it must first be imported using the `import` keyword. Here, we import the entire `math` module:
-  \begin{lstlisting}[language=Python]
+  Modules are files containing Python code, used to organize functionalities and reuse code across projects. To use a module, it must first be imported using the \lstinline{import} keyword. Here, we import the entire \lstinline{math} module:
+  \begin{lstlisting}[language=Python, numbers=none]
 >> import math
   \end{lstlisting}\pause
   Once imported, use the dot notation to access functions and variables defined in the module:
-  \begin{lstlisting}[language=Python]
+  \begin{lstlisting}[language=Python, numbers=none]
 >> math.sqrt(16)
 4.0
   \end{lstlisting}\pause
-  You can import specific attributes from a module using the `from ... import ...` syntax:
-  \begin{lstlisting}[language=Python]
+  You can import specific attributes from a module using the \lstinline{from ... import ...} syntax:
+  \begin{lstlisting}[language=Python, numbers=none]
 >> from math import sqrt
 >> sqrt(16)
 4.0
@@ -750,46 +817,72 @@ def another_func():
 
 \begin{frame}[fragile]
   \frametitle{Using Modules in Python (2)}
-  Alias module names using the `as` keyword to shorten module names and avoid naming conflicts:
-  \begin{lstlisting}[language=Python]
+  Alias module names using the \lstinline{as} keyword to shorten module names and avoid naming conflicts:
+  \begin{lstlisting}[language=Python, numbers=none]
 >> import numpy as np
   \end{lstlisting}\pause
-  To view the list of all functions and variables in a module, use the `dir()` function:
-  \begin{lstlisting}[language=Python]
+  To view the list of all functions and variables in a module, use the \lstinline{dir()} function:
+  \begin{lstlisting}[language=Python, numbers=none]
 >> import math
 >> dir(math)
   \end{lstlisting}\pause
-  Get help on how to use a module or a function using the `help()` function:
-  \begin{lstlisting}[language=Python]
+  Get help on how to use a module or a function using the \lstinline{help()} function:
+  \begin{lstlisting}[language=Python, numbers=none]
 >> help(math.sqrt)
   \end{lstlisting}
 \end{frame}
 
 \begin{frame}[fragile]
- \frametitle{Practice}
- \begin{itemize}
-  \item Import the `random` module and use a function from it to generate a random number.\pause
-  \item Import only the `pi` variable from the `math` module and print its value.\pause
-  \item Create an alias for a module you import and use a function from the aliased module.
- \end{itemize}
+  \frametitle{Practice}
+  \begin{columns}[T]
+
+    \begin{column}{0.5\textwidth}
+      \begin{enumerate}
+        \item Import the \lstinline{random} module and use a function from it to generate a random number.\pause
+        \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
+import random
+print(random.randint(1, 100))
+        \end{lstlisting}
+        The \lstinline{random.randint} function is used to generate a random number between 1 and 100.\pause
+      \end{enumerate}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \begin{enumerate}\setcounter{enumi}{1}
+        \item Import only the \lstinline{pi} variable from the \lstinline{math} module and print its value.\pause
+        \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
+from math import pi
+print(pi)
+        \end{lstlisting}
+        The \lstinline{pi} variable is imported from the \lstinline{math} module and its value is printed.
+        \item Create an alias for a module you import and use a function from the aliased module. \pause
+        \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
+import math as m
+print(m.sqrt(16))
+        \end{lstlisting}
+        The \lstinline{math} module is aliased as \lstinline{m} and the \lstinline{sqrt} function is used to find the square root of 16.
+      \end{enumerate}
+    \end{column}
+  \end{columns}
 \end{frame}
+
 
 %% NUMPY
 \subsection*{Introduction to NumPy}
 \begin{frame}[fragile]
   \frametitle{Introduction to NumPy (1)}
   NumPy is a powerful library for numerical computing in Python. It introduces the multidimensional array (ndarray) data structure which is central to numerical computing tasks. To start using NumPy, you need to import it first:
-  \begin{lstlisting}[language=Python]
+  \begin{lstlisting}[language=Python, numbers=none]
 >> import numpy as np
   \end{lstlisting}\pause
   Creating arrays from Python lists and accessing elements:
-  \begin{lstlisting}[language=Python]
+  \begin{lstlisting}[language=Python, numbers=none]
 >> arr = np.array([1, 2, 3, 4, 5])
 >> arr[0]
 1
   \end{lstlisting}\pause
   Create arrays with predetermined values:
-  \begin{lstlisting}[language=Python]
+  \begin{lstlisting}[language=Python, numbers=none]
 >> np.zeros(5)  # Creates an array of five zeros
 >> np.ones((3, 3))  # Creates a 3x3 array of ones
   \end{lstlisting}
@@ -798,17 +891,17 @@ def another_func():
 \begin{frame}[fragile]
   \frametitle{Introduction to NumPy (2)}
   Useful array creation functions:
-  \begin{lstlisting}[language=Python]
+  \begin{lstlisting}[language=Python, numbers=none]
 >> np.arange(0, 10, 2)  # Creates an array with values from 0 to 10, step 2
 >> np.linspace(0, 1, 5)  # Creates an array with 5 values evenly spaced between 0 and 1
   \end{lstlisting}\pause
   Array operations:
-  \begin{lstlisting}[language=Python]
+  \begin{lstlisting}[language=Python, numbers=none]
 >> arr * 2  # Multiplies every element by 2
 >> arr + np.array([5, 4, 3, 2, 1])  # Element-wise addition
   \end{lstlisting}\pause
   Inspecting your array:
-  \begin{lstlisting}[language=Python]
+  \begin{lstlisting}[language=Python, numbers=none]
 >> arr.shape  # Returns the dimensions of the array
 >> len(arr)  # Returns the size of the first dimension
   \end{lstlisting}
@@ -821,21 +914,21 @@ def another_func():
   NumPy provides a rich set of functions to perform mathematical operations on arrays. Let's explore some categories of these operations.\pause
 
   \textbf{Linear Algebra}:
-  \begin{lstlisting}[language=Python]
- >> np.dot(arr, arr)  # Dot product
- >> np.linalg.norm(arr)  # Euclidean norm (L2 norm)
+  \begin{lstlisting}[language=Python, numbers=none]
+>> np.dot(arr, arr)  # Dot product
+>> np.linalg.norm(arr)  # Euclidean norm (L2 norm)
   \end{lstlisting}\pause
 
   \textbf{Trigonometric Functions}:
-  \begin{lstlisting}[language=Python]
- >> np.sin(arr)  # Sine of each element
- >> np.cos(arr)  # Cosine of each element
+  \begin{lstlisting}[language=Python, numbers=none]
+>> np.sin(arr)  # Sine of each element
+>> np.cos(arr)  # Cosine of each element
   \end{lstlisting}
 
   \textbf{Statistical functions to analyze data}:
-  \begin{lstlisting}[language=Python]
- >> np.mean(arr)  # Mean value of the array elements
- >> np.std(arr)   # Standard deviation of the array elements
+  \begin{lstlisting}[language=Python, numbers=none]
+>> np.mean(arr)  # Mean value of the array elements
+>> np.std(arr)   # Standard deviation of the array elements
   \end{lstlisting}\pause
 \end{frame}
 
@@ -846,21 +939,21 @@ def another_func():
   \begin{tabular}{l|l}
   Function & Description \\
   \hline
-  np.array & Create a NumPy array \\
-  np.zeros & Create an array filled with zeros \\
-  np.ones & Create an array filled with ones \\
-  np.arange & Create an array with evenly spaced values \\
-  np.linspace & Create an array with a specified number of evenly spaced values \\
-  np.sin & Sine function \\
-  np.cos & Cosine function \\
-  np.tan & Tangent function \\
-  np.exp & Exponential function \\
-  np.log & Natural logarithm \\
-  np.sqrt & Square root function \\
-  np.dot & Dot product of two arrays \\
-  np.linalg.norm & Calculate the norm of an array \\
-  np.mean & Calculate the mean of an array \\
-  np.std & Calculate the standard deviation of an array \\
+  \lstinline$np.array$ & Create a NumPy array \\
+  \lstinline$np.zeros$ & Create an array filled with zeros \\
+  \lstinline$np.ones$ & Create an array filled with ones \\
+  \lstinline$np.arange$ & Create an array with evenly spaced values \\
+  \lstinline$np.linspace$ & Create an array with a specified number of evenly spaced values \\
+  \lstinline$np.sin$ & Sine function \\
+  \lstinline$np.cos$ & Cosine function \\
+  \lstinline$np.tan$ & Tangent function \\
+  \lstinline$np.exp$ & Exponential function \\
+  \lstinline$np.log$ & Natural logarithm \\
+  \lstinline$np.sqrt$ & Square root function \\
+  \lstinline$np.dot$ & Dot product of two arrays \\
+  \lstinline$np.linalgnorm$ & Calculate the norm of an array \\
+  \lstinline$np.mean$ & Calculate the mean of an array \\
+  \lstinline$np.std$ & Calculate the standard deviation of an array \\
   \end{tabular}
 \end{frame}
 
@@ -872,16 +965,16 @@ def another_func():
   In Python, NumPy ndarrays enable efficient operations on arrays, particularly mathematical operations associated with linear algebra. Let's look at how we can create and manipulate matrices using NumPy ndarrays.\pause
   
   Creating matrices (2D ndarrays):
-  \begin{lstlisting}[language=Python]
- >> import numpy as np
- >> matrix = np.array([[1, 2], 
-                       [3, 4]]) # Matrices are arrays of arrays(rows)
+  \begin{lstlisting}[language=Python, numbers=none]
+>> import numpy as np
+>> matrix = np.array([[1, 2], 
+                      [3, 4]]) # Matrices are arrays of arrays(rows)
   \end{lstlisting}\pause
 
   Saving and loading matrices:
-  \begin{lstlisting}[language=Python]
- >> np.save('my_matrix.npy', matrix)  # Save the matrix to a file
- >> loaded_matrix = np.load('my_matrix.npy')  # Load the matrix from a file
+  \begin{lstlisting}[language=Python, numbers=none]
+>> np.save('my_matrix.npy', matrix)  # Save the matrix to a file
+>> loaded_matrix = np.load('my_matrix.npy')  # Load the matrix from a file
   \end{lstlisting}
 \end{frame}
 
@@ -890,15 +983,15 @@ def another_func():
   NumPy offers a rich set of functions to perform various matrix operations, essential in linear algebra. Let's explore some of them.\pause
 
   Matrix Transposition and Inversion:
-  \begin{lstlisting}[language=Python]
- >> np.transpose(matrix)  # Find the transpose of the matrix
- >> np.linalg.inv(matrix)  # Find the inverse of the matrix
+  \begin{lstlisting}[language=Python, numbers=none]
+>> np.transpose(matrix)  # Find the transpose of the matrix
+>> np.linalg.inv(matrix)  # Find the inverse of the matrix
   \end{lstlisting}\pause
 
   Matrix Products and Dot Products:
-  \begin{lstlisting}[language=Python]
- >> np.dot(matrix, matrix)  # Find the dot product
- >> matrix @ matrix  # Alternative way to find the dot product
+  \begin{lstlisting}[language=Python, numbers=none]
+>> np.dot(matrix, matrix)  # Find the dot product
+>> matrix @ matrix  # Alternative way to find the dot product
   \end{lstlisting}
 \end{frame}
 
@@ -907,14 +1000,14 @@ def another_func():
   NumPy provides more advanced linear algebra operations that are fundamental in many scientific computations. Let’s delve into some of these.\pause
   
   Determinant and Rank of a Matrix:
-  \begin{lstlisting}[language=Python]
- >> np.linalg.det(matrix)  # Find the determinant of the matrix
- >> np.linalg.matrix_rank(matrix)  # Find the rank of the matrix
+  \begin{lstlisting}[language=Python, numbers=none]
+>> np.linalg.det(matrix)  # Find the determinant of the matrix
+>> np.linalg.matrix_rank(matrix)  # Find the rank of the matrix
   \end{lstlisting}\pause
   
   Eigenvalues and Eigenvectors:
-  \begin{lstlisting}[language=Python]
- >> np.linalg.eig(matrix)  # Find the eigenvalues and eigenvectors of the matrix
+  \begin{lstlisting}[language=Python, numbers=none]
+>> np.linalg.eig(matrix)  # Find the eigenvalues and eigenvectors of the matrix
   \end{lstlisting}
 \end{frame}
 
@@ -923,42 +1016,62 @@ def another_func():
 \subsection*{Plotting with Matplotlib}
 \begin{frame}[fragile]
   \frametitle{Introduction to Matplotlib (1)}
-  Matplotlib is a Python library used widely for creating static, animated, and interactive visualizations. To start, we first import the `pyplot` module from Matplotlib.\pause
+  Matplotlib is a Python library used widely for creating static, animated, and interactive visualizations. To start, we first import the \lstinline{pyplot} module from \lstinline{matplotlib}.\pause
   
-  \begin{lstlisting}[language=Python]
- >> import matplotlib.pyplot as plt
+  \begin{lstlisting}[language=Python, numbers=none]
+>> import matplotlib.pyplot as plt
   \end{lstlisting}\pause
   
-  Creating a simple line plot:
-  \begin{lstlisting}[language=Python]
- >> x = [1, 2, 3, 4, 5]
- >> y = [2, 4, 1, 3, 7]
- >> plt.plot(x, y)
- >> plt.show()
+  \begin{columns}[T]
+    \column{0.45\textwidth}
+    Creating a simple line plot:
+
+    \begin{lstlisting}[language=Python, numbers=none]
+>> x = [1, 2, 3, 4, 5]
+>> y = [2, 4, 1, 3, 7]
+>> plt.plot(x, y)
+>> plt.show()
   \end{lstlisting}
+    \column{0.45\textwidth}
+  Sample outcome:
+  
+  % \vspace{-0.25cm}
+  \includegraphics[width=0.7\textwidth]{intro_matplotlib.pdf}
+\end{columns}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Enhancing Plots in Matplotlib (2)}
+
+  \begin{columns}
+    \column{0.4\textwidth}
   Matplotlib offers various ways to enhance your plots, including adding labels, titles, and grids.\pause
-
-  \begin{lstlisting}[language=Python]
- >> plt.plot(x, y)
- >> plt.xlabel('X-axis label')
- >> plt.ylabel('Y-axis label')
- >> plt.title('Plot Title')
- >> plt.grid(True)
- >> plt.show()
+  \begin{lstlisting}[language=Python, numbers=none, basicstyle=\scriptsize]
+>> plt.plot(x, y)
+>> plt.xlabel('X-axis label')
+>> plt.ylabel('Y-axis label')
+>> plt.title('Plot Title')
+>> plt.grid(True)
+>> plt.show()
   \end{lstlisting}\pause
+   \column{0.5\textwidth}
+   \includegraphics[width=0.6\textwidth]{intro_matplotlib2.pdf}
+  \end{columns}
 
+  \begin{columns}
+    \column{0.4\textwidth}
   Creating scatter and bar plots:
-  \begin{lstlisting}[language=Python]
- >> plt.scatter(x, y, color='red')
- >> plt.show()
- 
- >> plt.bar(x, y, color='green')
- >> plt.show()
+  \begin{lstlisting}[language=Python, numbers=none, basicstyle=\scriptsize]
+>> plt.scatter(x, y, color='red')
+>> plt.show()
+
+>> plt.bar(x, y, color='green')
+>> plt.show()
   \end{lstlisting}
+  \column{0.5\textwidth}
+  \includegraphics[width=0.4\textwidth]{intro_matplotlib3.pdf}
+  \includegraphics[width=0.4\textwidth]{intro_matplotlib4.pdf}
+  \end{columns}
 \end{frame}
 
 \begin{frame}
@@ -1002,7 +1115,7 @@ def another_func():
  \begin{columns}[T]
   \column{0.3\textwidth}
   \begin{block}<2->{Naive approach}
-      \begin{lstlisting}
+      \begin{lstlisting}[language=Python,numbers=none]
 Z = 1
 Z = Z*2
 Z = Z*3
@@ -1012,16 +1125,15 @@ Z = Z*4
   \end{block}
   \column{0.3\textwidth}
   \begin{block}<3->{For-loop}
-      \begin{lstlisting}
+      \begin{lstlisting}[language=Python,numbers=none]
 Z = 1;
-for i = range(N):
+for i in range(N):
     Z = Z*i
-end
       \end{lstlisting}
   \end{block}
   \column{0.3\textwidth}
 \begin{block}<4>{While-loop}
-      \begin{lstlisting}
+      \begin{lstlisting}[language=Python,numbers=none]
 Z = 1;
 i = 1;
 while i<=N:
@@ -1030,6 +1142,7 @@ while i<=N:
     \end{lstlisting}
   \end{block}
  \end{columns}
+ \vspace{0.25cm}
  \onslide<4>{
   Note: \lstinline$N$ must be set beforehand!\\ 
   Note: Pay attention to the relational operators!  }
@@ -1042,16 +1155,16 @@ while i<=N:
   \begin{itemize}[<+->]
     \item Input may be given in a parameters file (``hard-coded'')
     \item Input may be entered via the keyboard using the `input` function:
-    \begin{lstlisting}[language=Python]
-a = input('Please enter a number: ')
+    \begin{lstlisting}[language=Python,numbers=none]
+>> a = input('Please enter a number: ')
     \end{lstlisting}
     \item Input may be read from a file, for instance using Python's built-in open function or libraries like `numpy` for more complex data structures:
-    \begin{lstlisting}[language=Python]
-with open('myData.txt', 'r') as file:
-    data = file.read()
-
-import numpy as np
-data = np.loadtxt("my_file.csv")
+    \begin{lstlisting}[language=Python,numbers=none]
+>> with open('myData.txt', 'r') as file:
+>>     data = file.read()
+>> 
+>> import numpy as np
+>> data = np.loadtxt("my_file.csv")
     \end{lstlisting}
     \item There are many other libraries and functions for more advanced input operations, such as json, xml, etc.
   \end{itemize}
@@ -1063,15 +1176,15 @@ data = np.loadtxt("my_file.csv")
   \begin{itemize}[<+->]
     \item Displaying results to the console - simply omitting a print statement will automatically show expression results in most Python IDEs.
     \item Using the `print` function to show results in the console:
-    \begin{lstlisting}[language=Python]
- print("The result is:", result)
+    \begin{lstlisting}[language=Python,numbers=none]
+>> print("The result is:", result)
     \end{lstlisting}
     \item Saving data to a file can be done using various methods including writing to a file or using libraries like pandas for structured data:
-    \begin{lstlisting}[language=Python]
-with open('output.txt', 'w') as file:
-     file.write(str(data))
- 
-data.save("data.npy")
+    \begin{lstlisting}[language=Python,numbers=none]
+>> with open('output.txt', 'w') as file:
+>> file.write(str(data))
+
+>> data.save("data.npy")
     \end{lstlisting}
     \item More advanced output methods can utilize libraries such as NumPy, pandas, etc. to save data in various formats including JSON, Excel, etc.
   \end{itemize}
