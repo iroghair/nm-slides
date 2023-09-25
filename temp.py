@@ -1,19 +1,6 @@
-import numpy as np
-import matplotlib.pyplot as plt
+from sympy import symbols, trigsimp, tan
 
-x = np.linspace(0, 4*np.pi, 100)
-y = np.sin(x)
-
-fig, ax = plt.subplots()
-line, = ax.plot(x, y, '-')
-
-ax.set_xlabel('X')
-ax.set_ylabel('Y')
-ax.set_title('Animating a Sine Wave')
-plt.show(block=False)
-
-for i in range(len(x)):
-    line.set_data(x[:i+1], y[:i+1])
-    fig.canvas.draw()
-    fig.canvas.flush_events()
-    plt.pause(0.01)
+x = symbols('x')
+expr = 2*tan(x)/(1 + tan(x)**2)
+simplified_expr = trigsimp(expr)
+print(simplified_expr)

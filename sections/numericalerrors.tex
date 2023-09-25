@@ -69,7 +69,7 @@ import matplotlib.pyplot as plt
 
 v = np.logspace(0, 40, 41)
 y = np.sin(v * np.pi)
-plt.loglog(v, np.abs(y))     # Double log plot, values on y-axis must be positive.
+plt.loglog(v, np.abs(y))  # Double log plot, values on y-axis must be positive.
 plt.show()
     \end{lstlisting}
 \end{frame}
@@ -307,8 +307,9 @@ plt.show()
    \end{itemize}\pause
    \item Matlab: 
    \begin{itemize}
-    \item Decimal: \lstinline$dec2bin(214)$
-    \item Other base: \lstinline$dec2base(214,<base>)$
+    \item Decimal: \lstinline$bin(214)$
+    \item Octal: \lstinline$oct(214)$
+    \item Hexadecimal: \lstinline$hex(214)$
     \end{itemize}
  \end{itemize}
 }
@@ -381,6 +382,7 @@ Subtraction: \\
       \texttt{type(i)}   & \texttt{<class 'numpy.int16'>} \pause\\
       \texttt{i = i + 100} & \texttt{i = 32767} \pause\\
       \texttt{np.finfo(np.float64).max} & \texttt{1.7976931348623157e+308} \pause\\
+      \texttt{f = 0.1}                  &  \pause\\
       \texttt{type(f)}   & \texttt{<class 'float'>} \pause\\
       \texttt{print("{:.16e}".format(np.finfo(np.float64).max))} & \texttt{1.7976931348623157e+308} \pause\\
       \texttt{print("{:.16f}".format(f))} & \texttt{0.1000000000000000} \pause\\
@@ -651,7 +653,7 @@ Subtraction: \\
 
 \begin{frame}[fragile]
   \frametitle{Badly (ill) conditioned problems: Example}
-  Solve the following linear system in Matlab using double and single precision:\\
+  Solve the following linear system in Python using double and single precision:\\
   $ A = 
       \left[\begin{aligned}
        1.2969 & & 0.8648 \\%[0.3em]
@@ -700,17 +702,18 @@ print(y)
 \frame{ 
 \frametitle{Badly (ill) conditioned problems: Example}
 \begin{itemize}
-  \colorize<1> \item Matlab already warned us about the bad condition number: \\
-  \lstinline$Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.148983e-08.$
-  \colorize<2> \item The \lstinline$RCOND$ is the reciprocal condition number
+  \colorize<1> \item Python does not automatically warn about bad condition number. You need to compute and check it manually using NumPy: \\
+  \lstinline$if np.linalg.cond(A) > threshold: raise("Ill conditioned error")$
+  \colorize<2> \item The \lstinline$cond$ number is the condition number computed using NumPy.
 %   \colorize<2> \item Using Gaussian elimination and fixing the numbers to 11 digits, we find:
 %      \[ y = \left[\begin{aligned}
 %        0.6662 \\%[0.3em]
 %        -0.0002 
 %      \end{aligned}\right] \]
-    \colorize<3> \item A small error in $x$ results in a big error in $y$. This is called an ill conditioned problem.
+    \colorize<3> \item A small error in $A$ (the matrix) results in a big error in the solution. This is called an ill-conditioned problem.
   \end{itemize}
 }
+
 
 \section{(Un)stable methods}
 \againframe<2>{contents_err}
@@ -741,7 +744,7 @@ print(y)
   \begin{columns}[T]
     \column{0.5\textwidth}
       \begin{block}{Recurrent version}
-        \begin{lstlisting}[language=Python]
+        \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
 import numpy as np
 
 def golden_mean_recurrent(Ntot):
@@ -753,14 +756,13 @@ def golden_mean_recurrent(Ntot):
     # Perform the recurrence to fill in the rest of the series
     for n in range(2, Ntot):
         y[n] = y[n-1] - y[n-2]
-
     return y
         \end{lstlisting}
       \end{block}
     \pause
     \column{0.5\textwidth}
       \begin{block}{Power law version}
-        \begin{lstlisting}[language=Python]
+        \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
 import numpy as np
 
 def golden_mean_powerlaw(Ntot):
@@ -823,7 +825,7 @@ def golden_mean_powerlaw(Ntot):
 
 \frame{
  \frametitle{Example 3}
-  Start your calculation program of choice (Excel, Matlab, ...) \vskip1em 
+  Start your calculation program of choice (Excel, Python, ...) \vskip1em 
   
   \pause 
   Calculate the result of $y$:
@@ -869,6 +871,8 @@ def golden_mean_powerlaw(Ntot):
  Open-source alternative to Maple, Mathematica, Magma, and MATLAB.\vskip0.5em
     \item[\href{http://www.mathworks.nl/help/symbolic/index.html}{Matlab}] 
  Symbolic math toolbox
+    \item[\href{https://www.sympy.org/en/index.html}{Python}] 
+    SymPy
    \end{description}
 }
 
@@ -885,10 +889,8 @@ from sympy import symbols, simplify
 
 x = symbols('x')
 f = (x - 1)*(x + 1)*(x**2 + 1) + 1
-# pause 
 f_simplified = simplify(f)
-# pause
-f_simplified
+print(f_simplified)
   \end{lstlisting}
   \pause
   \texttt{f\_simplified = x**4}
@@ -899,15 +901,15 @@ f_simplified
   \[ f(x) = \frac{1}{x^3+1} \]
   \pause
   \begin{lstlisting}[language=Python]
-from sympy import integrate, diff
+from sympy import symbols, simplify, integrate, diff
 
+x = symbols('x')
 f = 1/(x**3+1)
 my_f_int = integrate(f, x)
-# pause 
 my_f_diff = diff(my_f_int, x)
-# pause 
 my_f_diff_simplified = simplify(my_f_diff)
-  \end{lstlisting}
+print(my_f_diff_simplified)
+\end{lstlisting}
   \pause
   \texttt{my\_f\_diff\_simplified = 1/(x**3 + 1)}
 \end{frame}
@@ -919,9 +921,11 @@ my_f_diff_simplified = simplify(my_f_diff)
   \[ f(x) = \frac{2 \tan x }{(1 + \tan^2 x)} \uncover<2->{ = \sin 2x} \] \vskip-1em
   \pause
   \begin{lstlisting}[language=Python]
-from sympy import tan, sin
+from sympy import symbols, trigsimp, tan
 
-simplify(2*tan(x)/(1 + tan(x)**2))
+x = symbols('x')
+expr = 2*tan(x)/(1 + tan(x)**2)
+simplified_expr = trigsimp(expr)
   \end{lstlisting}
   \end{block}
 \end{frame}

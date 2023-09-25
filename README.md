@@ -14,7 +14,7 @@ Example:
 
 `python -m render introduction`
 
-## Completed sections:
+## Completed sections (testing the code and aligning the slides):
  - [ ] integration
  - [ ] interpolation
  - [x] introduction
@@ -28,14 +28,14 @@ Example:
  - [ ] optimization
  - [ ] pde
  - [x] programming1
- - [ ] programming2
+ - [x] programming2
  - [ ] programming2_old
 
-## Todo (by priority)
-1. Test all the scripts
+## Todo (by priority after testing the code)
+1. Make sure the story flows correctly (specially due to modules)
 2. Fix the issue with the table of contents not showing
 3. Correct debugger information in programming2? (Ask ivo about which IDE)
-4. Replace all the matlab generated images
+4. Replace all the matlab generated images (programming2 has wrong 3d image as well)
 5. Add animations to appropriate slides
 6. Place important scripts in a specific folder instead of in text
 7. Make rendering work with old make-file
