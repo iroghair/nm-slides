@@ -15,10 +15,10 @@ Example:
 `python -m render introduction`
 
 ## Completed sections (testing the code and aligning the slides):
- - [ ] integration
+ - [x] integration
  - [x] interpolation
  - [x] introduction
- - [ ] linear1
+ - [x] linear1
  - [ ] linear2
  - [ ] linear3
  - [ ] nonlin

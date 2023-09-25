@@ -256,7 +256,7 @@ C_{11} &= \tikzmarkin[mat2=style orange]{pm3}+1\tikzmarkend{pm3}\ \cdot\ \det{\b
 \begin{frame}<handout:0|beamer:1->[fragile]
   \frametitle{Exercise: performance of inverse computation}
   Create a script that generates matrices with random elements of various sizes $N\times N$ (e.g. values of $N\in\left\{10,20,50,100,200,\ldots,5000,10000\right\}$). Compute the inverse of each matrix, and use \lstinline$import time$ and \lstinline$time.time()$ to see the computing time for each inversion. Plot the time as a function of the matrix size $N$. \pause
-    \begin{lstlisting}
+    \begin{lstlisting}[language=Python, basicstyle=\tiny]
 import numpy as np
 import matplotlib.pyplot as plt
 import time

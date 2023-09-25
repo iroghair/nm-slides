@@ -47,7 +47,7 @@
     \begin{center}
       Left endpoint rule \vskip1em
       \begin{tikzpicture}[scale=0.5]
-        \input{data/interpolate-graph.tex}
+        \input{tikzplots/interpolate-graph.tex}
         
         \draw [intblock] (1,0) rectangle (x0);
         \draw [intblock] (2,0) rectangle (x1);
@@ -66,7 +66,7 @@
     \begin{center}
       Right endpoint rule \vskip1em
       \begin{tikzpicture}[scale=0.5]
-        \input{data/interpolate-graph.tex}
+        \input{tikzplots/interpolate-graph.tex}
         \draw [intblock] (0,0) rectangle (x1);
         \draw [intblock] (1,0) rectangle (x2);
         \draw [intblock] (2,0) rectangle (x3);
@@ -85,7 +85,7 @@
       \begin{center}
         Midpoint rule \vskip1em
         \begin{tikzpicture}[scale=0.5]
-          \input{data/interpolate-graph.tex}
+          \input{tikzplots/interpolate-graph.tex}
           
           \draw [intblock] (0,0) rectangle (1,2.9792);
           \node [intdot] at (0.5, 2.9792) {};
@@ -147,7 +147,7 @@ Note that this can be rewritten for equidistant intervals:
 \end{equation*}}
 \column{0.5\textwidth}
    \begin{tikzpicture}[scale=0.8]
-        \input{data/interpolate-graph.tex}
+        \input{tikzplots/interpolate-graph.tex}
         \draw [intblock] (0,0) -- (1,0) -- (x1.center) -- (x0.center) -- cycle;
         \draw [intblock] (1,0) -- (2,0) -- (x2.center) -- (x1.center) -- cycle;
         \draw [intblock] (2,0) -- (3,0) -- (x3.center) -- (x2.center) -- cycle;
@@ -183,7 +183,7 @@ Note that this can be rewritten for equidistant intervals:
   \column{0.5\textwidth}
   \centering Midpoint rule
   \begin{tikzpicture}[scale=0.6]
-      \input{data/interpolate-graph.tex}
+      \input{tikzplots/interpolate-graph.tex}
       
       \draw<2> [intblock,draw=tueorange,fill=tueorange] (0,0) rectangle (1,2.9792);
       \node<2> [intdot,draw=tueorange,fill=tueorange] at (0.5, 2.9792) {};
@@ -204,7 +204,7 @@ Note that this can be rewritten for equidistant intervals:
   \column{0.5\textwidth}
   \centering Trapezoid rule
     \begin{tikzpicture}[scale=0.6]
-      \input{data/interpolate-graph.tex}
+      \input{tikzplots/interpolate-graph.tex}
       \draw<2> [intblock,draw=tueorange,fill=tueorange] (0,0) -- (1,0) -- (x1.center) -- (x0.center) -- cycle;
       \draw<1> [intblock] (0,0) -- (1,0) -- (x1.center) -- (x0.center) -- cycle;
       \draw<1> [intblock] (1,0) -- (2,0) -- (x2.center) -- (x1.center) -- cycle;
@@ -316,7 +316,7 @@ Note that this can be rewritten for equidistant intervals:
     \column{0.50\textwidth}
     \centering
     \begin{tikzpicture}[domain=-1:6,scale=0.8]
-      \input{data/interpolate-graph.tex}
+      \input{tikzplots/interpolate-graph.tex}
       % Polynomial interpolant
       \draw<2->[graph,domain=0:2,draw=tuered,fill=tuered,fill opacity=0.5] (0,0) -- plot (\x, {-(11/6)*\x*\x+(4.5)*\x+1}) -- (2,0) -- cycle;
       \draw<3->[graph,domain=2:4,draw=tuelblue,fill=tuelblue,fill opacity=0.5] (2,0) -- plot (\x, {(7/6)*\x*\x-7.5*\x + 13}) -- (4,0) -- cycle;
@@ -335,14 +335,16 @@ Note that this can be rewritten for equidistant intervals:
   \begin{itemize}
     \item \lstinline$np.trapz(y, x)$ uses the trapezoid rule to integrate the data. Make sure you use the \lstinline$x$ variable if your data is not spaced with $\Delta x=1$. Can handle non-equidistant data.
     \begin{lstlisting}
+>> import numpy as np
 >> x = np.linspace(-2, 2, 2001)
 >> y = 1 / (x**2 + 1)
 >> I = np.trapz(y, x)
 >> I
-1.5707963267948966
+2.214297328921525
 \end{lstlisting}
     \item Integration of functions can be done using the \lstinline$quad(func, a, b)$ function:
     \begin{lstlisting}
+>> import numpy as np
 >> from scipy.integrate import quad
 >> def func(x):
 >>     return np.exp(-x**2)
