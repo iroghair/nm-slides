@@ -22,7 +22,7 @@ Example:
  - [ ] linear2
  - [ ] linear3
  - [ ] nonlin
- - [ ] numericalerrors
+ - [x] numericalerrors
  - [ ] ode1
  - [ ] ode2
  - [ ] optimization
