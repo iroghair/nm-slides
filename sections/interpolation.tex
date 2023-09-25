@@ -94,7 +94,7 @@
   \footnotesize\selectfont
   \begin{columns}
     \column{0.45\textwidth}
-    Download the datafile \lstinline$interpolation-dataset.mat$, which contains multiple data sets.\vskip2em\pause
+    Download the datafile \lstinline$interpolation-dataset.txt$, which contains multiple data sets.\vskip2em\pause
     \begin{center}
       We start with \lstinline$x1$ and \lstinline$y1$:\vskip1em
       \begin{tabular}{c|r}
@@ -112,7 +112,7 @@
     \vskip1em
     \centering
     \begin{tikzpicture}[domain=-1:6]
-      \input{data/interpolate-graph.tex}
+      \input{tikzplots/interpolate-graph.tex}
     \end{tikzpicture}
   \end{columns}
 \end{frame}
@@ -143,7 +143,7 @@
     \vskip1em
     \centering
     \begin{tikzpicture}[domain=-1:6]
-      \input{data/interpolate-graph.tex}
+      \input{tikzplots/interpolate-graph.tex}
 
       % Piecewise interpolant
       \draw<2->[interp] (0,1) -- (0.5,1);
@@ -174,7 +174,7 @@
     \vskip1em
     \centering
     \begin{tikzpicture}[domain=-1:6]
-      \input{data/interpolate-graph.tex}
+      \input{tikzplots/interpolate-graph.tex}
       
       % Interpolant points and captions
       \draw<2->[dot,draw=none] (x2) -- node[interp,color=tuered,midway,fill=white] (xy){} (x3);
@@ -227,9 +227,9 @@
         legend style={draw=none,fill=none}]
 
       % import the correct data from a CSV file
-      \addplot[draw=tuered,mark=*,mark options={fill=white},mark size=0.7pt] table [id=exp]{data/exp_data.txt};
+      \addplot[draw=tuered,mark=*,mark options={fill=white},mark size=0.7pt] table [id=exp]{student-data/exp_data.txt};
       \addlegendentry{Experiment};
-      \addplot[draw=tueblue,mark=triangle*,mark options={fill=white},mark size=0.7pt] table [id=sim]{data/sim_data.txt};
+      \addplot[draw=tueblue,mark=triangle*,mark options={fill=white},mark size=0.7pt] table [id=sim]{student-data/sim_data.txt};
       \addlegendentry{Simulation};
       % plot the stirling-formulae
 %       \addplot[domain=0:60, red, thick] {1-(365/(365-x))^(365.5-x)*e^(-x)}; 
@@ -240,11 +240,16 @@
 \begin{frame}[t,fragile]
   \frametitle{Example: Linear interpolation in Python}
   \footnotesize\selectfont
-  Consider the data set in \lstinline$sim_exp_dataset.npy$, containing a normalized concentration and time vector for an experiment and a simulation. The simulation was performed with adaptive node distance to save computation time, thus the concentration is not known at the same times. We are not able to compare yet.
+  Consider the data set in \lstinline$sim_dataset.txt$ and \lstinline$exp_dataset.txt$, containing a normalized concentration and time vector for an experiment and a simulation. The simulation was performed with adaptive node distance to save computation time, thus the concentration is not known at the same times. We are not able to compare yet.
   \vfill
-  \begin{lstlisting}[language=Python]
+ \begin{columns}
+  \column{0.49\textwidth}
+  \begin{lstlisting}[language=Python,basicstyle=\tiny]
 import numpy as np
 import matplotlib.pyplot as plt
+
+t_sim, c_sim = np.loadtxt("./student-data/sim_data.txt").T
+t_exp, c_exp = np.loadtxt("./student-data/exp_data.txt").T
 
 # Linear interpolation
 c_sim_new = np.interp(t_exp, t_sim, c_sim)
@@ -257,12 +262,15 @@ plt.plot(t_exp, c_sim_new, 'r-o', label='c_sim_new')
 plt.legend()
 
 plt.subplot(2, 1, 2)
-plt.stem(t_exp, diff)
+plt.plot(t_exp, diff); plt.show()
 
 # Compute the L2-norm
 norm = np.linalg.norm(diff)
 print(norm)
   \end{lstlisting}
+  \column{0.5\textwidth}
+  \includegraphics[width=0.8\textwidth]{sim_exp_data_interp.pdf}
+\end{columns}
 \end{frame}
 
 
@@ -400,14 +408,14 @@ The coefficients of a polynomial through the data points can be obtained by solv
 \begin{columns}
   \column{0.5\textwidth}
     \begin{lstlisting}[language=Python]
-    import numpy as np
-    x = np.array([0, 1, 2])
-    y = np.array([1.0000, 3.6667, 2.6667])
-    V = np.vander(x, increasing=True)
-    a = np.linalg.solve(V, y)
-    print(a)
-    # Output
-    # [-1.8333, 4.5000, 1.0000]
+import numpy as np
+x = np.array([0, 1, 2])
+y = np.array([1.0000, 3.6667, 2.6667])
+V = np.vander(x, increasing=True)
+a = np.linalg.solve(V, y)
+print(a)
+# Output
+# [-1.8333, 4.5000, 1.0000]
     \end{lstlisting}
   \column{0.5\textwidth}
   \pause
@@ -546,7 +554,7 @@ The coefficients of a polynomial through the data points can be obtained by solv
     \column{0.55\textwidth}
     \centering
     \begin{tikzpicture}[domain=-1:6]
-      \input{data/interpolate-graph.tex}
+      \input{tikzplots/interpolate-graph.tex}
 
       % Polynomial interpolant
       \draw<2-> [graph,domain=0:2,draw=tuered,opacity=0.7] plot (\x, {-(11/6)*\x*\x+(4.5)*\x+1});
@@ -617,6 +625,8 @@ The coefficients of a polynomial through the data points can be obtained by solv
   \end{columns}
   \pause \vskip1ex
   We use the built-in \lstinline$np.polyfit(x,y,n)$ and \lstinline$np.polyval(p,x)$ functions: \pause
+  \begin{columns}
+    \column{0.5\textwidth}
   \begin{lstlisting}[language=Python,basicstyle=\tiny]
 import numpy as np, matplotlib.pyplot as plt
 x_cont = np.linspace(-1, 1, 1001)
@@ -635,6 +645,8 @@ plt.plot(x_cont, y_cont4, label='Degree 4')
 plt.legend()
 plt.show()
    \end{lstlisting}
+   \column{0.3\textwidth}
+  \end{columns}
 \end{frame}
 
 
