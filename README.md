@@ -16,7 +16,7 @@ Example:
 
 ## Completed sections (testing the code and aligning the slides):
  - [ ] integration
- - [ ] interpolation
+ - [x] interpolation
  - [x] introduction
  - [ ] linear1
  - [ ] linear2

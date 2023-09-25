@@ -659,20 +659,24 @@ plt.show()
 \[
 f(x)=\frac{1}{x^2+\frac{1}{25}} \qquad x \in [-1,1]
 \]
-     \begin{lstlisting}[language=Python]
+\begin{columns}
+  \column{0.65\textwidth}
+  \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
 import numpy as np
 x3a, x3b = np.linspace(-1, 1, 5), np.linspace(-1, 1, 11)
-y3a, y3b = 1 / (x3a**2 + 1/25), 1 / (x3b**2 + 1/25)
-     \end{lstlisting}
-    \begin{tikzpicture}[domain=-1:1,xscale=2,yscale=0.1]
-      % (the tikzpicture content remains unchanged)
-    \end{tikzpicture}
-  \vspace*{-1ex}
+y3a, y3b = 1/(x3a**2 + 1/25), 1/(x3b**2 + 1/25)
+  \end{lstlisting}\pause
+  %   \begin{tikzpicture}[domain=-1:1,xscale=2,yscale=0.1]
+  %     % (the tikzpicture content remains unchanged)
+  %   \end{tikzpicture}
+  % \vspace*{-1ex}
   \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
 import matplotlib.pyplot as plt
 x_cont = np.linspace(-1, 1, 1001)
-p4, p10 = np.polyfit(x3a, y3a, 4), np.polyfit(x3b, y3b, 10)
-y_cont4, y_cont10 = np.polyval(p4, x_cont), np.polyval(p10, x_cont)
+p4 = np.polyfit(x3a, y3a, 4)
+p10 =  np.polyfit(x3b, y3b, 10)
+y_cont4 = np.polyval(p4, x_cont)
+y_cont10 =  np.polyval(p10, x_cont)
 
 plt.plot(x_cont, 1 / (x_cont**2 + 1/25), label='f(x)')
 plt.scatter(x3a, y3a, marker='o', label='p4 data')
@@ -682,6 +686,9 @@ plt.plot(x_cont, y_cont10, label='p10(x)')
 plt.legend()
 plt.show()
   \end{lstlisting}
+  \column{0.35\textwidth}
+  \includegraphics[width=\textwidth]{p4_p10_interpolants.pdf}
+\end{columns}
 \end{frame}
 
 
@@ -844,4 +851,5 @@ t = [0, 0.1, 0.499, 0.5, 0.6, 1.0, 1.4, 1.5, 1.899, 1.9, 2.0]
 y = [0, 0.06, 0.17, 0.19, 0.21, 0.26, 0.29, 0.29, 0.30, 0.31, 0.31]
     \end{lstlisting}
   \end{enumerate}
+  \textbf{Hint:} Use \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.interp1d.html}{\lstinline{scipy.interpolate.interp1d(...,kind="...")}} to use different splines.
 \end{frame}
