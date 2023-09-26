@@ -19,7 +19,7 @@ Example:
  - [x] interpolation
  - [x] introduction
  - [x] linear1
- - [ ] linear2
+ - [x] linear2
  - [ ] linear3
  - [ ] nonlin
  - [x] numericalerrors

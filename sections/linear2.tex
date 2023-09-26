@@ -200,10 +200,10 @@ b[2] = b[2] - b[0] * d31
   \end{itemize}
   \column{0.6\textwidth}
    \begin{lstlisting}
-    d32 = A[2, 1] / A[1, 1]
-    A[2, 1] = A[2, 0] - A[1, 1] * d32
-    A[2, 2] = A[2, 1] - A[1, 2] * d32
-    b[2] = b[2] - b[1] * d32    
+d32 = A[2, 1] / A[1, 1]
+A[2, 1] = A[2, 0] - A[1, 1] * d32
+A[2, 2] = A[2, 1] - A[1, 2] * d32
+b[2] = b[2] - b[1] * d32    
    \end{lstlisting}
   \end{columns}
   \pause
@@ -235,10 +235,10 @@ b[2] = b[2] - b[0] * d31
     \end{align*}
     \pause
   \column{0.6\textwidth}
-\begin{lstlisting}
-x(3) = b(3) / A(3,3)
-x(2) = (b(2) - A(2,3)*x(3)) /A(2,2)
-x(1) = (b(1) - A(1,2)*x(2) - A(1,3)*x(3)) / A(1,1)
+\begin{lstlisting}[language=Python]
+x[2] = b[2] / A[2][2]
+x[1] = (b[1] - A[1][2] * x[2]) / A[1][1]
+x[0] = (b[0] - A[0][1] * x[1] - A[0][2] * x[2]) / A[0][0]  
 \end{lstlisting}
 \end{columns}
 In general:
@@ -253,7 +253,7 @@ In general:
    \item Create a function that provides the framework: take matrix $A$ and vector $b$ as an input, and return the solution $x$ as output:
   \begin{lstlisting}[language=Python]
 def gaussian_eliminate(A, b):
-  pass  # Your implementation here
+    pass  # Your implementation here
   \end{lstlisting}
   \item We will use \emph{for-loops} instead of typing out each command line.
   \item Useful Python (with NumPy) shortcuts:
@@ -292,15 +292,18 @@ def gaussian_eliminate(A, b):
 \begin{frame}[fragile]
   \frametitle{The program: Backsubstitution}
   \begin{lstlisting}
-# Assign b to x
-x = np.copy(b)
+def back_substitution(A, b):
+    # Back substitutes an upper triangular matrix to find x in Ax=b
+    # Assign b to x
+    x = np.copy(b)
+    N = len(b)
 
-# Perform back substitution
-for row in range(N-1, -1, -1):
-    x[row] = b[row]
-    for i in range(row+1, N):
-        x[row] = x[row] - A[row, i] * x[i]
-    x[row] = x[row] / A[row, row]    
+    # Perform back substitution
+    for row in range(N-1, -1, -1):
+        for i in range(row+1, N):
+            x[row] = x[row] - A[row, i] * x[i]
+        x[row] = x[row] / A[row, row]  
+    return x
   \end{lstlisting}
   \[
      x_N = \frac{b_N}{A_{NN}} \qquad x_i = \frac{b_i - \sum_{j=i+1}^{N}A_{ij}x_j}{A_{ii}}
@@ -323,7 +326,7 @@ for row in range(N-1, -1, -1):
     \begin{bmatrix}x_1\\x_2\\x_3\\x_4\end{bmatrix} = 
     \begin{bmatrix}7\\4\\10\\1\end{bmatrix}
   \]
-  \item Compare your solution with \lstinline$A\b$
+  \item Compare your solution with \lstinline$np.linalg.solve(A,b)$
   \end{itemize}
 \end{frame}
 
@@ -359,9 +362,9 @@ for row in range(N-1, -1, -1):
     \item<4-> \tikzmarkin[txt=style cyan]{tm4}Do the same for b: store and swap\tikzmarkend{tm4}
   \end{itemize}
 \lstinputlisting[backgroundcolor=\color{tueyellow!60}]{data/listing1.m}
-\uncover<2->{\lstinputlisting[backgroundcolor=\color{tuegreen!60}]{data/listing2.m}}
-\uncover<3->{\lstinputlisting[backgroundcolor=\color{tueorange!60}]{data/listing3.m}}
-\uncover<4->{\lstinputlisting[backgroundcolor=\color{tuelblue!60}]{data/listing4.m}}
+\uncover<2->{\lstinputlisting[firstnumber=4,backgroundcolor=\color{tuegreen!60}]{data/listing2.m}}
+\uncover<3->{\lstinputlisting[firstnumber=5,backgroundcolor=\color{tueorange!60}]{data/listing3.m}}
+\uncover<4->{\lstinputlisting[firstnumber=7,backgroundcolor=\color{tuelblue!60}]{data/listing4.m}}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -382,7 +385,7 @@ def GaussianEliminate(A, b):
     x = backwardSub(A, b)  # Created BS function
     return x
   \end{lstlisting}
-  This function is also provided (named GaussianEliminate\_v2 and GaussianEliminate\_v3 on Canvas).
+  This function is also provided (named \lstinline{GaussianEliminate_v2.py} on Canvas).
 \end{frame}
 
 \begin{frame}[fragile]
@@ -811,16 +814,17 @@ have been interchanged.
 \begin{frame}[fragile]
   \frametitle{How to use the solver in Python}
   \begin{lstlisting}[language=Python]
+import numpy as np
+from scipy.linalg import lu
+
+# Example usage
 A = np.random.rand(5, 5)  # Get random matrix
 P, L, U = lu(A)           # Get L, U and P
-b = np.random.rand(5, 1)  # Random b vector
-d = np.dot(P, b)          # Permute b vector
+b = np.random.rand(5)     # Random b vector
+d = P @ b                 # Permute b vector
 y = forwardSub(L, d)      # Can also do y=L\d
 x = backwardSub(U, y)     # Can also do x=U\y
-rnorm = np.linalg.norm(np.dot(A, x) - b)  # Residual
-
-# Comparing results with numpy solver
-x = np.linalg.solve(A, b) 
+rnorm = np.linalg.norm(A @ x - b)  # Residual
   \end{lstlisting}
   \pause
   \begin{itemize}
