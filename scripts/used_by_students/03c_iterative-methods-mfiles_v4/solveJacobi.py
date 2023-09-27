@@ -12,17 +12,21 @@ def solve_jacobi(A, b, tol=1e-2):
     N = len(A)
     it_jac = 1
     
-    while ( x_diff > tol and it_jac < 1000 ):
-        x_old = np.copy(x)
+    # While not converged or max_it not reached
+    while (x_diff > tol and it_jac < 1000):
+        x_old = x.copy()
         for i in range(N):
-            # Sum off-diagonal*x_old
-            offDiagonalIndex = np.concatenate((np.arange(0, i), np.arange(i+1, N)))
-            Aij_Xj = np.dot(A[i, offDiagonalIndex], x_old[offDiagonalIndex])
-
+            s = 0
+            for j in range(N):
+                if (j != i):
+                    # Sum off-diagonal*x_old
+                    s += A[i,j] * x_old[j]
             # Compute new x value
-            x[i] = (b[i] - Aij_Xj) / A[i, i]
+            x[i] = (b[i] - s) / A[i,i]
+            
+        # Increase number of iterations
         it_jac += 1
-        x_diff = np.linalg.norm((x - x_old), ord=2)
+        x_diff = norm((x - x_old), 2)
         
     # Print number of iterations
     print(it_jac)

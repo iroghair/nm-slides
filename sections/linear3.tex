@@ -344,8 +344,11 @@ The function \lstinline$diags$ uses the following arguments:
 \begin{frame}[fragile]
   \frametitle{Partial implementation of the boundary conditions}
   See \lstinline$set_boundary_conditions.py$.
-  \begin{lstlisting}[language=Python]
+  \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
+from scipy.sparse import lil_matrix
+
 def set_boundary_conditions(A, b, Tb, Nx, Ny):
+    A = lil_matrix(A)  # Convert to LIL format for efficient modification
     # Set boundary conditions over x-direction
     for i in range(Nx):
         j = 0
@@ -360,8 +363,7 @@ def set_boundary_conditions(A, b, Tb, Nx, Ny):
         A[ind, ind] = 1  # Add a 1 on the diagonal
         b[ind] = Tb[1]
 
-    # Repeat for y-direction
-    # ...
+    A = A.tocsr()  # Convert back to CSR or any other desired format
     return A, b
   \end{lstlisting}
 \end{frame}
@@ -385,7 +387,7 @@ def set_boundary_conditions(A, b, Tb, Nx, Ny):
     \item Check the new structure of the matrix and the right hand side:
     \begin{lstlisting}
 >> plt.subplot(121); plt.spy(A2);
->> plt.subplot(122); plt.spy(b2);
+>> plt.subplot(122); plt.spy(b[:,None]);
     \end{lstlisting}
   \end{itemize}
 \end{frame}
@@ -394,7 +396,7 @@ def set_boundary_conditions(A, b, Tb, Nx, Ny):
 \begin{frame}[fragile]
   \frametitle{A full program, including solver}
   The program and auxiliary functions are on Canvas (\lstinline$solve_laplace_eq.py$)
-  \begin{lstlisting}[linewidth=1.05\textwidth]
+  \begin{lstlisting}[linewidth=1.05\textwidth,basicstyle=\scriptsize]
 from scipy.sparse import diags
 import numpy as np
 from scipy.sparse.linalg import spsolve
@@ -417,7 +419,7 @@ def solve_laplace_eq(Nx, Ny):
     xc, yc = np.meshgrid(range(Nx), range(Ny))  # Get position arrays
     plt.surf(xc, yc, Tc)  # Surface plot
     plt.show()
-
+                                                                                      
 # Remember to define the set_boundary_conditions function before calling solve_laplace_eq
   \end{lstlisting}
 \end{frame}
@@ -452,30 +454,39 @@ Compute and plot the exact temperature profile in the 2D plate, and compare it w
 
 \begin{frame}<beamer:1-|handout:0>[fragile]
   \frametitle{Exercise: Verify the numerical solution using Fourier-series}
-    \begin{lstlisting}[language=Python]
+  Full script in \lstinline{solveLaplaceEqAndFourier.py}
+    \begin{lstlisting}[language=Python, basicstyle=\tiny]
 import numpy as np
 import matplotlib.pyplot as plt
 
+## LAPLACE EQUATION DEFINITION HERE
+
+# Fourier series expansion
 Nx = 35; Ny = 35;
 x, y = np.meshgrid(np.linspace(0,1,Nx), np.linspace(0,1,Ny))
 T = np.zeros_like(x) # (*@ \pause @*)
-# Fourier series expansion
-for n in range(1,101):
+for n in range(1,100):
     m = 2*n-1
     T += (np.sin(m*np.pi*x) * np.sinh(m*np.pi*y)) / (m * np.sinh(m*np.pi))
-Tex = T * 4 / np.pi # (*@ \pause @*)
+Tex = T * (4 / np.pi) # (*@ \pause @*)
 # Compute numerical solution and post-process
 
 # First plot is created inside solve_laplace_eq, which also returns Tnum
-fig, axs = plt.subplots(1, 3, figsize=(15, 5))
 xc, yc, Tnum = solve_laplace_eq(Nx, Ny) 
 
+fig, axs = plt.subplots(1, 3, figsize=(15, 5), subplot_kw=dict(projection='3d'))
+# Plot the numerical 
+axs[0].plot_surface(xc, yc, Tnum, cmap = "coolwarm")
+axs[0].set_xlabel('x'); axs[0].set_ylabel('y'); axs[0].set_zlabel('T')
+axs[0].set_title("the numerical ")
 # Plot exact (Fourier)
-axs[1].plot_surface(x, y, Tex, cmap='viridis')
+axs[1].plot_surface(x, y, Tex, cmap='coolwarm')
 axs[1].set_xlabel('x'); axs[1].set_ylabel('y'); axs[1].set_zlabel('T')
+axs[1].set_title("exact (Fourier)")
 # Plot difference
-axs[2].plot_surface(x, y, Tex - Tnum, cmap='viridis')
+axs[2].plot_surface(x, y, Tex - Tnum, cmap='coolwarm')
 axs[2].set_xlabel('x'); axs[2].set_ylabel('y'); axs[2].set_zlabel('T')
+axs[2].set_title("difference")
 plt.show()
     \end{lstlisting}
 \end{frame}
@@ -485,12 +496,33 @@ plt.show()
   \frametitle{LU decomposition of a sparse matrix}
   \begin{columns}
   \column{0.35\textwidth}
-    \begin{lstlisting}
->> [L,U,P] = lu(A)
->> plt.subplot(121)
->> plt.spy(L)
->> plt.subplot(122)
->> plt.spy(U)
+    \begin{lstlisting}[basicstyle=\tiny]
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.sparse import diags
+from scipy.sparse.linalg import splu
+
+# Create a sparse matrix
+N = 10
+e = np.ones(N)
+A = diags([e, e, -4*e, e, e], [-N, -1, 0, 1, N], shape=(N, N))
+
+# Perform LU decomposition
+lu = splu(A)
+
+# The `lu` object contains L and U factors as attributes
+L = lu.L.A  # Convert to dense array for plotting
+U = lu.U.A  # Convert to dense array for plotting
+
+# Plot the sparsity patterns of L and U
+plt.figure(figsize=(10, 5))
+plt.subplot(121)
+plt.spy(L)
+plt.title('L')
+plt.subplot(122)
+plt.spy(U)
+plt.title('U')
+plt.show()
     \end{lstlisting}
   \column{0.65\textwidth}
   \pause
@@ -562,35 +594,37 @@ plt.show()
 \begin{frame}[fragile]
   \frametitle{Jacobi method for Laplace's equation}
   \vskip-1em
-  See \lstinline$laplace_jacobi.py$ (from Canvas)
-  \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
+  See \lstinline$laplace_jacobi.py$ for animation included (from Canvas)
+  \begin{lstlisting}[language=Python,basicstyle=\tiny]
+# Import necessary libraries
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib import cm
 
-nx = 40; ny = 40; # (*@ \pause @*)
-# The temperature field + boundaries at old and new times
-T = np.zeros((nx, ny))
-T[0, :] = 40;  # Left 
-T[nx-1, :] = 60; # Right
-T[:, 0] = 20;  # Bottom
-T[:, ny-1] = 30; # Top # (*@ \pause @*)
-Tnew = np.copy(T); # (*@ \pause @*)
-# For plotting
-x, y = np.meshgrid(range(nx), range(ny)); # (*@ \pause @*)
+# Set grid resolution
+nx = 40
+ny = 40
 
-for iter in range(1000):
-  for i in range(1, nx-1):
-    for j in range(1, ny-1):
-      Tnew[i, j] = (T[i-1, j] + T[i+1, j] + T[i, j-1] + T[i, j+1]) / 4.0;(*@ \pause @*)
-  fig = plt.figure()
-  ax = fig.add_subplot(111, projection='3d')
-  ax.plot_surface(x, y, Tnew, cmap=cm.coolwarm)
-  ax.set_title(f'Iteration: {iter}')
-  plt.draw()
-  plt.pause(0.01)
-  T = np.copy(Tnew)  # Update T
-  plt.close(fig)
+# Set old solution array
+T = np.zeros((nx,ny))
+
+# Set boundary conditions
+T[0,:] = 40 # Left
+T[nx-1,:] = 60 # Right
+T[:,0] = 20 # Bottom
+T[:,ny-1] = 30 # Top
+
+# Set new solution array (including boundary conditions)
+Tnew = T.copy()
+
+# Create grid for plotting
+x,y = np.meshgrid(np.arange(1,nx+1), np.arange(1,ny+1))
+
+# Perform iterations
+for iter in range(1,1001):
+    for i in range(1,nx-1):
+        for j in range(1,ny-1):
+            Tnew[i,j] = (T[i-1,j]+T[i+1,j]+T[i,j-1]+T[i,j+1])/4.0 # Calculate new solution
+    T = Tnew.copy()
     \end{lstlisting}
 \end{frame}
 
@@ -698,7 +732,7 @@ for iter in range(1000):
 
 \begin{frame}[fragile]
   \frametitle{The core of the solver}
-  The full file is on Canvas, \lstinline$solve_jacobi.py$.
+  The full file is on Canvas, \lstinline$solveJacobi.py$.
   \begin{lstlisting}[numbers=left]
 import numpy as np
 
@@ -711,7 +745,7 @@ while (xDiff > tol and it_jac < 1000):
                 s += A[i, j] * x_old[j]
         x[i] = (b[i] - s) / A[i, i]
     it_jac += 1
-    xDiff = np.linalg.norm((x - x_old) / x, ord=2)
+    xDiff = np.linalg.norm((x - x_old), ord=2)
 
 it_jac
   \end{lstlisting}
@@ -725,7 +759,7 @@ it_jac
   \begin{itemize}
    \item The while loop holds two aspects
    \begin{itemize}
-    \item A convergence criterion (\lstinline$norm((x-x_old)./x) > tol$). Some considerations are:
+    \item A convergence criterion (\lstinline$norm(x-x_old) > tol$). Some considerations are:
     \begin{itemize}
       \item $L_1$-norm (sum)
       \item $L_2$-norm (Euclidian distance)
@@ -750,17 +784,17 @@ it_jac
 # While not converged or max_it not reached
 import numpy as np
 
-while ( xDiff > tol and it_jac < 1000 ):
-  x_old = np.copy(x)
-  for i in range(N):
-    # Sum off-diagonal*x_old
-    offDiagonalIndex = np.concatenate((np.arange(0, i), np.arange(i+1, N)))
-    Aij_Xj = np.dot(A[i, offDiagonalIndex], x_old[offDiagonalIndex])
+while ( x_diff > tol and it_jac < 1000 ):
+    x_old = np.copy(x)
+    for i in range(N):
+        # Sum off-diagonal*x_old
+        offDiagonalIndex = np.concatenate((np.arange(0, i), np.arange(i+1, N)))
+        Aij_Xj = np.dot(A[i, offDiagonalIndex], x_old[offDiagonalIndex])
 
-    # Compute new x value
-    x[i] = (b[i] - Aij_Xj) / A[i, i]
-  it_jac += 1
-  xDiff = np.linalg.norm((x - x_old) / x, ord=2)
+        # Compute new x value
+        x[i] = (b[i] - Aij_Xj) / A[i, i]
+    it_jac += 1
+    x_diff = np.linalg.norm((x - x_old), ord=2)
 \end{lstlisting}
 \end{frame}
 
