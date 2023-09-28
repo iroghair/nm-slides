@@ -473,7 +473,26 @@ plt.show()
           ylabel={$c$ [\si{\mol\per\cubic\meter}]},xlabel={$x$ [\si{\meter}]},ylabel near ticks]
 
           % Actual equation
-          % (Here, you would plot your data using Python or a data visualization library)
+          % Plot for c(0.2 [min])
+          \addplot table [x=x_m, y=c02, col sep=comma] {data/inst_diff_example_pde.csv};
+          \addlegendentry{$c(0.2 \, \text{min})$}
+                  
+          % Plot for c(1.0 [min])
+          \addplot table [x=x_m, y=c10, col sep=comma] {data/inst_diff_example_pde.csv};
+          \addlegendentry{$c(1.0 \, \text{min})$}
+                  
+          % Plot for c(2.1 [min])
+          \addplot table [x=x_m, y=c21, col sep=comma] {data/inst_diff_example_pde.csv};
+          \addlegendentry{$c(2.1 \, \text{min})$}
+
+          % Plot for c(10.4 [min])
+          \addplot table [x=x_m, y=c104, col sep=comma] {data/inst_diff_example_pde.csv};
+          \addlegendentry{$c(10.4 \, \text{min})$}
+
+          % Plot for c(83.3 [min])
+          \addplot table [x=x_m, y=c833, col sep=comma] {data/inst_diff_example_pde.csv};
+          \addlegendentry{$c(83.3 \, \text{min})$}
+
         \end{axis}    
       \end{tikzpicture}
   \end{columns}
@@ -523,16 +542,15 @@ Remedy: vectorization. Construct a 3-point stencil Laplacian matrix first, then 
 from scipy.sparse import diags
 
 # Construct sparse matrix
-e = np.ones(Nx - 1)
+e = np.ones(Nx-1)
 md = np.concatenate(([1], (1 - 2 * Fo) * e, [1]))
-ld = np.concatenate((Fo * e, [0, 0]))
-ud = np.concatenate(([0, 0], Fo * e))
+ld = np.concatenate((Fo * e, [0]))
+ud = np.concatenate(([0], Fo * e))
 A = diags([ld, md, ud], offsets=[-1, 0, 1])
 
-# Faster for row-wise operations, so transpose
-c = c.T
+# Time evolution
 for n in range(Nt - 1): # time loop
-    c[:, n+1] = A.dot(c[:, n])
+    c[n+1, :] = A.dot(c[n,:])
 \end{lstlisting}
 \end{frame}
 
@@ -584,7 +602,7 @@ for n in range(Nt - 1): # time loop
   \begin{columns}[t]
   \column{0.45\textwidth}
   Set individual elements of the matrix:
-  \begin{lstlisting}[language=Python,basicstyle=\scriptsize\ttfamily]
+  \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
 from scipy.sparse import lil_matrix
 
 # Bands in matrix (internal cells)
@@ -606,8 +624,8 @@ from scipy.sparse import diags
 # Bands in matrix (internal cells)
 e = np.ones(Nx-1) # Ones for internal cells
 md = np.concatenate(([1], e * (1 + 2*Fo), [1])) # Main diagonal
-ld = np.concatenate((-e * Fo, [0, 0])) # Lower diagonal
-ud = np.concatenate(([0, 0], -e * Fo)) # Upper diagonal
+ld = np.concatenate((-e * Fo, [0])) # Lower diagonal
+ud = np.concatenate(([0], -e * Fo)) # Upper diagonal
 A = diags([ld, md, ud], offsets=[-1, 0, 1])
   \end{lstlisting}
   Note: The first argument of \lstinline|diags| defines each column as a diagonal, starting at row 0 (for lower-diagonal) or column 0 (for upper-diagonal).
@@ -628,7 +646,7 @@ A = diags([ld, md, ud], offsets=[-1, 0, 1])
   \frametitle{Solving the diffusion equation implicitly in Python}
   \rowcolors{1}{}{}
   The concentration matrix is initialised and the boundary conditions are set as follows:
-  \begin{lstlisting}[language=Python,basicstyle=\scriptsize\ttfamily]
+  \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
 # Initial matrices for solutions (Nx times Nt)
 c = np.zeros((Nt+1, Nx+1))  # All concentrations are zero
 c[:, 0]    = c_L           # Concentration at left side
@@ -636,14 +654,13 @@ c[:, Nx]   = c_R           # Concentration at right side
 \end{lstlisting}
 \vskip1em
 The right hand side vector ($\vec{b}$) can now be set during the time-loop:
-\begin{lstlisting}[language=Python,basicstyle=\scriptsize\ttfamily]
+\begin{lstlisting}[language=Python,basicstyle=\scriptsize]
 from scipy.sparse.linalg import spsolve
 
 for n in range(Nt-1):   # time loop 
     b = c[n, :]         # Set right hand side
     solX = spsolve(A, b)  # Solve linear system
     c[n+1, :] = solX     # Store solution each time step
-end
   \end{lstlisting}
 \end{frame}
 
@@ -918,7 +935,7 @@ Forward Euler discretization of temporal and spatial domain:
   \frametitle{Central difference and upwind in Python}
   \footnotesize\selectfont
   The results from the previous slides were computed using this script:
-  \begin{lstlisting}[language=Python, basicstyle=\scriptsize\ttfamily,]
+  \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
 import numpy as np
 
 Nx, Nt = 1000, 10000 # Nc grid points Nt time steps
@@ -949,7 +966,7 @@ t = np.linspace(0, t_end, Nt+1)
   \frametitle{Central difference and upwind in Python}
   \footnotesize\selectfont
   (continued)
-\begin{lstlisting}[language=Python, basicstyle=\scriptsize\ttfamily,]
+\begin{lstlisting}[language=Python, basicstyle=\scriptsize]
 for n in range(Nt):  # time loop
     for i in range(1, Nx):  # Nested loop for grid nodes
         # Central difference
