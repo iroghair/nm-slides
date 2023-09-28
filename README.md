@@ -20,16 +20,15 @@ Example:
  - [x] introduction
  - [x] linear1
  - [x] linear2
- - [ ] linear3
- - [ ] nonlin
+ - [x] linear3
+ - [x] nonlin
  - [x] numericalerrors
- - [ ] ode1
- - [ ] ode2
- - [ ] optimization
- - [ ] pde
+ - [x] ode1
+ - [x] ode2
+ - [x] optimization
+ - [x] pde
  - [x] programming1
  - [x] programming2
- - [ ] programming2_old
 
 ## Todo (by priority after testing the code)
 1. Make sure the story flows correctly (specially due to modules)
