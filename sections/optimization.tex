@@ -410,7 +410,7 @@ print('k2:', params[1] - ci[1], params[1] + ci[1])
     \frametitle{Second example: curve\_fit}
     The model doesn't have to be an ODE; it can be any model that is part of the fitting goal function. Let's consider an (adapted) version of the Laplace equation solver, where we can set a single, central node to a certain temperature. We will illustrate this using Python, where we define a function to solve the Laplace equation:
     
-    \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
+    \begin{lstlisting}[language=Python, basicstyle=\tiny]
 from scipy.sparse import spdiags
 import numpy as np
 
@@ -422,15 +422,16 @@ def solveLaplaceEq(Nx, Ny, Tb, Tint):
     b = np.zeros(Nx*Ny)
     
     # Set boundary conditions here (omitted for brevity)
+    A, b = setBoundaryConditions(A, b, Tb, Nx, Ny)
 
     # Set a central node to Tint
-    ind = round(Nx * (Ny/2))
+    ind = round(Nx * (Ny/2) + Nx/2)
     A[ind, :] = 0
     A[ind, ind] = 1
     b[ind] = Tint
-    
-    T = np.linalg.solve(A, b)
-    return T
+
+    T = spsolve(A, b)
+    return T.reshape(Nx, Ny)
     \end{lstlisting}
   \end{frame}
   
@@ -440,13 +441,13 @@ def solveLaplaceEq(Nx, Ny, Tb, Tint):
     Now let's make a goal function based on our model and the desired setpoint (the mean temperature in the domain):
     
     \begin{lstlisting}[language=Python]
-  def fitcrit_laplace(actuate_T, Nx, Ny, boundary_T, setpoint_T):
-      # Compute model:
-      T = solveLaplaceEq(Nx, Ny, boundary_T, actuate_T)
-      
-      # Compute error (deviation of mean T with desired setpoint T)
-      err = np.mean(T) - setpoint_T
-      return err
+def fitcrit_laplace(actuate_T, Nx, Ny, boundary_T, setpoint_T):
+    # Compute model:
+    T = solveLaplaceEq(Nx, Ny, boundary_T, actuate_T)
+    
+    # Compute error (deviation of mean T with desired setpoint T)
+    err = np.mean(T) - setpoint_T
+    return err
     \end{lstlisting}
   \end{frame}  
 
@@ -459,30 +460,30 @@ def solveLaplaceEq(Nx, Ny, Tb, Tint):
     \end{itemize}
     
     \begin{lstlisting}[language=Python,basicstyle=\tiny]
-  from scipy.optimize import curve_fit
-  import matplotlib.pyplot as plt
-  from mpl_toolkits.mplot3d import Axes3D
-  
-  # Set up parameters
-  Nx = 35; Ny = 35;
-  Tb = [40, 10, 40, 10]     # Fixed boundary temperatures
-  T0 = [0]                  # Initial guess 
-  T_set = 20                # Setpoint
-  
-  # Run fitting
-  params, params_covariance = curve_fit(lambda T, _: fitcrit_laplace(T, Nx, Ny, Tb, T_set), [0], [0], p0=T0)
-  
-  # Compute again and plot
-  T_model = solveLaplaceEq(Nx, Ny, Tb, params[0])
-  T_plot = T_model.reshape(Nx, Ny)       # Reshape x-vec to mat Nx, Ny
-  x, y = np.meshgrid(range(Ny), range(Nx))  # Get position arrays
-  
-  fig = plt.figure()
-  ax = fig.add_subplot(111, projection='3d')
-  ax.plot_surface(x, y, T_plot)           # Surface plot
-  plt.show()
-  
-  np.mean(T_model)
+from scipy.optimize import curve_fit
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+# Set up parameters
+Nx = 35; Ny = 35;
+Tb = [40, 10, 40, 10]     # Fixed boundary temperatures
+T0 = [0]                  # Initial guess 
+T_set = 20                # Setpoint
+
+# Run fitting
+params, params_covariance = curve_fit(lambda T, _: fitcrit_laplace(T, Nx, Ny, Tb, T_set), [0], [0], p0=T0)
+
+# Compute again and plot
+T_model = solveLaplaceEq(Nx, Ny, Tb, params[0])
+T_plot = T_model.reshape(Nx, Ny)       # Reshape x-vec to mat Nx, Ny
+x, y = np.meshgrid(range(Ny), range(Nx))  # Get position arrays
+
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+ax.plot_surface(x, y, T_plot)           # Surface plot
+plt.show()
+
+print(np.mean(T_model))
     \end{lstlisting}
   \end{frame}
   
@@ -752,7 +753,7 @@ T_2 = \begin{bmatrix}
     \]
     \column{0.5\textwidth}
     Using the function \texttt{linprog} from \texttt{scipy.optimize}:
-    \begin{lstlisting}[language=Python]
+    \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
 from scipy.optimize import linprog
 
 c = [-5, -4, -6]
@@ -763,7 +764,7 @@ bounds = [(0, None), (0, None), (0, None)]
 res = linprog(c, A_ub=A, b_ub=b, bounds=bounds)
     \end{lstlisting}
 Gives (after accessing appropriate attributes of the result object):
-    \begin{lstlisting}[language=Python]
+    \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
 x = res.x
 fun = res.fun
 slack = res.slack
@@ -831,11 +832,11 @@ success = res.success
 \begin{frame}
   \frametitle{Summary}
   \begin{itemize}
-    \item Curve fitting: Manual procedures for polynomial fitting in Matlab
-    \item Curve fitting: Matlab's curve-fitting toolbox
-    \item Curve fitting: Matlab's non-linear least-squares solver \lstinline$lsqnonlin$
-    \item Optimization: An introduction to the Simplex method
-    \item Optimization: Use of the \lstinline$linprog$ solver
+    \item Curve fitting: Manual procedures for polynomial fitting in Python
+    \item Curve fitting: Python's SciPy library for curve fitting
+    \item Curve fitting: Python's non-linear least-squares solver \lstinline$least\_squares$
+    \item Curve fitting: Python's non-linear least-squares solver \lstinline$curve\_fit$
+    \item Optimization: An introduction to the Simplex method in Python
+    \item Optimization: Use of the \lstinline$linprog$ function in the SciPy library
   \end{itemize}
-
 \end{frame}
