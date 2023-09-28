@@ -296,7 +296,7 @@ plt.xlabel('t'); plt.ylabel('x'); plt.legend(); plt.grid(); plt.show()
   \begin{center}
     \begin{tikzpicture}
       \begin{axis}[%every axis/.append style={font=\footnotesize},
-        width=\textwidth, height=7cm,     % size of the image
+        width=\textwidth, height=6.5cm,     % size of the image
         grid = major,grid style={dashed, gray!30},
         axis background/.style={fill=white},
         axis x line=middle,axis y line=middle,ylabel=$x$,xlabel=$t$]
@@ -467,32 +467,42 @@ Backward Euler: always stable, even for $\Delta t > 100$ (but then not very accu
   Cure for stiff problems: use implicit methods!
   To find out whether your system is stiff: check whether one of the eigenvalues have an imaginary part};}
 \end{frame}
-
 \begin{frame}[fragile]
-  \frametitle{Implicit methods in Matlab}
-  Matlab offers a stabilized solver, \lstinline$ode15s$, for stiff problems. 
+  \frametitle{Implicit methods in Python}
+  Python offers a solver, \lstinline$solve\_ivp$, for stiff and non-stiff problems.
   $$
     \frac{dc_1}{dt} = 998c_1 + 1998c_2 \quad 
     \frac{dc_2}{dt} = -999c_1 -1999c_2,\, c_1(0) = 1,\, c_2(0) = 0
   $$
   \begin{itemize}
     \item Create the ode function
-    \begin{lstlisting}
-function [dcdt] = stiff_ode(t,c)
-dcdt = zeros(2,1); % Pre-allocation
-dcdt(1) =  998 * c(1) + 1998*c(2);
-dcdt(2) = -999 * c(1) - 1999*c(2);
-return
+    \begin{lstlisting}[language=Python,basicstyle=\tiny]
+def stiff_ode(t, c):
+    dcdt = [0, 0]  # Pre-allocation
+    dcdt[0] = 998 * c[0] + 1998 * c[1]
+    dcdt[1] = -999 * c[0] - 1999 * c[1]
+    return dcdt
     \end{lstlisting}
   \item Compare the resolution of the solutions
-    \begin{lstlisting}
-subplot(2,1,1); 
-ode45(@stiff_ode, [0 1], [1 0]);
-subplot(2,1,2); 
-ode15s(@stiff_ode, [0 1], [1 0]);
+    \begin{lstlisting}[language=Python,basicstyle=\tiny]
+from scipy.integrate import solve_ivp
+import matplotlib.pyplot as plt
+
+# Using RK45 (similar to ode45 in MATLAB)
+sol = solve_ivp(stiff_ode, [0, 1], [1, 0], method='RK45')
+plt.subplot(2, 1, 1)
+plt.plot(sol.t, sol.y.T, "-x")
+
+# Using BDF (similar to ode15s in MATLAB)
+sol = solve_ivp(stiff_ode, [0, 1], [1, 0], method='BDF')
+plt.subplot(2, 1, 2)
+plt.plot(sol.t, sol.y.T, "-x")
+
+plt.show()
     \end{lstlisting}
   \end{itemize}
 \end{frame}
+
 
 {\nologo
 \begin{frame}[fragile]
@@ -738,7 +748,7 @@ def diffReactSystem(x, y, ps):
 \begin{frame}[fragile, label={diffReactODEtrial}]
   \frametitle{BVP: example in Python}
   Let's first try to solve the ODE system using \lstinline|scipy.integrate.solve_ivp|:
-  \begin{lstlisting}[language=Python]
+  \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
 from scipy.integrate import solve_ivp
 import numpy as np
 
@@ -766,6 +776,7 @@ plt.show()
   Now we want to fit the value for \(q\) at \(x=0\) (defined below as \lstinline|bcq|), such that the concentration at \(x=\delta\) equals zero. We create a function with the output defined as the deviation from the target value:
   \begin{lstlisting}[language=Python]
 def diffReactCrit(bcq, ps):
+    bcq = bcq[0] # Cannot be array if it is to be fed to solve_ivp
     sol = solve_ivp(diffReactSystem, [0, ps['delta']], [ps['C_a_L'], bcq], args=(ps,))
     c = sol.y[0]
     f = c[-1]  # We subtract the desired value from the concentration at x=delta (0 in this case)
