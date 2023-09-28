@@ -64,5 +64,6 @@ def main():
     ax.set_title("Numerical solution")
     plt.show()
 
+# Only runs if the functions in this modules are note being imported
 if __name__ == "__main__":
     main()

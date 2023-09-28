@@ -56,12 +56,13 @@ def solve_laplace_eq(Nx, Ny):
 
 Nx = 35; Ny = 35;
 x, y = np.meshgrid(np.linspace(0,1,Nx), np.linspace(0,1,Ny))
-T = np.zeros_like(x) # (*@ \pause @*)
+T = np.zeros_like(x) 
+
 # Fourier series expansion
 for n in range(1,100):
     m = 2*n-1
     T += (np.sin(m*np.pi*x) * np.sinh(m*np.pi*y)) / (m * np.sinh(m*np.pi))
-Tex = T * (4 / np.pi) # (*@ \pause @*)
+Tex = T * (4 / np.pi) 
 # Compute numerical solution and post-process
 
 # First plot is created inside solve_laplace_eq, which also returns Tnum

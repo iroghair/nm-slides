@@ -33,9 +33,10 @@ def solve_jacobi(A, b, tol=1e-2):
     
     return x, it_jac
 
-
-A = np.array([[4, -1, 0, 0], [-1, 4, -1, 0], [0, -1, 4, -1], [0, 0, -1, 3]])
-b = np.array([15, 10, 10, 10])
-x = np.linalg.solve(A,b)
-x_ = solve_jacobi(A,b, 1e-6)[0]
-print(x, x_)
+# Only run the test below if you are not trying to import solve_jacobi
+if __name__ == "__main___":
+    A = np.array([[4, -1, 0, 0], [-1, 4, -1, 0], [0, -1, 4, -1], [0, 0, -1, 3]])
+    b = np.array([15, 10, 10, 10])
+    x = np.linalg.solve(A,b)
+    x_ = solve_jacobi(A,b, 1e-6)[0]
+    print(x, x_)
