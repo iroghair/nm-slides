@@ -1127,18 +1127,18 @@ Using $b_1+b_2=1$, $c_2b_2=\frac{1}{2}$, $a_{2,1}b_2=\frac{1}{2} \Rightarrow$ 3 
   We solve the system: $\displaystyle \frac{dx}{dt} = -k_1 x + k_2, k_1 = 0.2, k_2=2.5$
   \begin{itemize}
     \item Define a function that represents the equation:
-    \begin{lstlisting}[language=Python]
+    \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
 from scipy.integrate import solve_ivp
 
 def my_eqn(t, x):
     return -0.2*x + 2.5
     \end{lstlisting}
     \item Solve with a call to \lstinline|solve_ivp(function, timespan, initial_condition)|:
-    \begin{lstlisting}[language=Python]
+    \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
 sol = solve_ivp(my_eqn, [0, 40], [0], t_eval=[i for i in range(41)])
     \end{lstlisting}
     \item To plot the solution:
-    \begin{lstlisting}[language=Python]
+    \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
 import matplotlib.pyplot as plt
 
 plt.plot(sol.t, sol.y[0])
@@ -1179,7 +1179,7 @@ from scipy.integrate import solve_ivp
 x_init = [2]  # Initial condition
 t_span = [0, 20]  # Time span
 
-sol = solve_ivp(my_eqn_function, t_span, x_init, t_eval=[i for i in range(21)], rtol=1e-8, atol=1e-8)
+sol = solve_ivp(my_eqn_function, t_span, x_init, t_eval=[i for i in range(21)], rtol=1e-6, atol=1e-6)
 
 # Use sol.t and sol.y to access the solution
 \end{lstlisting}
