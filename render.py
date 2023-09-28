@@ -1,6 +1,7 @@
 import sys, os
 import subprocess as sp
 from pathlib import Path 
+import re
 
 # AUX endings
 aux = (".toc", ".snm", ".out", ".nav", ".aux", ".log", ".vrb", ".dvi", ".fls", ".gz")
@@ -25,7 +26,13 @@ def main(argv):
         f.write(includes)
 
     # Rendering them using latex
-    sp.run(["pdflatex", "-jobname=%s"%outfile.stem,"main.tex"])
+    # Check if the logfile exists
+    logfile = ''
+    # Run latex compiler until output does not change
+    while not bool(re.search(fr"File `{outfile.stem}.out' has not changed","|".join(logfile))):
+        sp.run(["pdflatex", "-jobname=%s"%outfile.stem,"main.tex"]) 
+        with open(f"{outfile.stem}.log","r") as f:
+            logfile = f.readlines()
 
     # Deleting the aux files 
     in_dir =tuple(map(Path,os.listdir()))
