@@ -1,0 +1,158 @@
+\part{Examples}
+\section{Style testing}
+\subsection*{General}
+\begin{frame}[label=contents_sample]
+  \frametitle{This is a slide deck just for testing}
+  \mode<beamer>{
+    \only<1>{\tableofcontents}
+  }
+  \only<2>{\tableofcontents[currentsection]}
+\end{frame}
+
+\begin{frame}
+ \frametitle{The following is a list with appearing items?}
+ \begin{itemize}[<+->]
+  \item Scientific techniques depend in an increasing fashion upon computer programs and simulation methods
+  \item Knowledge of programming allows you to automate routine tasks 
+  \item Ability to understand algorithms by inspection of the code 
+  \item Learn to think by dissecting a problem into smaller, easier to solve, parts 
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Here are some block contents}
+ \begin{block}{What is a program?}
+  \emph{A program is a sequence of instructions that is written to perform a certain task on a computer.} % SOURCE http://www.greenteapress.com/thinkpython/html/thinkpython002.html
+  \end{block}
+  \begin{itemize}
+    \item The computation might be something mathematical, a symbolic operation, image analysis, etc.%such as solving a system of equations or finding the roots of a polynomial
+    \item It can also be a symbolic computation, such as searching and replacing text in a document 
+    \item A program may even be used to compile another program
+    \item A program consists of one or more \emph{algorithms}
+  \end{itemize}
+  \begin{block}{Program layout}
+    \begin{enumerate}
+        \item Input (Get the radius of a circle)
+        \item Operations (Compute and store the area of the circle)
+        \item Output (Print the area to the screen)
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Versatility of Python: Image analysis}
+\begin{columns}
+  \column{0.5\textwidth}
+\begin{lstlisting}
+# Importing necessary libraries
+import numpy as np
+from scipy import ndimage
+from PIL.Image import fromarray
+from skimage import io, color, feature, measure
+
+# Loading and processing image 
+I = io.imread('bub0.png')
+BW = color.rgb2gray(I)
+E = feature.canny(BW) 
+F = ndimage.binary_fill_holes(E)
+
+# Show final image
+fromarray(F).show()
+\end{lstlisting}  
+\column{0.5\textwidth}
+  \vfill
+    This is an empty column
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Versatility of Python: Image analysis}
+\begin{lstlisting}
+# Beginning of render.py
+import sys, os
+import subprocess as sp
+from pathlib import Path 
+
+# AUX endings
+aux = (".toc", ".snm", ".out", ".nav", ".aux", ".log", ".vrb", ".dvi", ".fls", ".gz")
+outfile = Path("./Slides.pdf")
+
+
+def main(argv):
+    # Collecting the filenames 
+    filenames = [Path(f).stem for f in argv]
+    f_sep_commas = ",".join([f for f in filenames])
+    f_with_path = ",".join(["sections/%s"%f for f in filenames])
+
+    # Writing includes to include.tex
+    if filenames:
+        includes = "\\includeonlylecture{%s}\n\\includeonly{%s}"
+        includes = includes%(f_sep_commas, f_with_path)
+    else:
+        includes = ""
+
+    with open("./preamble/include.tex","w") as f:
+        f.write(includes)
+\end{lstlisting}  
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Getting started}
+   Start Python, and enter the following commands on the command line. Evaluate the output.
+   \pause
+   \begin{lstlisting}[language=Python,numbers=none]
+>> 2 + 3        # Some simple calculations
+>> 2 * 3
+>> 2 * 3**2     # Powers are done using ** (*@ \pause @*)
+>> a = 2        # Storing values into the workspace
+>> b = 3
+>> c = (2 * 3)**2  # Parentheses set priority
+>> 8 / a - b (*@ \pause @*)
+>> import math  # Mathematical functions can be used 
+>> math.sin(a)  
+>> math.sin(0.5 * math.pi)  # math.pi is an internal Python variable
+>> import cmath  # for working with complex numbers
+>> cmath.sqrt(-1)  # ... as are imaginary numbers    
+   \end{lstlisting}
+ \end{frame}
+ 
+
+ %% PRINTING
+ \begin{frame}[fragile]
+  \frametitle{Printing and formatting results}
+  In Python, you can control the display format of the output of a command using various formatting methods such as `str.format()`, f-strings, or by using formatting specifiers while printing with `print()`. These methods only involve changing the way the numbers are displayed, not the underlying representation.
+  
+  \begin{lstlisting}[language=Python,numbers=none]
+>> # Using str.format()
+>> a = 19/4
+>> print("{:.2f}".format(a)) # 2 decimal places
+>> b = a**(-6)
+>> print("{:.10f}".format(b)) # 10 decimal places
+>> 
+>> # Using f-strings (Python 3.6+)
+>> c = (21)**0.5
+>> print(f"{c:.10f}") # 10 decimal places
+>> d = (2.71828)**(-c) 
+>> print(f"{d:.2e}") # Scientific notation with 2 decimal places
+>> 
+>> # Using print formatting
+>> print("{:.2f}".format(d)) # 2 decimal places
+  \end{lstlisting}
+\end{frame}
+
+ 
+ {\nologo
+ \begin{frame}[fragile]
+  \frametitle{A slide without a logo}
+  \begin{itemize}
+    \item Using the \keystroke{$\uparrow$} and \keystroke{$\downarrow$} keys, you can cycle through recent commands
+    \item Typing part of a command and pressing \keystroke{Tab} completes the command and lists the possibilities
+    \item If a computation takes too long, you can press \keystroke{Ctrl}+\keystroke{C} to stop the program and return to the command line. Note that you may end up with incomplete results in the workspace.
+    \item Sequences of commands (programs, scripts) are contained as py-files, plain text files with the \lstinline$.py$ extension.
+    \item Python scripts can also be contained in jupyter notebooks, which have extension \lstinline$.ipynb$.
+    \item Such py-files must be in the \emph{current working directory} or in the Python \emph{path}, the locations where Python searches for a command. If you try to run a script that is not in the path, Python will throw an Exception/Error.
+    \item Anything following a \lstinline$#$ symbol is regarded as a comment
+    \item There are several keyboard shortcuts (vary with text editor) that will make coding much more efficient.
+  \end{itemize}
+\end{frame}
+}

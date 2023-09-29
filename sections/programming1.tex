@@ -15,7 +15,7 @@
   \item Scientific techniques depend in an increasing fashion upon computer programs and simulation methods
   \item Knowledge of programming allows you to automate routine tasks 
   \item Ability to understand algorithms by inspection of the code 
-  \item Learn to think by dissecting a problem into smaller bits 
+  \item Learn to think by dissecting a problem into smaller, easier to solve, parts 
  \end{itemize}\vskip2em
  \begin{columns}
   \column<1->{0.23\textwidth}
@@ -88,7 +88,7 @@
 \begin{columns}
   \column{0.5\textwidth}
 \begin{lstlisting}
-# Importing necessary lirbraries
+# Importing necessary libraries
 import numpy as np
 from scipy import ndimage
 from PIL.Image import fromarray
@@ -99,6 +99,9 @@ I = io.imread('bub0.png')
 BW = color.rgb2gray(I)
 E = feature.canny(BW) 
 F = ndimage.binary_fill_holes(E)
+
+# Show final image
+fromarray(F).show()
 \end{lstlisting}  
 \column{0.5\textwidth}
   \vfill
@@ -183,7 +186,7 @@ F = ndimage.binary_fill_holes(E)
     \item Try for instance: \lstinline$help(print)$ or \lstinline$help(help)$.
   \end{itemize}
   \item We supplied a number of basic Canvas modules: Python Crash Course, including small exercises.
-  \item Python Crash Course, 2nd Edition by Eric Matthes.
+  \item Python Crash Course, 3rd Edition by Eric Matthes.
   \item Search the web, Reddit, YouTube, etc.
 \end{itemize}
 \end{frame}
@@ -205,10 +208,14 @@ F = ndimage.binary_fill_holes(E)
 \begin{frame}[fragile]
  \frametitle{Variables in Python}
   \begin{itemize}
-   \item Python stores variables in the \emph{namespace}\pause
-   \item You should recognize the difference between the \emph{identifier} of a variable (its name, e.g. \lstinline$x$, \lstinline$setpoint_p$), and the data that it actually stores (e.g. 0.5)\pause
-   \item Python also defines a number of functions by default, e.g. \lstinline$min$, \lstinline$max$ or \lstinline$sum$.\pause
-   \item You can assign a variable by the \lstinline$=$ sign:
+    \item Python stores variables in the \emph{namespace}\pause
+    \item You should recognize the difference between the \emph{identifier} of a variable (its name, e.g. \lstinline$x$, \lstinline$setpoint_p$), and the data that it actually stores (e.g. 0.5)\pause
+    \item Python also defines a number of functions by default, e.g. \lstinline$min$, \lstinline$max$ or \lstinline$sum$.
+    \begin{itemize}
+      \item A list of built-in methods is given by \lstinline$dir(__builtins__)$
+    \end{itemize}
+    \pause
+    \item You can assign a variable by the \lstinline$=$ sign:
    \begin{lstlisting}[language=Python, numbers=none]
 >> x = 4*3
 >> x
@@ -232,6 +239,9 @@ F = ndimage.binary_fill_holes(E)
        \lstinline$bool$   & \lstinline$False$ \\
        \lstinline$tuple$  & \lstinline$(True, False)$ \\
      \end{longtable}
+     \pause
+     Everything in Python is an object. You can use the \lstinline$dir()$ function to query the possible methods on an object of a datatype (e.g. \lstinline$dir(28)$ or \lstinline$dir("Yes!")$).
+
  \end{frame}
 
 
@@ -243,7 +253,7 @@ F = ndimage.binary_fill_holes(E)
    \begin{lstlisting}[language=Python,numbers=none]
 >> v = [0, 1, 2, 3]
    \end{lstlisting}\pause
-   Access (i.e., read) an entry in a list:
+   Access (i.e., read) an entry in a list. Note that indexing starts at 0:
    \begin{lstlisting}[language=Python,numbers=none]
 >> v[1]
  1

@@ -32,9 +32,14 @@ Example:
 
 ## Todo (by priority after testing the code)
 1. Make sure the story flows correctly (specially due to modules)
-2. Fix the issue with the table of contents not showing
+✅ Fix the issue with the table of contents not showing
 3. Correct debugger information in programming2? (Ask ivo about which IDE)
 4. Replace all the matlab generated images (programming2 has wrong 3d image as well)
 5. Add animations to appropriate slides
 6. Place important scripts in a specific folder instead of in text
 7. Make rendering work with old make-file
+8. Fix the progress bar gradient, it looks iffy
+9. What's the notepad-displayed equation in python-versatility.pdf?
+10. Transitions between slides using `(*@  @*)` seem to have stopped working (e.g. `(*@ \pause @*)`)
+11. Convert references with `.format` to f-strings
+12. 
