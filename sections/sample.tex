@@ -100,7 +100,9 @@ def main(argv):
   \frametitle{Getting started}
    Start Python, and enter the following commands on the command line. Evaluate the output.
    \pause
-   \begin{lstlisting}[language=Python,numbers=none]
+   \begin{columns}
+    \column{0.75\textwidth} 
+      \begin{lstlisting}[numbers=none]
 >> 2 + 3        # Some simple calculations
 >> 2 * 3
 >> 2 * 3**2     # Powers are done using ** (*@ \pause @*)
@@ -113,9 +115,116 @@ def main(argv):
 >> math.sin(0.5 * math.pi)  # math.pi is an internal Python variable
 >> import cmath  # for working with complex numbers
 >> cmath.sqrt(-1)  # ... as are imaginary numbers    
-   \end{lstlisting}
+      \end{lstlisting}\pause
+    \column{0.25\textwidth} 
+      \begin{lstlisting}[style=PyOutput,numbers=none]
+5
+6
+18
+
+
+
+1.0
+
+0.9092974268256817
+1.0
+
+1j
+      \end{lstlisting}
+  \end{columns}
  \end{frame}
  
+\begin{frame}[fragile]
+  \frametitle{Lists in Python (1)}
+  \begin{itemize}
+    \item Lists are containers of collections of objects
+    \item A list is initialized using square brackets with comma-separated elements
+    \begin{lstlisting}[language=Python,numbers=none]
+>>> brands = ['Audi', 'Toyota', 'Honda', 'Ford', 'Tesla']
+    \end{lstlisting}
+    \item Lists can contain and mix any object type, even other lists:
+    \begin{lstlisting}[language=Python,numbers=none]
+>>> another_list = [0.0, 0.1, 0.2, 'Hello', brands]
+>>> print(another_list)
+    \end{lstlisting}
+    \begin{lstlisting}[style=PyOutput]
+[0.0, 0.1, 0.2, 'Hello', ['Audi', 'Toyota', 'Honda', 'Ford', 'Tesla']]
+    \end{lstlisting}
+    \item Access (i.e., read) an entry in a list. Note that indexing starts at 0:
+    \begin{lstlisting}[language=Python,numbers=none]
+>>> another_list[3]
+    \end{lstlisting}
+    \begin{lstlisting}[style=PyOutput]
+'Hello'
+    \end{lstlisting}
+  \end{itemize}
+ \end{frame}
+ 
+ \begin{frame}[fragile]
+   \frametitle{Lists in Python (2)}
+   \begin{itemize}
+    \item Manipulate the value of an entry goes likewise:
+    \begin{lstlisting}[language=Python,numbers=none]
+>>> another_list[3] = 'Bye' # Becomes: [0.0, 0.1, 0.2, 'Bye', ['Audi', ...]]
+    \end{lstlisting}
+    \item Slicing is used to retrieve multiple elements:
+    \begin{lstlisting}[language=Python,numbers=none]
+>>> another_list[1:4] # This will give the elements from index 1 to index 3
+    \end{lstlisting}
+    \begin{lstlisting}[style=PyOutput]
+[0.1, 0.2, 'Bye']
+    \end{lstlisting}
+    \item Lists can be unpacked into individual variables:
+    \begin{lstlisting}[language=Python,numbers=none]
+>>> a,b,c,d,e = brands
+>>> print(f"The first list element was {a}, then {b}, {c}, {d} and finally {e}.")
+    \end{lstlisting}
+    \begin{lstlisting}[style=PyOutput]
+The first list element was Audi, then Toyota, Honda, Ford and finally Tesla.
+    \end{lstlisting}
+    \item From here onwards, we will omit the \lstinline|print| statements from the slides
+   \end{itemize}\vskip1em
+  \end{frame}
+ 
+  \begin{frame}[fragile]
+    \frametitle{Lists in Python (3)}
+    \begin{itemize}
+      \item Lists can be concatenated or repeated by the addition and multiplication operators respectively: 
+      \begin{lstlisting}[language=Python,numbers=none]
+  >>> more_brands = ['Nissan','Kia'] + brands
+      \end{lstlisting}
+      \begin{lstlisting}[style=PyOutput]
+  ['Nissan', 'Kia', 'Audi', 'Toyota', 'Honda', 'Ford', 'Tesla']
+      \end{lstlisting}
+      \begin{lstlisting}[language=Python,numbers=none]
+  >>> zeros = 10*[0]
+      \end{lstlisting}
+      \begin{lstlisting}[style=PyOutput]
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+      \end{lstlisting}
+      \item Find out which methods can be performed on a list by using \lstinline|dir(more_brands)|:
+      \begin{lstlisting}
+ more_brands.append('Volvo') # Append object (here: string literal) at the end of the list 
+ more_brands.insert(1,'BMW') # Insert object at index 1
+ more_brands.sort()          # Sorts the list in-place
+ item = more_brands.pop(3)   # Removes element at index 3 from the list, stores it as item
+ \end{lstlisting}
+    \end{itemize}
+   \end{frame}
+
+
+ \begin{frame}[fragile]
+  \frametitle{Getting started}
+   \begin{itemize}
+    \item Start the Python REPL (read–eval–print loop) by running \lstinline|python| or \lstinline|ipython|
+    \item Enter the following commands on the command line. Evaluate the output.
+   \end{itemize}
+   \pause
+\begin{pyblock}
+print("This is an arbitrary print-statement from pyconsole")
+\end{pyblock}
+\end{frame}
+
 
  %% PRINTING
  \begin{frame}[fragile]

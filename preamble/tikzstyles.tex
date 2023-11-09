@@ -20,7 +20,7 @@
 \tikzset{emphblocky/.style={rectangle,draw=tueyellow,text centered,rounded corners,thick,top color=tueyellow!10,bottom color=tueyellow!30}}
 % Dots
 \tikzset{dot/.style={draw=tuered,circle,thick,minimum size=1mm,inner sep=0pt,outer sep=0pt,fill=white}}
-\tikzset{fdot/.style={circle,draw=black,fill=black,,inner sep=1.5pt}}
+\tikzset{fdot/.style={circle,draw=black,fill=black,inner sep=1.5pt}}
 \tikzset{gdot/.style={circle,draw=black,inner sep=3pt}}
 \tikzset{cross/.style={cross out, draw=black, fill=none, minimum size=2*(#1-\pgflinewidth), inner sep=0pt, outer sep=0pt}, cross/.default={4pt}}
 % Graphs and lines
@@ -100,3 +100,25 @@
     ](key) {\ensuremath{\ }#1\strut\ensuremath{\ }}
   ;
 }
+
+
+% \newcommand{\ExternalLink}{% from: https://tex.stackexchange.com/questions/99316/symbol-for-external-links
+%     \tikz[x=1.2ex, y=1.2ex, baseline=-0.05ex]{% 
+%         \begin{scope}[x=1ex, y=1ex]
+%             \clip (-0.1,-0.1) 
+%                 --++ (-0, 1.2) 
+%                 --++ (0.6, 0) 
+%                 --++ (0, -0.6) 
+%                 --++ (0.6, 0) 
+%                 --++ (0, -1);
+%             \path[draw, 
+%                 line width = 0.5, 
+%                 rounded corners=0.5] 
+%                 (0,0) rectangle (1,1);
+%         \end{scope}
+%         \path[draw, line width = 0.5] (0.5, 0.5) 
+%             -- (1, 1);
+%         \path[draw, line width = 0.5] (0.6, 1) 
+%             -- (1, 1) -- (1, 0.6);
+%         }
+%     }

@@ -27,13 +27,14 @@ def render(argv):
     # Rendering them using latex
     # Check if the logfile exists
     logfile = ''
+    sp.run([latex_exec, "-interaction=nonstopmode","-jobname=%s"%outfile.stem,"main.tex"])
+    
     # Run latex compiler until output does not change
     while not re.search(fr"File `{outfile.stem}.out' has not changed","|".join(logfile)):
-        sp.run([latex_exec, "-jobname=%s"%outfile.stem,"main.tex"]) 
+        sp.run([latex_exec, "-interaction=nonstopmode","-jobname=%s"%outfile.stem,"main.tex"]) 
         with open(f"{outfile.stem}.log","r") as f:
             logfile = f.readlines()
 
-    sp.run([latex_exec, "-jobname=%s"%outfile.stem,"main.tex"])
     
 def clean(argv):
     # Delete the auxiliary files 
