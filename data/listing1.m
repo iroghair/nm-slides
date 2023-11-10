@@ -1,2 +1,1 @@
-[dummy,index] = max(abs(A(column:end,column)));
-Index = index+column-1;
+index = np.argmax(np.abs(A[column:, column])) + column

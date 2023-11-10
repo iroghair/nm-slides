@@ -1,0 +1,48 @@
+\begin{tikzpicture}
+    \begin{axis}[
+            axis lines = middle,
+            xlabel = $x$,
+            ylabel = {$y$},
+            xtick = \empty,
+            ytick = \empty,
+            width=\textwidth,
+            ymin=-1.6, xmin=-0.6,
+            ymax=1.5, xmax=2.3,
+            font=\scriptsize
+        ]
+    
+        % USED newton_raphson.py and CHATGPT TO GET THE COORDINATES
+        \coordinate (c0) at  (0.40+1,1.10);
+        \coordinate (c0x) at (0.40+1,0.0);
+        \coordinate (c1) at (-1.51+1,-1.42);
+        \coordinate (c1x) at(-1.51+1,0.0);
+        \coordinate (c2) at (-0.24+1,0.28);
+        \coordinate (c2x) at(-0.24+1,0.0);
+        \coordinate (c3) at (-0.38+1,-0.01);
+        \coordinate (c3x) at(-0.38+1,0.0);
+        \coordinate (c4) at (-0.38+1,-0.00);
+        \coordinate (c4x) at(-0.38+1,0.0);
+        
+        
+        \addplot[domain=-2:4.5, samples=100, color=blue, thick]{ln(x-1+2) + (x-1) * 2.7182^(-(x-1) - (x-1)^2)};
+         %function as per your requirement
+        \draw[gray, dashed, thick] (c0) -- (c0x)   node[black, at start, above] {$x_0$};
+        \draw[gray, dashed, thick] (c1) -- (c1x)   node[black, at start, below] {$x_1$};
+        \draw[gray, dashed, thick] (c2) -- (c2x)   node[black, at start, above] {$x_2$};
+        \draw[gray, dashed, thick] (c3) -- (c3x)   node[black, at start, above] {};
+
+        \draw[gray, dashed, thin] (c0) -- (c1x)   node[gray, midway, above, yshift=0.7ex] {$f^\prime(x_0)$};
+        \draw[gray, dashed, thin] (c1) -- (c2x)   node[gray, midway, above, yshift=1ex] {$f^\prime(x_1)$};
+        \draw[gray, dashed, thin] (c2) -- (c3x)   node[gray, midway, above, xshift=-2ex] {$f^\prime(x_2)$};
+        
+        \fill[cyan] (c0) circle (1pt);
+        \fill[cyan] (c1) circle (1pt);
+        \fill[cyan] (c2) circle (1pt);
+        \fill[cyan] (c4) circle (2pt);
+        \draw[blue, solid] (c0) circle (1pt);
+        \draw[blue, solid] (c1) circle (1pt);
+        \draw[blue, solid] (c2) circle (1pt);
+        \draw[blue, solid] (c4) circle (2pt);
+    
+    \end{axis}
+    \end{tikzpicture}
