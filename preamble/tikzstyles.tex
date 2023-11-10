@@ -1,0 +1,124 @@
+\usetikzlibrary{decorations.pathmorphing} % Drawing
+\usetikzlibrary{decorations.shapes}
+\usetikzlibrary{patterns}
+\usetikzlibrary{positioning}
+\usetikzlibrary{shadows}
+% \usetikzlibrary{snakes}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows}
+\usetikzlibrary{fit}
+\usetikzlibrary{fadings}
+\usetikzlibrary{matrix}
+\usetikzlibrary{plotmarks}
+\usetikzlibrary{shapes}
+\usetikzlibrary{shadings}
+\usetikzlibrary{intersections}
+% Blocks
+\tikzset{block/.style={rectangle,draw=maincolor,fill=maincolor!20,text width=10em,text centered,rounded corners,minimum height=4em,thick}}
+\tikzset{emphblock/.style={rectangle,draw=maincolor,text centered,rounded corners,thick,top color=maincolor!10,bottom color=maincolor!30}}
+\tikzset{emphblocko/.style={rectangle,draw=tueorange,text centered,rounded corners,thick,top color=tueorange!10,bottom color=tueorange!30}}
+\tikzset{emphblocky/.style={rectangle,draw=tueyellow,text centered,rounded corners,thick,top color=tueyellow!10,bottom color=tueyellow!30}}
+% Dots
+\tikzset{dot/.style={draw=tuered,circle,thick,minimum size=1mm,inner sep=0pt,outer sep=0pt,fill=white}}
+\tikzset{fdot/.style={circle,draw=black,fill=black,inner sep=1.5pt}}
+\tikzset{gdot/.style={circle,draw=black,inner sep=3pt}}
+\tikzset{cross/.style={cross out, draw=black, fill=none, minimum size=2*(#1-\pgflinewidth), inner sep=0pt, outer sep=0pt}, cross/.default={4pt}}
+% Graphs and lines
+\tikzset{line/.style={black,>=stealth',semithick}}
+\tikzset{graph/.style={smooth,samples=400,tuered,semithick}}
+\tikzset{interp/.style={dot,draw=tuealert,inner sep=1.5pt,minimum size=4pt,color=tuealert,fill=none}}
+\tikzset{intblock/.style={line,draw=tuefuchsia,fill=tuefuchsia!50!white,fill opacity=0.3,opacity=0.6}}
+\tikzset{intdot/.style={line,dot,draw=tuefuchsia,fill=tuefuchsia,opacity=0.6}}
+\tikzset{gridline/.style={lightgray,ultra thin,dashed}}
+\newcommand{\tikzmark}[2]{\tikz[overlay,remember picture,
+  baseline=(#1.base)] \node (#1) {#2};}
+
+  \tikzset{style green/.style={
+    set fill color=tuegreen!60,
+    set border color=white,
+  },
+  style cyan/.style={
+    set fill color=tuelblue!60,
+    set border color=white,
+  },
+  style white/.style={
+    set fill color=white!60,
+    set border color=white,
+  },
+  style orange/.style={
+    set fill color=tueorange!60,
+    set border color=white,
+  },
+  style yellow/.style={
+    set fill color=tueyellow!60,
+    set border color=white,
+  },
+  mat/.style={
+    above left offset={-0.15,0.38},
+    below right offset={0.15,-0.125},
+    #1
+  },
+  mat2/.style={
+    above left offset={-0.15,0.31},
+    below right offset={0.15,-0.125},
+    #1
+  },
+  txt/.style={
+    above left offset={-0.1,0.34},
+    below right offset={0.15,-0.15},
+    #1
+  }
+}
+
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
+
+% \pgfplotsset{
+% % every axis y label/.append style={at={axis cs:14,14},rotate=0,anchor=south east}
+% exery axis/.style={ylabel near ticks},
+% }
+\tikzset{
+  invisible/.style={opacity=0},
+  visible on/.style={alt={#1{}{invisible}}},
+  alt/.code args={<#1>#2#3}{%
+    \alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}} % \pgfkeysalso doesn't change the path
+  },
+}
+
+% Keyboard strokes
+\newcommand*\keystroke[1]{%
+  \tikz[baseline=(key.base)]
+    \node[%
+      draw,
+      fill=white,
+      drop shadow={shadow xshift=0.25ex,shadow yshift=-0.25ex,fill=black,opacity=0.75},
+      rectangle,
+      rounded corners=2pt,
+      inner sep=1pt,
+      line width=0.5pt,
+      font=\scriptsize\sffamily
+    ](key) {\ensuremath{\ }#1\strut\ensuremath{\ }}
+  ;
+}
+
+
+% \newcommand{\ExternalLink}{% from: https://tex.stackexchange.com/questions/99316/symbol-for-external-links
+%     \tikz[x=1.2ex, y=1.2ex, baseline=-0.05ex]{% 
+%         \begin{scope}[x=1ex, y=1ex]
+%             \clip (-0.1,-0.1) 
+%                 --++ (-0, 1.2) 
+%                 --++ (0.6, 0) 
+%                 --++ (0, -0.6) 
+%                 --++ (0.6, 0) 
+%                 --++ (0, -1);
+%             \path[draw, 
+%                 line width = 0.5, 
+%                 rounded corners=0.5] 
+%                 (0,0) rectangle (1,1);
+%         \end{scope}
+%         \path[draw, line width = 0.5] (0.5, 0.5) 
+%             -- (1, 1);
+%         \path[draw, line width = 0.5] (0.6, 1) 
+%             -- (1, 1) -- (1, 0.6);
+%         }
+%     }

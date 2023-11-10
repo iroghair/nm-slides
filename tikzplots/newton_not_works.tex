@@ -1,0 +1,52 @@
+\begin{tikzpicture}
+    \begin{axis}[
+            axis lines = middle,
+            xlabel = $x$,
+            ylabel = {$y$},
+            xtick = \empty,
+            ytick = \empty,
+            width=\textwidth,
+            ymin=-4, xmin=-4,
+            ymax=4, xmax=7,
+            font=\scriptsize
+        ]
+    
+        % USED newton_raphson.py and CHATGPT TO GET THE COORDINATES
+        \coordinate (c0) at (0.60,-1.88);
+        \coordinate (c0x) at (0.60,0.0);
+        \coordinate (c1) at (-7.29/10,720.61/10);
+        \coordinate (c1x) at (-7.29,0.0);
+        % \coordinate (c2) at (-6.80,263.82);
+        % \coordinate (c2x) at (-6.80,0.0);
+        % \coordinate (c3) at (-6.30,95.71);
+        % \coordinate (c3x) at (-6.30,0.0);
+        % \coordinate (c4) at (-5.83,33.88);
+        % \coordinate (c4x) at (-5.83,0.0);
+        
+        
+        \addplot[domain=-4:7, samples=100, color=blue, thick]{(x-5)/2 + sin(deg(x-3)) + 1 + exp(-x-1)*exp(-x-7)};
+         %function as per your requirement
+        \draw[gray, dashed, thick] (c0) -- (c0x)   node[black, at start, below] {$x_0$};
+        \draw[gray, dashed, thick] (c1) -- (c1x)   node[black, at start, below] {$x_1$};
+        % \draw[gray, dashed, thick] (c2) -- (c2x)   node[black, at start, above] {$x_2$};
+        % \draw[gray, dashed, thick] (c3) -- (c3x)   node[black, at start, above] {};
+
+        \draw[gray, dashed, thin] (c0) -- (c1x)   node[gray, midway, above, yshift=0.2ex, xshift=0.5ex] {$f^\prime(x_0)$};
+        % \draw[gray, dashed, thin] (c1) -- (c2x)   node[gray, midway, above, yshift=1ex] {$f^\prime(x_1)$};
+        % \draw[gray, dashed, thin] (c2) -- (c3x)   node[gray, midway, above, xshift=-2ex] {$f^\prime(x_2)$};
+
+        \draw (1.2,1) node[black, above] {Can overshoot};
+        \draw[->] (0.7,1) -- (-2.6, -0.25); % Draws an arrow from (0,0) to (1,1)
+
+        
+        \fill[cyan] (c0) circle (1pt);
+        \fill[cyan] (c1) circle (1pt);
+        % \fill[cyan] (c2) circle (1pt);
+        % \fill[cyan] (c4) circle (2pt);
+        \draw[blue, solid] (c0) circle (1pt);
+        \draw[blue, solid] (c1) circle (1pt);
+        % \draw[blue, solid] (c2) circle (1pt);
+        % \draw[blue, solid] (c4) circle (2pt);
+    
+    \end{axis}
+    \end{tikzpicture}
