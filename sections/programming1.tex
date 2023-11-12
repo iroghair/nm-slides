@@ -26,7 +26,7 @@
 \begin{frame}
   \frametitle{Why should you learn something about programming?}
   \begin{itemize}[<+->]
-    \item Scientific techniques depend in an increasing fashion upon computer programs and simulation methods
+    \item Scientific analyses depend more than ever on computer programs and simulation methods
     \item Knowledge of programming allows you to automate routine tasks 
     \item Ability to understand algorithms by inspection of the code 
     \item Learn to think by dissecting a problem into smaller, easier to solve, parts 
@@ -99,7 +99,8 @@
 
 \begin{frame}[fragile]
   \frametitle{Versatility of Python: Image analysis}
-  \begin{columns}
+  \vskip1em
+  \begin{columns}[T]
     \column{0.5\textwidth}
     \begin{lstlisting}
 # Importing necessary libraries
@@ -150,12 +151,11 @@ fromarray(F).show()
 >>> a = 2        # Storing values into the workspace
 >>> b = 3
 >>> c = (2 * 3)**2  # Parentheses set priority
->>> 8 / a - b (*@ \pause @*)
->>> import math  # Mathematical functions can be used 
->>> math.sin(a)  
->>> math.sin(0.5 * math.pi)  # math.pi is an internal Python variable
->>> import cmath  # for working with complex numbers
->>> cmath.sqrt(-1)  # ... as are imaginary numbers    
+>>> 10_000_000 / b (*@ \pause @*)
+>>> print(a)
+>>> print(a,b)
+>>> print(a,b,c,sep='--')
+>>> print("Numerical methods")
       \end{lstlisting}\pause
     \column{0.25\textwidth} 
       \begin{lstlisting}[style=PyOutput,numbers=none]
@@ -165,12 +165,11 @@ fromarray(F).show()
 
 
 
-1.0
-
-0.9092974268256817
-1.0
-
-1j
+3333333.3333333335
+2
+2, 3
+2--3--36
+Numerical methods
       \end{lstlisting}
   \end{columns}
 \end{frame}
@@ -207,7 +206,7 @@ fromarray(F).show()
     \item Typing part of a command and pressing \keystroke{Tab} completes the command and lists the possibilities
     \item If a computation takes too long, you can press \keystroke{Ctrl}+\keystroke{C} to stop the program and return to the command line. Stored variables may contain incomplete results.
     \item Sequences of commands (programs, scripts) are contained as py-files, plain text files with the \lstinline$.py$ extension.
-    \item Python scripts can also be contained in jupyter notebooks, which have extension \lstinline$.ipynb$.
+    \item Python scripts (and notes/markdown) can also be contained in jupyter notebooks, which have extension \lstinline$.ipynb$.
     \item Such py-files must be in the \emph{current working directory} or in the Python \emph{path}, the locations where Python searches for a command. If you try to run a script that is not in the path, Python will throw an Exception/Error.
     \item Anything following a \lstinline$#$ symbol is regarded as a comment
     \item There are several keyboard shortcuts (vary with text editor) that will make coding much more efficient.
@@ -228,10 +227,16 @@ fromarray(F).show()
 \subsection{Further reading}
 \begin{frame}[fragile]
 \frametitle{Python help, documentation, resources}
-\begin{itemize}[<+->]
+\begin{itemize}
   \item Refer to the Python documentation at \href{https://docs.python.org/3/}{Official documentation}.
   \begin{itemize}
     \item Try for instance: \lstinline$help(print)$ or \lstinline$help(help)$.
+  \end{itemize}
+  \item Other packages that we will use:
+  \begin{itemize}
+    \item \href{https://numpy.org/doc/stable/}{NumPy documentation}
+    \item \href{https://matplotlib.org/stable/}{Matplotlib documentation}
+    \item \href{https://docs.scipy.org/}{SciPy documentation}
   \end{itemize}
   \item We supply a number of basic practice/reference modules: Python Crash Course.
   \item \href{https://tue.on.worldcat.org/oclc/1346554335}{Python Crash Course, 3rd Edition \faExternalLink} by Eric Matthes
@@ -245,7 +250,7 @@ fromarray(F).show()
 \section{Data structures}
 \subsection{Data types}
 \againframe<2>{contents_prog1}
-\begin{frame}
+\begin{frame}[fragile]
  \frametitle{Terminology}
  \begin{description}
   \item[Variable] Piece of data stored in the computer memory, to be referenced and/or manipulated
@@ -259,19 +264,18 @@ fromarray(F).show()
 \begin{frame}[fragile]
  \frametitle{Variables in Python}
   \begin{itemize}
-    \item Python stores variables in the \emph{namespace}\pause
-    \item You should recognize the difference between the \emph{identifier} of a variable (its name, e.g. \lstinline$x$, \lstinline$setpoint_p$), and the data that it actually stores (e.g. 0.5)\pause
+    \item Python stores variables in the \emph{namespace}
+    \item You should recognize the difference between the \emph{identifier} of a variable (its name, e.g. \lstinline$x$, \lstinline$setpoint_p$), and the data that it actually stores (e.g. 0.5)
     \item Python also defines a number of functions by default, e.g. \lstinline$min$, \lstinline$max$ or \lstinline$sum$.
     \begin{itemize}
       \item A list of built-in methods is given by \lstinline$dir(__builtins__)$
     \end{itemize}
-    \pause
     \item You can assign a variable by the \lstinline$=$ sign:
    \begin{lstlisting}[language=Python, numbers=none]
 >>> x = 4*3
 >>> x
 12
-   \end{lstlisting}\pause
+   \end{lstlisting}
    \item If you don't assign a variable, it will be stored in \lstinline$_$
    \item In most text editors, all variables are cleared automatically before the next execution. 
  \end{itemize}
@@ -353,24 +357,24 @@ The first list element was Audi, then Toyota, Honda, Ford and finally Tesla.
     \begin{itemize}
       \item Lists can be concatenated or repeated by the addition and multiplication operators respectively: 
       \begin{lstlisting}[language=Python,numbers=none]
-  >>> more_brands = ['Nissan','Kia'] + brands
+>>> more_brands = ['Nissan','Kia'] + brands
       \end{lstlisting}
       \begin{lstlisting}[style=PyOutput]
-  ['Nissan', 'Kia', 'Audi', 'Toyota', 'Honda', 'Ford', 'Tesla']
+['Nissan', 'Kia', 'Audi', 'Toyota', 'Honda', 'Ford', 'Tesla']
       \end{lstlisting}
       \begin{lstlisting}[language=Python,numbers=none]
-  >>> zeros = 10*[0]
+>>> zeros = 10*[0]
       \end{lstlisting}
       \begin{lstlisting}[style=PyOutput]
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
       \end{lstlisting}
       \item Find out which methods can be performed on a list by using \lstinline|dir(more_brands)|:
       \begin{lstlisting}
- more_brands.append('Volvo') # Append object (here: string literal) at the end of the list 
- more_brands.insert(1,'BMW') # Insert object at index 1
- more_brands.sort()          # Sorts the list in-place
- item = more_brands.pop(3)   # Removes element at index 3 from the list, stores it as item
- \end{lstlisting}
+more_brands.append('Volvo') # Append object (here: string literal) at the end of the list 
+more_brands.insert(1,'BMW') # Insert object at index 1
+more_brands.sort()          # Sorts the list in-place
+item = more_brands.pop(3)   # Removes element at index 3 from the list, stores it as item
+      \end{lstlisting}
     \end{itemize}
 \end{frame}
  
@@ -381,35 +385,78 @@ The first list element was Audi, then Toyota, Honda, Ford and finally Tesla.
     \item Create a list with a range of numbers:
     \begin{lstlisting}[language=Python,numbers=none]
 >>> a = list(range(1, 11))     # Creates a list from 1 to 10
-    \end{lstlisting}\pause
+    \end{lstlisting}
     \item List comprehensions can be used to create lists with more complex patterns:
     \begin{lstlisting}[language=Python,numbers=none]
 >>> x = [i/10 for i in range(-10, 11)]   # Creates a list from -1 to 1 with a step of 0.1
-    \end{lstlisting}\pause
+    \end{lstlisting}
     \item Manipulating multiple components using slicing and a loop:
     \begin{lstlisting}[language=Python,numbers=none]
 >>> y = list(range(11))  # Creates a list from 0 to 10
 >>> for i in [0, 3, 4, 5, 6]: 
 >>>     y[i] = 1
-    \end{lstlisting}\pause
+    \end{lstlisting}
     \item Or (by supplying a list instead of a scalar):
     \begin{lstlisting}[language=Python,numbers=none]
 >>> y[0:2] = [16, 19]  # Sets y[0] to 16 and y[1] to 19
     \end{lstlisting}
   \end{itemize}
  \end{frame}
- 
 
 \begin{frame}[fragile]
- \frametitle{Practice}
- Given a vector 
- \[ 
-    x = \left[2 \ 4 \ 6 \ 8 \ 10 \ 12 \ 14 \ 16 \ 18 \ 20 \ 30 \ 40 \ 50 \ 60 \ 70 \ 80 \right]
- \]
- \begin{itemize}
-  \item Find a way to define the vector without typing all individual elements\pause
-  \item Investigate the meaning of the following commands:
-  \begin{lstlisting}[language=Python, numbers=none]
+  \frametitle{Assignment of variables; value or reference}
+  Consider the following code snippets:
+  \begin{columns}[t]
+    \column{0.4\textwidth}
+    \begin{lstlisting}
+>>> i = 3
+>>> j = i 
+>>> j = i + 3
+>>> print(i,j)
+>>> print(id(i), id(j)) # Print memory address of data
+    \end{lstlisting}\pause
+    \begin{lstlisting}[style=PyOutput]
+3, 6
+8885416 8885544
+    \end{lstlisting}\pause
+    \column{0.5\textwidth}
+    \begin{lstlisting}
+>>> list_a = ['aa', 1, 'bb', 12, True, 1.618]
+>>> list_b = list_a
+>>> list_b[2] = 'cc'
+>>> print(list_a, list_b, sep='\n')
+>>> print(id(list_a), id(list_b))
+    \end{lstlisting}\pause
+    \begin{lstlisting}[style=PyOutput]
+['aa', 1, 'cc', 12, True, 1.618]
+['aa', 1, 'cc', 12, True, 1.618]
+140285003056512 140285003056512
+    \end{lstlisting}\pause
+  \end{columns}
+  \begin{itemize}
+    \item Primitive or immutable data types (e.g. \lstinline|int|, \lstinline|float|, \lstinline|str|, \lstinline|tuple|) are \emph{assigned by value}; the value is copied and changes do not affect the original variables.
+    \item Mutable data types (e.g. \lstinline|list|, \lstinline|set|, \lstinline|dict|) are \emph{assigned by reference}; they are two names pointing to the same data, changing one affects the values of the other.
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Practice}
+  Given a vector 
+  \[ 
+     x = \left[2 \ 4 \ 6 \ 8 \ 10 \ 12 \ 14 \ 16 \ 18 \ 20 \ 30 \ 40 \ 50 \ 60 \ 70 \ 80 \right]
+  \]
+  \begin{itemize}
+   \item Define the vector using \lstinline|range|'s, without typing all individual elements
+   \pause
+   \begin{onlyenv}<beamer> 
+    \begin{lstlisting}[]
+>>> x = list(range(2,20,2)) + list(range(20,90,10))
+     \end{lstlisting}
+     \pause
+    \end{onlyenv}
+   \item Investigate the meaning of the following commands:
+   \begin{lstlisting}[language=Python, numbers=none]
 >>> x[2]            
 >>> x[0:5]          
 >>> x[:-1]          
@@ -420,9 +467,9 @@ The first list element was Audi, then Toyota, Honda, Ford and finally Tesla.
 >>> max(x)       
 >>> min(x) 
 >>> x[::-1]       
-    \end{lstlisting}    
- \end{itemize}
-\end{frame}
+     \end{lstlisting}    
+  \end{itemize}
+ \end{frame}
 
 %% STRING SECTION
 \subsection{Strings}
@@ -433,22 +480,22 @@ The first list element was Audi, then Toyota, Honda, Ford and finally Tesla.
 >>> s = "Hello, world!"
 >>> len(s)
 13
-  \end{lstlisting}\pause
+  \end{lstlisting}
   Accessing a character in a string:
   \begin{lstlisting}[language=Python,numbers=none]
 >>> s[7]
 'w'
-  \end{lstlisting}\pause
+  \end{lstlisting}
   Getting a substring:
   \begin{lstlisting}[language=Python,numbers=none]
 >>> s[7:12]
 'world'
-  \end{lstlisting}\pause
+  \end{lstlisting}
   Or separate by whitespace using a string method (see \lstinline|dir(s)|):
   \begin{lstlisting}[language=Python,numbers=none]
 >>> s.split()
 ['Hello,', 'world!']
-  \end{lstlisting}\pause
+  \end{lstlisting}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -457,14 +504,14 @@ The first list element was Audi, then Toyota, Honda, Ford and finally Tesla.
   \begin{lstlisting}[language=Python,numbers=none]
 >>> s.replace('world', 'Python')
 'Hello, Python!'
-  \end{lstlisting}\pause
+  \end{lstlisting}
   Converting to upper and lower case:
   \begin{lstlisting}[language=Python,numbers=none]
 >>> s.upper()
 'HELLO, WORLD!'
 >>> s.lower()
 'hello, world!'
-  \end{lstlisting}\pause
+  \end{lstlisting}
   You can combine methods with string literals too:
   \begin{lstlisting}[language=Python,numbers=none]
 >>> s.replace('WoRlD'.lower(), 'Python')
@@ -482,33 +529,41 @@ True
 \begin{frame}[fragile]
   \frametitle{Practice}
   Given a string
-  \[
-     s = \text{"Python programming is fun!"}
-  \]
+  \begin{lstlisting}
+>>> s = "Python programming is fun!"
+  \end{lstlisting}
   \begin{itemize}
-   \item Find and print the index of the word "is".\pause
-   \item Create a new string where "fun" is replaced with "awesome".\pause
+   \item Find and print the index of the word "is".
+   \item Create a new string where "fun" is replaced with "awesome".
    \item Print the string in uppercase.
   \end{itemize}
+  \begin{onlyenv}<beamer>
+    \begin{lstlisting}[]
+>>> s.index('is')
+>>> p = s.replace('fun','awesome')
+>>> print(p.upper())
+    \end{lstlisting}
+  \end{onlyenv}
  \end{frame}
 
  %% TUPLES SECTION
 \subsection{Tuples}
 \begin{frame}[fragile]
   \frametitle{Tuples in Python}
+  A tuple is a built-in data type that contains an immutable sequence of values. 
   Creating a tuple:
   \begin{lstlisting}[language=Python,numbers=none]
 >>> t = (1, 2, 3)
-  \end{lstlisting}\pause
+  \end{lstlisting}
   Accessing an element of a tuple:
   \begin{lstlisting}[language=Python,numbers=none]
 >>> t[1]
 2
-  \end{lstlisting}\pause
+  \end{lstlisting}
   Tuples are immutable, so we can't change their elements. However, we can create a new tuple based on the old one:
   \begin{lstlisting}[language=Python,numbers=none]
 >>> t = t + (4, )
-  \end{lstlisting}\pause
+  \end{lstlisting}
   Finding the length of a tuple:
   \begin{lstlisting}[language=Python,numbers=none]
 >>> len(t)
@@ -519,14 +574,22 @@ True
 \begin{frame}[fragile]
   \frametitle{Practice}
   Given a tuple
-  \[
-     t = (1, 2, 3, 4, 5, 6)
-  \]
+  \begin{lstlisting}
+>>> t = (1, 2, 3, 4, 5, 6)
+  \end{lstlisting}
   \begin{itemize}
    \item Access and print the third element of the tuple.
    \item Try to change the value of the second element of the tuple.
    \item Create a new tuple by concatenating a second tuple \((7, 8, 9)\) to the original tuple.
-  \end{itemize}
+  \end{itemize}\pause
+  \begin{onlyenv}<beamer>
+    \begin{lstlisting}[]
+t = (1, 2, 3, 4, 5, 6)
+print(t[2])
+t[2] = 6
+t2 = t + (7,8,9)
+    \end{lstlisting}
+  \end{onlyenv}
  \end{frame}
 
 %% DICTIONARY SECTION 
@@ -536,20 +599,20 @@ True
   Creating a dictionary:
   \begin{lstlisting}[language=Python,numbers=none]
 >>> d = {'a': 1, 'b': 2, 'c': 3}
-  \end{lstlisting}\pause
+  \end{lstlisting}
   Accessing a value by its key:
   \begin{lstlisting}[language=Python,numbers=none]
 >>> d['b']
 2
-  \end{lstlisting}\pause
+  \end{lstlisting}
   Modifying a value associated with a key:
   \begin{lstlisting}[language=Python,numbers=none]
 >>> d['b'] = 47
-  \end{lstlisting}\pause
+  \end{lstlisting}
   Adding a new key-value pair:
   \begin{lstlisting}[language=Python,numbers=none]
 >>> d['d'] = 4
-  \end{lstlisting}\pause
+  \end{lstlisting}
   Removing a key-value pair using pop:
   \begin{lstlisting}[language=Python,numbers=none]
 >>> d.pop('d')
@@ -563,16 +626,16 @@ True
   \begin{lstlisting}[language=Python,numbers=none]
 >>> list(d.keys())
 ['a', 'b', 'c']
-  \end{lstlisting}\pause
+  \end{lstlisting}
   Get all values as a list:
   \begin{lstlisting}[language=Python,numbers=none]
 >>> list(d.values())
 [1, 47, 3]
-  \end{lstlisting}\pause
+  \end{lstlisting}
   Get all key-value pairs as a list of tuples:
   \begin{lstlisting}[language=Python,numbers=none]
-    >>> list(d.items())
-    [('a', 1), ('b', 47), ('c', 3)]
+>>> list(d.items())
+[('a', 1), ('b', 47), ('c', 3)]
   \end{lstlisting}
 \end{frame}
 
@@ -580,15 +643,23 @@ True
   \frametitle{Practice}
   Given a dictionary
   \begin{lstlisting}[language=Python,numbers=none]
-d = { 'Alice': 24, 'Bob': 27, 'Charlie': 22, 'Dave': 30}
+>>> d = { 'Alice': 24, 'Bob': 27, 'Charlie': 22, 'Dave': 30}
   \end{lstlisting}
   \begin{itemize}
-   \item Create the dictionary above in your Python environment.\pause
-   \item Access and print the age of 'Charlie'.\pause
-   \item Update 'Alice' age to 25.\pause
-   \item Add a new entry for 'Eve' with age 29.\pause
+   \item Access and print the age of 'Charlie'.
+   \item Update 'Alice' age to 25.
+   \item Add a new entry for 'Eve' with age 29.
    \item Print all the keys in the dictionary.
-  \end{itemize}
+  \end{itemize}\pause
+  \begin{onlyenv}<beamer>
+    \begin{lstlisting}[]
+>>> print(d['Charlie'])
+>>> d['Alice'] = 25
+>>> d['Eve'] = 29
+>>> print(d.keys())
+dict_keys(['Alice', 'Bob', 'Charlie', 'Dave', 'Eve'])
+    \end{lstlisting}
+  \end{onlyenv}
  \end{frame}
 
  \section{Control flow}
@@ -623,6 +694,26 @@ d = { 'Alice': 24, 'Bob': 27, 'Charlie': 22, 'Dave': 30}
 
 \begin{frame}[fragile]
   \frametitle{Loops in Python (2)}
+  The \lstinline|enumerate| keyword returns both the \emph{index} as well as the \emph{list element}:
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> my_list = ['aa', 1, 'bb', 12, True, 1.618034, []]
+>>> for idx,elm in enumerate(my_list):
+...     print(f'Element {elm} of type {type(elm)} at index {idx}')
+  \end{lstlisting}
+  \pause
+  \begin{lstlisting}[style=PyOutput]
+Element aa of type <class 'str'> at index 0
+Element 1 of type <class 'int'> at index 1
+Element bb of type <class 'str'> at index 2
+Element 12 of type <class 'int'> at index 3
+Element True of type <class 'bool'> at index 4
+Element 1.618034 of type <class 'float'> at index 5
+Element [] of type <class 'list'> at index 6
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Loops in Python (3)}
   The `while` loop keeps going as long as a condition is \lstinline{True}:
   \begin{lstlisting}[language=Python,numbers=none]
 >>> i = 0
@@ -657,6 +748,28 @@ d = { 'Alice': 24, 'Bob': 27, 'Charlie': 22, 'Dave': 30}
   \item Use a while loop to print the values at indices 0 to 4.\pause
   \item Use a loop to find and print the index of the number 7 in the list.
  \end{itemize}
+ \begin{onlyenv}<beamer>
+  \begin{columns}[T]
+    \column{0.33\textwidth}
+      \begin{lstlisting}[]
+>>> for i in my_list:
+...    print(i)
+      \end{lstlisting}
+    \column{0.33\textwidth}
+      \begin{lstlisting}[]
+>>> c = 0
+>>> while (c<4):
+...    print(f"{my_list[c]=}")
+...    c += 1
+      \end{lstlisting}
+    \column{0.33\textwidth}
+      \begin{lstlisting}[]
+>>> while not my_list[c] == 7:
+...    c += 1
+>>> print(my_list[c])
+      \end{lstlisting}      
+  \end{columns}
+ \end{onlyenv}
 \end{frame}
 
 %% CONTROL STATEMENTS
@@ -709,8 +822,9 @@ x is positive but odd
   \frametitle{Combined conditionals}
   \begin{block}{Leap year determination}
     To be a leap year, the year number must be divisible by four, except for end-of-century years, which must be divisible by 400.
-  \end{block}
+  \end{block}\pause
   We can create combined conditions using \lstinline|not|, \lstinline|and| and \lstinline|or| to determine whether we have a leap year:
+  \pause
   \begin{lstlisting}[language=Python, numbers=none]
 >>> year = 2024
 >>> if year % 4 == 0 and (not year % 100 == 0 or year % 400 == 0):
@@ -750,7 +864,27 @@ print(my_artists)
   \item Use an \lstinline{if} statement to check if 125 is in \lstinline{my_list}, and print a message indicating the result.
   \item Write a statement that checks and prints whether \lstinline{my_list[3]} is divisible by 3, and if not, print the remainder.
   \item Use a list comprehension to create a list of all numbers in \lstinline|my_list| that are not divisible by 5.
- \end{itemize}
+ \end{itemize}\pause
+ \begin{onlyenv}<beamer>
+  \begin{columns}[T]
+    \column{0.33\textwidth}
+    \begin{lstlisting}[]
+>>> if 125 in my_list:
+...     print('The number 125 was found in my_list!')
+    \end{lstlisting}
+    \column{0.33\textwidth}
+    \begin{lstlisting}[]
+>>> if my_list[3] % 3 == 0:
+...     print(f'{my_list[3]} is divisible by 3')
+... else:
+...     print(f'The remainder of {my_list[3]} and 3 is {my_list[3]%3}')
+    \end{lstlisting}
+    \column{0.33\textwidth}
+    \begin{lstlisting}
+>>> k = [n for n in my_list if not n % 5 == 0 ]
+    \end{lstlisting}
+  \end{columns}
+\end{onlyenv}
 \end{frame}
 
 %% FUNCTIONS 
@@ -827,7 +961,7 @@ Buzz off, Bob!
 >>> a,b = statistics(numlist)
 >>> print(f'{a=}, {b=}')
 a=94, b=6
-  \end{lstlisting}\pause
+  \end{lstlisting}
 \end{frame}
 
 {\nologo
@@ -844,27 +978,62 @@ a=94, b=6
     \item \bfseries{Documentation is crucial!}\pause
   \end{itemize}
   \begin{lstlisting}[language=Python, numbers=none]
-    >>> def statistics(numbers):
-    ...     """Return the maximum and minimum of a list of numbers
-    ...        Function arguments:
-    ...        numbers: list of numbers"""
-    ...     return max(numbers), min(numbers)
+>>> def statistics(numbers):
+...     """Return the maximum and minimum of a list of numbers
+...        Function arguments:
+...        numbers: list of numbers"""
+...     return max(numbers), min(numbers)
   \end{lstlisting}\pause
   \begin{lstlisting}[language=Python, numbers=none]
-    >>> help(statistics)
+>>> help(statistics)
   \end{lstlisting}
   \begin{lstlisting}[style=PyOutput,keywords={statistics},keywordstyle=\bfseries]
-    Help on function statistics in module __main__:
-    
-    statistics(numbers)
-    Return the maximum and minimum of a list of numbers
-    Function arguments:
-    numbers: list of numbers
+Help on function statistics in module __main__:
+
+statistics(numbers)
+Return the maximum and minimum of a list of numbers
+Function arguments:
+numbers: list of numbers
   \end{lstlisting}
 \end{frame}
 }
-  
+
+{\nologo
+\begin{frame}[fragile]
+  \frametitle{Passing arguments by value or reference?}
+  Recall that certain Python variables are assigned by value, and others reference; the same goes for passing arguments \footnote{\href{https://k0nze.dev/posts/python-copy-reference-none/}{https://k0nze.dev/posts/python-copy-reference-none/}}:
+  \begin{itemize}
+    \item Primitive or immutable data types are \emph{passed by value}; the value is copied and changes made inside the function will not affect the values stored in the variables passed to the function.
+    \item Mutable data types (e.g. list, set, dict) are passed to a function \emph{by reference}; changes that are made inside the function do affect the values outside of the function.
+  \end{itemize}
+  \begin{columns}[t]
+    
+    \column{0.4\textwidth}
+    Consider the function:
+
+    \begin{lstlisting}
+def func(x, y):
+    x = x - 1 # Subtract 1
+    y.pop()   # Remove last item
+    \end{lstlisting}\pause
+    \column{0.6\textwidth}
+    % We call the function using an immutable data type (\lstinline|int|) and a mutable data type (\lstinline|list|):
+    \begin{lstlisting}
+i = 1
+l = ['a', 'b']
+
+func(i, l)
+
+print(i, l)
+    \end{lstlisting}
+    \begin{lstlisting}[style=PyOutput]
+1, ['a']      
+    \end{lstlisting}
+  \end{columns}
 \end{frame}
+}
+
+
 \begin{frame}[fragile]
   \frametitle{Practice}
   \begin{columns}[t]
@@ -872,15 +1041,15 @@ a=94, b=6
         Define a function that computes the factorial of a number, $n!$:
         \[
           n! = 1 \times 2 \times 3 \times \ldots \times (n-1) \times n
-          \]
-        
+        \]
       \column{0.5\textwidth}
         Compute $\exp{(x)}$ using the Taylor series, iterate until the change is smaller than $1\cdot 10^{-6}$:
         \[
           \exp{(x)} = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \ldots + \frac{x^n}{n!}
-          \]
+        \]
         \end{columns}
     \pause \vskip1em
+    \begin{onlyenv}<beamer>
     \begin{columns}[t]
       \column{0.5\textwidth}
       \begin{lstlisting}[language=Python]
@@ -888,7 +1057,7 @@ def factorial(n):
     """Compute the factorial of n"""
     x = 1
     for i in range(1,n+1):
-    x *= i
+        x *= i
     return x
       \end{lstlisting}
       \column{0.5\textwidth}
@@ -897,17 +1066,81 @@ def exponential(x, eps=1.0e-6):
     """Compute exponential of x with accuracy eps (default: 1.0e-6)"""
     i = 0
     taylor_terms = [x**i/factorial(i)]
+    
     while taylor_terms[-1] >= eps:
-    i += 1
-    taylor_terms.append(x**i/factorial(i))
+        i += 1
+        taylor_terms.append(x**i/factorial(i))
+    
     return sum(taylor_terms), i
       \end{lstlisting}
     \end{columns}
+  \end{onlyenv}
  \end{frame}
+
+\subsection{Recursion}
+\begin{frame}[label=recursion,fragile]
+ \frametitle{Advanced topic: Recursion}
+ \begin{columns}[T]
+   \column{0.5\textwidth}
+   \begin{itemize}
+    \item<1-> In order to understand recursion, one must first understand recursion
+    \item<2-> A recursive function includes a call to itself (a function within a function)
+    \begin{itemize}
+      \item<3-> This could lead to infinite calls;
+      \item<3-> A base case is required so that recursion is stopped;
+      \item<3-> Base case does not call itself, simply returns.
+    \end{itemize}
+ \end{itemize}
+   \column{0.5\textwidth}
+   \includegraphics<3>[width=0.6\columnwidth]{scoobydoo.jpg}
+ \end{columns}
+\end{frame}
+
+\againframe{recursion}
+
+\begin{frame}[fragile]
+ \frametitle{Recursion: example}
+ \begin{lstlisting}[language=Python]
+def mystery(a, b):
+  if b == 1:
+      # Base case
+      return a
+  else:
+      # Recursive function call
+      return a + mystery(a, b-1)
+ \end{lstlisting}
+\vskip1em \pause
+\begin{itemize}
+  \item What does this function do? \pause
+  \item Can you spot the error? \pause
+  \item How deep can you go? Which values of b don't work anymore?
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Practice}
+        Define a function that computes the factorial of a number, $n!$, using recursion:
+        \[
+          n! = 1 \times 2 \times 3 \times \ldots \times (n-1) \times n
+        \]
+    \pause \vskip1em
+    \begin{onlyenv}<beamer>
+      \begin{lstlisting}[language=Python]
+def factorial(n):
+    """Compute the factorial of n"""
+    assert isinstance(n,int) and n >= 0, 'Use positive integers only'
+
+    if n==1:
+      return 1
+    else:
+      return n*factorial(n-1) 
+      \end{lstlisting}
+    \end{onlyenv}
+\end{frame}
 
 %% SCOPE
 \subsection{Scope}
-\begin{frame}
+\begin{frame}[fragile]
   \frametitle{Scope of functions and variables in Python}
 
   In Python, the scope of a variable refers to the regions of a program where that variable is accessible. Understanding the scope of variables helps to avoid bugs and maintain a clean codebase. The scopes in Python are categorized as follows:
@@ -989,10 +1222,78 @@ def outer_func():
   \end{lstlisting}
 \end{frame}
 
+% \begin{frame}[fragile]
+%   \frametitle{Passing arguments by value or reference?}
+%   Recall that certain Python variables are assigned by reference; the same goes for passing arguments\footnote{\href{k0nze.dev}{https://k0nze.dev/posts/python-copy-reference-none/}}:
+%   \begin{itemize}
+%     \item Primitive or immutable data types are \emph{passed by value}; the value is copied and changes made inside the function will not affect the values stored in the variables passed to the function.
+%     \item Mutable data types (e.g. list, set, dict) are passed to a function \emph{by reference}; changes that are made inside the function do affect the values outside of the function.
+%   \end{itemize}
+%   Consider:
+%   \begin{lstlisting}
+% def func(x, y):
+%     x = x - 1
+%     y.pop()
+
+% i = 1
+% l = ['a', 'b']
+
+% func(i, l)
+
+% print(i, l)
+%   \end{lstlisting}
+
+%   \begin{lstlisting}[PyOutput]
+% 1, ['a']      
+%   \end{lstlisting}
+% \end{frame}
+
+\subsection{Lambda functions}
+\begin{frame}[fragile]
+  \frametitle{Lambda functions (1)}
+  Consider the mathematical function \(f(x) = x^2+e^x\) defined as a Python function block:
+  \begin{lstlisting}[language=Python]
+def f(x):
+    from math import exp
+    return x**2 + np.exp(x)
+  \end{lstlisting}
+  Note:
+  \begin{itemize}
+    \item The function is defined using the \lstinline|def| keyword.
+    \item The variables and \lstinline|exp| function used are defined \emph{locally}. They will not be available globally unless defined as such.
+    \item The function is defined in a Python script, not in a separate file.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Lambda functions (2)}
+  If you do not want to create a new function block, you can create an \emph{lambda function}:
+  Lambda functions are small, anonymous functions that can be instantiated in a single line, or even as an argument to a function.
+  \begin{lstlisting}[language=Python]
+from math import exp
+f = lambda x: x**2 + exp(x)
+  \end{lstlisting}
+  \pause
+  \begin{itemize}
+    \item \lstinline[language=Python]|f|: the name of the function
+    \item \lstinline[language=Python]|lambda|: used to define the inline function
+    \item \lstinline[language=Python]|x|: the input argument (can be multiple, comma separated)
+    \item \lstinline|:|: colon indicating the function definition will start
+    \item \lstinline[language=Python]|x**2 + exp(x)|: the actual function
+  \end{itemize}\pause
+  \begin{lstlisting}[language=Python]
+xsqr_exp = [f(x) for x in range(5)]
+print(xsqr_exp)
+  \end{lstlisting}
+  \begin{lstlisting}[language=Python]
+[1.0, 3.718281828459045, 11.38905609893065, 29.085536923187668, 70.59815003314424]
+  \end{lstlisting}
+\end{frame}
+
 %% Modules
 \section{Modules}
 \againframe<2>{contents_prog1}
-\subsection*{Introduction}
+\subsection{Using modules}
 \begin{frame}[fragile]
   \frametitle{Using Modules in Python (1)}
   Modules are files containing Python code, used to organize functionalities and reuse code across projects. To use a module, it must first be imported using the \lstinline{import} keyword. Here, we import the entire \lstinline{math} module:
@@ -1029,424 +1330,264 @@ def outer_func():
   \end{lstlisting}
 \end{frame}
 
+\subsection{Math module}
+\begin{frame}[fragile]
+  \frametitle{The math module}
+  Many mathematical operations and concepts are available in the \href{https://docs.python.org/3/library/math.html}{math module}:
+  \begin{columns}
+    \column{0.5\textwidth}
+    \begin{lstlisting}[language=Python]
+from math import pi,sin,sqrt,log10\
+,exp,floor,ceil,factorial,inf,log
+print(pi)
+print(sin(0.2*pi))
+print(sqrt(2))
+print(log10(10_000))
+print(exp(1))
+print(log(exp(2)))
+print(floor(2.57))
+print(ceil(2.57))
+print(floor(-2.57))
+print(round(2.4))
+print(round(4.5))
+print(factorial(5))
+print(f"1 divided by infinity equals {1/inf}")
+    \end{lstlisting}\pause
+    \column{0.5\textwidth}
+    \begin{lstlisting}[style=PyOutput]
+      
+
+3.141592653589793
+0.5877852522924731
+1.4142135623730951
+4.0
+2.718281828459045
+2.0
+2
+3
+-3
+2
+4
+120
+1 divided by infinity equals 0.0
+    \end{lstlisting}
+  \end{columns}
+\end{frame}
+
 \begin{frame}[fragile]
   \frametitle{Practice}
-  \begin{columns}[T]
-    \begin{column}{0.5\textwidth}
-      \begin{enumerate}
-        \item Import the \lstinline{random} module and use a function from it to generate a random number.\pause
-        \begin{lstlisting}[language=Python]
-import random
-print(random.randint(1, 100))
-        \end{lstlisting}
-        The \lstinline{random.randint} function is used to generate a random integer number between 1 and 100. Alternatively, the \lstinline|random.random()| function generates a random float in the interval $[0,1)$.
-      \end{enumerate}
-    \end{column}
+  Use the math module to compute $y=\sin(x)$ for 8 equidistant points $x\in \left[0,2\pi\right]$
+    \begin{itemize}
+      \item Use \emph{list comprehensions} to generate the lists \lstinline|x| and \lstinline|y|
+    \end{itemize}\pause
+    \begin{onlyenv}<beamer>
+      \begin{columns}[T]
+        \column{0.5\textwidth}
+        \begin{lstlisting}[]
+from math import pi,sin
+x_values = [x/8*2*pi for x in range(9)]
+y_values = [sin(x) for x in x_values]
 
-    \begin{column}{0.5\textwidth}
-      \begin{enumerate}\setcounter{enumi}{1}
-        \item Import only the \lstinline{pi} variable from the \lstinline{math} module and print its value.\pause
-        \begin{lstlisting}[language=Python]
-from math import pi
-print(pi)
-        \end{lstlisting}
-        The \lstinline{pi} variable is imported from the \lstinline{math} module and its value is printed.
-        \item Create an alias for a module you import and use a function from the aliased module. \pause
-        \begin{lstlisting}[language=Python]
-import math as m
-print(m.sqrt(16))
-        \end{lstlisting}
-        The \lstinline{math} module is aliased as \lstinline{m} and the \lstinline{sqrt} function is used to find the square root of 16.
-      \end{enumerate}
-    \end{column}
-  \end{columns}
+for x,y in zip(x_values,y_values):
+    print(f"{x: 10.4f},{y: 10.4f}")
+        \end{lstlisting}\pause
+      \column{0.5\textwidth}
+      \begin{lstlisting}[style=PyOutput]
+0.0000,    0.0000
+0.7854,    0.7071
+1.5708,    1.0000
+2.3562,    0.7071
+3.1416,    0.0000
+3.9270,   -0.7071
+4.7124,   -1.0000
+5.4978,   -0.7071
+6.2832,   -0.0000
+      \end{lstlisting}
+      \end{columns}
+      
+    \end{onlyenv}
 \end{frame}
 
 
-%% NUMPY
-\subsection{Introduction to NumPy}
-\begin{frame}[fragile]
-  \frametitle{Introduction to NumPy (1)}
-  NumPy is a powerful library for numerical computing in Python. It introduces the multidimensional array (\lstinline|ndarray|) data structure which is central to numerical computing tasks. To start using NumPy, you need to import it first:
-  \begin{lstlisting}[language=Python, numbers=none]
->>> import numpy as np
-  \end{lstlisting}\pause
-  Creating arrays from Python lists and accessing elements:
-  \begin{lstlisting}[language=Python, numbers=none]
->>> arr = np.array([1, 2, 3, 4, 5])
->>> arr[0]
-1
-  \end{lstlisting}\pause
-  Create arrays with predetermined values:
-  \begin{lstlisting}[language=Python, numbers=none]
->>> np.zeros(5)  # Creates an array of five zeros
->>> np.ones((3, 3))  # Creates a 3x3 array of ones - note that the input argument is a tuple
-  \end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Introduction to NumPy (2)}
-  Useful array creation functions:
-  \begin{lstlisting}[language=Python, numbers=none]
->>> np.arange(0, 10, 2)  # Creates an array with values from 0 to 10, step 2
->>> np.linspace(0, 1, 5) # Creates an array with 5 values evenly spaced between 0 and 1
->>> np.logspace(-3,2,6)  # Creates an array spaced evenly on a logscale
-  \end{lstlisting}\pause
-  Array operations:
-  \begin{lstlisting}[language=Python, numbers=none]
->>> arr * 2  # Multiplies every element by 2
->>> arr + np.array([5, 4, 3, 2, 1])  # Element-wise addition
-  \end{lstlisting}\pause
-  Inspecting your array:
-  \begin{lstlisting}[language=Python, numbers=none]
->>> arr.shape  # Returns the dimensions of the array (tuple)
->>> arr.shape[0] # Returns the number of rows ([1] for columns)
->>> len(arr)  # Returns the size of the first dimension
->>> arr.size # Returns the total number of elements in arr
-  \end{lstlisting}
-\end{frame}
-
-%% MATH WITH NUMPY
-\subsection*{Math with NumPy}
-\begin{frame}[fragile]
-  \frametitle{Math with NumPy (1)}
-  NumPy provides a rich set of functions to perform mathematical operations on arrays. Let's explore some categories of these operations.\pause
-
-  \textbf{Linear Algebra}:
-  \begin{lstlisting}[language=Python, numbers=none]
->>> np.dot(arr, arr)  # Dot product
->>> np.linalg.norm(arr)  # Euclidean norm (L2 norm)
-  \end{lstlisting}\pause
-
-  \textbf{Trigonometric Functions}:
-  \begin{lstlisting}[language=Python, numbers=none]
->>> np.sin(arr)  # Sine of each element
->>> np.cos(arr)  # Cosine of each element
-  \end{lstlisting}
-
-  \textbf{Statistical functions to analyze data}:
-  \begin{lstlisting}[language=Python, numbers=none]
->>> np.mean(arr)  # Mean value of the array elements
->>> np.std(arr)   # Standard deviation of the array elements
-  \end{lstlisting}\pause
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Math with NumPy (3)}
-  \textbf{Table: Useful NumPy Functions for Beginners}
-
-  \begin{tabular}{l|l}
-  Function & Description \\
-  \hline
-  \lstinline$np.array$ & Create a NumPy array \\
-  \lstinline$np.zeros$ & Create an array filled with zeros \\
-  \lstinline$np.ones$ & Create an array filled with ones \\
-  \lstinline$np.arange$ & Create an array with evenly spaced values \\
-  \lstinline$np.linspace$ & Create an array with a specified number of evenly spaced values \\
-  \lstinline$np.sin$ & Sine function \\
-  \lstinline$np.cos$ & Cosine function \\
-  \lstinline$np.tan$ & Tangent function \\
-  \lstinline$np.exp$ & Exponential function \\
-  \lstinline$np.log$ & Natural logarithm \\
-  \lstinline$np.sqrt$ & Square root function \\
-  \lstinline$np.dot$ & Dot product of two arrays \\
-  \lstinline$np.linalg.norm$ & Calculate the norm of an array \\
-  \lstinline$np.mean$ & Calculate the mean of an array \\
-  \lstinline$np.std$ & Calculate the standard deviation of an array \\
-  \end{tabular}
-\end{frame}
-
-
-%% NDARRAY
-\subsection*{Working with NumPy ndarrays}
-\begin{frame}[fragile]
-  \frametitle{Introduction to NumPy ndarrays (1)}
-  In Python, NumPy ndarrays enable efficient operations on arrays, particularly mathematical operations associated with linear algebra. Let's look at how we can create and manipulate matrices using NumPy ndarrays.\pause
-  
-  Creating matrices (2D ndarrays):
-  \begin{lstlisting}[language=Python, numbers=none]
->>> import numpy as np
->>> matrix = np.array([[1, 2], 
-                      [3, 4]]) # Matrices are arrays of arrays(rows)
-  \end{lstlisting}\pause
-
-  Saving and loading matrices:
-  \begin{lstlisting}[language=Python, numbers=none]
->>> np.save('my_matrix.npy', matrix)  # Save the matrix to a file
->>> loaded_matrix = np.load('my_matrix.npy')  # Load the matrix from a file
-  \end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Matrix Operations with NumPy ndarrays (2)}
-  NumPy offers a rich set of functions to perform various matrix operations, essential in linear algebra. Let's explore some of them.\pause
-
-  Matrix Transposition and Inversion:
-  \begin{lstlisting}[language=Python, numbers=none]
->>> np.transpose(matrix)  # Find the transpose of the matrix
->>> np.linalg.inv(matrix)  # Find the inverse of the matrix
-  \end{lstlisting}\pause
-
-  Matrix Products and Dot Products:
-  \begin{lstlisting}[language=Python, numbers=none]
->>> np.dot(matrix, matrix)  # Find the dot product
->>> matrix @ matrix  # Alternative way to find the dot product
-  \end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Advanced Linear Algebra with NumPy (3)}
-  NumPy provides more advanced linear algebra operations that are fundamental in many scientific computations. Let's delve into some of these.\pause
-  
-  Determinant and Rank of a Matrix:
-  \begin{lstlisting}[language=Python, numbers=none]
->>> np.linalg.det(matrix)  # Find the determinant of the matrix
->>> np.linalg.matrix_rank(matrix)  # Find the rank of the matrix
-  \end{lstlisting}\pause
-  
-  Eigenvalues and Eigenvectors:
-  \begin{lstlisting}[language=Python, numbers=none]
->>> np.linalg.eig(matrix)  # Find the eigenvalues and eigenvectors of the matrix
-  \end{lstlisting}
-\end{frame}
-
-
-%% PLOTTING 
-\subsection{Plotting with Matplotlib}
-\begin{frame}[fragile]
-  \frametitle{Introduction to Matplotlib (1)}
-  Matplotlib is a Python library used widely for creating static, animated, and interactive visualizations. To start, we first import the \lstinline{pyplot} module from \lstinline{matplotlib}.\pause
-  
-  \begin{lstlisting}[language=Python]
-import matplotlib.pyplot as plt
-  \end{lstlisting}\pause
-  
-  \begin{columns}[T]
-    \column{0.45\textwidth}
-    Creating a simple line plot:
-
-    \begin{lstlisting}[language=Python,firstnumber=2]
-x = [1, 2, 3, 4, 5]
-y = [2, 4, 1, 3, 7]
-plt.plot(x, y)
-plt.show()
-  \end{lstlisting}
-    \column{0.45\textwidth}
-  Sample outcome:
-  
-  % \vspace{-0.25cm}
-  \includegraphics[width=0.7\textwidth]{intro_matplotlib.pdf}
-\end{columns}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Enhancing Plots in Matplotlib (2)}
-  \begin{columns}
-    \column{0.4\textwidth}
-  Matplotlib offers various ways to enhance your plots, including adding labels, titles, and grids.\pause
-  \begin{lstlisting}[language=Python]
-plt.plot(x, y, 'r-o')
-plt.xlabel('X-axis label')
-plt.ylabel('Y-axis label')
-plt.title('Plot Title')
-plt.grid(True)
-plt.show()
-  \end{lstlisting}\pause
-   \column{0.5\textwidth}
-   \includegraphics[width=0.6\textwidth]{intro_matplotlib2.pdf}
-  \end{columns}
-
-  \begin{columns}
-    \column{0.4\textwidth}
-  Creating scatter and bar plots:
-  \begin{lstlisting}[language=Python]
-plt.scatter(x, y, color='red')
-plt.show
-plt.bar(x, y, color='green')
-plt.show()
-  \end{lstlisting}
-  \column{0.5\textwidth}
-  \includegraphics[width=0.4\textwidth]{intro_matplotlib3.pdf}
-  \includegraphics[width=0.4\textwidth]{intro_matplotlib4.pdf}
-  \end{columns}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Some of the plots of Matplotlib}
-  \begin{figure}
-    \centering
-    \begin{minipage}{.25\textwidth}
-      \centering
-      \includegraphics[width=0.99\linewidth]{mpl_plot_examples/line_plot.eps} %FILL IN THE PIC PATH HERE for plot
-    \end{minipage}%
-    \begin{minipage}{.25\textwidth}
-      \centering
-      \includegraphics[width=.99\linewidth]{mpl_plot_examples/scatter_plot.eps} %FILL IN THE PIC PATH HERE for scatter
-    \end{minipage}
-  \end{figure}
-
-  \begin{figure}
-    \centering
-    \begin{minipage}{.25\textwidth}
-      \centering
-      \includegraphics[width=.99\linewidth]{mpl_plot_examples/bar_chart.eps} %FILL IN THE PIC PATH HERE for bar
-    \end{minipage}%
-    \begin{minipage}{.25\textwidth}
-      \centering
-      \includegraphics[width=.99\linewidth]{mpl_plot_examples/histogram.eps} %FILL IN THE PIC PATH HERE for hist
-    \end{minipage}
-    \begin{minipage}{.25\textwidth}
-      \centering
-      \includegraphics[width=.99\linewidth]{mpl_plot_examples/surface_plot.eps} %FILL IN THE PIC PATH HERE for surface
-    \end{minipage}
-  \end{figure}
-\end{frame}
-
-
-
-%%%% ALGORITHMS
 % \begin{frame}[fragile]
-%  \frametitle{Example algorithm}
-%  Compute the factorial of $N$: $N! = N\cdot(N-1)\cdot(N-2)\cdots 2\cdot 1$\\ \vskip1em
-%  How to deal with this? \vfill
-%  \begin{columns}[T]
-%   \column{0.3\textwidth}
-%   \begin{block}<2->{Naive approach}
-%       \begin{lstlisting}[language=Python,numbers=none]
-% Z = 1
-% Z = Z*2
-% Z = Z*3
-% Z = Z*4
-% ... etc ...      
-%       \end{lstlisting}
-%   \end{block}
-%   \column{0.3\textwidth}
-%   \begin{block}<3->{For-loop}
-%       \begin{lstlisting}[language=Python,numbers=none]
-% Z = 1;
-% for i in range(N):
-%     Z = Z*i
-%       \end{lstlisting}
-%   \end{block}
-%   \column{0.3\textwidth}
-% \begin{block}<4>{While-loop}
-%       \begin{lstlisting}[language=Python,numbers=none]
-% Z = 1;
-% i = 1;
-% while i<=N:
-%     Z = Z*i
-%     i += 1
-%     \end{lstlisting}
-%   \end{block}
-%  \end{columns}
-%  \vspace{0.25cm}
-%  \onslide<4>{
-%   Note: \lstinline$N$ must be set beforehand!\\ 
-%   Note: Pay attention to the relational operators!  }
+%   \frametitle{Practice}
+%   \begin{columns}[T]
+%     \begin{column}{0.5\textwidth}
+%       \begin{enumerate}
+%         \item Import the \lstinline{random} module and use a function from it to generate a random number.\pause
+%         \begin{lstlisting}[language=Python]
+% import random
+% print(random.randint(1, 100))
+%         \end{lstlisting}
+%         The \lstinline{random.randint} function is used to generate a random integer number between 1 and 100. Alternatively, the \lstinline|random.random()| function generates a random float in the interval $[0,1)$.
+%       \end{enumerate}
+%     \end{column}
+
+%     \begin{column}{0.5\textwidth}
+%       \begin{enumerate}\setcounter{enumi}{1}
+%         \item Import only the \lstinline{pi} variable from the \lstinline{math} module and print its value.\pause
+%         \begin{lstlisting}[language=Python]
+% from math import pi
+% print(pi)
+%         \end{lstlisting}
+%         The \lstinline{pi} variable is imported from the \lstinline{math} module and its value is printed.
+%         \item Create an alias for a module you import and use a function from the aliased module. \pause
+%         \begin{lstlisting}[language=Python]
+% import math as m
+% print(m.sqrt(16))
+%         \end{lstlisting}
+%         The \lstinline{math} module is aliased as \lstinline{m} and the \lstinline{sqrt} function is used to find the square root of 16.
+%       \end{enumerate}
+%     \end{column}
+%   \end{columns}
 % \end{frame}
 
-% INPUT AND OUTPUT
-\subsection{Input/output}
+% \begin{frame}[fragile]
+%   \frametitle{Practice}
+%   \begin{columns}[T]
+%     \begin{column}{0.5\textwidth}
+%       \begin{enumerate}
+%         \item Create a function that function to work on a range of numbers?
+%         Remember list comprehensions
+%         Compute y=sin(x)
+%          for 8 equidistant points of x∈[0,2π]
+%         \begin{lstlisting}[language=Python]
+% import random
+% print(random.randint(1, 100))
+%         \end{lstlisting}
+%         The \lstinline{random.randint} function is used to generate a random integer number between 1 and 100. Alternatively, the \lstinline|random.random()| function generates a random float in the interval $[0,1)$.
+%       \end{enumerate}
+%     \end{column}
+
+%     \begin{column}{0.5\textwidth}
+%       \begin{enumerate}\setcounter{enumi}{1}
+%         \item Import only the \lstinline{pi} variable from the \lstinline{math} module and print its value.\pause
+%         \begin{lstlisting}[language=Python]
+% from math import pi
+% print(pi)
+%         \end{lstlisting}
+%         The \lstinline{pi} variable is imported from the \lstinline{math} module and its value is printed.
+%         \item Create an alias for a module you import and use a function from the aliased module. \pause
+%         \begin{lstlisting}[language=Python]
+% import math as m
+% print(m.sqrt(16))
+%         \end{lstlisting}
+%         The \lstinline{math} module is aliased as \lstinline{m} and the \lstinline{sqrt} function is used to find the square root of 16.
+%       \end{enumerate}
+%     \end{column}
+%   \end{columns}
+% \end{frame}
+
+
+\subsection{The random module}
 \begin{frame}[fragile]
-  \frametitle{Input and Output in Python (1)}
-  Many programs require some input (data) to function correctly. A combination of the following is common:
-  \begin{itemize}[<+->]
-    \item Input may be given in a parameters file (``hard-coded'')
-    \item Input may be entered via the keyboard using the `input` function:
-    \begin{lstlisting}[language=Python,numbers=none]
->>> a = input('Please enter a number: ')
-    \end{lstlisting}
-    \item Input may be read from a file, for instance using Python's built-in open function or libraries like `numpy` for more complex data structures:
-    \begin{lstlisting}[language=Python,numbers=none]
->>> with open('myData.txt', 'r') as file:
->>>     data = file.read()
->>> 
->>> import numpy as np
->>> data = np.loadtxt("my_file.csv")
-    \end{lstlisting}
-    \item There are many other libraries and functions for more advanced input operations, such as json, xml, etc.
-  \end{itemize}
- \end{frame}
+  \frametitle{The random module (1)}
+  Random number generators and sampling tools are available through the \href{https://docs.python.org/3/library/random.html}{random module}. A few examples for \href{https://docs.python.org/3/library/random.html#functions-for-integers}{integers and sequences}:
+  \begin{lstlisting}
+import random as rnd
 
- \begin{frame}[fragile]
-  \frametitle{Input and Output in Python (2)}
-  Output of results can be done in several ways, including:
-  \begin{itemize}[<+->]
-    \item Displaying results to the console - simply omitting a print statement will automatically show expression results in most Python IDEs.
-    \item Using the `print` function to show results in the console:
-    \begin{lstlisting}[language=Python,numbers=none]
->>> print("The result is:", result)
-    \end{lstlisting}
-    \item Saving data to a file can be done using various methods including writing to a file or using libraries like pandas for structured data:
-    \begin{lstlisting}[language=Python,numbers=none]
->>> with open('output.txt', 'w') as file:
->>> file.write(str(data))
+# Random integers
+random_integers = [rnd.randint(0,10) for i in range(10)]
+print(f'{random_integers = }')
 
->>> data.save("data.npy")
-    \end{lstlisting}
-    \item More advanced output methods can utilize libraries such as NumPy, pandas, etc. to save data in various formats including JSON, Excel, etc.
-  \end{itemize}
- \end{frame}
+# Sample from given population
+my_range = range(12) # [0, 1, 2, ..., 11]
+select_from_range = rnd.sample(my_range,8)
+print(f'{select_from_range = }') # Selected 8 elements
+
+# Choose 1 element from list
+days_of_week = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+day = rnd.choice(days_of_week)
+print(f"I've chosen {day} as my lucky day!")
+  \end{lstlisting}\pause
+
+  \begin{lstlisting}[style=PyOutput]
+random_integers = [6, 6, 2, 5, 5, 8, 3, 7, 3, 4]
+select_from_range = [2, 3, 10, 1, 6, 4, 8, 5]
+I've chosen Wednesday as my lucky day!
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{The random module (2)}
+  Examples for \href{https://docs.python.org/3/library/random.html#real-valued-distributions}{real valued distributions}:
+  \begin{lstlisting}
+import random as rnd
+
+# Random number (uniform distribution) 0 < x < 1
+x = [rnd.random() for i in range(5)]
+print(x)
+
+# Random number (uniform distribution) between given bounds
+x = [rnd.uniform(1,3) for i in range(5)]
+print(x)
+
+# Random number from a Gauss distribution (mu=0, sigma=2)
+x = [rnd.gauss(0,2) for i in range(5)]
+print(x)
+  \end{lstlisting}\pause
+
+  \begin{lstlisting}[style=PyOutput,basicstyle=\tiny\ttfamily]
+[0.6697878114597362, 0.4136014290205997, 0.5108247513505662, 0.44260043089156076, 0.9902269207988261]
+[2.4749381508841077, 2.943448233960596, 2.516639180020423, 1.0481550073898795, 1.961356325508141]
+[1.8199856149229392, 2.000097897306016, -2.4604868187736026, -0.46836605162997846, -2.5069012642608803]
+  \end{lstlisting}
+\end{frame}
+  
+\begin{frame}[fragile]
+  \frametitle{Practice}
+  \begin{itemize}
+    \item Create a \emph{function} that returns a list of $N$ dice throws (cubic dice, values 1-6)
+    \item Throw the dice many times
+    \item Print for each value how often it has been thrown
+  \end{itemize} \pause
+  \begin{onlyenv}<beamer>
+    \begin{lstlisting}
+import random as rnd
+
+def throw_dice(N):
+    return [rnd.randint(1,6) for _ in range(N)]
+
+throws = throw_dice(40)
+print(throws)
+
+for i in range(1,7):
+    n = len([t for t in throws if t==i])
+    print(f"Value {i} was thrown {n} times")
+        \end{lstlisting}\pause
+  \end{onlyenv}
+  \begin{lstlisting}[style=PyOutput,basicstyle=\tiny\ttfamily]
+[5, 1, 1, 4, 6, 3, 3, 1, 5, 6, 1, 1, 1, 1, 5, 5, 2, 1, 1, 2, 2, 5, 5, 4, 6, 1, 3, 5, 6, 3, 1, 5, 6, 2, 3, 1, 6, 3, 2, 1]
+Value 1 was thrown 13 times
+Value 2 was thrown 5 times
+Value 3 was thrown 6 times
+Value 4 was thrown 2 times
+Value 5 was thrown 8 times
+Value 6 was thrown 6 times
+  \end{lstlisting}
+\end{frame}
+
  
-\subsection{Recursion}
-\begin{frame}[label=recursion,fragile]
- \frametitle{Advanced topic: Recursion}
- \begin{columns}
-   \column{0.5\textwidth}
-   \begin{itemize}
-    \item<1-> In order to understand recursion, one must first understand recursion
-    \item<2-> A recursive function includes a call to itself (a function within a function)
-    \begin{itemize}
-      \item<3-> This could lead to infinite calls;
-      \item<3-> A base case is required so that recursion is stopped;
-      \item<3-> Base case does not call itself, simply returns.
-    \end{itemize}
- \end{itemize}
-   \column{0.5\textwidth}
-   \includegraphics<3>[width=0.7\columnwidth]{scoobydoo.jpg}
- \end{columns}
-\end{frame}
 
-\againframe{recursion}
+% \begin{frame}[fragile]
+%  \frametitle{Recursion: exercise}
+%  Create a function computing the factorial of $N$, based on recursion. \pause
+%  \begin{lstlisting}[language=Python]
+% def fact_recursive(x):
+%     # Catch non-integer and negative cases
+%     if not isinstance(x, int) or x < 0:
+%         print("You should provide a positive integer number only")
+%         return None
 
-\begin{frame}[fragile]
- \frametitle{Recursion: example}
- \begin{lstlisting}[language=Python]
-def mystery(a, b):
-  if b == 1:
-      # Base case
-      return a
-  else:
-      # Recursive function call
-      return a + mystery(a, b-1)
- \end{lstlisting}
-\vskip1em \pause
-\begin{itemize}
-  \item What does this function do? \pause
-  \item Can you spot the error? \pause
-  \item How deep can you go? Which values of b don't work anymore?
-\end{itemize}
-\end{frame}
+%     # Recursive case
+%     if x > 1:
+%         return x * fact_recursive(x - 1)
 
-\begin{frame}[fragile]
- \frametitle{Recursion: exercise}
- Create a function computing the factorial of $N$, based on recursion. \pause
- \begin{lstlisting}[language=Python]
-def fact_recursive(x):
-    # Catch non-integer and negative cases
-    if not isinstance(x, int) or x < 0:
-        print("You should provide a positive integer number only")
-        return None
-
-    # Recursive case
-    if x > 1:
-        return x * fact_recursive(x - 1)
-
-    # Base case
-    else:
-        return 1
- \end{lstlisting}
-\end{frame}
+%     # Base case
+%     else:
+%         return 1
+%  \end{lstlisting}
+% \end{frame}
 
 \section{Conclusions}
 \subsection*{Conclusions}

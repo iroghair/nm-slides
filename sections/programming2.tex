@@ -1,4 +1,389 @@
 \part{Python programming II}
+
+\section{Scientific computing}
+\subsection{Introduction}
+
+%% NUMPY
+\subsection{Introduction to NumPy}
+\begin{frame}[fragile]
+  \frametitle{Introduction to NumPy (1)}
+  NumPy is a powerful library for numerical computing in Python. It introduces the multidimensional array (\lstinline|ndarray|) data structure which is central to numerical computing tasks. To start using NumPy, you need to import it first:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> import numpy as np
+  \end{lstlisting}\pause
+  Creating arrays from Python lists and accessing elements:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> arr = np.array([1, 2, 3, 4, 5])
+>>> arr[0]
+1
+  \end{lstlisting}\pause
+  Create arrays with predetermined values:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> np.zeros(5)  # Creates an array of five zeros
+>>> np.ones((3, 3))  # Creates a 3x3 array of ones - note that the input argument is a tuple
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Introduction to NumPy (2)}
+  Useful array creation functions:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> arr  = np.arange(0, 10, 2)  # Creates an array with values from 0 to 10, step 2
+>>> arr2 = np.linspace(0, 1, 5) # Creates an array with 5 values evenly spaced between 0 and 1
+>>> arr3 = np.logspace(-3,2,6)  # Creates an array spaced evenly on a logscale
+  \end{lstlisting}\pause
+
+  Array operations:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> arr * 2  # Multiplies every element by 2
+>>> arr + np.array([5, 4, 3, 2, 1])  # Element-wise addition
+  \end{lstlisting}\pause
+  
+  Inspecting your array:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> arr.shape  # Returns the dimensions of the array (tuple)
+>>> arr.shape[0] # Returns the number of rows ([1] for columns)
+>>> len(arr)  # Returns the size of the first dimension
+>>> arr.size # Returns the total number of elements in arr
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Introduction to NumPy (3)}
+  Zeros- or ones-filled arrays:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> many_zeros = np.zeros_like(arr) # Array with zeros of size like arr (also: np.zeros)
+>>> just_ones  = np.ones((2,4))     # Create array with ones of size (2,4) (also: np.ones_like)
+>>> identity   = np.eye((3,3))      # Identity matrix (zeros with ones on the main diagonal)
+    \end{lstlisting}\pause
+      
+    Or random numbers, useful for e.g. stochastic simulations:
+    \begin{lstlisting}[language=Python, numbers=none]
+>>> np.random.rand() # Single random floating point number [0,1)
+0.11879317099184983
+
+>>> np.random.rand(2,3)
+array([[0.36482694, 0.47204049, 0.20908193],
+       [0.76626339, 0.64075302, 0.82440279]])
+
+>>> np.random.randint(1,10,5) # 5 random integers from 1 (inclusive) until 10 (exclusive)
+array([9, 1, 6, 4, 6])
+        \end{lstlisting}\pause
+\end{frame}
+
+%% MATH WITH NUMPY
+\subsection*{Math with NumPy}
+\begin{frame}[fragile]
+  \frametitle{Math with NumPy (1)}
+  NumPy provides a rich set of functions to perform mathematical operations on arrays. Let's explore some categories of these operations.
+  \begin{itemize}
+    \item Linear Algebra:
+    \begin{lstlisting}[language=Python, numbers=none]
+>>> np.dot(arr, arr)     # Dot product
+>>> np.linalg.norm(arr)  # Euclidean norm (L2 norm)
+    \end{lstlisting}\pause
+    
+    \item Trigonometric Functions:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> np.sin(arr)  # Sine of each element
+>>> np.cos(arr)  # Cosine of each element
+  \end{lstlisting}
+  
+  \item Statistical functions to analyze data:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> np.mean(arr)  # Mean value of the array elements
+>>> np.std(arr)   # Standard deviation of the array elements
+  \end{lstlisting}\pause
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Math with NumPy (3)}
+  \textbf{Table: Useful NumPy Functions for Beginners}
+
+  \begin{tabular}{l|l}
+  Function & Description \\
+  \hline
+  \lstinline$np.array$ & Create a NumPy array \\
+  \lstinline$np.zeros$ & Create an array filled with zeros \\
+  \lstinline$np.ones$ & Create an array filled with ones \\
+  \lstinline$np.arange$ & Create an array with evenly spaced values \\
+  \lstinline$np.linspace$ & Create an array with a specified number of evenly spaced values \\
+  \lstinline$np.sin$ & Sine function \\
+  \lstinline$np.cos$ & Cosine function \\
+  \lstinline$np.tan$ & Tangent function \\
+  \lstinline$np.exp$ & Exponential function \\
+  \lstinline$np.log$ & Natural logarithm \\
+  \lstinline$np.sqrt$ & Square root function \\
+  \lstinline$np.dot$ & Dot product of two arrays \\
+  \lstinline$np.linalg.norm$ & Calculate the norm of an array \\
+  \lstinline$np.mean$ & Calculate the mean of an array \\
+  \lstinline$np.std$ & Calculate the standard deviation of an array \\
+  \end{tabular}
+\end{frame}
+
+
+%% NDARRAY
+\subsection*{Working with NumPy ndarrays}
+\begin{frame}[fragile]
+  \frametitle{Introduction to NumPy ndarrays (1)}
+  In Python, NumPy ndarrays enable efficient operations on arrays, particularly mathematical operations associated with linear algebra. Let's look at how we can create and manipulate matrices using NumPy ndarrays:\pause
+  
+  \begin{itemize}
+    \item Manually creating matrices (2D ndarrays):
+    \begin{lstlisting}[language=Python, numbers=none]
+>>> import numpy as np
+>>> matrix = np.array([[1, 2], 
+                      [3, 4]]) # Matrices are arrays of arrays(rows)
+    \end{lstlisting}\pause
+
+    \item Creating by reshaping, then use slicing and modifying (try for yourself and print each line):
+    \begin{lstlisting}[language=Python, numbers=none]
+>>> mat = np.arange(25).reshape(5,5)
+>>> col = mat[:,2]  # Get column index 2
+>>> row = mat[3,:]  # Get row index 3
+>>> sub = mat[1:4,1:4] # Save submatrix
+>>> mat[1,:] = row  # Replace row index 1 by 'row'
+    \end{lstlisting}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Introduction to NumPy ndarrays (2)}
+  Careful with assignment, default is a reference to the same object:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> arr = np.arange(0,10,1)
+>>> print(arr)
+[0 1 2 3 4 5 6 7 8 9]
+>>> new_arr = arr 
+>>> new_arr2 = arr.copy()
+>>> new_arr[4] = 11
+>>> print(new_arr)
+[ 0  1  2  3 11  5  6  7  8  9]
+>>> print(arr) # :mind_blown: we did not change this, did we?
+[ 0  1  2  3 11  5  6  7  8  9]
+  \end{lstlisting}\pause
+
+  Saving and loading matrices:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> np.save('my_matrix.npy', matrix)  # Save the matrix to a file
+>>> loaded_matrix = np.load('my_matrix.npy')  # Load the matrix from a file
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Matrix Operations with NumPy ndarrays}
+  NumPy offers a rich set of functions to perform various matrix operations, essential in linear algebra. Let's explore some of them.\pause
+
+  Matrix Transposition and Inversion:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> np.transpose(matrix)  # Find the transpose of the matrix
+>>> np.linalg.inv(matrix)  # Find the inverse of the matrix
+  \end{lstlisting}\pause
+
+  Matrix Products and Dot Products:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> np.dot(matrix, matrix)  # Find the dot product
+>>> matrix @ matrix  # Alternative way to find the dot product
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Advanced Linear Algebra with NumPy}
+  NumPy provides more advanced linear algebra operations that are fundamental in many scientific computations. Let's delve into some of these.\pause
+  
+  Determinant and Rank of a Matrix:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> np.linalg.det(matrix)  # Find the determinant of the matrix
+>>> np.linalg.matrix_rank(matrix)  # Find the rank of the matrix
+  \end{lstlisting}\pause
+  
+  Eigenvalues and Eigenvectors:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> np.linalg.eig(matrix)  # Find the eigenvalues and eigenvectors of the matrix
+  \end{lstlisting}
+\end{frame}
+
+
+%% PLOTTING 
+\subsection{Plotting with Matplotlib}
+\begin{frame}[fragile]
+  \frametitle{Introduction to Matplotlib (1)}
+  Matplotlib is a Python library used widely for creating static, animated, and interactive visualizations. To start, we first import the \lstinline{pyplot} module from \lstinline{matplotlib}.\pause
+  
+  \begin{lstlisting}[language=Python]
+import matplotlib.pyplot as plt
+  \end{lstlisting}\pause
+  
+  \begin{columns}[T]
+    \column{0.45\textwidth}
+    Creating a simple line plot:
+
+    \begin{lstlisting}[language=Python,firstnumber=2]
+x = [1, 2, 3, 4, 5]
+y = [2, 4, 1, 3, 7]
+plt.plot(x, y)
+plt.show()
+  \end{lstlisting}
+    \column{0.45\textwidth}
+  Sample outcome:
+  
+  % \vspace{-0.25cm}
+  \includegraphics[width=0.7\textwidth]{intro_matplotlib.pdf}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Enhancing Plots in Matplotlib (2)}
+  \begin{columns}
+    \column{0.4\textwidth}
+  Matplotlib offers various ways to enhance your plots, including adding labels, titles, and grids.\pause
+  \begin{lstlisting}[language=Python]
+plt.plot(x, y, 'r-o')
+plt.xlabel('X-axis label')
+plt.ylabel('Y-axis label')
+plt.title('Plot Title')
+plt.grid(True)
+plt.show()
+  \end{lstlisting}\pause
+   \column{0.5\textwidth}
+   \includegraphics[width=0.6\textwidth]{intro_matplotlib2.pdf}
+  \end{columns}
+
+  \begin{columns}
+    \column{0.4\textwidth}
+  Creating scatter and bar plots:
+  \begin{lstlisting}[language=Python]
+plt.scatter(x, y, color='red')
+plt.show
+plt.bar(x, y, color='green')
+plt.show()
+  \end{lstlisting}
+  \column{0.5\textwidth}
+  \includegraphics[width=0.4\textwidth]{intro_matplotlib3.pdf}
+  \includegraphics[width=0.4\textwidth]{intro_matplotlib4.pdf}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Some of the plots of Matplotlib}
+  \begin{figure}
+    \centering
+    \begin{minipage}{.25\textwidth}
+      \centering
+      \includegraphics[width=0.99\linewidth]{mpl_plot_examples/line_plot.eps} %FILL IN THE PIC PATH HERE for plot
+    \end{minipage}%
+    \begin{minipage}{.25\textwidth}
+      \centering
+      \includegraphics[width=.99\linewidth]{mpl_plot_examples/scatter_plot.eps} %FILL IN THE PIC PATH HERE for scatter
+    \end{minipage}
+  \end{figure}
+
+  \begin{figure}
+    \centering
+    \begin{minipage}{.25\textwidth}
+      \centering
+      \includegraphics[width=.99\linewidth]{mpl_plot_examples/bar_chart.eps} %FILL IN THE PIC PATH HERE for bar
+    \end{minipage}%
+    \begin{minipage}{.25\textwidth}
+      \centering
+      \includegraphics[width=.99\linewidth]{mpl_plot_examples/histogram.eps} %FILL IN THE PIC PATH HERE for hist
+    \end{minipage}
+    \begin{minipage}{.25\textwidth}
+      \centering
+      \includegraphics[width=.99\linewidth]{mpl_plot_examples/surface_plot.eps} %FILL IN THE PIC PATH HERE for surface
+    \end{minipage}
+  \end{figure}
+\end{frame}
+
+
+
+%%%% ALGORITHMS
+% \begin{frame}[fragile]
+%  \frametitle{Example algorithm}
+%  Compute the factorial of $N$: $N! = N\cdot(N-1)\cdot(N-2)\cdots 2\cdot 1$\\ \vskip1em
+%  How to deal with this? \vfill
+%  \begin{columns}[T]
+%   \column{0.3\textwidth}
+%   \begin{block}<2->{Naive approach}
+%       \begin{lstlisting}[language=Python,numbers=none]
+% Z = 1
+% Z = Z*2
+% Z = Z*3
+% Z = Z*4
+% ... etc ...      
+%       \end{lstlisting}
+%   \end{block}
+%   \column{0.3\textwidth}
+%   \begin{block}<3->{For-loop}
+%       \begin{lstlisting}[language=Python,numbers=none]
+% Z = 1;
+% for i in range(N):
+%     Z = Z*i
+%       \end{lstlisting}
+%   \end{block}
+%   \column{0.3\textwidth}
+% \begin{block}<4>{While-loop}
+%       \begin{lstlisting}[language=Python,numbers=none]
+% Z = 1;
+% i = 1;
+% while i<=N:
+%     Z = Z*i
+%     i += 1
+%     \end{lstlisting}
+%   \end{block}
+%  \end{columns}
+%  \vspace{0.25cm}
+%  \onslide<4>{
+%   Note: \lstinline$N$ must be set beforehand!\\ 
+%   Note: Pay attention to the relational operators!  }
+% \end{frame}
+
+% INPUT AND OUTPUT
+\subsection{Input/output}
+\begin{frame}[fragile]
+  \frametitle{Input and Output in Python (1)}
+  Many programs require some input (data) to function correctly. A combination of the following is common:
+  \begin{itemize}[<+->]
+    \item Input may be given in a parameters file (``hard-coded'')
+    \item Input may be entered via the keyboard using the `input` function:
+    \begin{lstlisting}[language=Python,numbers=none]
+>>> a = input('Please enter a number: ')
+    \end{lstlisting}
+    \item Input may be read from a file, for instance using Python's built-in open function or libraries like `numpy` for more complex data structures:
+    \begin{lstlisting}[language=Python,numbers=none]
+>>> with open('myData.txt', 'r') as file:
+>>>     data = file.read()
+>>> 
+>>> import numpy as np
+>>> data = np.loadtxt("my_file.csv")
+    \end{lstlisting}
+    \item There are many other libraries and functions for more advanced input operations, such as json, xml, etc.
+  \end{itemize}
+ \end{frame}
+
+ \begin{frame}[fragile]
+  \frametitle{Input and Output in Python (2)}
+  Output of results can be done in several ways, including:
+  \begin{itemize}[<+->]
+    \item Displaying results to the console - simply omitting a print statement will automatically show expression results in most Python IDEs.
+    \item Using the `print` function to show results in the console:
+    \begin{lstlisting}[language=Python,numbers=none]
+>>> print("The result is:", result)
+    \end{lstlisting}
+    \item Saving data to a file can be done using various methods including writing to a file or using libraries like pandas for structured data:
+    \begin{lstlisting}[language=Python,numbers=none]
+>>> with open('output.txt', 'w') as file:
+>>> file.write(str(data))
+
+>>> data.save("data.npy")
+    \end{lstlisting}
+    \item More advanced output methods can utilize libraries such as NumPy, pandas, etc. to save data in various formats including JSON, Excel, etc.
+  \end{itemize}
+ \end{frame}
+
+
+
 \section{Coding style}
 \subsection*{Introduction}
 \begin{frame}[label=contents_prog2]
@@ -943,43 +1328,6 @@ plt.quiver(x, y, dx, dy, color='k')
   \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]
-  \frametitle{Functions: revisited}
-  In Python, you can define your own functions to re-use certain functionalities. We now define the mathematical function \(f = x^2+e^x\):
-  \begin{lstlisting}[language=Python]
-def f(x):
-    import numpy as np
-    return x**2 + np.exp(x)
-  \end{lstlisting}
-  \pause
-  Note:
-  \begin{itemize}
-    \item The function is defined using the \lstinline[language=Python]|def| keyword.
-    \item The variables used are \emph{local}. They will not be available globally unless defined as such.
-    \item The function is defined in the Python script, not in a separate file.
-    \item The function will work with NumPy arrays to handle vectorized inputs, returning an array of function values.
-  \end{itemize}
-\end{frame}
-
-
-\begin{frame}[fragile]
-  \frametitle{Inline functions}
-  If you do not want to create a new function block, you can create an \emph{lambda function}:
-  \begin{lstlisting}[language=Python]
-f = lambda x: x**2 + np.exp(x)
-  \end{lstlisting}
-  \pause
-  \begin{itemize}
-    \item \lstinline[language=Python]|f|: the name of the function
-    \item \lstinline[language=Python]|lambda|: used to define the inline function
-    \item \lstinline[language=Python]|x|: the input argument
-    \item \lstinline[language=Python]|x**2 + np.exp(x)|: the actual function
-  \end{itemize}\pause
-  \begin{lstlisting}[language=Python]
-import numpy as np
-f(np.linspace(0, 1, num=11))
-  \end{lstlisting}
-\end{frame}
 
 
 \section{Concluding remarks}
