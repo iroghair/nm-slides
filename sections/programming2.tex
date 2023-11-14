@@ -1,7 +1,33 @@
 \part{Python programming II}
-
 \section{Scientific computing}
 \subsection{Introduction}
+\begin{frame}[label=contents_prog2]
+  \frametitle{Today's outline}
+  \mode<beamer>{
+    \only<1>{\tableofcontents}
+  }
+  \only<2>{\tableofcontents[currentsection]}
+\end{frame}
+% \begin{frame}[label=contents_prog2]
+%   \frametitle{Today's outline}
+%   \mode<beamer>{
+%     \only<1>{
+%       \begin{columns}
+%         \column{0.5\textwidth}
+%           \tableofcontents[sections={1-3}]
+%         \column{0.5\textwidth}
+%           \tableofcontents[sections={4-8}]
+%       \end{columns}}
+%   }
+%   \only<2>{
+%     \begin{columns}
+%       \column{0.5\textwidth}
+%         \tableofcontents[sections={1-3},currentsection]
+%       \column{0.5\textwidth}
+%         \tableofcontents[sections={4-8},currentsection]
+%     \end{columns}
+%     }
+% \end{frame}
 
 %% NUMPY
 \subsection{Introduction to NumPy}
@@ -52,12 +78,12 @@
   \frametitle{Introduction to NumPy (3)}
   Zeros- or ones-filled arrays:
   \begin{lstlisting}[language=Python, numbers=none]
->>> many_zeros = np.zeros_like(arr) # Array with zeros of size like arr (also: np.zeros)
->>> just_ones  = np.ones((2,4))     # Create array with ones of size (2,4) (also: np.ones_like)
+>>> many_zeros = np.zeros_like(arr) # Array with zeros of size like arr, also: np.zeros
+>>> just_ones  = np.ones((2,4))     # Create array with ones of size (2,4), also: np.ones_like
 >>> identity   = np.eye((3,3))      # Identity matrix (zeros with ones on the main diagonal)
     \end{lstlisting}\pause
       
-    Or random numbers, useful for e.g. stochastic simulations:
+    Or random numbers, useful for e.g. stochastic simulations. Note that these are NumPy intrinsic methods, and differ from the ones in the \lstinline|random| module.
     \begin{lstlisting}[language=Python, numbers=none]
 >>> np.random.rand() # Single random floating point number [0,1)
 0.11879317099184983
@@ -72,14 +98,14 @@ array([9, 1, 6, 4, 6])
 \end{frame}
 
 %% MATH WITH NUMPY
-\subsection*{Math with NumPy}
+\subsection{Math with NumPy}
 \begin{frame}[fragile]
   \frametitle{Math with NumPy (1)}
   NumPy provides a rich set of functions to perform mathematical operations on arrays. Let's explore some categories of these operations.
   \begin{itemize}
     \item Linear Algebra:
     \begin{lstlisting}[language=Python, numbers=none]
->>> np.dot(arr, arr)     # Dot product
+>>> np.dot(arr, arr)     # Dot product (alternative: arr @ arr)
 >>> np.linalg.norm(arr)  # Euclidean norm (L2 norm)
     \end{lstlisting}\pause
     
@@ -97,8 +123,10 @@ array([9, 1, 6, 4, 6])
 \end{itemize}
 \end{frame}
 
+
+{\nologo
 \begin{frame}[fragile]
-  \frametitle{Math with NumPy (3)}
+  \frametitle{Math with NumPy (2)}
   \textbf{Table: Useful NumPy Functions for Beginners}
 
   \begin{tabular}{l|l}
@@ -121,14 +149,13 @@ array([9, 1, 6, 4, 6])
   \lstinline$np.std$ & Calculate the standard deviation of an array \\
   \end{tabular}
 \end{frame}
+}
 
-
-%% NDARRAY
-\subsection*{Working with NumPy ndarrays}
+%% ARRAY OPERATIONS
+\subsection{Array operations}
 \begin{frame}[fragile]
-  \frametitle{Introduction to NumPy ndarrays (1)}
-  In Python, NumPy ndarrays enable efficient operations on arrays, particularly mathematical operations associated with linear algebra. Let's look at how we can create and manipulate matrices using NumPy ndarrays:\pause
-  
+  \frametitle{Array operations (1)}
+  In Python, NumPy ndarrays enable efficient operations on arrays, particularly mathematical operations associated with linear algebra. Let's look at how we can create and manipulate matrices using NumPy ndarrays:
   \begin{itemize}
     \item Manually creating matrices (2D ndarrays):
     \begin{lstlisting}[language=Python, numbers=none]
@@ -137,20 +164,124 @@ array([9, 1, 6, 4, 6])
                       [3, 4]]) # Matrices are arrays of arrays(rows)
     \end{lstlisting}\pause
 
-    \item Creating by reshaping, then use slicing and modifying (try for yourself and print each line):
+    \item Reshaping, slicing and modifying matrices (try for yourself and print each new result):
     \begin{lstlisting}[language=Python, numbers=none]
 >>> mat = np.arange(25).reshape(5,5)
 >>> col = mat[:,2]  # Get column index 2
 >>> row = mat[3,:]  # Get row index 3
 >>> sub = mat[1:4,1:4] # Save submatrix
 >>> mat[1,:] = row  # Replace row index 1 by 'row'
+>>> mat[mat>5] = -1 # Conditional slicing/update of values
     \end{lstlisting}
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Introduction to NumPy ndarrays (2)}
-  Careful with assignment, default is a reference to the same object:
+  \frametitle{Array operations (2)}
+  The real power of NumPy lies in the vectorized computations:
+  \begin{itemize}
+    \item Omit loops, write computations in natural language
+    \item Shorter code
+    \item Much, much faster
+  \end{itemize}
+  \pause
+  \begin{lstlisting}
+import numpy as np
+import time
+
+start = time.time()
+x = np.linspace(0,2*np.pi,10000000)
+y = np.exp(-x) * (2+np.sin(2*np.pi*x))
+total_time = time.time() - start
+
+print(f'{total_time = }')
+  \end{lstlisting}
+  \begin{lstlisting}[style=PyOutput]
+total_time = 0.35589122772216797
+  \end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Array operations (3)}
+  If you do need to iterate over the elements:
+  \begin{itemize}
+    \item Think twice if you \emph{really} have to
+    \item If the answer is still yes, you can use \lstinline|np.nditer| or \lstinline|np.ndenumerate|:
+  \end{itemize}
+  \pause
+  \begin{columns}
+    \column{0.5\textwidth}      
+    \begin{lstlisting}
+import numpy as np 
+
+# A 2D array
+data = np.array([[11,12,13], [14,15,16]])
+
+# Loop over each element using nditer
+for val in np.nditer(data):
+    print(f"Value: {val}")
+
+# Loop using ndenumerate (gives index + value)
+for i,val in np.ndenumerate(data):
+    print(f"Enumerate index {i} has value {val}; also {data[i]}")
+    \end{lstlisting}
+    \column{0.5\textwidth}
+    \begin{lstlisting}[style=PyOutput]
+Value: 11
+Value: 12
+Value: 13
+Value: 14
+Value: 15
+Value: 16
+Enumerate index (0, 0) has value 11; also 11
+Enumerate index (0, 1) has value 12; also 12
+Enumerate index (0, 2) has value 13; also 13
+Enumerate index (1, 0) has value 14; also 14
+Enumerate index (1, 1) has value 15; also 15
+Enumerate index (1, 2) has value 16; also 16
+    \end{lstlisting}
+  \end{columns}
+\end{frame}
+
+{\nologo
+\begin{frame}[fragile]
+  \frametitle{Practice}
+  Given a function $\displaystyle  f(x) = x^2+2x-4 $
+  % \vskip-1em
+  \begin{itemize}
+   \item Create a large \lstinline|np.linspace| of $x\in[0,20]$ e.g. with 1M numbers
+   \item Compute $f(x)$ iteratively (i.e. with a .loop)
+   \item Compute $f(x)$ vectorized (i.e. using NumPy operations)
+   \item Compare timings
+  \end{itemize}
+   \pause
+   \begin{onlyenv}<beamer> 
+    \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+import time
+
+def f(x):
+    return x**2+2*x-4
+
+long_data = np.linspace(0,20,10_000_000)
+
+start = time.time()
+y1 = f(long_data)
+print(f"The vectorized approach took {time.time()-start} seconds")
+
+y2 = np.zeros_like(long_data)
+start = time.time()
+for i in range(len(long_data)):
+    y2[i] = f(long_data[i])
+print(f"The iterated approach took {time.time()-start} seconds")
+    \end{lstlisting}
+    \end{onlyenv}
+ \end{frame}
+}
+
+\begin{frame}[fragile]
+  \frametitle{Assignment of arrays by reference}
+  Careful with assignment, default is a reference to the same object as observed with lists:
   \begin{lstlisting}[language=Python, numbers=none]
 >>> arr = np.arange(0,10,1)
 >>> print(arr)
@@ -171,44 +302,47 @@ array([9, 1, 6, 4, 6])
   \end{lstlisting}
 \end{frame}
 
-\begin{frame}[fragile]
-  \frametitle{Matrix Operations with NumPy ndarrays}
-  NumPy offers a rich set of functions to perform various matrix operations, essential in linear algebra. Let's explore some of them.\pause
+% \begin{frame}[fragile]
+%   \frametitle{Matrix Operations with NumPy ndarrays}
+%   NumPy offers a rich set of functions to perform various matrix operations, essential in linear algebra. Let's explore some of them.\pause
 
-  Matrix Transposition and Inversion:
-  \begin{lstlisting}[language=Python, numbers=none]
->>> np.transpose(matrix)  # Find the transpose of the matrix
->>> np.linalg.inv(matrix)  # Find the inverse of the matrix
-  \end{lstlisting}\pause
+%   Matrix Transposition and Inversion:
+%   \begin{lstlisting}[language=Python, numbers=none]
+% >>> np.transpose(matrix)  # Find the transpose of the matrix
+% >>> np.linalg.inv(matrix)  # Find the inverse of the matrix
+%   \end{lstlisting}\pause
 
-  Matrix Products and Dot Products:
-  \begin{lstlisting}[language=Python, numbers=none]
->>> np.dot(matrix, matrix)  # Find the dot product
->>> matrix @ matrix  # Alternative way to find the dot product
-  \end{lstlisting}
-\end{frame}
+%   Matrix Products and Dot Products:
+%   \begin{lstlisting}[language=Python, numbers=none]
+% >>> np.dot(matrix, matrix)  # Find the dot product
+% >>> matrix @ matrix  # Alternative way to find the dot product
+%   \end{lstlisting}
+% \end{frame}
 
-\begin{frame}[fragile]
-  \frametitle{Advanced Linear Algebra with NumPy}
-  NumPy provides more advanced linear algebra operations that are fundamental in many scientific computations. Let's delve into some of these.\pause
+% \begin{frame}[fragile]
+%   \frametitle{Advanced Linear Algebra with NumPy}
+%   NumPy provides more advanced linear algebra operations that are fundamental in many scientific computations. Let's delve into some of these.\pause
   
-  Determinant and Rank of a Matrix:
-  \begin{lstlisting}[language=Python, numbers=none]
->>> np.linalg.det(matrix)  # Find the determinant of the matrix
->>> np.linalg.matrix_rank(matrix)  # Find the rank of the matrix
-  \end{lstlisting}\pause
+%   Determinant and Rank of a Matrix:
+%   \begin{lstlisting}[language=Python, numbers=none]
+% >>> np.linalg.det(matrix)  # Find the determinant of the matrix
+% >>> np.linalg.matrix_rank(matrix)  # Find the rank of the matrix
+%   \end{lstlisting}\pause
   
-  Eigenvalues and Eigenvectors:
-  \begin{lstlisting}[language=Python, numbers=none]
->>> np.linalg.eig(matrix)  # Find the eigenvalues and eigenvectors of the matrix
-  \end{lstlisting}
-\end{frame}
+%   Eigenvalues and Eigenvectors:
+%   \begin{lstlisting}[language=Python, numbers=none]
+% >>> np.linalg.eig(matrix)  # Find the eigenvalues and eigenvectors of the matrix
+%   \end{lstlisting}
+% \end{frame}
 
 
 %% PLOTTING 
-\subsection{Plotting with Matplotlib}
+\section{Plotting with Matplotlib}
+\subsection{Line plots}
+\againframe<2>{contents_prog2}
+
 \begin{frame}[fragile]
-  \frametitle{Introduction to Matplotlib (1)}
+  \frametitle{Introduction to Matplotlib}
   Matplotlib is a Python library used widely for creating static, animated, and interactive visualizations. To start, we first import the \lstinline{pyplot} module from \lstinline{matplotlib}.\pause
   
   \begin{lstlisting}[language=Python]
@@ -224,123 +358,400 @@ x = [1, 2, 3, 4, 5]
 y = [2, 4, 1, 3, 7]
 plt.plot(x, y)
 plt.show()
-  \end{lstlisting}
+  \end{lstlisting}\pause \vskip1em
+  {\small In Jupyter Notebooks, use \lstinline|%matplotlib| to display figures in a separate window, or \lstinline|%matplotlib inline| to display in the notebook.}
     \column{0.45\textwidth}
-  Sample outcome:
-  
-  % \vspace{-0.25cm}
   \includegraphics[width=0.7\textwidth]{intro_matplotlib.pdf}
 \end{columns}
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Enhancing Plots in Matplotlib (2)}
+  \frametitle{Brushing up the graph}
+  Adding multiple plots, axis labels and a legend:
   \begin{columns}
-    \column{0.4\textwidth}
-  Matplotlib offers various ways to enhance your plots, including adding labels, titles, and grids.\pause
-  \begin{lstlisting}[language=Python]
-plt.plot(x, y, 'r-o')
-plt.xlabel('X-axis label')
-plt.ylabel('Y-axis label')
-plt.title('Plot Title')
-plt.grid(True)
-plt.show()
-  \end{lstlisting}\pause
-   \column{0.5\textwidth}
-   \includegraphics[width=0.6\textwidth]{intro_matplotlib2.pdf}
-  \end{columns}
+    \column{0.5\textwidth}
+    \begin{lstlisting}[language=Python]
+import matplotlib.pyplot as plt
+import numpy as np
 
-  \begin{columns}
-    \column{0.4\textwidth}
-  Creating scatter and bar plots:
-  \begin{lstlisting}[language=Python]
-plt.scatter(x, y, color='red')
-plt.show
-plt.bar(x, y, color='green')
+t = np.linspace(-2*np.pi, 2*np.pi,101)
+y1 = 4*np.sin(t)/t + 2
+y2 = np.sin(t)**2 - t/2 + 2
+
+plt.plot(t,y1,label='Eqn 1')
+plt.plot(t,y2,label='Eqn 2')
+plt.xlabel('Time [s]')
+plt.ylabel('Function value [-]')
+plt.legend()
+plt.grid()
 plt.show()
+    \end{lstlisting}\pause
+    \column{0.5\textwidth}
+      \includegraphics[width=\textwidth]{intro_matplotlib_2.pdf}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Line plot styles}
+  Changing markers, line styles:
+  \begin{columns}
+    \column{0.5\textwidth}
+    \begin{lstlisting}[language=Python]
+import matplotlib.pyplot as plt
+import numpy as np
+
+t = np.linspace(-10.0, 10.0, 20)
+p = np.cos(np.pi * t/10) 
+q = 1/(1+np.exp(-t)) - 0.5
+
+plt.plot(t,p,'--x') # Dashed line, cross
+plt.plot(t,q,'r-o') # Red, line, circles
+plt.plot(t,-q,'k^') # Black triangle marker
+plt.xlabel('x+2')
+plt.ylabel('Function value [-]')
+plt.show()
+    \end{lstlisting}\pause
+    \column{0.5\textwidth}
+      \includegraphics[width=\textwidth]{intro_matplotlib_3.pdf}
+  \end{columns}
+\end{frame}
+
+{\nologo
+\begin{frame}[fragile]
+  \frametitle{Subplots}
+  Multiple plots in a single figure are made by specifying a grid using \href{https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplot.html#matplotlib-pyplot-subplot}{subplot}:
+  \begin{columns}
+    \column{0.5\textwidth}
+    \begin{lstlisting}[language=Python]
+x = np.linspace(0,2*np.pi,1000)
+y1,y2 = np.sin(x), 2*np.cos(x)
+
+# Specify figure size
+fig = plt.figure(figsize=(8, 7))
+
+# First index of 2x2 grid (top-left)
+ax1 = plt.subplot(2, 2, 1) 
+ax1.plot(x,y1)
+ax1.set_title('sin(x)')
+
+# Second index of 2x2 grid (top-right)
+ax2 = plt.subplot(2, 2, 2) 
+ax2.plot(x,y2)
+ax2.set_title('cos(x)')
+
+# Second index of 2x1 grid (whole bottom)
+ax3 = plt.subplot(2, 1, 2) 
+ax3.plot(x,y1**2+y2**2)
+ax3.set_title(r'$\sin^2(x)+\cos^2(x)$')
+
+plt.tight_layout()
+plt.show()
+    \end{lstlisting}\pause
+    \column{0.5\textwidth}
+      \includegraphics[width=\textwidth]{intro_matplotlib_4.pdf}
+  \end{columns}
+\end{frame}
+}
+
+% PRACTICE
+\begin{frame}[fragile]
+  \frametitle{Practice}
+  Try to create the following figure:
+  \begin{columns}
+    \column{0.5\textwidth}
+      \includegraphics[width=\textwidth]{intro_matplotlib_5.pdf}
+
+    \column{0.5\textwidth}
+      % \begin{onlyenv}<beamer>
+        \begin{lstlisting}[]
+import numpy as np
+import matplotlib.pyplot as plt
+x = np.linspace(0,2*np.pi,1000)
+y1,y2,y3 = np.sin(x), np.cos(x), np.tan(x)
+
+ax1 = plt.subplot(2, 2, 1) 
+ax1.plot(x,y1)
+ax1.set_title('sin(x)')
+
+ax2 = plt.subplot(2, 2, 3) 
+ax2.plot(x,y2)
+ax2.set_title('cos(x)')
+
+# Second index of 2x1 grid (whole bottom)
+ax3 = plt.subplot(1, 2, 2) 
+ax3.plot(x,y3)
+ax3.set_title('tan(x)')
+ax3.set_ylim(-10, 10)
+        \end{lstlisting}
+      % \end{onlyenv}
+  \end{columns}
+\end{frame}
+
+{\nologo
+\subsection{Different plot styles}
+\begin{frame}[fragile]
+  \frametitle{2D plot styles}
+  \begin{columns}[T]
+    \column{0.4\textwidth}
+      \begin{lstlisting}
+import numpy as np
+import matplotlib.pyplot as plt
+
+x = np.linspace(-2*np.pi,2*np.pi,80)
+y2 = 2*x**2 + 4*x - 3
+y3 = 20*np.random.rand(y2.size)
+
+ax1 = plt.subplot(2, 2, 1) 
+ax1.plot(x,y2)
+ax1.set_title('Line plot')
+
+ax2 = plt.subplot(2, 2, 2) 
+ax2.scatter(x,y3)
+ax2.set_title('Scatter plot')
+
+ax3 = plt.subplot(2, 2, 3) 
+ax3.errorbar(x,y2,yerr=y3)
+ax3.set_title('Errorbar')
+
+ax4 = plt.subplot(2,2,4)
+ax4.hist(y3)
+ax4.set_title('Histogram')
+
+plt.show()
+      \end{lstlisting}
+    \column{0.6\textwidth}
+      \includegraphics[width=\textwidth]{intro_matplotlib_6.pdf}
+  \end{columns}
+\end{frame}
+}
+
+\begin{frame}[fragile]
+  \frametitle{Surface plot}
+  We draw a surface plot of $\displaystyle f(x,y) = xy e^{\left(-x^2 -y^2 \right)}$:
+  \begin{columns}
+    \column{0.5\textwidth}
+      \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import cm
+import matplotlib.pyplot as plt
+import numpy as np
+
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+(*@ \pause @*)
+# Make data.
+x = np.arange(-2, 2, 0.025)
+y = np.arange(-2, 2, 0.025)
+x,y = np.meshgrid(x, y)
+z = x * y * np.exp(-x**2 - y**2)
+(*@ \pause @*)
+# Plot the surface.
+surf = ax.plot_surface(x,y,z, 
+        cmap=cm.magma,linewidth=0, antialiased=False)
+(*@ \pause @*)
+# Customize the z axis.
+ax.set_zlim(-0.25, 0.25)
+
+# Add a color bar which maps values to colors.
+fig.colorbar(surf, shrink=0.5, aspect=5)
+
+plt.show()
+      \end{lstlisting}
+    \column{0.5\textwidth}
+      \includegraphics[width=\textwidth]{intro_matplotlib_7.pdf}
+  \end{columns}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Advanced plotting: Animating plots}
+  The \lstinline|fig.canvas.draw()| and \lstinline|fig.canvas.flush_events()| methods hold the execution of your program until the graph is updated, facilitating a live view of the simulation result.
+  \begin{lstlisting}
+import numpy as np
+import matplotlib.pyplot as plt
+
+x = np.linspace(0, 4*np.pi, 100)
+y = np.sin(x)
+
+fig, ax = plt.subplots()
+line, = ax.plot(x, y, '-')
+
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_title('Animating a Sine Wave')
+plt.show(block=False)
+
+for i in range(len(x)):
+    line.set_data(x[:i+1], y[:i+1])
+    fig.canvas.draw()
+    fig.canvas.flush_events()
+    plt.pause(0.01)
   \end{lstlisting}
-  \column{0.5\textwidth}
-  \includegraphics[width=0.4\textwidth]{intro_matplotlib3.pdf}
-  \includegraphics[width=0.4\textwidth]{intro_matplotlib4.pdf}
-  \end{columns}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Some of the plots of Matplotlib}
-  \begin{figure}
-    \centering
-    \begin{minipage}{.25\textwidth}
-      \centering
-      \includegraphics[width=0.99\linewidth]{mpl_plot_examples/line_plot.eps} %FILL IN THE PIC PATH HERE for plot
-    \end{minipage}%
-    \begin{minipage}{.25\textwidth}
-      \centering
-      \includegraphics[width=.99\linewidth]{mpl_plot_examples/scatter_plot.eps} %FILL IN THE PIC PATH HERE for scatter
-    \end{minipage}
-  \end{figure}
-
-  \begin{figure}
-    \centering
-    \begin{minipage}{.25\textwidth}
-      \centering
-      \includegraphics[width=.99\linewidth]{mpl_plot_examples/bar_chart.eps} %FILL IN THE PIC PATH HERE for bar
-    \end{minipage}%
-    \begin{minipage}{.25\textwidth}
-      \centering
-      \includegraphics[width=.99\linewidth]{mpl_plot_examples/histogram.eps} %FILL IN THE PIC PATH HERE for hist
-    \end{minipage}
-    \begin{minipage}{.25\textwidth}
-      \centering
-      \includegraphics[width=.99\linewidth]{mpl_plot_examples/surface_plot.eps} %FILL IN THE PIC PATH HERE for surface
-    \end{minipage}
-  \end{figure}
 \end{frame}
 
 
-
-%%%% ALGORITHMS
 % \begin{frame}[fragile]
-%  \frametitle{Example algorithm}
-%  Compute the factorial of $N$: $N! = N\cdot(N-1)\cdot(N-2)\cdots 2\cdot 1$\\ \vskip1em
-%  How to deal with this? \vfill
-%  \begin{columns}[T]
-%   \column{0.3\textwidth}
-%   \begin{block}<2->{Naive approach}
-%       \begin{lstlisting}[language=Python,numbers=none]
-% Z = 1
-% Z = Z*2
-% Z = Z*3
-% Z = Z*4
-% ... etc ...      
-%       \end{lstlisting}
-%   \end{block}
-%   \column{0.3\textwidth}
-%   \begin{block}<3->{For-loop}
-%       \begin{lstlisting}[language=Python,numbers=none]
-% Z = 1;
-% for i in range(N):
-%     Z = Z*i
-%       \end{lstlisting}
-%   \end{block}
-%   \column{0.3\textwidth}
-% \begin{block}<4>{While-loop}
-%       \begin{lstlisting}[language=Python,numbers=none]
-% Z = 1;
-% i = 1;
-% while i<=N:
-%     Z = Z*i
-%     i += 1
-%     \end{lstlisting}
-%   \end{block}
+%   \frametitle{Other plotting tools}
+%   \begin{columns}
+%    \column{0.6\textwidth}
+%     \begin{itemize}[<+->]
+%       \item Error bars: \lstinline$plt.errorbar(x, y, yerr=err)$
+%       \item 3D plots: \lstinline$ax.plot_trisurf(x, y, z)$
+%       \item Histograms: \lstinline$plt.hist(x, bins=20)$
+%     \end{itemize}
+%    \column{0.4\textwidth}
+%       \includegraphics<1>[width=\columnwidth]{show_errorbar-utc}
+%       \mode<presentation>{
+%         \includegraphics<2>[width=\columnwidth]{show_ezplot3-utc}
+%         \includegraphics<3>[width=\columnwidth]{show_hist-utc}
+%     }
 %  \end{columns}
-%  \vspace{0.25cm}
-%  \onslide<4>{
-%   Note: \lstinline$N$ must be set beforehand!\\ 
-%   Note: Pay attention to the relational operators!  }
 % \end{frame}
 
+% \subsection*{Multi-dimensional data}
+% \begin{frame}<handout:3>[fragile]
+%   \frametitle{Multi-dimensional data}
+%   Python typically requires the definition of rectangular grid coordinates using \lstinline$np.meshgrid$:\\
+%   \begin{overlayarea}{\textwidth}{6cm}
+%   \begin{columns}[T]
+%    \column{0.6\textwidth}
+%     \begin{lstlisting}[language=Python]
+% x, y = np.meshgrid(np.linspace(-2, 2, 41), np.linspace(-2, 2, 41))
+% z = x * y * np.exp(-x**2 - y**2)
+%     \end{lstlisting}
+%     \vskip1em
+%     \begin{itemize}
+%       \item<2-> Surface plot
+%       \item<3-> Contour plot
+%       \item<4-> Waterfall 
+%       \item<5> Ribbons
+%     \end{itemize}
+%    \column{0.4\textwidth}
+%    \begin{center}
+%       \includegraphics<2>[width=\columnwidth]{show_surf}
+%       \mode<presentation>{
+%         \includegraphics<3>[width=\columnwidth]{show_contour}
+%         \includegraphics<4>[width=\columnwidth]{show_waterfall}
+%         \includegraphics<5>[width=\columnwidth]{show_ribbon}
+%       }
+%    \end{center}
+%     \only<2>{
+%       \lstinline$ax.plot_surface(x, y, z)$
+%     }
+%     \mode<presentation>{
+%       \only<3>{
+%         \lstinline$v = np.linspace(-0.5, 0.5, 21)$\\
+%         \lstinline$cs = ax.contour(x, y, z, levels=v)$\\
+%         \lstinline$ax.clabel(cs, inline=1, fontsize=10)$
+%       }
+%       \only<4>{
+%       \lstinline$ax.plot_trisurf(x.flatten(), y.flatten(), z.flatten(), cmap='winter')$
+%       }
+%       \only<5>{
+%       \lstinline$ax.plot_trisurf(x.flatten(), y.flatten(), z.flatten(), cmap='viridis', linewidth=0, antialiased=False)$
+%       }
+%     }
+%  \end{columns}
+%  \end{overlayarea}
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Vector data}
+%   The gradient function, as expected, is used to obtain the gradient of a scalar field. Colors can be used in the background to simultaneously plot field data:
+%   \begin{columns}[T]
+%    \column{0.6\textwidth}
+%     \begin{lstlisting}[language=Python]
+% x, y = np.meshgrid(np.linspace(-2, 2, 21), np.linspace(-2, 2, 21))
+% z = x * y * np.exp(-x**2 - y**2)
+% dx, dy = np.gradient(z, 0.4, 0.4)
+
+% # Background
+% cs = plt.contourf(x, y, z, 30, cmap='hot')
+% plt.colorbar(cs)
+
+% plt.axis('tight')
+
+% # Vectors
+% plt.quiver(x, y, dx, dy, color='k')
+%     \end{lstlisting}
+%    \column{0.4\textwidth}
+%    \begin{center}
+%       \includegraphics[width=\columnwidth]{show_vector}
+%     \end{center}
+%   \end{columns}
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Enhancing Plots in Matplotlib (2)}
+%   \begin{columns}
+%     \column{0.4\textwidth}
+%   Matplotlib offers various ways to enhance your plots, including adding labels, titles, and grids.\pause
+%   \begin{lstlisting}[language=Python]
+% plt.plot(x, y, 'r-o')
+% plt.xlabel('X-axis label')
+% plt.ylabel('Y-axis label')
+% plt.title('Plot Title')
+% plt.grid(True)
+% plt.show()
+%   \end{lstlisting}\pause
+%    \column{0.5\textwidth}
+%    \includegraphics[width=0.6\textwidth]{intro_matplotlib2.pdf}
+%   \end{columns}
+
+%   \begin{columns}
+%     \column{0.4\textwidth}
+%   Creating scatter and bar plots:
+%   \begin{lstlisting}[language=Python]
+% plt.scatter(x, y, color='red')
+% plt.show
+% plt.bar(x, y, color='green')
+% plt.show()
+%   \end{lstlisting}
+%   \column{0.5\textwidth}
+%   \includegraphics[width=0.4\textwidth]{intro_matplotlib3.pdf}
+%   \includegraphics[width=0.4\textwidth]{intro_matplotlib4.pdf}
+%   \end{columns}
+% \end{frame}
+
+% \begin{frame}
+%   \frametitle{Some of the plots of Matplotlib}
+%   \begin{figure}
+%     \centering
+%     \begin{minipage}{.25\textwidth}
+%       \centering
+%       \includegraphics[width=0.99\linewidth]{mpl_plot_examples/line_plot.eps} %FILL IN THE PIC PATH HERE for plot
+%     \end{minipage}%
+%     \begin{minipage}{.25\textwidth}
+%       \centering
+%       \includegraphics[width=.99\linewidth]{mpl_plot_examples/scatter_plot.eps} %FILL IN THE PIC PATH HERE for scatter
+%     \end{minipage}
+%   \end{figure}
+
+%   \begin{figure}
+%     \centering
+%     \begin{minipage}{.25\textwidth}
+%       \centering
+%       \includegraphics[width=.99\linewidth]{mpl_plot_examples/bar_chart.eps} %FILL IN THE PIC PATH HERE for bar
+%     \end{minipage}%
+%     \begin{minipage}{.25\textwidth}
+%       \centering
+%       \includegraphics[width=.99\linewidth]{mpl_plot_examples/histogram.eps} %FILL IN THE PIC PATH HERE for hist
+%     \end{minipage}
+%     \begin{minipage}{.25\textwidth}
+%       \centering
+%       \includegraphics[width=.99\linewidth]{mpl_plot_examples/surface_plot.eps} %FILL IN THE PIC PATH HERE for surface
+%     \end{minipage}
+%   \end{figure}
+% \end{frame}
+
+
+
+
 % INPUT AND OUTPUT
+\section{IO}
 \subsection{Input/output}
+\againframe<2>{contents_prog2}
+
 \begin{frame}[fragile]
   \frametitle{Input and Output in Python (1)}
   Many programs require some input (data) to function correctly. A combination of the following is common:
@@ -385,16 +796,9 @@ plt.show()
 
 
 \section{Coding style}
-\subsection*{Introduction}
-\begin{frame}[label=contents_prog2]
-  \frametitle{Today's outline}
-  \mode<beamer>{
-    \only<1>{\tableofcontents}
-  }
-  \only<2>{\tableofcontents[currentsection]}
-\end{frame}
+\subsection{Program design}
+\againframe<2>{contents_prog2}
 
-\subsection*{Program design}
 \begin{frame}[label=workrightfast]
   \frametitle{Make a habit of the following adage}
   \begin{center}
@@ -433,7 +837,7 @@ plt.show()
 \subsection*{Example code}
 \begin{frame}[fragile]
  \frametitle{Interpret the following code}
- \begin{lstlisting}[language=Python]
+ \begin{lstlisting}
 s = checksc()
 if s:
     a = cb()
@@ -459,7 +863,7 @@ else:
  \pause
  \begin{columns}[T]
     \column{0.5\textwidth}
-     \begin{lstlisting}[language=Python,basicstyle=\small]
+     \begin{lstlisting}
 s = checksc()
 if s:
 a = cb()
@@ -474,7 +878,7 @@ brn()
 gtbs()
  \end{lstlisting}
     \column{0.5\textwidth}
-     \begin{lstlisting}[language=Python,basicstyle=\small]
+     \begin{lstlisting}
 s = checksc()
 if s:
     a = cb()
@@ -496,7 +900,7 @@ else:
  Making use of descriptive variable and function names enhances the readability and understanding of the code. 
  \begin{columns}[T]
     \column{0.5\textwidth}
-\begin{lstlisting}[language=Python, basicstyle=\scriptsize]
+\begin{lstlisting}
 s = checksc()
 if s:
     a = cb()
@@ -511,7 +915,7 @@ else:
     gtbs()
  \end{lstlisting}
     \column{0.5\textwidth}
-     \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
+     \begin{lstlisting}
 isAvailable = checkSchedule()
 if isAvailable:
     bookCount = countBooks()
@@ -533,7 +937,7 @@ else:
  Magic numbers are constant values without a name, which can reduce code readability. Replacing them with named constants can enhance the understanding of the code.
  \begin{columns}[T]
     \column{0.5\textwidth}
-     \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
+     \begin{lstlisting}
 isAvailable = checkSchedule()
 if isAvailable:
     bookCount = countBooks()
@@ -548,7 +952,7 @@ else:
     visitBookStore()
  \end{lstlisting}
     \column{0.5\textwidth}
-     \begin{lstlisting}[language=Python,basicstyle=\scriptsize,emph={MIN_BOOKS_REQUIRED,MAX_SHELF_SPACE},emphstyle=\color{red}]
+     \begin{lstlisting}[language=Python,emph={MIN_BOOKS_REQUIRED,MAX_SHELF_SPACE},emphstyle=\color{red}]
 MAX_SHELF_SPACE = 5
 MIN_BOOKS_REQUIRED = 5
 
@@ -675,22 +1079,6 @@ else:
     goToBookStore()
  \end{lstlisting}
  \end{frame}
- 
-
-% \begin{frame}
-%   \frametitle{If anything sticks today, let it be this}
-%   \begin{center}
-%     {\LARGE Your code will not be understood by anyone\\}
-%   \pause
-%   \vskip1em
-%   That includes future-you
-%   \vskip2em
-%   \end{center}
-%   \pause
-%   \tikz{\node[emphblock, text width=\textwidth]{Use comments and code to document design and purpose (functionality), not mechanics (implementation).};}
-%   \vskip1em\pause
-%   \tikz{\node[emphblock, text width=\textwidth]{Use consistent and sensible naming of functions and variables.};}
-% \end{frame}
 
 \begin{frame}
   \frametitle{What else makes a good program?}
@@ -709,7 +1097,6 @@ else:
 Funny thing is: This list does not mention that the program should be actually working for its intended purposes!
     \end{columns}
 \end{frame}
-
 
 \begin{frame}[fragile]
   \frametitle{Readability}
@@ -775,7 +1162,6 @@ print(f'Execution time: {end_time - start_time} seconds')
   \end{columns}
 \end{frame}
 
-
 \begin{frame}[fragile]
   \frametitle{Structural}
   \begin{itemize}
@@ -801,7 +1187,7 @@ print(f'Execution time: {end_time - start_time} seconds')
 \begin{frame}[fragile]
   \frametitle{Structural}
     Write code as though it were paragraphs in a story.
-    \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
+    \begin{lstlisting}[language=Python]
 from dependencies import * # importing all dependencies
 
 # Step 0: Define variables
@@ -881,7 +1267,7 @@ def f(a, b=None):
     Properly document your code. Write your comments in a clear and concise fashion. Help your future self: Write clear and concise documentation.
     \begin{columns}
     \column{0.6\textwidth}
-    \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
+    \begin{lstlisting}[language=Python]
 def f(a, b=None):
     """
     Add two values together.
@@ -1073,7 +1459,7 @@ def f(a, b=None):
     \vskip1ex
   \end{itemize}
   \pause
-  \tikz{\node[emphblock] {\large But: validation can only tell you \emph{if} something is wrong, not \emph{where} it went wrong.}}
+  \tikz{\node[emphblock,text width=0.9\textwidth] {\large But: validation can only tell you \emph{if} something is wrong, not \emph{where} it went wrong.}}
 \end{frame}
 
 \begin{frame}
@@ -1124,7 +1510,7 @@ A debugger can help you to:
     $F_n = F_{n-1} + F_{n-2}$ with $F_1 = 1$ and $F_2 = 1$
     \pause
     \lstset{numbers=left}
-  \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
+  \begin{lstlisting}[language=Python]
 def fibonacci_recursive(N):
     """
     Prints out the Nth Fibonacci number to the screen.
@@ -1196,138 +1582,6 @@ plt.show()
         \item The time needed for a computation increases exponentially. Indeed, this may not be the fastest way to compute the Fibonacci sequence.
       \end{itemize}}
 \end{frame}
-
-\section{Visualisation}
-\subsection*{Plotting}
-\againframe<2>{contents_prog2}
-\begin{frame}[fragile]
-  \frametitle{Advanced plotting: Animating plots}
-  The \texttt{fig.canvas.draw()} and \texttt{fig.canvas.flush\_events()} methods hold the execution of your program until the graph is updated, facilitating a live view of the simulation result.
-  \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
-import numpy as np
-import matplotlib.pyplot as plt
-
-x = np.linspace(0, 4*np.pi, 100)
-y = np.sin(x)
-
-fig, ax = plt.subplots()
-line, = ax.plot(x, y, '-')
-
-ax.set_xlabel('X')
-ax.set_ylabel('Y')
-ax.set_title('Animating a Sine Wave')
-plt.show(block=False)
-
-for i in range(len(x)):
-    line.set_data(x[:i+1], y[:i+1])
-    fig.canvas.draw()
-    fig.canvas.flush_events()
-    plt.pause(0.01)
-  \end{lstlisting}
-\end{frame}
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Plotting (2)}
-%   Easy plotting of functions can be done using the ezplot function: \lstinline$ezplot('x-sin(x)', [0 2*pi])$:
-%   \\
-%   {\centering\includegraphics[width=0.5\textwidth]{show_ezplot-utc}}\\
-%   Be careful with steep gradients: \lstinline$ezplot('x-sin(1/x)', [0 1])$% (use \lstinline$fplot$ instead)
-%   \\
-%   \centering\includegraphics[width=0.5\textwidth]{show_ezplot2-utc}
-% \end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Other plotting tools}
-  \begin{columns}
-   \column{0.6\textwidth}
-    \begin{itemize}[<+->]
-      \item Error bars: \lstinline$plt.errorbar(x, y, yerr=err)$
-      \item 3D plots: \lstinline$ax.plot_trisurf(x, y, z)$
-      \item Histograms: \lstinline$plt.hist(x, bins=20)$
-    \end{itemize}
-   \column{0.4\textwidth}
-      \includegraphics<1>[width=\columnwidth]{show_errorbar-utc}
-      \mode<presentation>{
-        \includegraphics<2>[width=\columnwidth]{show_ezplot3-utc}
-        \includegraphics<3>[width=\columnwidth]{show_hist-utc}
-    }
- \end{columns}
-\end{frame}
-
-\subsection*{Multi-dimensional data}
-\begin{frame}<handout:3>[fragile]
-  \frametitle{Multi-dimensional data}
-  Python typically requires the definition of rectangular grid coordinates using \lstinline$np.meshgrid$:\\
-  \begin{overlayarea}{\textwidth}{6cm}
-  \begin{columns}[T]
-   \column{0.6\textwidth}
-    \begin{lstlisting}[language=Python]
-x, y = np.meshgrid(np.linspace(-2, 2, 41), np.linspace(-2, 2, 41))
-z = x * y * np.exp(-x**2 - y**2)
-    \end{lstlisting}
-    \vskip1em
-    \begin{itemize}
-      \item<2-> Surface plot
-      \item<3-> Contour plot
-      \item<4-> Waterfall 
-      \item<5> Ribbons
-    \end{itemize}
-   \column{0.4\textwidth}
-   \begin{center}
-      \includegraphics<2>[width=\columnwidth]{show_surf}
-      \mode<presentation>{
-        \includegraphics<3>[width=\columnwidth]{show_contour}
-        \includegraphics<4>[width=\columnwidth]{show_waterfall}
-        \includegraphics<5>[width=\columnwidth]{show_ribbon}
-      }
-   \end{center}
-    \only<2>{
-      \lstinline$ax.plot_surface(x, y, z)$
-    }
-    \mode<presentation>{
-      \only<3>{
-        \lstinline$v = np.linspace(-0.5, 0.5, 21)$\\
-        \lstinline$cs = ax.contour(x, y, z, levels=v)$\\
-        \lstinline$ax.clabel(cs, inline=1, fontsize=10)$
-      }
-      \only<4>{
-      \lstinline$ax.plot_trisurf(x.flatten(), y.flatten(), z.flatten(), cmap='winter')$
-      }
-      \only<5>{
-      \lstinline$ax.plot_trisurf(x.flatten(), y.flatten(), z.flatten(), cmap='viridis', linewidth=0, antialiased=False)$
-      }
-    }
- \end{columns}
- \end{overlayarea}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Vector data}
-  The gradient function, as expected, is used to obtain the gradient of a scalar field. Colors can be used in the background to simultaneously plot field data:
-  \begin{columns}[T]
-   \column{0.6\textwidth}
-    \begin{lstlisting}[language=Python]
-x, y = np.meshgrid(np.linspace(-2, 2, 21), np.linspace(-2, 2, 21))
-z = x * y * np.exp(-x**2 - y**2)
-dx, dy = np.gradient(z, 0.4, 0.4)
-
-# Background
-cs = plt.contourf(x, y, z, 30, cmap='hot')
-plt.colorbar(cs)
-
-plt.axis('tight')
-
-# Vectors
-plt.quiver(x, y, dx, dy, color='k')
-    \end{lstlisting}
-   \column{0.4\textwidth}
-   \begin{center}
-      \includegraphics[width=\columnwidth]{show_vector}
-    \end{center}
-  \end{columns}
-\end{frame}
-
 
 
 \section{Concluding remarks}
