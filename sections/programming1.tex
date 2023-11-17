@@ -440,7 +440,7 @@ item = more_brands.pop(3)   # Removes element at index 3 from the list, stores i
 \end{frame}
 
 
-\begin{frame}[fragile]
+\begin{frame}[fragile,label=practice_lists]
   \frametitle{Practice}
   Given a vector 
   \[ 
@@ -526,7 +526,7 @@ True
   \end{lstlisting}
 \end{frame}
 
-\begin{frame}[fragile]
+\begin{frame}[fragile,label=practice_strings]
   \frametitle{Practice}
   Given a string
   \begin{lstlisting}
@@ -571,7 +571,7 @@ True
   \end{lstlisting}
 \end{frame}
 
-\begin{frame}[fragile]
+\begin{frame}[fragile,label=practice_tuples]
   \frametitle{Practice}
   Given a tuple
   \begin{lstlisting}
@@ -588,6 +588,7 @@ t = (1, 2, 3, 4, 5, 6)
 print(t[2])
 t[2] = 6
 t2 = t + (7,8,9)
+print(t2)
     \end{lstlisting}
   \end{onlyenv}
  \end{frame}
@@ -639,7 +640,7 @@ t2 = t + (7,8,9)
   \end{lstlisting}
 \end{frame}
 
-\begin{frame}[fragile]
+\begin{frame}[fragile,label=practice_dictionary]
   \frametitle{Practice}
   Given a dictionary
   \begin{lstlisting}[language=Python,numbers=none]
@@ -736,7 +737,7 @@ Element [] of type <class 'list'> at index 6
   \end{lstlisting}
 \end{frame}
 
-\begin{frame}[fragile]
+\begin{frame}[fragile,label=practice_for]
   \frametitle{Practice}
   Given a list
   \begin{lstlisting}[language=Python,numbers=none]
@@ -764,6 +765,7 @@ Element [] of type <class 'list'> at index 6
       \end{lstlisting}
     \column{0.33\textwidth}
       \begin{lstlisting}[]
+>>> c = 0
 >>> while not my_list[c] == 7:
 ...    c += 1
 >>> print(my_list[c])
@@ -854,7 +856,7 @@ print(my_artists)
   
 \end{frame}
 
-\begin{frame}[fragile]
+\begin{frame}[fragile,label=practice_conditions]
   \frametitle{Practice}
   Consider the list:
   \begin{lstlisting}[language=Python, numbers=none]
@@ -1034,7 +1036,7 @@ print(i, l)
 }
 
 
-\begin{frame}[fragile]
+\begin{frame}[fragile,label=practice_functions1]
   \frametitle{Practice}
   \begin{columns}[t]
     \column{0.5\textwidth}
@@ -1117,7 +1119,7 @@ def mystery(a, b):
 \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]
+\begin{frame}[fragile,label=practice_functions2]
   \frametitle{Practice}
         Define a function that computes the factorial of a number, $n!$, using recursion:
         \[
@@ -1374,9 +1376,9 @@ print(f"1 divided by infinity equals {1/inf}")
   \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]
+\begin{frame}[fragile,label=practice_math_module]
   \frametitle{Practice}
-  Use the math module to compute $y=\sin(x)$ for 8 equidistant points $x\in \left[0,2\pi\right]$
+  Use the math module to compute $y=\sin(x)$ for 9 equidistant points $x\in \left[0,2\pi\right]$, including end-points.
     \begin{itemize}
       \item Use \emph{list comprehensions} to generate the lists \lstinline|x| and \lstinline|y|
     \end{itemize}\pause
@@ -1534,7 +1536,7 @@ print(x)
   \end{lstlisting}
 \end{frame}
   
-\begin{frame}[fragile]
+\begin{frame}[fragile,label=practice_random]
   \frametitle{Practice}
   \begin{itemize}
     \item Create a \emph{function} that returns a list of $N$ dice throws (cubic dice, values 1-6)
@@ -1606,7 +1608,7 @@ Value 6 was thrown 6 times
 
 \section{Exercises}
 \subsection*{Exercise 1}
-\begin{frame}[fragile]
+\begin{frame}[fragile,label=practice_vectors_arrays]
   \frametitle{Practice vectors and arrays}
   \begin{enumerate}
     \item Create a list \lstinline|x| with the elements:
@@ -1620,13 +1622,13 @@ Value 6 was thrown 6 times
       \item \lstinline|y[i] = x[i] - 3|
       \item \lstinline|y[i] = x[i]| for every even index \(i\) and \lstinline|y[i] = x[i] + 11| for every odd index \(i\).
     \end{itemize}
-    \item Let \lstinline|T = np.array([[3, 4, 6], [1, 8, 6], [-4, 3, 6], [5, 6, 6]])|. Perform the following operations on T:
+    \item Let \lstinline|T = np.array([[3, 4, 6], [1, 8, 6], [-4, 3, 6], [5, 6, 6]]).T|. Perform the following operations on T:
     \begin{itemize}
       \item Retrieve a list consisting of the 2nd and 4th elements of the 3rd row.
       \item Find the minimum of the 3rd column.
       \item Find the maximum of the 2nd row.
       \item Compute the sum of the 2nd column
-      \item Compute the mean of the row 1 and the mean of row 4
+      \item Compute the mean of the row 1 and the mean of row 3
     \end{itemize}
   \end{enumerate}
  \end{frame}

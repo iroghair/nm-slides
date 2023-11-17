@@ -94,7 +94,7 @@ array([[0.36482694, 0.47204049, 0.20908193],
 
 >>> np.random.randint(1,10,5) # 5 random integers from 1 (inclusive) until 10 (exclusive)
 array([9, 1, 6, 4, 6])
-        \end{lstlisting}\pause
+        \end{lstlisting}
 \end{frame}
 
 %% MATH WITH NUMPY
@@ -119,7 +119,7 @@ array([9, 1, 6, 4, 6])
   \begin{lstlisting}[language=Python, numbers=none]
 >>> np.mean(arr)  # Mean value of the array elements
 >>> np.std(arr)   # Standard deviation of the array elements
-  \end{lstlisting}\pause
+  \end{lstlisting}
 \end{itemize}
 \end{frame}
 
@@ -245,7 +245,7 @@ Enumerate index (1, 2) has value 16; also 16
 \end{frame}
 
 {\nologo
-\begin{frame}[fragile]
+\begin{frame}[fragile,label=practice_numpy]
   \frametitle{Practice}
   Given a function $\displaystyle  f(x) = x^2+2x-4 $
   % \vskip-1em
@@ -454,15 +454,15 @@ plt.show()
 }
 
 % PRACTICE
-\begin{frame}[fragile]
+\begin{frame}[fragile,label=practice_subfig]
   \frametitle{Practice}
   Try to create the following figure:
   \begin{columns}
     \column{0.5\textwidth}
       \includegraphics[width=\textwidth]{intro_matplotlib_5.pdf}
 
-    \column{0.5\textwidth}
-      % \begin{onlyenv}<beamer>
+    \column{0.5\textwidth}\pause
+      \begin{onlyenv}<beamer>
         \begin{lstlisting}[]
 import numpy as np
 import matplotlib.pyplot as plt
@@ -483,7 +483,7 @@ ax3.plot(x,y3)
 ax3.set_title('tan(x)')
 ax3.set_ylim(-10, 10)
         \end{lstlisting}
-      % \end{onlyenv}
+      \end{onlyenv}
   \end{columns}
 \end{frame}
 
@@ -749,7 +749,7 @@ for i in range(len(x)):
 
 % INPUT AND OUTPUT
 \section{IO}
-\subsection{Input/output}
+\subsection*{Input/output}
 \againframe<2>{contents_prog2}
 
 \begin{frame}[fragile]
@@ -763,11 +763,11 @@ for i in range(len(x)):
     \end{lstlisting}
     \item Input may be read from a file, for instance using Python's built-in open function or libraries like `numpy` for more complex data structures:
     \begin{lstlisting}[language=Python,numbers=none]
->>> with open('myData.txt', 'r') as file:
->>>     data = file.read()
->>> 
->>> import numpy as np
->>> data = np.loadtxt("my_file.csv")
+with open('myData.txt', 'r') as file:
+    data = file.read() # Alt: data.readlines() gives a list of lines
+
+import numpy as np
+data = np.loadtxt("my_file.csv")
     \end{lstlisting}
     \item There are many other libraries and functions for more advanced input operations, such as json, xml, etc.
   \end{itemize}
@@ -785,15 +785,13 @@ for i in range(len(x)):
     \item Saving data to a file can be done using various methods including writing to a file or using libraries like pandas for structured data:
     \begin{lstlisting}[language=Python,numbers=none]
 >>> with open('output.txt', 'w') as file:
->>> file.write(str(data))
+...     file.write(str(data))
 
 >>> data.save("data.npy")
     \end{lstlisting}
     \item More advanced output methods can utilize libraries such as NumPy, pandas, etc. to save data in various formats including JSON, Excel, etc.
   \end{itemize}
  \end{frame}
-
-
 
 \section{Coding style}
 \subsection{Program design}
@@ -976,7 +974,7 @@ else:
  \frametitle{Now, That's More Like It!}
  Demonstrating the evolution of the script to a more readable and maintainable version.
  \begin{columns}[T]
-    \column{0.3\textwidth}
+    \column{0.4\textwidth}
      \begin{lstlisting}[language=Python]
 s = checksc()
 if s:
@@ -991,7 +989,7 @@ else:
     brn()
     gtbs()
  \end{lstlisting}
-    \column{0.7\textwidth}
+    \column{0.6\textwidth}
      \begin{lstlisting}[language=Python]
 MAX_SHELF_SPACE = 5
 MIN_BOOKS_REQUIRED = 5
@@ -1019,11 +1017,12 @@ else:
   \frametitle{Writing readable code}
   Good code reads like a book.\vskip2em \pause
   \begin{itemize}
-    \item When it doesn't, make sure to use comments. In Python, everything following \lstinline$ \# is a comment$
+    \item When it doesn't, make sure to use comments. In Python, everything following \lstinline|#| is a comment
     \item Prevent ``smart constructions'' in the code
     \item Re-use working code (i.e. create functions for well-defined tasks).
-    \item Documentation is also useful, but hard to maintain.
-    \item Python comes with a function that generates reports from comments
+    \item Document functions using docstrings 
+    \item External documentation is also useful, but harder to maintain.
+    % \item Python comes with a function that generates reports from comments
   \end{itemize}
 \end{frame}
 
@@ -1535,53 +1534,53 @@ def fibonacci_recursive(N):
 \end{frame}
 }
 
-\begin{frame}<handout:0->[fragile]
-  \frametitle{Profiling the code}
-  We can use the command \lstinline$time.time()$ to record the time spent in the enclosed code:
-  \mode<presentation>
-    \begin{onlyenv}<1>
-      \lstset{showlines=true}
-    \begin{lstlisting}[language=Python]
-# Script to call fibonacci recursive for different values of N and 
-# display the time to process
-import time 
-max_N = 32
+% \begin{frame}<handout:0->[fragile]
+%   \frametitle{Profiling the code}
+%   We can use the command \lstinline$time.time()$ to record the time spent in the enclosed code:
+%   \mode<presentation>
+%     \begin{onlyenv}<1>
+%       \lstset{showlines=true}
+%     \begin{lstlisting}[language=Python]
+% # Script to call fibonacci recursive for different values of N and 
+% # display the time to process
+% import time 
+% max_N = 32
 
-for i in range(1, max_N+1):
-    start_time = time.time()
-    print(i)
-    print(fibonacci_recursive(i))
-    end_time = time.time()
-    print("Time: ", end_time - start_time, "seconds")
-\end{lstlisting}
-  \end{onlyenv}
-  \mode<all>
-  \begin{onlyenv}<2->
-    \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
-# Script to call fibonacci recursive for different values and record the
-# time to process
+% for i in range(1, max_N+1):
+%     start_time = time.time()
+%     print(i)
+%     print(fibonacci_recursive(i))
+%     end_time = time.time()
+%     print("Time: ", end_time - start_time, "seconds")
+% \end{lstlisting}
+%   \end{onlyenv}
+%   \mode<all>
+%   \begin{onlyenv}<2->
+%     \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
+% # Script to call fibonacci recursive for different values and record the
+% # time to process
 
-import time
-import matplotlib.pyplot as plt
-max_N = 32
-recorded_time = []
+% import time
+% import matplotlib.pyplot as plt
+% max_N = 32
+% recorded_time = []
 
-for i in range(1, max_N+1):
-    start_time = time.time()
-    print(i)
-    fibonacci_recursive(i)
-    end_time = time.time()
-    recorded_time.append(end_time - start_time)
+% for i in range(1, max_N+1):
+%     start_time = time.time()
+%     print(i)
+%     fibonacci_recursive(i)
+%     end_time = time.time()
+%     recorded_time.append(end_time - start_time)
 
-plt.plot(range(1, max_N+1), recorded_time)
-plt.show()
-        \end{lstlisting}
-      \end{onlyenv}
-      \uncover<3>{
-      \begin{itemize}
-        \item The time needed for a computation increases exponentially. Indeed, this may not be the fastest way to compute the Fibonacci sequence.
-      \end{itemize}}
-\end{frame}
+% plt.plot(range(1, max_N+1), recorded_time)
+% plt.show()
+%         \end{lstlisting}
+%       \end{onlyenv}
+%       \uncover<3>{
+%       \begin{itemize}
+%         \item The time needed for a computation increases exponentially. Indeed, this may not be the fastest way to compute the Fibonacci sequence.
+%       \end{itemize}}
+% \end{frame}
 
 
 \section{Concluding remarks}
@@ -1606,68 +1605,68 @@ plt.show()
 \againframe{workrightfast}
 \againframe{wrf-explain}
 
-\subsection*{Exercise}
-\begin{frame}<handout:1-2>
-  \frametitle{Exercise: finding the roots of a parabola}
-  We are writing a program that finds for us the roots of a parabola. We use the form
-  \[
-    y = ax^2 + bx + c
-  \]
-  \pause
-  What is our program in pseudo-code? \pause
-  \begin{enumerate}[<+->]
-    \item Input data ($a$, $b$ and $c$)
-    \item Identify special cases ($a=b=c=0$, $a=0$)
-    \begin{description}
-      \item[$a=b=c=0$] Solution indeterminate
-      \item[$a=0$] Solution: $x = -\frac{c}{b}$
-    \end{description}
-    \item Find $D = b^2-4ac$
-    \item Decide, based on $D$:
-    \begin{description}
-      \item[$D<0$] Display message: complex roots
-      \item[$D=0$] Display 1 root value
-      \item[$D>0$] Display 2 root values
-    \end{description}
-  \end{enumerate}
-\end{frame}
+% \subsection*{Exercise}
+% \begin{frame}<handout:1-2>
+%   \frametitle{Exercise: finding the roots of a parabola}
+%   We are writing a program that finds for us the roots of a parabola. We use the form
+%   \[
+%     y = ax^2 + bx + c
+%   \]
+%   \pause
+%   What is our program in pseudo-code? \pause
+%   \begin{enumerate}[<+->]
+%     \item Input data ($a$, $b$ and $c$)
+%     \item Identify special cases ($a=b=c=0$, $a=0$)
+%     \begin{description}
+%       \item[$a=b=c=0$] Solution indeterminate
+%       \item[$a=0$] Solution: $x = -\frac{c}{b}$
+%     \end{description}
+%     \item Find $D = b^2-4ac$
+%     \item Decide, based on $D$:
+%     \begin{description}
+%       \item[$D<0$] Display message: complex roots
+%       \item[$D=0$] Display 1 root value
+%       \item[$D>0$] Display 2 root values
+%     \end{description}
+%   \end{enumerate}
+% \end{frame}
 
-\begin{frame}<handout:0>[plain,fragile]
-  \frametitle{Example: finding the roots of a parabola}
-  \small\selectfont
-  \begin{lstlisting}[language=Python,basicstyle=\scriptsize\ttfamily]
-def parabola(a, b, c):
-    # Catch exception cases
-    if a == 0:
-        if b == 0:
-            if c == 0:
-                print('Solution indeterminate')
-                return
-            print('There is no solution')
-            return
-        return -c / b
+% \begin{frame}<handout:0>[plain,fragile]
+%   \frametitle{Example: finding the roots of a parabola}
+%   \small\selectfont
+%   \begin{lstlisting}[language=Python,basicstyle=\scriptsize\ttfamily]
+% def parabola(a, b, c):
+%     # Catch exception cases
+%     if a == 0:
+%         if b == 0:
+%             if c == 0:
+%                 print('Solution indeterminate')
+%                 return
+%             print('There is no solution')
+%             return
+%         return -c / b
 
-    # Compute determinant
-    D = b**2 - 4*a*c
-    if D < 0:
-        print('Complex roots')
-        return
-    elif D == 0:
-        return -b / (2*a)
-    elif D > 0:
-        x1 = (-b + D**0.5) / (2*a)
-        x2 = (-b - D**0.5) / (2*a)
-        return sorted([x1, x2])
-  \end{lstlisting}
-\end{frame}
+%     # Compute determinant
+%     D = b**2 - 4*a*c
+%     if D < 0:
+%         print('Complex roots')
+%         return
+%     elif D == 0:
+%         return -b / (2*a)
+%     elif D > 0:
+%         x1 = (-b + D**0.5) / (2*a)
+%         x2 = (-b - D**0.5) / (2*a)
+%         return sorted([x1, x2])
+%   \end{lstlisting}
+% \end{frame}
 
-\begin{frame}[fragile]
-  \frametitle{Example: finding the roots of a parabola}
-  \begin{lstlisting}
->> parabola(1, -4, -3)
-[-0.6457513110645907, 4.645751311064591]
-  \end{lstlisting}
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Example: finding the roots of a parabola}
+%   \begin{lstlisting}
+% >> parabola(1, -4, -3)
+% [-0.6457513110645907, 4.645751311064591]
+%   \end{lstlisting}
+% \end{frame}
 
 
 %
