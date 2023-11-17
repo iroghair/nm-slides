@@ -8,7 +8,7 @@ To compile simply use:
 
 `python render.py <filename>`
 
-Where the filename does not have to contain the extension. This will automatically open the resulting slide as well.
+Where the filename does not have to contain the extension.
 
 Example:
 
@@ -42,4 +42,3 @@ Example:
 9. What's the notepad-displayed equation in python-versatility.pdf?
 10. Transitions between slides using `(*@  @*)` seem to have stopped working (e.g. `(*@ \pause @*)`)
 11. Convert references with `.format` to f-strings
-12. 
