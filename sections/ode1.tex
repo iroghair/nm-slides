@@ -291,7 +291,7 @@
 
       \addplot[graph,mark=x] table [id=EE_20]{data/ODE_EulerExpl_20.dat};  \addlegendentry{20 points}
       \only<2->{\addplot[graph,draw=tueyellow] table [id=EE_20]{data/ODE_EulerExpl_40.dat}; } \addlegendentry{40 points}
-      \only<3->{\addplot[graph,draw=tuelblue] table [id=EE_20]{data/ODE_EulerExpl_80.dat}; } \addlegendentry{80 points}
+      \only<3->{\addplot[graph,draw=tueorange] table [id=EE_20]{data/ODE_EulerExpl_80.dat}; } \addlegendentry{80 points}
       \only<4->{\addplot[graph,draw=tuegreen] table [id=EE_20]{data/ODE_EulerExpl_160.dat};} \addlegendentry{160 points}
       \only<5->{\addplot[graph,draw=tuelila] table [id=EE_20]{data/ODE_EulerExpl_320.dat};} \addlegendentry{320 points}
     \end{axis}
@@ -336,7 +336,7 @@
 
 	\addplot[graph] table [id=EE_20]{data/ODE_EulerExpl_20.dat}; \addlegendentry{$N=20$}
 	\addplot[graph,draw=tueyellow] table [id=EE_20]{data/ODE_EulerExpl_40.dat}; \addlegendentry{$N=40$}
-	\addplot[graph,draw=tuelblue] table [id=EE_20]{data/ODE_EulerExpl_80.dat};  \addlegendentry{$N=80$}
+	\addplot[graph,draw=tueorange] table [id=EE_20]{data/ODE_EulerExpl_80.dat};  \addlegendentry{$N=80$}
 	\addplot[graph,draw=tuegreen] table [id=EE_20]{data/ODE_EulerExpl_160.dat}; \addlegendentry{$N=160$}
 	\addplot[graph,draw=tuelila] table [id=EE_20]{data/ODE_EulerExpl_320.dat}; \addlegendentry{$N=320$}
       \end{axis}
@@ -369,7 +369,7 @@
 
 	\addplot[graph,sharp plot,mark=+,mark size=1.3pt] table [id=EE_20]{data/ODE_Euler2Expl_20.dat}; \addlegendentry{$N=20$}
 	\addplot[graph,sharp plot,draw=tueyellow,mark=x,mark size=1.3pt] table [id=EE_20]{data/ODE_Euler2Expl_40.dat}; \addlegendentry{$N=40$}
-	\addplot[graph,sharp plot,draw=tuelblue,mark=o,mark size=1.3pt] table [id=EE_20]{data/ODE_Euler2Expl_80.dat};  \addlegendentry{$N=80$}
+	\addplot[graph,sharp plot,draw=tueorange,mark=o,mark size=1.3pt] table [id=EE_20]{data/ODE_Euler2Expl_80.dat};  \addlegendentry{$N=80$}
 	\addplot[graph,sharp plot,draw=tuegreen] table [id=EE_20]{data/ODE_Euler2Expl_160.dat}; \addlegendentry{$N=160$}
 	\addplot[graph,sharp plot,draw=tuelila] table [id=EE_20]{data/ODE_Euler2Expl_320.dat}; \addlegendentry{$N=320$}
       \end{axis}
@@ -407,7 +407,7 @@
       log ticks with fixed point,
       xtick={20,40,80,160,320},
       ytick={0.02,0.01,0.005,0.002,0.001}]
-      \addplot[graph,draw=tuelblue,mark=o] table {data/ODE_euler_err.dat};
+      \addplot[graph,draw=tueorange,mark=o] table {data/ODE_euler_err.dat};
       \end{loglogaxis}
     \end{tikzpicture}
   \end{columns}
@@ -499,7 +499,7 @@
 \begin{frame}
   \frametitle{Computing the rate of convergence}
   \footnotesize\selectfont
-  When the analytical solution is available, choose \tikz{\node[circle,draw=none,fill=tuelblue,inner sep=0.7pt,text=white]{\scriptsize 1};} or \tikz{\node[circle,draw=none,fill=tuelblue,inner sep=0.7pt,text=white]{\scriptsize 2};} for a particular number of grid points $N$:
+  When the analytical solution is available, choose \tikz{\node[circle,draw=none,fill=tueorange,inner sep=0.7pt,text=white]{\scriptsize 1};} or \tikz{\node[circle,draw=none,fill=tueorange,inner sep=0.7pt,text=white]{\scriptsize 2};} for a particular number of grid points $N$:
   \begin{enumerate}
   \footnotesize\selectfont
     \item Compute the relative or absolute error vector $\overline{\varepsilon}$. Take the norm to compute a single error value $\epsilon$ following:
@@ -1061,15 +1061,15 @@ Using $b_1+b_2=1$, $c_2b_2=\frac{1}{2}$, $a_{2,1}b_2=\frac{1}{2} \Rightarrow$ 3 
       \draw<2->[line,draw=tuered] (t0) .. node [midway,above] (dt1) {$\Delta t$} controls (0.25,0.2) and (0.75,0.2) .. (t1);
       \draw<2->[line,draw=tuered] (t1) .. node [midway,above] (dt2) {$\Delta t$} controls (1.25,0.2) and (1.75,0.2) .. (t2);
       
-      \draw<3->[line,draw=tuelblue] (t0) .. node [midway,below] (dt05) {$\frac{\Delta t}{2}$} controls (0.125,-0.15) and (0.375,-0.15) .. (t05);
-      \draw<3->[line,draw=tuelblue] (t05) .. node [midway,below] (dt15) {$\frac{\Delta t}{2}$} controls (0.625,-0.15) and (0.875,-0.15) .. (t1);
-      \draw<3->[line,draw=tuelblue] (t1) .. node [midway,below] (dt05) {$\frac{\Delta t}{2}$} controls (1.125,-0.15) and (1.375,-0.15) .. (t15);
-      \draw<3->[line,draw=tuelblue] (t15) .. node [midway,below] (dt15) {$\frac{\Delta t}{2}$} controls (1.625,-0.15) and (1.875,-0.15) .. (t2);
+      \draw<3->[line,draw=tueorange] (t0) .. node [midway,below] (dt05) {$\frac{\Delta t}{2}$} controls (0.125,-0.15) and (0.375,-0.15) .. (t05);
+      \draw<3->[line,draw=tueorange] (t05) .. node [midway,below] (dt15) {$\frac{\Delta t}{2}$} controls (0.625,-0.15) and (0.875,-0.15) .. (t1);
+      \draw<3->[line,draw=tueorange] (t1) .. node [midway,below] (dt05) {$\frac{\Delta t}{2}$} controls (1.125,-0.15) and (1.375,-0.15) .. (t15);
+      \draw<3->[line,draw=tueorange] (t15) .. node [midway,below] (dt15) {$\frac{\Delta t}{2}$} controls (1.625,-0.15) and (1.875,-0.15) .. (t2);
       
       \node<2->[above=3pt,color=tuered]  at (t1) {$y_1$};
-      \node<3->[below=3pt,color=tuelblue]  at (t1) {$y_2$};
+      \node<3->[below=3pt,color=tueorange]  at (t1) {$y_2$};
 %       \node[above=3pt,color=tuered]  at (t2) {$y_1$};
-%       \node[below=3pt,color=tuelblue]  at (t2) {$y_2$};
+%       \node[below=3pt,color=tueorange]  at (t2) {$y_2$};
             
 
 %       \draw[line] (t1) .. node [midway,above] (dt2) {$\Delta t$} controls (1.25,0.2) and (1.75,0.2) .. (t2);
@@ -1077,7 +1077,7 @@ Using $b_1+b_2=1$, $c_2b_2=\frac{1}{2}$, $a_{2,1}b_2=\frac{1}{2} \Rightarrow$ 3 
 %       \draw[line,densely dashed] (0.1,0.05) -- node[midway,above] {``Marching''} (0.9,0.05);
     \end{tikzpicture}\begin{itemize}
   \item<2-> \color{tuered} RK4 with one large step of $h$: $ y_{i+1} = y_1 + ch^5 + \mathcal{O}{(h^6)} $
-  \item<3-> \color{tuelblue} RK4 with two steps of $\frac{1}{2}h$: $ y_{i+1} = y_2 + 2c(\frac{1}{2}h)^5 + \mathcal{O}{(h^6)} $
+  \item<3-> \color{tueorange} RK4 with two steps of $\frac{1}{2}h$: $ y_{i+1} = y_2 + 2c(\frac{1}{2}h)^5 + \mathcal{O}{(h^6)} $
 \end{itemize}
 \end{frame}
 

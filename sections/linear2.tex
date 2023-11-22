@@ -34,12 +34,12 @@
    In general:
     \[ 
     \begin{bmatrix}
-A_{11} & A_{12} & A_{13}\\ 
-A_{21} & A_{22} & A_{23}\\ 
-A_{31} & A_{32} & A_{33}
+A_{00} & A_{01} & A_{02}\\ 
+A_{10} & A_{11} & A_{12}\\ 
+A_{20} & A_{21} & A_{22}
 \end{bmatrix}\begin{bmatrix}
-x_1\\x_2\\x_3  
-\end{bmatrix}=\begin{bmatrix}b_1\\b_2\\b_3  \end{bmatrix} 
+x_0\\x_1\\x_2  
+\end{bmatrix}=\begin{bmatrix}b_0\\b_1\\b_2  \end{bmatrix} 
 \]
   \vfill
 Desired solution:
@@ -49,31 +49,31 @@ Desired solution:
 0 & 1 & 0\\ 
 0 & 0 & 1
 \end{bmatrix}\begin{bmatrix}
-x_1\\x_2\\x_3  
-\end{bmatrix}=\begin{bmatrix}b'_1\\b'_2\\b'_3\end{bmatrix} 
+x_0\\x_1\\x_2  
+\end{bmatrix}=\begin{bmatrix}b'_0\\b'_1\\b'_2\end{bmatrix} 
 \]
 }
 
 \begin{frame}[fragile]
   \frametitle{Using row operations}
   \begin{itemize}
-    \item Use row operations to simplify the system. Eliminate element $A_{21}$ by subtracting $A_{21}/A_{11} = d_{21}$ times row 1 from row 2.
-    \item In this case, Row 1 is the pivot row, and $A_{11}$ is the pivot element.
+    \item Use row operations to simplify the system. Eliminate element $A_{10}$ by subtracting $A_{10}/A_{00} = d_{10}$ times row 1 from row 2.
+    \item In this case, Row 1 is the pivot row, and $A_{00}$ is the pivot element.
   \end{itemize}
   \tikz{\node (m1) {
     $
     \left[\begin{array}{ccc|c}
-      A_{11} & A_{12} & A_{13} & b_1\\ 
-      \tikzmarkin[txt=style yellow]{a21a} A_{21} & A_{22} & A_{23} & b_2\tikzmarkend{a21a}\\ 
-      A_{31} & A_{32} & A_{33} & b_3
+      A_{00} & A_{01} & A_{02} & b_0\\ 
+      \tikzmarkin[txt=style yellow]{a21a} A_{10} & A_{11} & A_{12} & b_1\tikzmarkend{a21a}\\ 
+      A_{20} & A_{21} & A_{22} & b_2
     \end{array}\right]
   $};
   \node[right=2cm of m1,](m2){
   $
     \left[\begin{array}{ccc|c}
-      A_{11} & A_{12} & A_{13} & b_1\\ 
-      \tikzmarkin[txt=style yellow] {a21b} 0      & A'_{22} & A'_{23} & b'_2\tikzmarkend{a21b}\\ 
-      A_{31} & A_{32} & A_{33} & b_3
+      A_{00} & A_{01} & A_{02} & b_0\\ 
+      \tikzmarkin[txt=style yellow] {a21b} 0      & A'_{11} & A'_{12} & b'_1\tikzmarkend{a21b}\\ 
+      A_{20} & A_{21} & A_{22} & b_2
     \end{array}\right]
   $};
   \draw[->,thick] (m1.east) --  (m2.west);
@@ -82,22 +82,22 @@ x_1\\x_2\\x_3
 
 \begin{frame}[fragile]
   \frametitle{Using row operations}
-  Eliminate element $A_{21}$ using $d_{21}=A_{21}/A_{11}$.
+  Eliminate element $A_{10}$ using $d_{10}=A_{10}/A_{00}$.
   \vfill
     \tikz{\node (m1) {
     $
     \left[\begin{array}{ccc|c}
-      A_{11} & A_{12} & A_{13} & b_1\\ 
-      \tikzmarkin[txt=style yellow] {a211}A_{21} & A_{22} & A_{23} & b_2\tikzmarkend{a211}\\ 
-      A_{31} & A_{32} & A_{33} & b_3
+      A_{00} & A_{01} & A_{02} & b_0\\ 
+      \tikzmarkin[txt=style yellow] {a211}A_{10} & A_{11} & A_{12} & b_1\tikzmarkend{a211}\\ 
+      A_{20} & A_{21} & A_{22} & b_2
     \end{array}\right]
   $};
   \node[right=2cm of m1,](m2){
   $
     \left[\begin{array}{ccc|c}
-      A_{11} & A_{12} & A_{13} & b_1\\ 
-      \tikzmarkin[txt=style yellow] {a212} 0      & A'_{22} & A'_{23} & b'_2\tikzmarkend{a212}\\ 
-      A_{31} & A_{32} & A_{33} & b_3
+      A_{00} & A_{01} & A_{02} & b_0\\ 
+      \tikzmarkin[txt=style yellow] {a212} 0      & A'_{11} & A'_{12} & b'_1\tikzmarkend{a212}\\ 
+      A_{20} & A_{21} & A_{22} & b_2
     \end{array}\right]
   $};
   \draw[->,thick] (m1.east) --  (m2.west);
@@ -106,42 +106,44 @@ x_1\\x_2\\x_3
   \begin{columns}
   \column{0.4\textwidth}
   \begin{itemize}
-    \item $d_{21}\rightarrow A_{21}/A_{11}$
-    \item $A_{21}\rightarrow A_{21}-A_{11}d_{21}$
-    \item $A_{22}\rightarrow A_{22}-A_{12}d_{21}$
-    \item $A_{23}\rightarrow A_{23}-A_{13}d_{21}$
-    \item $b_2   \rightarrow b_2   -b_1   d_{21}$
+    \item $d_{10}\rightarrow A_{10}/A_{00}$
+    \item $A_{10}\rightarrow A_{10}-A_{00}d_{10}$
+    \item $A_{11}\rightarrow A_{11}-A_{01}d_{10}$
+    \item $A_{12}\rightarrow A_{12}-A_{02}d_{10}$
+    \item $b_1   \rightarrow b_1   -b_0   d_{10}$
   \end{itemize}
   \pause
   \column{0.6\textwidth}
    \begin{lstlisting}
-d21 = A[1,0] / A[0,0]
-A[1,0] = A[1,0] - A[0,0] * d21
-A[1,1] = A[1,1] - A[0,1] * d21
-A[1,2] = A[1,2] - A[0,2] * d21
-b[1] = b[1] - b[0] * d21
+d10 = A[1,0] / A[0,0]
+
+A[1,0] = A[1,0] - A[0,0] * d10
+A[1,1] = A[1,1] - A[0,1] * d10
+A[1,2] = A[1,2] - A[0,2] * d10
+
+b[1] = b[1] - b[0] * d10
    \end{lstlisting}
   \end{columns}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Using row operations}
-  Eliminate element $A_{31}$ using $d_{31}=A_{31}/A_{11}$.
+  Eliminate element $A_{20}$ using $d_{20}=A_{20}/A_{00}$.
   \vfill
     \tikz{\node (m1) {
     $
     \left[\begin{array}{ccc|c}
-      A_{11} & A_{12} & A_{13} & b_1\\ 
-      0 & A'_{22} & A'_{23} & b'_2\\ 
-      \tikzmarkin[txt=style yellow] {a311}A_{31} & A_{32} & A_{33} & b_3\tikzmarkend{a311}
+      A_{00} & A_{01} & A_{02} & b_0\\ 
+      0 & A'_{11} & A'_{12} & b'_1\\ 
+      \tikzmarkin[txt=style yellow] {a311}A_{20} & A_{21} & A_{22} & b_2\tikzmarkend{a311}
     \end{array}\right]
   $};
   \node[right=2cm of m1,](m2){
   $
     \left[\begin{array}{ccc|c}
-      A_{11} & A_{12} & A_{13} & b_1\\ 
-      0      & A'_{22} & A'_{23} & b'_2\\ 
-      \tikzmarkin[txt=style yellow] {a312}0 & A'_{32} & A'_{33} & b'_3\tikzmarkend{a312}
+      A_{00} & A_{01} & A_{02} & b_0\\ 
+      0      & A'_{11} & A'_{12} & b'_1\\ 
+      \tikzmarkin[txt=style yellow] {a312}0 & A'_{21} & A'_{22} & b'_2\tikzmarkend{a312}
     \end{array}\right]
   $};
   \draw[->,thick] (m1.east) --  (m2.west);
@@ -150,41 +152,42 @@ b[1] = b[1] - b[0] * d21
   \begin{columns}
   \column{0.4\textwidth}
   \begin{itemize}
-    \item $d_{31}\rightarrow A_{31}/A_{11}$
-    \item $A_{31}\rightarrow A_{31}-A_{11}d_{31}$
-    \item $A_{32}\rightarrow A_{32}-A_{12}d_{31}$
-    \item $A_{33}\rightarrow A_{33}-A_{13}d_{31}$
-    \item $b_3   \rightarrow b_3   -b_1   d_{31}$
+    \item $d_{20}\rightarrow A_{20}/A_{00}$
+    \item $A_{20}\rightarrow A_{20}-A_{00}d_{20}$
+    \item $A_{21}\rightarrow A_{21}-A_{01}d_{20}$
+    \item $A_{22}\rightarrow A_{22}-A_{02}d_{20}$
+    \item $b_2   \rightarrow b_2   -b_0   d_{20}$
   \end{itemize}
   \column{0.6\textwidth}
   \begin{lstlisting}
-d31 = A[2, 0] / A[0, 0]
-A[2, 0] = A[2, 0] - A[0, 0] * d31
-A[2, 1] = A[2, 1] - A[0, 1] * d31
-A[2, 2] = A[2, 2] - A[0, 2] * d31
-b[2] = b[2] - b[0] * d31    
+d20 = A[2, 0] / A[0, 0]
+
+A[2, 0] = A[2, 0] - A[0, 0] * d20
+A[2, 1] = A[2, 1] - A[0, 1] * d20
+A[2, 2] = A[2, 2] - A[0, 2] * d20
+b[2] = b[2] - b[0] * d20
   \end{lstlisting}
   \end{columns}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Using row operations}
-  Eliminate element $A_{32}$ using $d_{32}=A_{32}/A'_{22}$. Note that now the second row has become the pivot row.
+  Eliminate element $A'_{21}$ using $d_{21}=A'_{21}/A'_{11}$. Note that now the second row has become the pivot row.
   \vfill
     \tikz{\node (m1) {
     $
     \left[\begin{array}{ccc|c}
-      A_{11} & A_{12} & A_{13} & b_1\\ 
-      0 & A'_{22} & A'_{23} & b'_2\\ 
-      \tikzmarkin[txt=style yellow] {a311b} 0 & A_{32} & A_{33} & b_3\tikzmarkend{a311b}
+      A_{00} & A_{01} & A_{02} & b_0\\ 
+      0 & A'_{11} & A'_{12} & b'_1\\ 
+      \tikzmarkin[txt=style yellow] {a311b} 0 & A'_{21} & A'_{22} & b'_2\tikzmarkend{a311b}
     \end{array}\right]
   $};
   \node[right=2cm of m1,](m2){
   $
     \left[\begin{array}{ccc|c}
-      A_{11} & A_{12} & A_{13} & b_1\\ 
-      0      & A'_{22} & A'_{23} & b'_2\\ 
-      \tikzmarkin[txt=style yellow] {a312b}0 & 0 & A''_{33} & b''_3\tikzmarkend{a312b}
+      A_{00} & A_{01} & A_{02} & b_0\\ 
+      0      & A'_{11} & A'_{12} & b'_1\\ 
+      \tikzmarkin[txt=style yellow] {a312b}0 & 0 & A''_{22} & b''_2\tikzmarkend{a312b}
     \end{array}\right]
   $};
   \draw[->,thick] (m1.east) --  (m2.west);
@@ -193,17 +196,17 @@ b[2] = b[2] - b[0] * d31
   \begin{columns}
   \column{0.4\textwidth}
   \begin{itemize}
-    \item $d_{32}\rightarrow A_{32}/A'_{22}$
-    \item $A_{32}\rightarrow A_{32}-A'_{22}d_{32}$
-    \item $A_{33}\rightarrow A_{33}-A'_{23}d_{32}$
-    \item $b_3   \rightarrow b_3   -b'_2   d_{32}$
+    \item $d_{21}\rightarrow A_{21}/A'_{11}$
+    \item $A_{21}\rightarrow A_{21}-A'_{11}d_{21}$
+    \item $A_{22}\rightarrow A_{22}-A'_{12}d_{21}$
+    \item $b_2   \rightarrow b_2   -b'_2   d_{21}$
   \end{itemize}
   \column{0.6\textwidth}
    \begin{lstlisting}
-d32 = A[2, 1] / A[1, 1]
-A[2, 1] = A[2, 0] - A[1, 1] * d32
-A[2, 2] = A[2, 1] - A[1, 2] * d32
-b[2] = b[2] - b[1] * d32    
+d21 = A[2, 1] / A[1, 1]
+A[2, 1] = A[2, 1] - A[1, 1] * d21
+A[2, 2] = A[2, 2] - A[1, 2] * d21
+b[2] = b[2] - b[1] * d21
    \end{lstlisting}
   \end{columns}
   \pause
@@ -217,29 +220,30 @@ b[2] = b[2] - b[1] * d32
   The system now reads:
   \[
     \begin{bmatrix}
-      A_{11} & A_{12} & A_{13}\\ 
-      0      & A'_{22} & A'_{23}\\ 
-      0 & 0 & A''_{33}
+      A_{00} & A_{01} & A_{02}\\ 
+      0      & A'_{11} & A'_{12}\\ 
+      0 & 0 & A''_{22}
     \end{bmatrix}
-    \begin{bmatrix}x_1\\x_2\\x_3\end{bmatrix} = 
-    \begin{bmatrix}b_1\\b'_2\\b''_3\end{bmatrix}
+    \begin{bmatrix}x_0\\x_1\\x_2\end{bmatrix} = 
+    \begin{bmatrix}b_0\\b'_1\\b''_2\end{bmatrix}
   \]
   \pause
   Start at the last row $N$, and work upward until row 1.
   \begin{columns}
   \column{0.4\textwidth}
     \begin{align*}
-     x_3 &= b''_3/A''_{33}\\
-     x_2 &= (b'_2 - A'_{23}x_3)/A'_{22}\\
-     x_1 &= (b_1 - A_{12}x_2 - A_{13}x_3)/A_{11}
+     x_2 &= b''_2/A''_{22}\\
+     x_1 &= (b'_1 - A'_{12}x_2)/A'_{11}\\
+     x_0 &= (b_0 - A_{01}x_1 - A_{02}x_2)/A_{00}
     \end{align*}
     \pause
   \column{0.6\textwidth}
-\begin{lstlisting}[language=Python]
-x[2] = b[2] / A[2][2]
-x[1] = (b[1] - A[1][2] * x[2]) / A[1][1]
-x[0] = (b[0] - A[0][1] * x[1] - A[0][2] * x[2]) / A[0][0]  
-\end{lstlisting}
+    \begin{lstlisting}
+x = np.empty_like(b)
+x[2] = b[2] / A[2,2]
+x[1] = (b[1] - A[1,2] * x[2]) / A[1,1]
+x[0] = (b[0] - A[0,1] * x[1] - A[0,2] * x[2]) / A[0,0]
+    \end{lstlisting}
 \end{columns}
 In general:
 \[
@@ -271,49 +275,135 @@ A[i, :] = A[i, :] - d * A[0, :]
 
 
 \begin{frame}[fragile]
-  \frametitle{The program: elimination}
+  \frametitle{The program: elimination step}
+  An initial draft could look like:
   \begin{lstlisting}
-def gaussian_eliminate(A, b):
-    # Perform elimination to obtain an upper triangular matrix
-    A = np.array(A, dtype=float)
-    b = np.array(b, dtype=float)
+def gaussian_eliminate_draft(A,b):
+    """Perform elimination to obtain an upper triangular matrix"""
+    A = np.array(A,dtype=np.float64)
+    b = np.array(b,dtype=np.float64)
+
+    assert A.shape[0] == A.shape[1], "Coefficient matrix should be square"
+
     N = len(b)
+    for col in range(N-1):                # Select pivot
+        for row in range(col+1,N):        # Loop over rows below pivot
+            d = A[row,col] / A[col,col]   # Choose elimination factor
+            for element in range(row,N):  # Elements from diagonal to right
+                A[row,element] = A[row,element] - d * A[col,element]
+            b[row] = b[row] - d * b[col]
 
-    for column in range(N-1):  # Select pivot
-        for row in range(column+1, N):  # Loop over subsequent rows (below pivot)
-            d = A[row, column] / A[column, column]
-            A[row, :] = A[row, :] - d * A[column, :]
-            b[row] = b[row] - d * b[column]
+    return A,b
+  \end{lstlisting}
+\end{frame}
 
-    return A, b
+\begin{frame}[fragile]
+  \frametitle{The program: elimination step}
+  Employing some of the row operations to create \lstinline|gaussian_eliminate_v1|:
+  \begin{columns}[T]
+    \column{0.6\textwidth}
+    \begin{lstlisting}
+for element in range(row,N):
+    A[row,element] = A[row,element] - d * A[col,element]
+        \end{lstlisting}    
+    \column{0.4\textwidth}
+    \begin{lstlisting}
+A[row,:] = A[row,:] - d * A[col,:]
+        \end{lstlisting}
+  \end{columns}
+  \pause
+  \begin{lstlisting}
+def gaussian_eliminate_v1(A,b):
+    A = np.array(A,dtype=np.float64)
+    b = np.array(b,dtype=np.float64)
+
+    assert A.shape[0] == A.shape[1], "Coefficient matrix should be square"
+
+    N = len(b)
+    for col in range(N-1):
+        for row in range(col+1,N):
+            d = A[row,col] / A[col,col]
+            A[row,:] = A[row,:] - d * A[col,:]
+            b[row] = b[row] - d * b[col]
+
+    return A,b
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Testing}
+  Let's try to eliminate our linear system! If you create/downloaded our file \lstinline|gaussjordan.py|, you can access the functions by importing them. The file should be stored where your own code/notebook is:
+  \begin{lstlisting}
+from gaussjordan import gaussian_eliminate_draft,gaussian_eliminate_v1
+import numpy as np
+
+A = np.array([[1, 1, 1], [2, 1, 3], [3, 1, 6]]) 
+b = np.array([4, 7, 5]) 
+
+Aprime,bprime = gaussian_eliminate_draft(A,b)
+print(Aprime)
+print(bprime)
   \end{lstlisting}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{The program: Backsubstitution}
-  \begin{lstlisting}
-def back_substitution(A, b):
-    # Back substitutes an upper triangular matrix to find x in Ax=b
-    # Assign b to x
+  Now we have elimination working, let's create a back substitution algorithm too. Recall:
+  \[
+    x_N = \frac{b_N}{A_{NN}} \qquad x_i = \frac{b_i - \sum_{j=i+1}^{N}A_{ij}x_j}{A_{ii}}
+ \]
+ \begin{columns}[T]
+  \column{0.4\textwidth}
+  \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+def backsubstitution_draft(A, b):
+    """Back substitutes an upper triangular matrix to find x in Ax=b"""
     x = np.copy(b)
     N = len(b)
 
-    # Perform back substitution
     for row in range(N-1, -1, -1):
         for i in range(row+1, N):
             x[row] = x[row] - A[row, i] * x[i]
         x[row] = x[row] / A[row, row]  
+    
     return x
-  \end{lstlisting}
-  \[
-     x_N = \frac{b_N}{A_{NN}} \qquad x_i = \frac{b_i - \sum_{j=i+1}^{N}A_{ij}x_j}{A_{ii}}
-  \]
+      \end{lstlisting}\pause
+  \column{0.6\textwidth}
+  \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+def backsubstitution_v1(A,b):
+    """Back substitutes an upper triangular matrix to find x in Ax=b"""
+    x = np.empty_like(b)
+    N = len(b)
+    
+    for row in range(N)[::-1]:
+        x[row] = (b[row] - np.sum(A[row,row+1:] * x[row+1:])) / A[row,row]
+
+    return x
+      \end{lstlisting}
+ \end{columns}
 \end{frame}
 
+% \begin{frame}[fragile]
+%   \frametitle{The program: Backsubstitution}
+%   \begin{lstlisting}
+% def backsubstitution_v1(A,b):
+%     """Back substitutes an upper triangular matrix to find x in Ax=b"""
+%     x = np.empty_like(b)
+%     N = len(b)
+    
+%     for row in range(N)[::-1]:
+%         x[row] = (b[row] - np.sum(A[row,row+1:] * x[row+1:])) / A[row,row]
+
+%     return x
+%   \end{lstlisting}
+%   \[
+%      x_N = \frac{b_N}{A_{NN}} \qquad x_i = \frac{b_i - \sum_{j=i+1}^{N}A_{ij}x_j}{A_{ii}}
+%   \]
+% \end{frame}
+
 \begin{frame}[fragile]
-  \frametitle{Exercise: Gaussian Elimination}
+  \frametitle{A full Gauss Elimination solver}
   \begin{itemize}
-    \item The function we just made can be found on Canvas
+    \item The functions we just built are distributed via Canvas too
     \item Use \lstinline$help GaussianEliminate$ to find out how it works
     \item Solve the following system of equations:
     \[
@@ -355,43 +445,91 @@ def back_substitution(A, b):
 
 \begin{frame}[fragile]
   \frametitle{Partial pivoting: implementing row swaps}
-  \begin{itemize}
-    \item<1-> \tikzmarkin[txt=style yellow]{tm1} Find maximum element row below pivot in current column\tikzmarkend{tm1}
-    \item<2-> \tikzmarkin[txt=style green]{tm2} Store current row\tikzmarkend{tm2}
-    \item<3-> \tikzmarkin[txt=style orange]{tm3}Swap pivot row and desired row in A\tikzmarkend{tm3}
-    \item<4-> \tikzmarkin[txt=style cyan]{tm4}Do the same for b: store and swap\tikzmarkend{tm4}
+  \begin{itemize}[<+->]
+    \item Find maximum element row below pivot in current column
+    \begin{lstlisting}[numbers=none]
+index = np.argmax(np.abs(A[col:, col])) + col 
+    \end{lstlisting}
+    \item Store current row
+    \begin{lstlisting}[numbers=none]
+temp = A[column,:]
+    \end{lstlisting}
+    \item Swap pivot row and desired row in \lstinline$A$
+    \begin{lstlisting}[numbers=none]
+A[column,:] = A[index,:]
+A[index,:] = temp
+      \end{lstlisting}
+    \item Do the same for \lstinline$b$ --- store and swap
+    \begin{lstlisting}[numbers=none]
+temp = b[column]
+b[column] = b[index]
+b[index] = temp
+      \end{lstlisting}
   \end{itemize}
-\lstinputlisting[backgroundcolor=\color{tueyellow!60}]{data/listing1.m}
-\uncover<2->{\lstinputlisting[firstnumber=4,backgroundcolor=\color{tuegreen!60}]{data/listing2.m}}
-\uncover<3->{\lstinputlisting[firstnumber=5,backgroundcolor=\color{tueorange!60}]{data/listing3.m}}
-\uncover<4->{\lstinputlisting[firstnumber=7,backgroundcolor=\color{tuelblue!60}]{data/listing4.m}}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Adding the partial pivoting rules}
+  \begin{lstlisting}[language=Python]
+def gaussian_eliminate_partial_pivot(A,b):
+    A = np.array(A,dtype=np.float64)
+    b = np.array(b,dtype=np.float64)
+
+    assert A.shape[0] == A.shape[1], "Coefficient matrix should be square"
+
+    N = len(b)
+    for col in range(N-1):
+        index = np.argmax(np.abs(A[col:, col])) + col
+        temp = A[col,:]
+        A[col,:] = A[index,:]
+        A[index,:] = temp
+
+        temp = b[col]
+        b[col] = b[index]
+        b[index] = temp
+        for row in range(col+1,N):
+            d = A[row,col] / A[col,col]
+            A[row,:] = A[row,:] - d * A[col,:]
+            b[row] = b[row] - d * b[col]
+
+    return A,b
+  \end{lstlisting}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Improve the program by using re-usable functions}
   \begin{lstlisting}[language=Python]
-def GaussianEliminate(A, b):
-    """GaussianEliminate(A,b): solves x in Ax=b"""
-    N = len(b)
-    for c in range(N - 1):
-        index = np.argmax(np.abs(A[c:, c])) + c
-        A = SWAP(A, c, index)
-        b = SWAP(b, c, index)
-        for row in range(c + 1, N):
-            d = A[row, c] / A[c, c]
-            A[row, :] = A[row, :] - d * A[c, :]
-            b[row] = b[row] - d * b[c]
-
-    x = backwardSub(A, b)  # Created BS function
-    return x
+def swap_rows(mat,i1,i2):
+    """Swap two rows in a matrix/vector"""
+    temp = mat[i1,...].copy()
+    mat[i1,...] = mat[i2,...]
+    mat[i2,...] = temp
   \end{lstlisting}
-  This function is also provided (named \lstinline{GaussianEliminate_v2.py} on Canvas).
+  \begin{lstlisting}[language=Python]
+def gaussian_eliminate_v2(A,b):
+    A = np.array(A,dtype=np.float64)
+    b = np.array(b,dtype=np.float64)
+
+    assert A.shape[0] == A.shape[1], "Coefficient matrix should be square"
+
+    N = len(b)
+    for col in range(N-1):
+        index = np.argmax(np.abs(A[col:, col])) + col
+        swap_rows(A,col,index)
+        swap_rows(b,col,index)
+        for row in range(col+1,N):
+            d = A[row,col] / A[col,col]
+            A[row,:] = A[row,:] - d * A[col,:]
+            b[row] = b[row] - d * b[col]
+
+    return A,b
+  \end{lstlisting}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Alternatives to this program}
   \begin{itemize}
-    \item Python can compute the solution to Ax=b with Scipy or Numpy solvers (more efficient)
+    \item Python can compute the solution to Ax=b with \lstinline|scipy.linalg.solve| or \lstinline|numpy.linalg.solve| solvers (more efficient)
     \item Too many loops. Loops make Python slow.
     \item There are fundamental problems with Gaussian elimination\pause
     \begin{itemize}
@@ -546,7 +684,7 @@ d_{31} & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
 A_{11} & A_{12} & A_{13}\\ 
-0 & \tikzmarkin[mat=style green]{n1} A'_{22} & A'_{23} \\ 
+0 & \tikzmarkin[mat=style tueturq]{n1} A'_{22} & A'_{23} \\ 
 0 & A'_{32}\tikzmarkend{n1} & A'_{33} 
 \end{bmatrix}
 \]
@@ -557,7 +695,7 @@ Exchange rows 2 and 3 to get the largest value on the main diagonal. Use a permu
 \pause
 \[ 
 \begin{bmatrix}
-\tikzmarkin[txt=style green]{n2} 1 & 0 & 0 \\
+\tikzmarkin[txt=style tueturq]{n2} 1 & 0 & 0 \\
 0& 0 & 1 \\
 0 & 1 & 0 \tikzmarkend{n2}
 \end{bmatrix}
@@ -568,13 +706,13 @@ A_{31} & A_{32} & A_{33}
 \end{bmatrix} = 
 \begin{bmatrix}
 1 & 0 & 0 \\
-\tikzmarkin[txt=style orange]{n3} d_{31}& 0 & 1 \tikzmarkend{n3}\\
-\tikzmarkin[txt=style orange]{n4} d_{21} & 1 & 0 \tikzmarkend{n4}
+\tikzmarkin[txt=style tueorange]{n3} d_{31}& 0 & 1 \tikzmarkend{n3}\\
+\tikzmarkin[txt=style tueorange]{n4} d_{21} & 1 & 0 \tikzmarkend{n4}
 \end{bmatrix}
 \begin{bmatrix}
 A_{11} & A_{12} & A_{13}\\ 
-\tikzmarkin[txt=style orange]{n5}0 & A'_{32} & A'_{33} \tikzmarkend{n5}\\ 
-\tikzmarkin[txt=style orange]{n6}0 & A'_{22} & A'_{23} \tikzmarkend{n6} 
+\tikzmarkin[txt=style tueorange]{n5}0 & A'_{32} & A'_{33} \tikzmarkend{n5}\\ 
+\tikzmarkin[txt=style tueorange]{n6}0 & A'_{22} & A'_{23} \tikzmarkend{n6} 
 \end{bmatrix}
 \]
 \pause
@@ -684,7 +822,7 @@ have been interchanged.
 % 
 \begin{frame}[fragile]
   \frametitle{LU decomposition example (2)}
-  Eliminate all \tikzmarkin[txt=style orange]{lu1}elements below the diagonal\tikzmarkend{lu1} --- row 2 already contains a zero in column 1, row 3 = row 3 - 0.5 row 1. Record the \tikzmarkin[txt=style cyan]{lu2}multiplier 0.5\tikzmarkend{lu2} in $L$:
+  Eliminate all \tikzmarkin[txt=style tueorange]{lu1}elements below the diagonal\tikzmarkend{lu1} --- row 2 already contains a zero in column 1, row 3 = row 3 - 0.5 row 1. Record the \tikzmarkin[txt=style tuesteel]{lu2}multiplier 0.5\tikzmarkend{lu2} in $L$:
   \[
     \begin{bmatrix}
       0 & 1 & 0\\
@@ -699,16 +837,16 @@ have been interchanged.
       \begin{bmatrix}
       1 & 0 & 0\\
       0 & 1 & 0\\
-      \tikzmarkin[txt=style cyan]{lu3}0.5\tikzmarkend{lu3} & 0 & 1
+      \tikzmarkin[txt=style tuesteel]{lu3}0.5\tikzmarkend{lu3} & 0 & 1
       \end{bmatrix}
       \begin{bmatrix}
       2 & 1 & 1\\
-      \tikzmarkin[txt=style orange]{lu4}0 & 1 & 1\\
+      \tikzmarkin[txt=style tueorange]{lu4}0 & 1 & 1\\
       0\tikzmarkend{lu4} & 1.5 & -0.5
       \end{bmatrix}
   \]
   \pause
-  Elimination of column 1 is done. Step to the next column, and move the largest value below/on the diagonal to the diagonal (~\tikzmarkin[txt=style yellow]{lu8}swap rows 2 and 3\tikzmarkend{lu8}~). Adjust $P$ and \tikzmarkin[txt=style green]{lu9}lower triangle of $L$\tikzmarkend{lu9} accordingly:
+  Elimination of column 1 is done. Now step to the next column, and move the largest value below/on the diagonal to the diagonal (~\tikzmarkin[txt=style yellow]{lu8}swap rows 2 and 3\tikzmarkend{lu8}~). Adjust $P$ and the \tikzmarkin[txt=style tueturq]{lu9}lower triangle of $L$\tikzmarkend{lu9} accordingly:
   \[
     \begin{bmatrix}
       0 & 1 & 0\\
@@ -722,8 +860,8 @@ have been interchanged.
       \end{bmatrix}= 
       \begin{bmatrix}
       1 & 0 & 0\\
-      \tikzmarkin[draw=none,txt=style green]{lu6}(0.25,-0.15)0.5 & 1 & 0\\
-      \tikzmarkin[draw=none,txt=style green]{lu10}0\tikzmarkend{lu6} & 0\tikzmarkend{lu10} & 1
+      \tikzmarkin[draw=none,txt=style tueturq]{lu6}(0.25,-0.15)0.5 & 1 & 0\\
+      \tikzmarkin[draw=none,txt=style tueturq]{lu10}0\tikzmarkend{lu6} & 0\tikzmarkend{lu10} & 1
       \end{bmatrix}
       \begin{bmatrix}
       2 & 1 & 1\\
@@ -735,8 +873,8 @@ have been interchanged.
 
 \begin{frame}[fragile]
   \frametitle{LU decomposition example (3)}
-    Eliminate \tikzmarkin[txt=style orange]{f3}all elements below the diagonal\tikzmarkend{f3} ---\\
-    row 3 = row 3 - $\frac{2}{3}$row 2. Record the multiplier \tikzmarkin[txt=style green]{f1}$\frac{2}{3}$\tikzmarkend{f1} in $L$:
+    Eliminate \tikzmarkin[txt=style tueorange]{f3}all elements below the diagonal\tikzmarkend{f3} ---\\
+    row 3 = row 3 - $\frac{2}{3}$row 2. Record the multiplier \tikzmarkin[txt=style tueturq]{f1}$\frac{2}{3}$\tikzmarkend{f1} in $L$:
   \[
     \begin{bmatrix}
       0 & 1 & 0\\
@@ -751,12 +889,12 @@ have been interchanged.
       \begin{bmatrix}
       1 & 0 & 0\\
       0.5 & 1 & 0\\
-      0 & \tikzmarkin[txt=style green]{f2}\frac{2}{3}\tikzmarkend{f2} & 1
+      0 & \tikzmarkin[txt=style tueturq]{f2}\frac{2}{3}\tikzmarkend{f2} & 1
       \end{bmatrix}
       \begin{bmatrix}
       2 & 1 & 1\\
       0 & 1.5 & -0.5 \\
-      0 & \tikzmarkin[txt=style orange]{f4}0\tikzmarkend{f4} & \frac{4}{3}\\
+      0 & \tikzmarkin[txt=style tueorange]{f4}0\tikzmarkend{f4} & \frac{4}{3}\\
       \end{bmatrix}
   \]
   \pause
@@ -795,8 +933,8 @@ have been interchanged.
       \item $Ly=b \quad\Rightarrow\quad Ly = d$
       \item Solve for $y$, forward substitution:
       \begin{align*}
-	y_1 &= \frac{d_1}{L_{11}} \\
-	y_i &= \frac{d_i - \sum_{j=1}^{i-1}L_{ij}y_j}{L_{ii}}
+	y_0 &= \frac{d_0}{L_{00}} \\
+	y_i &= \frac{d_i - \sum_{j=0}^{i}L_{ij}y_j}{L_{ii}}
       \end{align*}
     \end{itemize}
     \item Then solve $Ux=y$:
@@ -804,7 +942,7 @@ have been interchanged.
       \item Solve for $x$, backward substitution:
       \begin{align*}
 	x_N &= \frac{y_N}{U_{NN}} \\
-	x_i &= \frac{y_i - \sum_{j=i+1}^{N-1}U_{ij}x_j}{U_{ii}}
+	x_i &= \frac{y_i - \sum_{j=i+1}^{N}U_{ij}x_j}{U_{ii}}
       \end{align*}
     \end{itemize}      
   \end{itemize}  
@@ -816,6 +954,8 @@ have been interchanged.
   \begin{lstlisting}[language=Python]
 import numpy as np
 from scipy.linalg import lu
+from gaussjordan import backsubstitution_v1 as backwardSub
+from gaussjordan import forwardsubstitution as forwardSub
 
 # Example usage
 A = np.random.rand(5, 5)  # Get random matrix

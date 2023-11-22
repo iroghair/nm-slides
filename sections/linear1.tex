@@ -19,8 +19,10 @@
   \end{itemize}
   \end{block}
 \end{frame}
+
 % 
 \subsection*{Linear systems}
+{\nologo
 \frame{\frametitle{Different views of linear systems}
   \begin{columns}
     \column{0.4\textwidth}
@@ -77,6 +79,7 @@
     \centering\includegraphics[width=\columnwidth]{planes_xing.png}
   \end{columns}
 }
+}
 % 
 % 
 \section{Matrix inversion}
@@ -124,27 +127,27 @@
       3 & 1 & 6
     \end{bmatrix} 
   $\\ \vskip1em \pause
-  A co-factor (e.g. $C_{11}$) is the \tikzmarkin[txt=style green]{det1}determinant of the elements left over\tikzmarkend{det1} when you cover up the row and column of the \tikzmarkin[txt=style cyan]{cof}element in question\tikzmarkend{cof}, \tikzmarkin[txt=style orange]{pm1}multiplied by $\pm 1$\tikzmarkend{pm1}, depending on the position. \vskip1em
+  A co-factor (e.g. $C_{11}$) is the \tikzmarkin[txt=style tueturq]{det1}determinant of the elements left over\tikzmarkend{det1} when you cover up the row and column of the \tikzmarkin[txt=style tuesteel]{cof}element in question\tikzmarkend{cof}, \tikzmarkin[txt=style tueorange]{pm1}multiplied by $\pm 1$\tikzmarkend{pm1}, depending on the position. \vskip1em
   \begin{columns}
     \column{0.25\textwidth}
       \begin{equation*}
       \left[\begin{array}{ccc}
-	\tikzmarkin[mat=style cyan]{col 1} 1 \tikzmarkend{col 1} &  \times & \times \\
-	\times  & \tikzmarkin[mat=style green]{col 2} 1 & 3 \\
+	\tikzmarkin[mat=style tuesteel]{col 1} 1 \tikzmarkend{col 1} &  \times & \times \\
+	\times  & \tikzmarkin[mat=style tueturq]{col 2} 1 & 3 \\
 	\times  &  1   &  6 \tikzmarkend{col 2}\\
 	\end{array}\right]
       \end{equation*}\pause
     \column{0.25\textwidth}
       \begin{equation*}
       \left[\begin{array}{ccc}
-	\tikzmarkin[mat2=style orange]{pm} + \tikzmarkend{pm} &  - & + \\
+	\tikzmarkin[mat2=style tueorange]{pm} + \tikzmarkend{pm} &  - & + \\
 	- & + & - \\
 	+ & - & +\\
 	\end{array}\right]
       \end{equation*}\pause
       \column{0.5\textwidth}
       \[ \begin{split}
-C_{11} &= \tikzmarkin[mat2=style orange]{pm3}+1\tikzmarkend{pm3}\ \cdot\ \det{\begin{array}{cc}\tikzmarkin[mat=style green]{det2} 1 & 3 \\ 1 & 6\tikzmarkend{det2}\end{array}} \\
+C_{11} &= \tikzmarkin[mat2=style tueorange]{pm3}+1\tikzmarkend{pm3}\ \cdot\ \det{\begin{array}{cc}\tikzmarkin[mat=style tueturq]{det2} 1 & 3 \\ 1 & 6\tikzmarkend{det2}\end{array}} \\
 &= 6 \times 1 - 3 \times 1 = 3
 \end{split}
 \]
@@ -176,14 +179,14 @@ C_{11} &= \tikzmarkin[mat2=style orange]{pm3}+1\tikzmarkend{pm3}\ \cdot\ \det{\b
     Compute the determinant by multiplication of each element on a row (or column) by its cofactor and adding the results:
     \[
     \det{\begin{bmatrix}
-      \ \tikzmarkin[mat=style green]{horizontal}1 & 1 & 1 \tikzmarkend{horizontal}\\
+      \ \tikzmarkin[mat=style tueturq]{horizontal}1 & 1 & 1 \tikzmarkend{horizontal}\\
       2 & 1 & 3 \\
       3 & 1 & 6 \ \end{bmatrix}} = +\det{\begin{bmatrix}1&3\\1&6\end{bmatrix}} - \det{\begin{bmatrix}2&3\\3&6\end{bmatrix}} + \det{\begin{bmatrix}2&1\\3&1\end{bmatrix}} = -1
     \]
     \pause
     \[
     \det{\begin{bmatrix}
-      \ 1 & 1 & \tikzmarkin[mat=style green]{vertical}1 \\
+      \ 1 & 1 & \tikzmarkin[mat=style tueturq]{vertical}1 \\
       2 & 1 & 3 \\
       3 & 1 & 6\tikzmarkend{vertical}\ \end{bmatrix}} = +\det{\begin{bmatrix}2&1\\3&1\end{bmatrix}} - 3\det{\begin{bmatrix}1&1\\3&1\end{bmatrix}} + 6\det{\begin{bmatrix}1&1\\2&1\end{bmatrix}} = -1
     \]
@@ -225,33 +228,34 @@ C_{11} &= \tikzmarkin[mat2=style orange]{pm3}+1\tikzmarkend{pm3}\ \cdot\ \det{\b
     \item The inverse exists, because $\det{M}=-1$.
   \end{itemize}
 }
-
+{\nologo
 \begin{frame}[fragile]
   \frametitle{Solving a linear system in Python using the inverse}
   \begin{itemize}
     \item Create the matrix:
     \begin{lstlisting}
->> A = np.array([[1, 1, 1], [2, 1, 3], [3, 1, 6]])    
+>>> A = np.array([[1, 1, 1], [2, 1, 3], [3, 1, 6]])    
     \end{lstlisting}\pause
     \item Create solution vector:
     \begin{lstlisting}
->> b = np.array([4, 7, 5]) 
+>>> b = np.array([4, 7, 5]) 
     \end{lstlisting}\pause
     \item Get the matrix inverse:
     \begin{lstlisting}
->> Ainv = np.linalg.inv(A) 
+>>> Ainv = np.linalg.inv(A) 
     \end{lstlisting}\pause
     \item Compute the solution:
     \begin{lstlisting}
->> x = np.dot(Ainv, b)   
+>>> x = np.dot(Ainv, b)   
     \end{lstlisting}\pause
     \item Python's internal direct solver:
     \begin{lstlisting}
->> x = np.linalg.solve(A, b)
+>>> x = np.linalg.solve(A, b)
     \end{lstlisting}
     \item \tikzmarkin[txt=style white]{bb}These are black boxes! We are going over some methods later!\tikzmarkend{bb}
   \end{itemize}
 \end{frame}
+}
 
 \begin{frame}<handout:0|beamer:1->[fragile]
   \frametitle{Exercise: performance of inverse computation}
@@ -267,6 +271,7 @@ import time
 s = np.array([10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000])
 t_inv = []
 for n in s:
+    print(f'Working on size {n}')
     A = np.random.rand(n, n)
     start_time = time.time()
     Ainv = np.linalg.inv(A)
@@ -299,6 +304,7 @@ plt.show()
   \end{hints}
 \end{frame}
 
+{\nologo
 \begin{frame}[fragile]
   \frametitle{Exercise: sample results}
   Each computer produces slightly different results because of background tasks, different matrices, etc. This is especially noticable for small systems.
@@ -324,39 +330,40 @@ plt.show()
   \vskip-1em
   \tikzmarkin[txt=style white]{complexity}The time increases by 3 orders of magnitude, for every magnitude in $N$. The \emph{computational complexity} of matrix inversion scales with $\mathcal{O}(N^3)$!\tikzmarkend{complexity}
 \end{frame}
+}
 
-\begin{frame}[fragile]
-  \frametitle{Solving a linear system in Excel using the inverse}\vspace{-1em}
-  \[
-   Ax=b \qquad \begin{bmatrix}1&1&1\\2&1&3\\3&1&6\end{bmatrix}\begin{bmatrix}x_1\\x_2\\x_3\end{bmatrix}=\begin{bmatrix}4\\7\\5\end{bmatrix}
-  \]\vspace{-1em}
-  \begin{itemize}
-    \item Create matrix \ \tikzmarkin[mat=style green]{A}$A$\tikzmarkend{A} \ in $3\times 3$ cells
-    \item Create right hand side vector \ \tikzmarkin[mat=style cyan]{b}$b$\tikzmarkend{b} \ in 3 vertical cells\pause
-    \item Compute the inverse \ \tikzmarkin[mat=style orange]{I}$I$\tikzmarkend{I} \ :
-    \begin{itemize}
-      \item Select an empty area of $3 \times 3$ cells
-      \item Type \lstinline$=MINVERSE($
-      \tikzmarkin[txt=style green]{A2}\lstinline$B2:D4$\tikzmarkend{A2}
-      \lstinline$)$ (In Dutch Excel: \lstinline$INVERSEMAT$)
-      \item Close with Ctrl+Shift+Enter
-    \end{itemize}\pause
-    \item Solution:
-    \begin{itemize}
-      \item Select 3 vertical cells
-      \item Type \lstinline$=MMULT($
-      % First part, contains the inverse
-      \tikzmarkin[txt=style orange]{I2}\lstinline$H2:J4$\tikzmarkend{I2}
-      % Semicolon
-      \lstinline$;$
-      % Second part, contains the RHS
-      \tikzmarkin[txt=style cyan]{b2}\lstinline$B6:B8$\tikzmarkend{b2}
-      % Finish the command
-      \lstinline$)$ (In Dutch Excel: \lstinline$PRODUCTMAT$. The semicolon may be a comma.)
-      \item Close with Ctrl+Shift+Enter
-    \end{itemize}    
-  \end{itemize}
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Solving a linear system in Excel using the inverse}\vspace{-1em}
+%   \[
+%    Ax=b \qquad \begin{bmatrix}1&1&1\\2&1&3\\3&1&6\end{bmatrix}\begin{bmatrix}x_1\\x_2\\x_3\end{bmatrix}=\begin{bmatrix}4\\7\\5\end{bmatrix}
+%   \]\vspace{-1em}
+%   \begin{itemize}
+%     \item Create matrix \ \tikzmarkin[mat=style tueturq]{A}$A$\tikzmarkend{A} \ in $3\times 3$ cells
+%     \item Create right hand side vector \ \tikzmarkin[mat=style tuesteel]{b}$b$\tikzmarkend{b} \ in 3 vertical cells\pause
+%     \item Compute the inverse \ \tikzmarkin[mat=style tueorange]{I}$I$\tikzmarkend{I} \ :
+%     \begin{itemize}
+%       \item Select an empty area of $3 \times 3$ cells
+%       \item Type \lstinline$=MINVERSE($
+%       \tikzmarkin[txt=style tueturq]{A2}\lstinline$B2:D4$\tikzmarkend{A2}
+%       \lstinline$)$ (In Dutch Excel: \lstinline$INVERSEMAT$)
+%       \item Close with Ctrl+Shift+Enter
+%     \end{itemize}\pause
+%     \item Solution:
+%     \begin{itemize}
+%       \item Select 3 vertical cells
+%       \item Type \lstinline$=MMULT($
+%       % First part, contains the inverse
+%       \tikzmarkin[txt=style tueorange]{I2}\lstinline$H2:J4$\tikzmarkend{I2}
+%       % Semicolon
+%       \lstinline$;$
+%       % Second part, contains the RHS
+%       \tikzmarkin[txt=style tuesteel]{b2}\lstinline$B6:B8$\tikzmarkend{b2}
+%       % Finish the command
+%       \lstinline$)$ (In Dutch Excel: \lstinline$PRODUCTMAT$. The semicolon may be a comma.)
+%       \item Close with Ctrl+Shift+Enter
+%     \end{itemize}    
+%   \end{itemize}
+% \end{frame}
 
 
 \section{Towards larger systems}
@@ -409,20 +416,20 @@ plt.show()
    \item 3 independent columns
    \item In Python:
    \begin{lstlisting}
->> numpy.linalg.matrix_rank(M)
+>>> numpy.linalg.matrix_rank(M)
    \end{lstlisting}
   \end{itemize}
   \column{0.5\textwidth}
     \[
    M = \left[\begin{array}{cccc}
-        \tikzmarkin[mat=style green]{c1}1 & \tikzmarkin[mat=style yellow]{c2}2 & \tikzmarkin[mat=style cyan]{c3}1 & \tikzmarkin[mat=style orange]{c4}0 \\
+        \tikzmarkin[mat=style tueturq]{c1}1 & \tikzmarkin[mat=style yellow]{c2}2 & \tikzmarkin[mat=style tuesteel]{c3}1 & \tikzmarkin[mat=style tueorange]{c4}0 \\
         0 & 0 & 1 & 1 \\
         0\tikzmarkend{c1} & 0\tikzmarkend{c2} & 0\tikzmarkend{c3} & 0\tikzmarkend{c4}
        \end{array}\right]
   \]
   \begin{itemize}
-   \item \tikzmarkin[txt=style yellow]{c22}col 2\tikzmarkend{c22} $= 2 \times$ \tikzmarkin[txt=style green]{c12}col 1\tikzmarkend{c12}
-   \item \tikzmarkin[txt=style orange]{c42}col 4\tikzmarkend{c42} $=$ \tikzmarkin[txt=style cyan]{c32}col 3\tikzmarkend{c32} $-$ \tikzmarkin[txt=style green]{c13}col 1\tikzmarkend{c13}
+   \item \tikzmarkin[txt=style yellow]{c22}col 2\tikzmarkend{c22} $= 2 \times$ \tikzmarkin[txt=style tueturq]{c12}col 1\tikzmarkend{c12}
+   \item \tikzmarkin[txt=style tueorange]{c42}col 4\tikzmarkend{c42} $=$ \tikzmarkin[txt=style tuesteel]{c32}col 3\tikzmarkend{c32} $-$ \tikzmarkin[txt=style tueturq]{c13}col 1\tikzmarkend{c13}
    \item 2 independent columns: rank = 2
   \end{itemize}
  \end{columns}
@@ -432,8 +439,8 @@ plt.show()
   \frametitle{Solutions of linear systems}
   The solution of a system of linear equations may or may not exist, and it may or may not be unique. Existence of solutions can be determined by comparing the rank of the Matrix $M$ with the rank of the augmented matrix $M_a$:
   \begin{lstlisting}
->> numpy.linalg.matrix_rank(A)
->> numpy.linalg.matrix_rank(np.r_[A,b[:,None]]) # Concatenated matrices
+>>> numpy.linalg.matrix_rank(A)
+>>> numpy.linalg.matrix_rank(np.column_stack((A,b))) # Concatenated matrices
   \end{lstlisting}
   Our system: $Mx = b$\\
   \[ 
@@ -538,7 +545,7 @@ plt.show()
     \begin{itemize}
       \item Inverse via cofactors
       \item Inverse and solution in Python
-      \item Inverse and solution in Excel
+      % \item Inverse and solution in Excel
     \end{itemize}
     \item Introduced the concept of computational complexity: matrix inversion scales with $N^3$
     \item A solution depends on the rank of a matrix

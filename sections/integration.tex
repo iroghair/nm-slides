@@ -308,7 +308,7 @@ Note that this can be rewritten for equidistant intervals:
     \begin{itemize}
       \item<2-> \color{tuered}Interpolating $x_0$, $x_1$ and $x_2$:  $ p_{2a}(x) = -\frac{11}{6}x^2+4\frac{1}{2}x+1 $ \\
       $\int_0^2 p_{2a} = \frac{55}{9} \approx 6.1111$
-      \item<3-> \color{tuelblue} Interpolating $x_2$, $x_3$ and $x_4$: $ p_{2b}(x) = \frac{7x^2}{6}-7\frac{1}{2}x+13 $ \\
+      \item<3-> \color{tuesteel} Interpolating $x_2$, $x_3$ and $x_4$: $ p_{2b}(x) = \frac{7x^2}{6}-7\frac{1}{2}x+13 $ \\
       $\int_2^4 p_{2b} = \frac{25}{9} \approx 2.777\ldots$
       \item<4-> Adding the separate integrals: \\
       $\int_0^2 p_{2a} + \int_2^4 p_{2b} = \frac{80}{9}$
@@ -319,7 +319,7 @@ Note that this can be rewritten for equidistant intervals:
       \input{tikzplots/interpolate-graph.tex}
       % Polynomial interpolant
       \draw<2->[graph,domain=0:2,draw=tuered,fill=tuered,fill opacity=0.5] (0,0) -- plot (\x, {-(11/6)*\x*\x+(4.5)*\x+1}) -- (2,0) -- cycle;
-      \draw<3->[graph,domain=2:4,draw=tuelblue,fill=tuelblue,fill opacity=0.5] (2,0) -- plot (\x, {(7/6)*\x*\x-7.5*\x + 13}) -- (4,0) -- cycle;
+      \draw<3->[graph,domain=2:4,draw=tuesteel,fill=tuesteel,fill opacity=0.5] (2,0) -- plot (\x, {(7/6)*\x*\x-7.5*\x + 13}) -- (4,0) -- cycle;
     \end{tikzpicture}
   \end{columns}
   \onslide<5->{
