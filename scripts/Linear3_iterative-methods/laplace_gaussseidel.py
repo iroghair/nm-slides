@@ -16,17 +16,17 @@ T[:,ny-1] = 30
 
 # Required for plotting
 x, y = np.meshgrid(np.arange(1,nx+1), np.arange(1,ny+1))
-
+plt.figure()
+plt.pcolormesh(x,y,T)
+plt.colorbar()
 for iter in range(1000):
     for i in range(1,nx-1):
         for j in range(1,ny-1):
             # Explicit 
             T[i,j] = (T[i-1,j]+T[i+1,j]+T[i,j-1]+T[i,j+1])/4.0
     
-    plt.figure()
     plt.title('Iteration: ' + str(iter+1))
     plt.pcolormesh(x,y,T)
-    plt.colorbar()
     plt.axis([0,nx,0,ny])
     plt.draw()
     plt.pause(0.00001)

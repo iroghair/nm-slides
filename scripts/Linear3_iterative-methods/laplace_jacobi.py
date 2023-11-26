@@ -1,10 +1,10 @@
 # Import necessary libraries
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 
 # Set grid resolution
-nx = 40
-ny = 40
+nx = ny = 40
 
 # Set old solution array
 T = np.zeros((nx,ny))
@@ -42,6 +42,8 @@ for iter in range(1,1001):
     if iter%10 == 0:
         surf.remove() # Removing old surface
         title.set_text("Iteration: %i"%iter) # Changing the title 
-        surf = ax.plot_surface(x,y,Tnew,color="cornflowerblue") # Making new surface
+        surf = ax.plot_surface(x,y,Tnew,cmap=cm.terrain,edgecolor='black',linewidth=0.2) # Making new surface
         fig.canvas.draw() # Drawing new figure 
         fig.canvas.flush_events() # Speeding up next rendering step
+        
+plt.show(block=True)

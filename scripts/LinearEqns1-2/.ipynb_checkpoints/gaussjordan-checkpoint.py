@@ -1,6 +1,8 @@
 import numpy as np
 from scipy.linalg import lu 
+from functools import cache
 
+@cache
 def gaussian_eliminate_draft(A,b):
     """Perform elimination to obtain an upper triangular matrix"""
     A = np.array(A,dtype=np.float64)

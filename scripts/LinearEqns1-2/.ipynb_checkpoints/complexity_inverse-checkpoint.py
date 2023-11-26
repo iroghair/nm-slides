@@ -13,7 +13,7 @@ for n in s:
     start_time = time.time()
     Ainv = np.linalg.inv(A)
     t_inv.append(time.time() - start_time)
-    
+
 plt.loglog(s, t_inv, 'x-')
 plt.xlabel('N')
 plt.ylabel('Time [s]')
