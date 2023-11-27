@@ -3,10 +3,10 @@
 % !TEX spellcheck = en_US
 
 % Handout mode
-% \documentclass[10pt,table,final,fleqn,hyperref={pdfpagemode=UseThumbs, pdfpagelayout=SinglePage,bookmarks=true,},xcolor={usenames,dvipsnames},aspectratio=169,handout]{beamer}
+\documentclass[10pt,table,final,fleqn,hyperref={pdfpagemode=UseThumbs, pdfpagelayout=SinglePage,bookmarks=true,},xcolor={usenames,dvipsnames},aspectratio=169,handout]{beamer}
 
 % Presentation mode
-\documentclass[10pt,table,final,fleqn,hyperref={pdfpagemode=FullScreen},xcolor={usenames,dvipsnames},aspectratio=169]{beamer}
+% \documentclass[10pt,table,final,fleqn,hyperref={pdfpagemode=FullScreen},xcolor={usenames,dvipsnames},aspectratio=169]{beamer}
 \useoutertheme[subsection=false]{miniframes}
 \usetheme[]{Frankfurt}
 \usecolortheme{crane}
@@ -97,9 +97,14 @@
 \include{sections/optimization}
 
 \title{Non-linear equations}
-\subtitle{Solving non-linear systems of equations}
-\lecture{Non-linear Equations}{nonlin}
-\include{sections/nonlin}
+\subtitle{One dimensional case}
+\lecture{Non-linear Equations 1}{nonlin1}
+\include{sections/nonlin1}
+
+\title{Non-linear equations}
+\subtitle{Towards the multi-dimensional case}
+\lecture{Non-linear Equations 2}{nonlin2}
+\include{sections/nonlin2}
 
 \title{Sample slides}
 \subtitle{Examples and code testing}
