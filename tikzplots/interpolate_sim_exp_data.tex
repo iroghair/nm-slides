@@ -1,0 +1,26 @@
+\begin{axis}[
+    width=\textwidth, height=5.5cm,     % size of the image
+    grid = major,
+    grid style={dashed, gray!30},
+    %xmode=log,log basis x=10,
+    %ymode=log,log basis y=10,
+    xmin=0,     % start the diagram at this x-coordinate
+    xmax=200,    % end   the diagram at this x-coordinate
+    ymin=0,     % start the diagram at this y-coordinate
+    ymax=0.02,   % end   the diagram at this y-coordinate
+    /pgfplots/xtick={0,25,...,200}, % make steps of length 5
+    /pgfplots/ytick={0.005,0.01,...,0.02}, % make steps of length 5
+    axis background/.style={fill=white},
+    ylabel=Concentration (\si{\mol\per\cubic\meter}),
+    xlabel=Time (\si{\second}),
+    tick align=outside,
+    legend style={draw=none,fill=none}]
+
+    % import the correct data from a CSV file
+    \addplot[draw=scharlaken,mark=*,mark options={fill=white}] table [id=exp]{scripts/interpolation/exp_data.txt};
+    \addlegendentry{Experiment};
+    \addplot[draw=tuesteel,mark=triangle*,mark options={fill=white}] table [id=sim]{scripts/interpolation/sim_data.txt};
+    \addlegendentry{Simulation};
+    % plot the stirling-formulae
+%       \addplot[domain=0:60, red, thick] {1-(365/(365-x))^(365.5-x)*e^(-x)}; 
+\end{axis} 

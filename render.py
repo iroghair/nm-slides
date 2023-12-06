@@ -30,8 +30,9 @@ def render(argv):
     logfile = ''
     sp.run([latex_exec, "-interaction=nonstopmode","-jobname=%s"%outfile.stem,infile])
     
+    run = 0
     # Run latex compiler until output does not change
-    while not re.search(fr"File `{outfile.stem}.out' has not changed","|".join(logfile)):
+    while not re.search(fr"File `{outfile.stem}.out' has not changed","|".join(logfile)) and (run := run+1) < 4:
         sp.run([latex_exec, "-interaction=nonstopmode","-jobname=%s"%outfile.stem,infile]) 
         with open(f"{outfile.stem}.log","r") as f:
             logfile = f.readlines()

@@ -24,16 +24,16 @@
         % \coordinate (c4x) at (-5.83,0.0);
         
         
-        \addplot[domain=-4:7, samples=100, color=blue, thick]{(x-5)/2 + sin(deg(x-3)) + 1 + exp(-x-1)*exp(-x-7)};
+        \addplot[domain=-4:7, samples=100, color=tuesteel, thick]{(x-5)/2 + sin(deg(x-3)) + 1 + exp(-x-1)*exp(-x-7)};
          %function as per your requirement
-        \draw[gray, dashed, thick] (c0) -- (c0x)   node[black, at start, below] {$x_0$};
-        \draw[gray, dashed, thick] (c1) -- (c1x)   node[black, at start, below] {$x_1$};
-        % \draw[gray, dashed, thick] (c2) -- (c2x)   node[black, at start, above] {$x_2$};
-        % \draw[gray, dashed, thick] (c3) -- (c3x)   node[black, at start, above] {};
+        \draw[tuesteel, dashed, thick] (c0) -- (c0x)   node[black, at start, below] {$x_0$};
+        \draw[tuesteel, dashed, thick] (c1) -- (c1x)   node[black, at start, below] {$x_1$};
+        % \draw[tuesteel, dashed, thick] (c2) -- (c2x)   node[black, at start, above] {$x_2$};
+        % \draw[tuesteel, dashed, thick] (c3) -- (c3x)   node[black, at start, above] {};
 
-        \draw[gray, dashed, thin] (c0) -- (c1x)   node[gray, midway, above, yshift=0.2ex, xshift=0.5ex] {$f^\prime(x_0)$};
-        % \draw[gray, dashed, thin] (c1) -- (c2x)   node[gray, midway, above, yshift=1ex] {$f^\prime(x_1)$};
-        % \draw[gray, dashed, thin] (c2) -- (c3x)   node[gray, midway, above, xshift=-2ex] {$f^\prime(x_2)$};
+        \draw[tuesteel, dashed, thin] (c0) -- (c1x)   node[tuesteel, midway, above, yshift=0.2ex, xshift=0.5ex] {$f^\prime(x_0)$};
+        % \draw[tuesteel, dashed, thin] (c1) -- (c2x)   node[tuesteel, midway, above, yshift=1ex] {$f^\prime(x_1)$};
+        % \draw[tuesteel, dashed, thin] (c2) -- (c3x)   node[tuesteel, midway, above, xshift=-2ex] {$f^\prime(x_2)$};
 
         \draw (1.2,1) node[black, above] {Can overshoot};
         \draw[->] (0.7,1) -- (-2.6, -0.25); % Draws an arrow from (0,0) to (1,1)
@@ -43,10 +43,10 @@
         \fill[cyan] (c1) circle (1pt);
         % \fill[cyan] (c2) circle (1pt);
         % \fill[cyan] (c4) circle (2pt);
-        \draw[blue, solid] (c0) circle (1pt);
-        \draw[blue, solid] (c1) circle (1pt);
-        % \draw[blue, solid] (c2) circle (1pt);
-        % \draw[blue, solid] (c4) circle (2pt);
+        \draw[tuesteel, solid] (c0) circle (1pt);
+        \draw[tuesteel, solid] (c1) circle (1pt);
+        % \draw[tuesteel, solid] (c2) circle (1pt);
+        % \draw[tuesteel, solid] (c4) circle (2pt);
     
     \end{axis}
     \end{tikzpicture}

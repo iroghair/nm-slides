@@ -6,8 +6,8 @@
       xlabel={\(x\)},
       ylabel={\(y\)},
       grid=both,
-      grid style={line width=.1pt, draw=gray!20},
-      major grid style={line width=.2pt,draw=gray!50},
+      grid style={line width=.1pt, draw=tuesteel!20},
+      major grid style={line width=.2pt,draw=tuesteel!50},
       width=\textwidth, height=\textwidth
     ]
     
@@ -21,8 +21,8 @@
     % Draw the parabola y = x^2 + 1
     \addplot [samples=200, domain=-2:2, smooth, thick] {x^2 + 1};
     
-    \draw[fill=red, draw=blue] (r0) circle (0.01\textwidth);
-    \draw[fill=red, draw=blue] (r1) circle (0.01\textwidth);
+    \draw[fill=red, draw=tuesteel] (r0) circle (0.01\textwidth);
+    \draw[fill=red, draw=tuesteel] (r1) circle (0.01\textwidth);
     
     \end{axis}
     \end{tikzpicture}

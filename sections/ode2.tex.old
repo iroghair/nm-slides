@@ -40,7 +40,7 @@
     \pause \vskip1em
     Consider the first order batch reactor: 
     \[
-      \frac{dc}{dt} = -kc \Rightarrow c_{i+1} = c_i - k{\color{scharlaken}c_i}\Delta t \Rightarrow \frac{c_{i+1}}{c_i} = 1-k\Delta t
+      \frac{dc}{dt} = -kc \Rightarrow c_{i+1} = c_i - k{\color{tuered}c_i}\Delta t \Rightarrow \frac{c_{i+1}}{c_i} = 1-k\Delta t
     \]
     \pause
     It follows that unphysical results are obtained for $k\Delta t \geq 1$!! \vskip1em
@@ -58,7 +58,7 @@
     \pause \vskip1em
     Consider the first order batch reactor: 
     \[
-      \frac{dc}{dt} = -kc \Rightarrow c_{i+1} = c_i - k{\color{scharlaken}c_{i+1}}\Delta t \Rightarrow \frac{c_{i+1}}{c_i} = \frac{1}{1+k\Delta t}
+      \frac{dc}{dt} = -kc \Rightarrow c_{i+1} = c_i - k{\color{tuered}c_{i+1}}\Delta t \Rightarrow \frac{c_{i+1}}{c_i} = \frac{1}{1+k\Delta t}
     \]
     \pause
     This equation does never give unphysical results!\\
@@ -84,54 +84,6 @@
   \[
     y_{i+1} = y_i + h f(x_{i+1},y_{i+1}) \Rightarrow y_{i+1} = y_i + h \left(1-h\left.\frac{df}{dy}\right|_i \right)^{-1} f(x_{i+1},y_i)
   \]
-\end{frame}
-
-
-\begin{frame}[fragile]
-  \frametitle{Implicit Euler's method - implementation}
-  A basic function of the implicit Euler method is given in \lstinline$ode_scalar_implicit.py$:
-  \begin{columns}
-    \column{0.55\textwidth}
-      \begin{lstlisting}
-def implicit_euler(func, c0, t0, tend, n):
-    h = 1e-8
-    dt = (tend - t0)/n
-    times = np.linspace(t0,tend,n+1)
-    c = np.zeros(n+1)
-    c[0] = c0
-    for i,t in enumerate(times[:-1]):
-        f = func(c[i],t)
-        fh = func(c[i]+h,t)
-        dfdc = (fh - f)/h
-        c[i+1] = c[i] + dt*f/(1 - dt*dfdc)
-        print(f"{t=:0.4f}, c: {c[i+1]:.8f}")
-    print(f"t={times[-1]:0.4f}, c: {c[-1]:.8f}")
-    return times, c
-  \end{lstlisting}
-  \pause
-      \begin{lstlisting}
-from ode_scalar_implcit import implicit_euler
-t,c = implicit_euler(lambda c,t: -1.0*c**2, 1, 0, 2, 10)
-plt.plot(t,c,'-o',label='Implicit Euler')
-print(f"Conversion = {conv_e}")
-      \end{lstlisting}
-    \column{0.4\textwidth}
-    \pause
-      \begin{lstlisting}[style=output]
-t=0.0000, c: 0.85714286
-t=0.2000, c: 0.74772036
-t=0.4000, c: 0.66164680
-t=0.6000, c: 0.59241445
-t=0.8000, c: 0.53566997
-t=1.0000, c: 0.48840819
-t=1.2000, c: 0.44849689
-t=1.4000, c: 0.41438638
-t=1.6000, c: 0.38492630
-t=1.8000, c: 0.35924657
-t=2.0000, c: 0.35924657
-Conversion = 0.64075343
-      \end{lstlisting}
-  \end{columns}
 \end{frame}
 
 \begin{frame}
@@ -161,7 +113,7 @@ Conversion = 0.64075343
 \begin{longtable}{c c}
     \hline
     \begin{minipage}{0.4\textwidth}\centering Implicit midpoint rule \\(second order)\end{minipage} & \begin{minipage}{0.4\textwidth}\centering Explicit midpoint rule  (modified~Euler~method)\end{minipage} \\ \hline
-    $y_{i+1} = y_i + hf\left(x_i + \frac{1}{2}h, {\color{scharlaken}\frac{1}{2}(y_i + y_{i+1})}\right)$  & $y_{i+1} = y_i + hf(x_i + \frac{1}{2}h, {\color{scharlaken}y_i + \frac{1}{2} h k_1})$ \\
+    $y_{i+1} = y_i + hf\left(x_i + \frac{1}{2}h, {\color{tuered}\frac{1}{2}(y_i + y_{i+1})}\right)$  & $y_{i+1} = y_i + hf(x_i + \frac{1}{2}h, {\color{tuered}y_i + \frac{1}{2} h k_1})$ \\
     \hline
   \end{longtable}
   in case $f(y)$ then:
@@ -293,104 +245,104 @@ Conversion = 0.64075343
 \subsection{Solving systems of ODEs in Python}
 \begin{frame}
   \frametitle{Solving systems of ODEs in Python}
-  Solving systems of ODEs in Python is completely analogous to solving a single ODE:
+  Solving systems of ODEs in Python follows a similar process to Matlab but leverages the SciPy library:
   \vspace*{1em}
   \begin{enumerate}
     \item Create a function that specifies the ODEs. This function returns the $\frac{d\vec{y}}{dx}$ vector.
-    \item Initialise solver variables and settings (e.g. step size, initial conditions, tolerance), in a separate script. Initial conditions and tolerances should be given per-equation, i.e. as a vector.
-    \item Call the ODE solver function, using a function argument to the ODE function described in point 1.
+    \item Initialize solver variables and settings (e.g. step size, initial conditions, tolerance) within your Python script. Initial conditions and tolerances should be given per-equation, i.e. as a list or array.
+    \item Call the ODE solver function from the SciPy library, passing the ODE function described in point 1 as an argument.
     \begin{itemize}
-      \item The ODE solver will return the vector for the independent variable (e.g. time), and a solution matrix, with a column as the solution for each equation in the system.
+      \item The ODE solver will return an object that contains the solution arrays for each dependent variable.
     \end{itemize}
   \end{enumerate}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Solving systems of ODEs in Python: example}
-  We solve the system $\displaystyle \frac{dx_0}{dt} = ax_0 - x_1, \quad  \frac{dx_1}{dt} = bx_1 + x_0$, with $a=-1$ and $b=-2$:
-  \begin{itemize}
-    \item Create an ODE function:
-    \begin{lstlisting}
-# Example scipy solve_ivp/Example scipy solve_ivp vector.py
-def func(t, x, a, b):
-    #output can be of list or np.array type:
-    dxdt = np.zeros(2)
+  We solve the system: $\displaystyle \frac{dx_1}{dt} = -x_1 - x_2, \quad  \frac{dx_2}{dt} = x_1 - 2x_2 $
+  \begin{block}{Create an ODE function}
+    \begin{lstlisting}[language=Python]
+from scipy.integrate import solve_ivp
 
-    dxdt[0] = a*x[0] - x[1]
-    dxdt[1] = b*x[1] + x[0]
+def my_ode_function(t, x):
+    dxdt = [-x[0] - x[1], x[0] - 2*x[1]]
     return dxdt
     \end{lstlisting}
-  \item Solve by calling \lstinline$solve_ivp$
-    \begin{lstlisting}
-from scipy.integrate import solve_ivp
-x_init = [0,1];         % Initial conditions
-tspan = [0,10];         % Time span
-sol = solve_ivp(func, tspan, x_init, args=(-1,-2), rtol=1e-12)
+  \end{block}
+  \pause
+  \begin{block}{Create a solution script}
+    \begin{lstlisting}[language=Python]
+x_init = [0, 1]        # Initial conditions
+t_span = [0, 10]       # Time span
+sol = solve_ivp(my_ode_function, t_span, x_init, rtol=1e-4, atol=[1e-4, 1e-4])
+
+# The solution can be accessed as sol.t (time points) and sol.y (solutions at each time point)
     \end{lstlisting}
-  \end{itemize}
+  \end{block}
 \vfill
 \end{frame}
 
-% {\nologo
+
+{\nologo
 \begin{frame}[fragile]
   \frametitle{Solving systems of ODEs in Python: example}
-  Plot the solution (note: the solution is attribute \lstinline|sol.y|):
-  \begin{lstlisting}
-import matplotlib.pyplot as plt
-plt.plot(sol.t, sol.y[0], 'r-x', linewidth=2)
-plt.plot(sol.t, sol.y[1], 'b-o', linewidth=2)
+  Plot the solution using `matplotlib`:
+  \begin{lstlisting}[language=Python]
+plt.plot(sol.t, sol.y[0], 'r-x', label='x1')
+plt.plot(sol.t, sol.y[1], 'b-o', label='x2')
+plt.xlabel('t'); plt.ylabel('x'); plt.legend(); plt.grid(); plt.show()
   \end{lstlisting}
   \pause
   \begin{center}
     \begin{tikzpicture}
       \begin{axis}[%every axis/.append style={font=\footnotesize},
-        width=\textwidth, height=6cm,     % size of the image
+        width=\textwidth, height=6.5cm,     % size of the image
         grid = major,grid style={dashed, gray!30},
         axis background/.style={fill=white},
         axis x line=middle,axis y line=middle,ylabel=$x$,xlabel=$t$]
 
-        \addplot[graph,mark=x,draw=scharlaken] table []{data/ODE_matlabsolve1.dat};  \addlegendentry{$x_0$}
-        \addplot[graph,mark=o,draw=tuesteel,mark options={fill=white}] table []{data/ODE_matlabsolve2.dat};  \addlegendentry{$x_1$}
+        \addplot[graph,mark=x] table []{data/ODE_matlabsolve1.dat};  \addlegendentry{$x_1$}
+        \addplot[graph,mark=o,draw=tuesteel,mark options={fill=white}] table []{data/ODE_matlabsolve2.dat};  \addlegendentry{$x_2$}
       \end{axis}
     \end{tikzpicture}
   \end{center}
 \end{frame}
-% }
+}
 
-\againframe{ode_pass_arguments}
-% \begin{frame}[fragile]
-%   \frametitle{Solving ODEs in Python: example}
-%   A few notes on working with \lstinline$scipy.integrate.solve_ivp$ and other ODE solvers. If we want to give additional arguments (e.g. \lstinline$k1$ and \lstinline$k2$) to our ODE function, we can list them in the function line:
-%   \begin{lstlisting}
-% func = lambda t,x,k1,k2: k1*x+k2
-% # or
-% def func(t,x,k1,k2):
-%     return k1*x+k2
-%   \end{lstlisting}
-%   The additional arguments can now be set in the solver script by \emph{adding them as \lstinline$args$ list}:
-%   \begin{lstlisting}
-% sol = solve_ivp(func,[0,5],[1],args=(k1, k2))
-%     \end{lstlisting}
-%   \pause
-%    Of course, in the solver script, the variables do not have to be called \lstinline$k1$ and \lstinline$k2$:
-%       \begin{lstlisting}
-% sol = solve_ivp(func,[0,5],[1],args=(q, u))
-%     \end{lstlisting}
-%    These variables may be of any type (scalar, vector, dictionary, list). For carrying over many variables, a dictionary is useful and descriptive.
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{Solving systems of ODEs in Python: repeated notes}
+  A few notes on working with `solve\_ivp` and other SciPy solvers. If we want to give additional arguments (e.g. `a`, `b`, and `c`) to our ODE function, we can list them in the function signature:
+  \begin{lstlisting}[language=Python]
+def my_ode(t, x, a, b, c):
+  \end{lstlisting}
+  The additional arguments can now be set in the solution script by passing them using the `args` parameter:
+  \begin{lstlisting}[language=Python]
+sol = solve_ivp(my_ode, t_span, x_init, args=(a, b, c))
+  \end{lstlisting}
+  \pause
+  \begin{itemize}
+    \item Of course, in the solution script, the variables do not need to be called `a`, `b`, and `c`. They could be named anything:
+      \begin{lstlisting}[language=Python]
+sol = solve_ivp(my_ode, t_span, x_init, args=(k1, phi, V))
+      \end{lstlisting}
+    \item These variables can be of any type (lists, arrays, dictionaries). Especially a dictionary can be useful to carry many values in one variable.
+    \item Python inherently supports functions with more arguments than the default `(t, x)` required by `solve\_ivp`, so there is no need for an alternative approach as in MATLAB.
+  \end{itemize}
+\end{frame}
+
 
 \begin{frame}[fragile]
   \frametitle{Solving systems of ODEs in Python: example}
-  You may have noticed that the step size in $t$ varies. This happens when only the begin and end times of the time span are defined, and \lstinline$scipy.integrate.solve_ivp$ uses adaptive step size for efficiency:
-  \begin{lstlisting}
-tspan = [0, 10]
+  You may have noticed that the step size in \( t \) varied. This is because we have given the begin and end times of our time span, and \texttt{solve\_ivp} uses adaptive step size for efficiency:
+  \begin{lstlisting}[language=Python]
+t_span = [0, 10]
   \end{lstlisting}
   \pause
-  You can also retrieve the solution at specific steps, by supplying all steps explicitly as an additional argument to \lstinline$solve_ivp$, e.g.:
-  \begin{lstlisting}
-sol = solve_ivp(func, tspan, x_init, args=(-1,-2), t_eval=np.linspace(0, 10, 101), rtol=1e-12)
-    \end{lstlisting}
-  This example provides 101 explicit time steps between 0 and 10 seconds. It can be useful if you need a direct comparison with e.g. measurements at specific times.
+  You can also retrieve the solution at specific steps, by supplying all steps explicitly as an array, e.g.:
+  \begin{lstlisting}[language=Python]
+t_eval = np.linspace(0, 10, 101)
+  \end{lstlisting}
+  This example provides 101 explicit time steps between 0 and 10 seconds.
   \vskip1em
   Note that this is an interpolated result. The solver uses, in the background, still the adaptive step size functionality!
   \vfill
@@ -406,6 +358,7 @@ sol = solve_ivp(func, tspan, x_init, args=(-1,-2), t_eval=np.linspace(0, 10, 101
     $ \displaystyle  \vec{y}_{i+1} = \vec{y}_i + h \left(\vec{I} - \frac{h}{2}\left. \frac{d\vec{f}}{d\vec{y}}\right|_i \right)^{-1} \vec{f}(\vec{y}_i)$
   \end{block}  
 \end{frame}
+
 
 \begin{frame}
   \frametitle{Stiff systems of ODEs}
@@ -514,54 +467,64 @@ Backward Euler: always stable, even for $\Delta t > 100$ (but then not very accu
   Cure for stiff problems: use implicit methods!
   To find out whether your system is stiff: check whether one of the eigenvalues have an imaginary part};}
 \end{frame}
-
 \begin{frame}[fragile]
   \frametitle{Implicit methods in Python}
-  SciPy offers a solver that detects stiff systems, using \lstinline$method='LSODA'$. 
-  \[
+  Python offers a solver, \lstinline$solve\_ivp$, for stiff and non-stiff problems.
+  $$
     \frac{dc_1}{dt} = 998c_1 + 1998c_2 \quad 
     \frac{dc_2}{dt} = -999c_1 -1999c_2,\, c_1(0) = 1,\, c_2(0) = 0
-  \]%
+  $$
   \begin{itemize}
-    \item Create the ode function (see \lstinline$slide_example_solve_ivp_implicit.py$)
-    \begin{lstlisting}
-function [dcdt] = stiff_ode(t,c)
-dcdt = zeros(2,1); % Pre-allocation
-dcdt(1) =  998 * c(1) + 1998*c(2);
-dcdt(2) = -999 * c(1) - 1999*c(2);
-return
+    \item Create the ode function
+    \begin{lstlisting}[language=Python,basicstyle=\tiny]
+def stiff_ode(t, c):
+    dcdt = [0, 0]  # Pre-allocation
+    dcdt[0] = 998 * c[0] + 1998 * c[1]
+    dcdt[1] = -999 * c[0] - 1999 * c[1]
+    return dcdt
     \end{lstlisting}
-  \item Compare the resolution of the solutions (see next slide)
-    \begin{lstlisting}
-sol1 = solve_ivp(stiff_ode, [0, 1], [1, 0])
-# plot sol1
-sol2 = solve_ivp(stiff_ode, [0, 1], [1, 0],method = 'LSODA')
-# plot sol2
+  \item Compare the resolution of the solutions
+    \begin{lstlisting}[language=Python,basicstyle=\tiny]
+from scipy.integrate import solve_ivp
+import matplotlib.pyplot as plt
+
+# Using RK45 (similar to ode45 in MATLAB)
+sol = solve_ivp(stiff_ode, [0, 1], [1, 0], method='RK45')
+plt.subplot(2, 1, 1)
+plt.plot(sol.t, sol.y.T, "-x")
+
+# Using BDF (similar to ode15s in MATLAB)
+sol = solve_ivp(stiff_ode, [0, 1], [1, 0], method='BDF')
+plt.subplot(2, 1, 2)
+plt.plot(sol.t, sol.y.T, "-x")
+
+plt.show()
     \end{lstlisting}
   \end{itemize}
 \end{frame}
+
 
 {\nologo
 \begin{frame}[fragile]
 \frametitle{Implicit methods in Python}
 \begin{center}
   \begin{tikzpicture}
-    \begin{axis}[%every axis/.append style={font=\footnotesize},
-      width=\textwidth, height=4cm,     % size of the image
+    \begin{axis}[
+      width=\textwidth, height=4cm,
       grid = major,grid style={dashed, gray!30},
       axis background/.style={fill=white},
-      axis x line=middle,axis y line=middle,ylabel=$x$,xlabel=$t$,title=Default settings]
+      axis x line=middle,axis y line=middle,ylabel=$x$,xlabel=$t$,title=ode45]
 
       \addplot[graph,mark=x] table []{data/ODE_matlabsolve_implicit11.dat};  \addlegendentry{$x_1$}
       \addplot[graph,mark=o,draw=tuesteel,mark options={fill=white}] table []{data/ODE_matlabsolve_implicit12.dat};  \addlegendentry{$x_2$}
     \end{axis}
   \end{tikzpicture}
   \begin{tikzpicture}
-    \begin{axis}[%every axis/.append style={font=\footnotesize},
-      width=\textwidth, height=4cm,     % size of the image
+    \begin{axis}[
+      width=\textwidth, height=4cm,
       grid = major,grid style={dashed, gray!30},
       axis background/.style={fill=white},
-      axis x line=middle,axis y line=middle,ylabel=$x$,xlabel=$t$,title=Method: LSODA]
+      axis x line=middle,axis y line=middle,ylabel=$x$,xlabel=$t$,title=solve\_ivp]
 
       \addplot[graph,mark=x] table []{data/ODE_matlabsolve_implicit21.dat};  \addlegendentry{$x_1$}
       \addplot[graph,mark=o,draw=tuesteel,mark options={fill=white}] table []{data/ODE_matlabsolve_implicit22.dat};  \addlegendentry{$x_2$}
@@ -573,76 +536,66 @@ The explicit solver requires 1245 data points (default settings), the implicit s
 }
 
 \begin{frame}<handout:0>[fragile]
-\frametitle{Implicit methods in Matlab: Generic backward Euler}
-  \begin{columns}
-    \column{0.65\textwidth}
-      \begin{lstlisting}
-def euler_implicit(func, c0, t0, tend, n):
-    dt = (tend - t0)/n
-    t = np.linspace(t0, tend, num=n+1, endpoint=True)
-    c0 = np.asarray(c0, dtype=float)
-    c = np.zeros((n+1, c0.size))
-    c[0] = c0
-    print(f"t: {t[0]:f}, c: {np.array2string(c[0])}")
-    for i in range(n):
-        f = func(c[i])
-        dfdc = jac(func, c[i])
-        dc = np.linalg.solve(np.eye(c0.size) - dt*dfdc, dt*f)
-        c[i+1] = c[i] + dc
-        print(f"t: {t[i+1]:f}, c: {np.array2string(c[i+1])}")
-    return c, t
-      \end{lstlisting}
-    \column{0.35\textwidth}
-      \begin{lstlisting}
-def jac(func, c):
-    n = c.size
-    jac = np.eye(n)
-    h = 1e-8
-    f = func(c)
-    for i in range(n):
-        cs = c[i]
-        c[i] = c[i] + h
-        fh = func(c)
-        jac[:,i] = (fh - f)/h
-        c[i] = cs
-    return jac
-      \end{lstlisting}
-  \end{columns}
-  Vector output needs a bit of processing:
-  \begin{lstlisting}
-c, t = euler_implicit(func, [1, 0, 0], 0, 2, 100)
-c = c.T
-fig = plt.figure()
-plt.plot(t, c[0], 'ro-', label='A')
-plt.plot(t, c[1], 'bs-', label='B')
-plt.plot(t, c[2], 'g^-', label='C')
+\frametitle{Implicit methods in Python: Generic backward Euler}
+\begin{lstlisting}[language=Python,basicstyle=\tiny]
+import numpy as np
+from scipy.linalg import inv
+import matplotlib.pyplot as plt
+
+# Input
+N = 40
+t_end = 1
+y0 = np.array([1, 0])
+dh = 1e-12
+def func(t, y):
+    # Define your system of ODEs here
+    pass  # Remove this line when you add your ODEs
+
+# Preallocate and calculate
+time = np.linspace(0, t_end, N+1)
+h = time[1] - time[0]
+y = np.zeros((len(time), 2))
+y[0, :] = y0
+
+for i in range(N):
+    # Get df_dy1 and df_dy2 (both column vectors)
+    jac_dfdy1 = (func(0, y[i, :] + [dh, 0]) - func(0, y[i, :])) / dh
+    jac_dfdy2 = (func(0, y[i, :] + [0, dh]) - func(0, y[i, :])) / dh
+    jacobian = np.column_stack((jac_dfdy1, jac_dfdy2))
+    
+    # Update formula
+    y[i+1, :]  = y[i, :] + h * inv(np.eye(len(y0)) - h * jacobian).dot(func(0, y[i, :]))
+
+plt.plot(time, y)
 plt.show()
-  \end{lstlisting}
+\end{lstlisting}
 \end{frame}
 
+
 \begin{frame}<handout:1|beamer:0>[fragile]
-\frametitle{Implicit methods in Python: Generic backward Euler}
-How to make a generic Backward Euler implementation? Recall the update formula:
-    $ \displaystyle  \vec{y}_{i+1} = \vec{y}_i + h \left(\vec{I} - h\left. \frac{d\vec{f}}{d\vec{y}}\right|_i \right)^{-1}\vec{f}(\vec{y}_i)$
-\vskip1em
-\begin{itemize}
-    \item Set up input: Number of steps, end time, initial conditions
-    \item Preallocate and calculate: create a full time vector, calculate the step size $h$, preallocate $y$ with zeros and store the initial condition as the first $y$.
-    \item Loop over the number of iterations:
-    \begin{itemize}
-        \item Compute the Jacobian: calculate the function both for $y_i$ as well as for $y_i + s$, where $s$ is a very small number. Recall:
-        \[
-        \frac{df}{dy} = \frac{f(y+s) - f(y)}{s}
-        \]
-        \item Compute the update formula for $y_{i+1}$. Use \lstinline$eye$, \lstinline$inv$.
-    \end{itemize}
-\end{itemize}
-\end{frame}
+  \frametitle{Implicit methods in Python: Generic backward Euler}
+  How to make a generic Backward Euler implementation? Recall the update formula:
+      $ \displaystyle  \vec{y}_{i+1} = \vec{y}_i + h \left(\vec{I} - h\left. \frac{d\vec{f}}{d\vec{y}}\right|_i \right)^{-1}\vec{f}(\vec{y}_i)$
+  \vskip1em
+  \begin{itemize}
+      \item Set up input: Number of steps, end time, initial conditions
+      \item Preallocate and calculate: create a full time vector using \lstinline|numpy.linspace|, calculate the step size \( h \), preallocate \( y \) with zeros using \lstinline|numpy.zeros| and store the initial condition as the first \( y \).
+      \item Loop over the number of iterations:
+      \begin{itemize}
+          \item Compute the Jacobian: calculate the function both for \( y_i \) as well as for \( y_i + s \), where \( s \) is a very small number. Recall:
+          \[
+          \frac{df}{dy} = \frac{f(y+s) - f(y)}{s}
+          \]
+          \item Compute the update formula for \( y_{i+1} \). Use \lstinline|numpy.eye|, \lstinline|scipy.linalg.inv|.
+      \end{itemize}
+  \end{itemize}
+  \end{frame}
+  
 
 \section{Boundary value problems}
 \againframe<2>{contents_ode2}
 \subsection{Shooting method}
-\againframe{ivpbvp}
+%\againframe{ivpbvp}
 \begin{frame}
   \frametitle{Shooting method}
   How to solve a BVP using the shooting method:\\ \vskip1em
@@ -750,7 +703,7 @@ How to make a generic Backward Euler implementation? Recall the update formula:
     \hline
     10 & x \hfill & c\hfill & q  \hfill\\
     \hline
-    11 & 0     & =B1 & \color{scharlaken} 10 \\
+    11 & 0     & =B1 & \color{tuered} 10 \\
     \hline
     12 & =A11+\$B\$6  & =B11+\$B\$6*(--1/\$B\$2*C11) & =C11+\$B\$6*(-\$B\$3*B11)\\
     \hline
@@ -774,108 +727,89 @@ How to make a generic Backward Euler implementation? Recall the update formula:
 
 \end{frame}
 
-\begin{frame}[fragile,label=diffreactsystem]
+\begin{frame}[fragile]
   \frametitle{BVP: example in Python}
   We first program the system of ODEs in a separate function:
   \begin{align*}
     \frac{dc}{dx} &= -\frac{1}{\mathcal{D}}q\\
     \frac{dq}{dx} &= -k_Rc
   \end{align*}
-  \begin{lstlisting}
-# slides_example_bvp_1.py
-def diffReactSystem(x, y, param):
+  \begin{lstlisting}[language=Python]
+def diffReactSystem(x, y, ps):
     c, q = y
-    f = np.zeros_like(y)
-    f[0] = -q/param['Diff']
-    f[1] = -param['kR']*c
-    return f
+    dcdx = -q / ps['D']
+    dqdx = -ps['kR'] * c
+    return [dcdx, dqdx]
   \end{lstlisting}
   \pause\vskip1em
-  Note that we pass a variable (type: dictionary) that contains required parameters: \lstinline$param$.
+  Note that we pass a dictionary that contains the required parameters: \lstinline|ps|.
 \end{frame}
 
-\begin{frame}[fragile,label={diffReactODEtrial}]
+\begin{frame}[fragile, label={diffReactODEtrial}]
   \frametitle{BVP: example in Python}
-  Let's first try to solve the ODE system using \lstinline$scipy.integrate.solve_ivp$: 
-  \begin{lstlisting}
-# slides_example_bvp_1.py
-import numpy as np
-import matplotlib.pyplot as plt
+  Let's first try to solve the ODE system using \lstinline|scipy.integrate.solve_ivp|:
+  \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
 from scipy.integrate import solve_ivp
-
-### Definition of diffReactSystem here (see slide (*@\ref{diffreactsystem} @*))
+import numpy as np
 
 # Set up parameters
-q0 = 1e-3  # Initial guess flux@t=0
-param = {'cAiL': 1.0,'Diff':1e-8,'kR': 10,'delta': 1e-4,'N': 100}
+ps = {'D': 1e-8, 'kR': 10, 'delta': 1e-4, 'C_a_L': 1, 'q0': 1e-3}
 
 # Solve ODE system
-sol = solve_ivp(lambda x, y: diffReactSystem(x, y, param), # ODE func with params
-                                      [0, param['delta']], # Time span
-                                      [param['cAiL'], q0]) # Initial conditions
+sol = solve_ivp(diffReactSystem, [0, ps['delta']], [ps['C_a_L'], ps['q0']], args=(ps,))
 
-fig,ax1 = plt.subplots()
-ax1.plot(sol.t,sol.y[0,:],'-b',label='Concentration $mol/m^3$')
-ax2 = ax1.twinx() # Create y-y axis
-ax2.plot(sol.t,sol.y[1,:],'-r',label='Flux $mol/m^2/s$')
-fig.legend(bbox_to_anchor=(0.5, 0.5))
-plt.show()   
+# Postprocessing
+c = sol.y[0]
+q = sol.y[1]
+t = sol.t
+
+import matplotlib.pyplot as plt
+plt.plot(t, c)
+plt.xlabel('Position in film layer [m]')
+plt.ylabel('Concentration value')
+plt.show()
   \end{lstlisting}
 \end{frame}
 
-\begin{frame}[label=diffreactfitcrit,fragile]
+\begin{frame}[fragile]
   \frametitle{BVP: example in Python}
-  That seems to work! Now we want to fit the value for $q$ at $x=0$ (defined below as \lstinline$bcq$), such that the concentration at $x=\delta$ equals zero. We create a function with the output defined as the deviation from the target value:
-  \begin{lstlisting}
-# slides_example_bvp_2.py
-def diffReactFitCriterium(bcq, param):
-    # Solve the ODE system using changeable parameter bcq 
-    # (boundary condition for q), other parameters are defined in param
-    sol = solve_ivp(lambda x, y: diffReactSystem(x, y, param), [0, param['delta']], [param['cAiL'], bcq])
-    # Return the last value of the concentration (column 0 in y) at x=delta (hence [-1])
-    return sol.y[0,-1] - 0
+  Now we want to fit the value for \(q\) at \(x=0\) (defined below as \lstinline|bcq|), such that the concentration at \(x=\delta\) equals zero. We create a function with the output defined as the deviation from the target value:
+  \begin{lstlisting}[language=Python]
+def diffReactCrit(bcq, ps):
+    bcq = bcq[0] # Cannot be array if it is to be fed to solve_ivp
+    sol = solve_ivp(diffReactSystem, [0, ps['delta']], [ps['C_a_L'], bcq], args=(ps,))
+    c = sol.y[0]
+    f = c[-1]  # We subtract the desired value from the concentration at x=delta (0 in this case)
+    return f
   \end{lstlisting}
   \pause
   Note the following:
   \begin{itemize}
-    \item We use the interval $0\leq x \leq \delta$
-    \item Boundary conditions are given as: $c(x=0)=1$ and $q(x=0)=$ \lstinline$bcq$, which is given as a separate argument to the function (i.e. changable from `outside'!)
-    \item The function returns the concentration at $x=\delta$
+    \item We use the interval \(0\leq x \leq \delta\)
+    \item Boundary conditions are given as: \(c(x=0)=1\) and \(q(x=0)=\) \lstinline|bcq|, which is given as an argument to the function (i.e. changeable from 'outside'!)
+    \item The function returns \lstinline|f|, the difference between the computed and desired concentration at \(x=\delta\).
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{BVP: example in Python}
-  Finally, we should solve the system so that we obtain the right boundary condition $q=$ \lstinline$bcq$ such that $c(x=\delta)=0$. We can use the \lstinline$scipy.optimize.root_scalar$ function to do this. Extend the script from slide~\ref{diffReactODEtrial} by:
-  \begin{lstlisting}
-# slides_example_bvp_2.py
-from scipy.optimize import root_scalar
+  Finally, we should solve the system to obtain the correct boundary condition \(q=\) \lstinline|bcq| such that \(c(x=\delta)=0\). We can use the built-in function \lstinline|scipy.optimize.root| to do this:
+  \begin{lstlisting}[language=Python]
+from scipy.optimize import root
 
-### Define diffReactSystem, diffReactFitCriterium, parameters
+# Set up parameters
+ps = {'D': 1e-8, 'kR': 10, 'delta': 1e-4, 'C_a_L': 1, 'q0': 2e-4}
 
-# Solve such that c(delta)=0:
-sol = root_scalar(lambda x: diffReactFitCriterium(x, param), 
-                  method='brentq',bracket=[0,1], xtol=1e-15, rtol=1e-15)
-q0 = sol.root
-print(f"{q0 = }")
+# Fit boundary condition for q on x=0 such that c(end)=0
+result = root(diffReactCrit, ps['q0'], args=(ps,))
+fitted_q = result.x[0]
 
-# Solve ODE once more such that we can plot the final data
-sol = solve_ivp(lambda x, y: diffReactSystem(x, y,param), 
-                [0, param['delta']], [param['cAiL'], q0], 
-                t_eval = np.linspace(0, param['delta'], 101))
+# Solve ODE once more to plot the final data
+sol = solve_ivp(diffReactSystem, [0, ps['delta']], [ps['C_a_L'], fitted_q], args=(ps,))
   \end{lstlisting}
   Postprocessing of the data can be done similar to the example in slide~\ref{diffReactODEtrial}.
-%   \vskip1em
-%   \tikz \node[emphblock,text width=\textwidth]   {Compare the analytical solution: \\
-%   $\displaystyle q = k_L E_A C_{A,i,L} \quad$ with \begin{minipage}{0.7\textwidth}
-%       \begin{align*}
-%   E_A &= \frac{\text{Ha}}{\tanh \text{Ha}} &\quad \text{(Activation energy)} \\
-%   \text{Ha} &= \frac{\sqrt{k_R\mathcal{D}}}{k_L} &\quad \text{(Hatta number)} \\
-%   k_L &= \frac{\mathcal{D}}{\delta} &\quad \text{(mass transfer coefficient)}
-%       \end{align*}
-%     \end{minipage}
-% };
 \end{frame}
+
 
 \begin{frame}[fragile]
   \frametitle{BVP example: analytical solution}

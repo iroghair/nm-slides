@@ -44,5 +44,5 @@ plt.text(x[-1]+0.3,x[-1],"$y=x$")
 
 # Show the plot
 plt.tight_layout()
-plt.savefig("./martin_slides_dependencies/direct_iteration_photo.eps")
+# plt.savefig("./martin_slides_dependencies/direct_iteration_photo.eps")
 plt.show()

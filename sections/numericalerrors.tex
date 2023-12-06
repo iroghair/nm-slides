@@ -560,15 +560,15 @@ Subtraction: \\
       \draw<4>[<-] (p2) -- +(0.2,0.4) node [anchor=south west] {$\sin(\frac{\pi}{2})=1$};
       \draw<4>[<-] (p3) -- +(0.5,0.1) node [anchor=west] {$\sin(\frac{\pi}{4})=\frac{1}{2}\sqrt{2}$};
       % Taylor expansion (I had to break up the faculty numbers, they were too large for LaTeX)
-      \draw<5-> [graph,opacity=0.4,tueblue,domain=-0.5*pi:0.5*pi] plot (\x/pi, { ( \x});%
+      \draw<5-> [graph,opacity=0.4,tuesteel,domain=-0.5*pi:0.5*pi] plot (\x/pi, { ( \x});%
       \node<5> [] at (2,1.7) {$N=0$};
-      \draw<6-> [graph,opacity=0.5,tueblue,domain=-pi:pi] plot (\x/pi, { ( \x - \x*\x*\x/6)});%
+      \draw<6-> [graph,opacity=0.5,tuesteel,domain=-pi:pi] plot (\x/pi, { ( \x - \x*\x*\x/6)});%
       \node<6> [] at (2,1.7) {$N=1$};
-      \draw<7-> [graph,opacity=0.6,tueblue,domain=-pi:pi] plot (\x/pi, { ( \x - \x*\x*\x/6 + \x*\x*\x*\x*\x/120)});%
+      \draw<7-> [graph,opacity=0.6,tuesteel,domain=-pi:pi] plot (\x/pi, { ( \x - \x*\x*\x/6 + \x*\x*\x*\x*\x/120)});%
       \node<7> [] at (2,1.7) {$N=2$};
-      \draw<8-> [graph,opacity=0.7,tueblue,domain=-pi:pi] plot (\x/pi, { ( \x - \x*\x*\x/6 + \x*\x*\x*\x*\x/120 - \x*\x*\x*\x*\x*\x*\x/5040)});%
+      \draw<8-> [graph,opacity=0.7,tuesteel,domain=-pi:pi] plot (\x/pi, { ( \x - \x*\x*\x/6 + \x*\x*\x*\x*\x/120 - \x*\x*\x*\x*\x*\x*\x/5040)});%
       \node<8> [] at (2,1.7) {$N=3$};
-%  	\draw<5-> [opacity=0.9,smooth,samples=2000,tueblue,densely dotted,domain=-pi:pi] plot (\x/pi, { ( \x - \x*\x*\x/6 + \x*\x*\x*\x*\x/120 - \x*\x*\x*\x*\x*\x*\x/5040 + \x*\x*\x*\x*\x*\x*\x*\x*\x/40/9072)});% +pow(9,\x)/40/9072 -pow(11,\x)/12474/3200 )});
+%  	\draw<5-> [opacity=0.9,smooth,samples=2000,tuesteel,densely dotted,domain=-pi:pi] plot (\x/pi, { ( \x - \x*\x*\x/6 + \x*\x*\x*\x*\x/120 - \x*\x*\x*\x*\x*\x*\x/5040 + \x*\x*\x*\x*\x*\x*\x*\x*\x/40/9072)});% +pow(9,\x)/40/9072 -pow(11,\x)/12474/3200 )});
     \end{tikzpicture}
   \end{columns}
 \end{frame}

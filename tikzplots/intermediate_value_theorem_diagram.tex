@@ -13,7 +13,7 @@
     ]
     
     
-    \addplot[domain=-0.08:0.5, samples=100, color=blue, thick]{-(x-0.5)^4 + 3}; % Change this function as per your requirement
+    \addplot[domain=-0.08:0.5, samples=100, color=tuesteel, thick]{-(x-0.5)^4 + 3}; % Change this function as per your requirement
     
     % Defining the main coordinates
     \coordinate (A) at (axis cs:0.05,2.95899);
@@ -32,15 +32,15 @@
     
     \draw[red, solid] (A) -- (Ax)   node[at end, below] {$a$};
     \draw[red, solid] (B) -- (Bx)   node[at end, below] {$b$};
-    \draw[gray, dashed] (K) -- (Kx) node[at end, below] {$k$};
+    \draw[tuesteel, dashed] (K) -- (Kx) node[at end, below] {$k$};
     
     \draw[red, solid] (A) -- (Ay) node[at end, left] {$f(a)$};
     \draw[red, solid] (B) -- (By) node[at end, left] {$f(b)$};
-    \draw[gray, dashed] (K) -- (Ky) node[at end, left] {$f(k)$};
+    \draw[tuesteel, dashed] (K) -- (Ky) node[at end, left] {$f(k)$};
     
     \draw[red] (Ax) circle [radius=1.5pt];
     \draw[red] (Bx) circle [radius=1.5pt];
-    \draw[gray] (Kx) circle [radius=1.5pt];
+    \draw[tuesteel] (Kx) circle [radius=1.5pt];
     
     \end{axis}
     \end{tikzpicture}

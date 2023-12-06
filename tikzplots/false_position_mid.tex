@@ -18,19 +18,19 @@
         \coordinate (Iter1x) at (4, 0.0);
         
         
-        \addplot[domain=-2:4.5, samples=100, color=blue, thick]{sin(deg(x*2-0.5))*.6+2/5*x}; % Change this function as per your requirement
-        \draw[gray, dashed, thin] (Iter0) -- (Iter0x)   node[black, at start, above] {};
-        \draw[gray, dashed, thin] (Iter1) -- (Iter1x)   node[black, at start, above] {};
-        \draw (Iter0x) node[blue, above] {$a$};
-        \draw (Iter1x) node[blue, below] {$b$};
-        \draw[gray, dashed] (Iter0) -- (Iter1);
+        \addplot[domain=-2:4.5, samples=100, color=tuesteel, thick]{sin(deg(x*2-0.5))*.6+2/5*x}; % Change this function as per your requirement
+        \draw[tuesteel, dashed, thin] (Iter0) -- (Iter0x)   node[black, at start, above] {};
+        \draw[tuesteel, dashed, thin] (Iter1) -- (Iter1x)   node[black, at start, above] {};
+        \draw (Iter0x) node[tuesteel, above] {$a$};
+        \draw (Iter1x) node[tuesteel, below] {$b$};
+        \draw[tuesteel, dashed] (Iter0) -- (Iter1);
         \draw (mid) node[black, above] {$x^*$};
         \fill[cyan] (mid) circle (1pt);
-        \draw[blue, solid] (mid) circle (1pt);
+        \draw[tuesteel, solid] (mid) circle (1pt);
         \fill[cyan] (Iter0) circle (1pt);
-        \draw[blue, solid] (Iter0) circle (1pt);
+        \draw[tuesteel, solid] (Iter0) circle (1pt);
         \fill[cyan] (Iter1) circle (1pt);
-        \draw[blue, solid] (Iter1) circle (1pt);
+        \draw[tuesteel, solid] (Iter1) circle (1pt);
         
         
         

@@ -133,8 +133,8 @@
         \foreach \y in {0,...,4} 
           {
     %        \pgfmathtruncatemacro{\label}{\x - 5 *  \y +21}
-          \ifthenelse{\x=0 \OR \x=6 \OR \y=0 \OR \y=4}{\node [gdot,fill=tuered]  (\x\y) at (1.5*\x,1.5*\y) {};}
-          \node [gdot,fill=tueblue]  (\x\y) at (1.5*\x,1.5*\y) {};} 
+          \ifthenelse{\x=0 \OR \x=6 \OR \y=0 \OR \y=4}{\node [gdot,fill=scharlaken]  (\x\y) at (1.5*\x,1.5*\y) {};}
+          \node [gdot,fill=tuesteel]  (\x\y) at (1.5*\x,1.5*\y) {};} 
 
         \foreach \x [count=\xi] in {0,...,5}
           \foreach \y [count=\yi] in {0,...,3}  
@@ -142,8 +142,8 @@
       \end{tikzpicture}
     \end{center}
     \column{0.35\textwidth}
-    \tikz{\node [gdot,fill=tueblue] {};} Grid point at which dependent variable has to be computed \\
-    \tikz{\node [gdot,fill=tuered] {};}  Grid point at which boundary condition is specified
+    \tikz{\node [gdot,fill=tuesteel] {};} Grid point at which dependent variable has to be computed \\
+    \tikz{\node [gdot,fill=scharlaken] {};}  Grid point at which boundary condition is specified
   \end{columns} \vskip1em
   Typical example: Poisson equation
   \[
@@ -162,8 +162,8 @@
         \foreach \y in {0,...,4} 
           {
     %        \pgfmathtruncatemacro{\label}{\x - 5 *  \y +21}
-          \ifthenelse{\x=0 \OR \x=6 \OR \y=0}{\node [gdot,fill=tuered]  (\x\y) at (1.5*\x,1.5*\y) {};}
-          \node [gdot,fill=tueblue]  (\x\y) at (1.5*\x,1.5*\y) {};} 
+          \ifthenelse{\x=0 \OR \x=6 \OR \y=0}{\node [gdot,fill=scharlaken]  (\x\y) at (1.5*\x,1.5*\y) {};}
+          \node [gdot,fill=tuesteel]  (\x\y) at (1.5*\x,1.5*\y) {};} 
 
         \foreach \x [count=\xi] in {0,...,5}
           \foreach \y [count=\yi] in {0,...,3}  
@@ -171,8 +171,8 @@
       \end{tikzpicture}
     \end{center}
     \column{0.35\textwidth}
-    \tikz{\node [gdot,fill=tueblue] {};} Grid point at which dependent variable has to be computed \\
-    \tikz{\node [gdot,fill=tuered] {};}  Grid point at which boundary condition is specified
+    \tikz{\node [gdot,fill=tuesteel] {};} Grid point at which dependent variable has to be computed \\
+    \tikz{\node [gdot,fill=scharlaken] {};}  Grid point at which boundary condition is specified
   \end{columns} \vskip1em
   Typical example: Poisson equation
   \[
@@ -346,8 +346,8 @@
     \end{multline*}
     \colorize<2> \item Substitute boundary conditions to reduce number of equations:
     \begin{multline*}
-      \frac{dc_1}{dt} = \mathcal{D}\frac{{\color<2>{tuered}c_L}-2c_1+c_2}{\Delta x^2},\frac{dc_2}{dt} = \mathcal{D}\frac{c_1-2c_2+c_3}{\Delta x^2},\\ 
-      \frac{dc_3}{dt} = \mathcal{D}\frac{c_2-2c_3+c_4}{\Delta x^2},\frac{dc_4}{dt} = \mathcal{D}\frac{c_3-2c_4+{\color<2>{tuered}c_R}}{\Delta x^2}
+      \frac{dc_1}{dt} = \mathcal{D}\frac{{\color<2>{scharlaken}c_L}-2c_1+c_2}{\Delta x^2},\frac{dc_2}{dt} = \mathcal{D}\frac{c_1-2c_2+c_3}{\Delta x^2},\\ 
+      \frac{dc_3}{dt} = \mathcal{D}\frac{c_2-2c_3+c_4}{\Delta x^2},\frac{dc_4}{dt} = \mathcal{D}\frac{c_3-2c_4+{\color<2>{scharlaken}c_R}}{\Delta x^2}
     \end{multline*}
   \end{enumerate}
 \end{frame}
@@ -357,7 +357,7 @@
   $\displaystyle  \frac{d c_i}{dt} = \mathcal{D} \frac{c_{i-1}-2c_i+c_{i+1}}{\Delta x^2} $\\
   \begin{block}{Time discretization: forward Euler (explicit)}
     \begin{multline*}
-      \frac{c_i^{{\color{tuered}n+1}}-c_i^{{\color{tuered}n}}}{\Delta t} = \mathcal{D} \frac{c_{i-1}^{{\color{tuered}n}}-2c_i^{{\color{tuered}n}}+c_{i+1}^{{\color{tuered}n}}}{\Delta x^2} \\
+      \frac{c_i^{{\color{scharlaken}n+1}}-c_i^{{\color{scharlaken}n}}}{\Delta t} = \mathcal{D} \frac{c_{i-1}^{{\color{scharlaken}n}}-2c_i^{{\color{scharlaken}n}}+c_{i+1}^{{\color{scharlaken}n}}}{\Delta x^2} \\
 	\Rightarrow c_i^{n+1} = \Fo c_{i-1}^n + (1-2\Fo)c_i^n + \Fo c_{i+1}^n \quad \text{with}\, \Fo=\frac{\mathcal{D}\Delta t}{\Delta x^2}
     \end{multline*}
   \end{block}
@@ -371,7 +371,7 @@
   $\displaystyle \frac{d c_i}{dt} = \mathcal{D} \frac{c_{i-1}-2c_i+c_{i+1}}{\Delta x^2}$\\
   \begin{block}{Time discretization: backward Euler (implicit)}
     \begin{multline*}
-      \frac{c_i^{{\color{tuered}n+1}}-c_i^{{\color{tuered}n}}}{\Delta t} = \mathcal{D} \frac{c_{i-1}^{{\color{tuered}n+1}}-2c_i^{{\color{tuered}n+1}}+c_{i+1}^{{\color{tuered}n+1}}}{\Delta x^2} \\
+      \frac{c_i^{{\color{scharlaken}n+1}}-c_i^{{\color{scharlaken}n}}}{\Delta t} = \mathcal{D} \frac{c_{i-1}^{{\color{scharlaken}n+1}}-2c_i^{{\color{scharlaken}n+1}}+c_{i+1}^{{\color{scharlaken}n+1}}}{\Delta x^2} \\
 	\Rightarrow -\Fo c_{i-1}^{n+1} + (1+2\Fo)c_i^{n+1} - \Fo c_{i+1}^{n+1} = c_i^{n} \quad \text{with}\, \Fo=\frac{\mathcal{D}\Delta t}{\Delta x^2}
     \end{multline*}
   \end{block}
@@ -520,7 +520,7 @@ plt.show()
           ylabel={$c$ [\si{\mol\per\cubic\meter}]},xlabel={$x$ [\si{\meter}]},ylabel near ticks]
 
           % Actual equation
-          \addplot[graph,draw=tuered] table [y index={1}] {data/diff_explicit.dat};
+          \addplot[graph,draw=scharlaken] table [y index={1}] {data/diff_explicit.dat};
           \addplot[graph,draw=tueorange] table [y index={2}] {data/diff_explicit.dat};
           \addplot[graph,draw=tuegreen] table [y index={3}] {data/diff_explicit.dat};
           \addplot[graph,draw=tueorange] table [y index={4}] {data/diff_explicit.dat};
@@ -563,28 +563,28 @@ for n in range(Nt - 1): # time loop
   \footnotesize\selectfont
   \[
     \begin{pmatrix}
-      \color<2>{tuered}1       &  0      &  0      & 0       &\cdots &  0      \\
-      \color<3>{tueblue}-\Fo    & \color<3>{tuered}(1+2\Fo)& \color<3>{tueblue}-\Fo    &0   & \cdots  &  0  \\
-      0      &  \color<4>{tueblue}-\Fo   & \color<4>{tuered}(1+2\Fo)&\color<4>{tueblue}-\Fo     &\cdots &  0 \\
-      0      &  0      & \color<5>{tueblue}-\Fo    & \color<5>{tuered}(1+2\Fo)& \cdots &  0 \\
+      \color<2>{scharlaken}1       &  0      &  0      & 0       &\cdots &  0      \\
+      \color<3>{tuesteel}-\Fo    & \color<3>{scharlaken}(1+2\Fo)& \color<3>{tuesteel}-\Fo    &0   & \cdots  &  0  \\
+      0      &  \color<4>{tuesteel}-\Fo   & \color<4>{scharlaken}(1+2\Fo)&\color<4>{tuesteel}-\Fo     &\cdots &  0 \\
+      0      &  0      & \color<5>{tuesteel}-\Fo    & \color<5>{scharlaken}(1+2\Fo)& \cdots &  0 \\
       \vdots  & \vdots  & \vdots  & \vdots  &\ddots & \vdots  \\
-      0       & 0       & 0       & 0       &\cdots & \color<6>{tuered}1
+      0       & 0       & 0       & 0       &\cdots & \color<6>{scharlaken}1
     \end{pmatrix} \cdot
     \begin{pmatrix}
-      \color<3>{tueblue}\color<2>{tuered}c_0^{n+1} \\
-      \color<4>{tueblue}\color<3>{tuered}c_1^{n+1} \\
-      \color<3>{tueblue}\color<5>{tueblue}\color<4>{tuered}c_2^{n+1} \\
-      \color<4>{tueblue}\color<5>{tuered}c_3^{n+1} \\
+      \color<3>{tuesteel}\color<2>{scharlaken}c_0^{n+1} \\
+      \color<4>{tuesteel}\color<3>{scharlaken}c_1^{n+1} \\
+      \color<3>{tuesteel}\color<5>{tuesteel}\color<4>{scharlaken}c_2^{n+1} \\
+      \color<4>{tuesteel}\color<5>{scharlaken}c_3^{n+1} \\
       \vdots \\
-      \color<6>{tuered}c_m^{n+1} \\
+      \color<6>{scharlaken}c_m^{n+1} \\
     \end{pmatrix} = 
     \begin{pmatrix}
-      \color<2>{tuered}c_0^{n} \\
-      \color<3>{tuered}c_1^{n} \\
-      \color<4>{tuered}c_2^{n} \\
-      \color<5>{tuered}c_3^{n} \\
+      \color<2>{scharlaken}c_0^{n} \\
+      \color<3>{scharlaken}c_1^{n} \\
+      \color<4>{scharlaken}c_2^{n} \\
+      \color<5>{scharlaken}c_3^{n} \\
       \vdots \\
-      \color<6>{tuered}c_m^{n} \\
+      \color<6>{scharlaken}c_m^{n} \\
     \end{pmatrix}
   \]
   \onslide<2->{$\displaystyle 1 \times c_0^{n+1} = c_0^n$ (boundary condition) \\ \vskip1ex}
@@ -678,8 +678,8 @@ for n in range(Nt-1):   # time loop
           ylabel={$c$ [\si{\mol\per\cubic\meter}]},xlabel={$x$ [\si{\meter}]},ylabel near ticks]
 
           % Actual equation
-          \addplot[graph,draw=tuered] table [y index={1}] {data/diff_implicit.dat};
-          \addplot[graph,draw=tueblue] table [y index={2}] {data/diff_implicit.dat};
+          \addplot[graph,draw=scharlaken] table [y index={1}] {data/diff_implicit.dat};
+          \addplot[graph,draw=tuesteel] table [y index={2}] {data/diff_implicit.dat};
           \addplot[graph,draw=tuegreen] table [y index={3}] {data/diff_implicit.dat};
           \addplot[graph,draw=tueorange] table [y index={4}] {data/diff_implicit.dat};
           \addplot[graph,draw=tueturq] table [y index={5}] {data/diff_implicit.dat};
@@ -718,7 +718,7 @@ for n in range(Nt-1):   # time loop
   \begin{itemize}
     \item Forward Euler (explicit): simply add to right-hand side
     \begin{multline*}
-      \frac{c_i^{n+1}-c_i^{n}}{\Delta t} = \mathcal{D} \frac{c_{i-1}^{{\color{tuered}n}}-2c_i^{{\color{tuered}n}}+c_{i+1}^{{\color{tuered}n}}}{\Delta x^2} + R(c_i^{{\color{tuered}n}}) \\ 
+      \frac{c_i^{n+1}-c_i^{n}}{\Delta t} = \mathcal{D} \frac{c_{i-1}^{{\color{scharlaken}n}}-2c_i^{{\color{scharlaken}n}}+c_{i+1}^{{\color{scharlaken}n}}}{\Delta x^2} + R(c_i^{{\color{scharlaken}n}}) \\ 
       \Rightarrow c_i^{n+1} = \Fo c_{i-1}^{n} + (1-2\Fo)c_i^n+\Fo c_{i+1}^n + R_i^n\Delta t
     \end{multline*}
     \pause
@@ -727,7 +727,7 @@ for n in range(Nt-1):   # time loop
   \footnotesize
   \begin{flalign*}
   R(c_i^{n+1}) &= R(c_i^n)+ \left. \frac{dR}{dc}\right|_i^n (c_i^{n+1}-c_i^{n}) &&\\
-  \frac{c_i^{n+1}-c_i^{n}}{\Delta t} &= \mathcal{D} \frac{c_{i-1}^{{\color{tuered}n+1}}-2c_i^{{\color{tuered}n+1}}+c_{i+1}^{{\color{tuered}n+1}}}{\Delta x^2} + R(c_i^{{\color{tuered}n+1}}) && \\ 
+  \frac{c_i^{n+1}-c_i^{n}}{\Delta t} &= \mathcal{D} \frac{c_{i-1}^{{\color{scharlaken}n+1}}-2c_i^{{\color{scharlaken}n+1}}+c_{i+1}^{{\color{scharlaken}n+1}}}{\Delta x^2} + R(c_i^{{\color{scharlaken}n+1}}) && \\ 
     \Rightarrow -\Fo c_{i-1}^{n+1} + (1&+2\Fo - \left. \frac{dR}{dc}\right|_i^n \Delta t)c_i^{n+1}-\Fo c_{i+1}^{n+1} = c_i^n + \left(R_i^n
     - \left. \frac{dR}{dc}\right|_i^n c_i^n\right)\Delta t && 
   \end{flalign*}
@@ -780,10 +780,10 @@ for n in range(Nt-1):   # time loop
         ylabel={$c$ [\si{\mol\per\cubic\meter}]},xlabel={$x$ [\si{\meter}]},ylabel near ticks]
 
         % Actual equation
-        \only<3->{\addplot[graph,draw=tuered] table [y index={2}] {data/conv_cendiff.dat};}
-        \only<3->{\addplot[graph,sharp plot,draw=tuered,dashed] table [y index={2}] {data/conv_ex.dat};}
-        \only<4->{\addplot[graph,draw=tueblue] table [y index={4}] {data/conv_cendiff.dat};}
-        \only<4->{\addplot[graph,sharp plot,draw=tueblue,dashed] table [y index={4}] {data/conv_ex.dat};}
+        \only<3->{\addplot[graph,draw=scharlaken] table [y index={2}] {data/conv_cendiff.dat};}
+        \only<3->{\addplot[graph,sharp plot,draw=scharlaken,dashed] table [y index={2}] {data/conv_ex.dat};}
+        \only<4->{\addplot[graph,draw=tuesteel] table [y index={4}] {data/conv_cendiff.dat};}
+        \only<4->{\addplot[graph,sharp plot,draw=tuesteel,dashed] table [y index={4}] {data/conv_ex.dat};}
         \only<5->{\addplot[graph,draw=tuegreen] table [y index={6}] {data/conv_cendiff.dat};}
         \only<5->{\addplot[graph,sharp plot,draw=tuegreen,dashed] table [y index={6}] {data/conv_ex.dat};}
       \end{axis} 
@@ -870,10 +870,10 @@ Forward Euler discretization of temporal and spatial domain:
 	    width=\columnwidth, height=4cm, grid = major,grid style={dashed, gray!30},axis background/.style={fill=white},
 	    ymax=1.2,ylabel={$c$ [\si{\mol\per\cubic\meter}]},xlabel={$x$ [\si{\meter}]},ylabel near ticks,xlabel near ticks]
       
-	    \only<2->{\addplot[graph,draw=tuered] table [y index={2}] {data/conv_upwind1.dat};}
-	    \only<2->{\addplot[graph,sharp plot,draw=tuered,dashed] table [y index={2}] {data/conv_ex.dat};}
-	    \only<3->{\addplot[graph,draw=tueblue] table [y index={4}] {data/conv_upwind1.dat};}
-	    \only<3->{\addplot[graph,sharp plot,draw=tueblue,dashed] table [y index={4}] {data/conv_ex.dat};}
+	    \only<2->{\addplot[graph,draw=scharlaken] table [y index={2}] {data/conv_upwind1.dat};}
+	    \only<2->{\addplot[graph,sharp plot,draw=scharlaken,dashed] table [y index={2}] {data/conv_ex.dat};}
+	    \only<3->{\addplot[graph,draw=tuesteel] table [y index={4}] {data/conv_upwind1.dat};}
+	    \only<3->{\addplot[graph,sharp plot,draw=tuesteel,dashed] table [y index={4}] {data/conv_ex.dat};}
 	    \only<4->{\addplot[graph,draw=tuegreen] table [y index={6}] {data/conv_upwind1.dat};}
 	    \only<4->{\addplot[graph,sharp plot,draw=tuegreen,dashed] table [y index={6}] {data/conv_ex.dat};}
 	  \end{axis} 
@@ -882,7 +882,7 @@ Forward Euler discretization of temporal and spatial domain:
   \begin{tikzpicture}[scale=0.35,myshade/.style={left color=maincolor!80,right color=white!80,fill opacity=0.5},myfill/.style={fill=maincolor!80,fill opacity=0.5}]
     \shade[myshade] (0,0) arc (270:90:0.5 and 1.5) -- (8.5,3) -- (8.5,0) -- cycle;
     
-    \draw[line,dashed,color=gray] (0,0) arc (-90:90:0.5 and 1.5);			% Right ellipse background
+    \draw[line,dashed,color=tueteal] (0,0) arc (-90:90:0.5 and 1.5);			% Right ellipse background
     \draw[line] (0,0) arc (270:90:0.5 and 1.5) -- (8.5,3) arc (90:270:0.5 and 1.5) -- cycle;	% Cilinder body
     
     \draw[line] (8.5,0) arc (-90:90:0.5 and 1.5);% Right ellipse
@@ -904,10 +904,10 @@ Forward Euler discretization of temporal and spatial domain:
         width=\columnwidth, height=4cm, grid = major,grid style={dashed, gray!30},axis background/.style={fill=white},
         ymax=1.2,ylabel={$c$ [\si{\mol\per\cubic\meter}]},xlabel={$x$ [\si{\meter}]},ylabel near ticks,xlabel near ticks]
         
-        \only<5->{\addplot[graph,draw=tuered] table [y index={2}] {data/conv_upwind.dat};}
-        \only<5->{\addplot[graph,sharp plot,draw=tuered,dashed] table [y index={2}] {data/conv_ex.dat};}
-        \only<6->{\addplot[graph,draw=tueblue] table [y index={4}] {data/conv_upwind.dat};}
-        \only<6->{\addplot[graph,sharp plot,draw=tueblue,dashed] table [y index={4}] {data/conv_ex.dat};}
+        \only<5->{\addplot[graph,draw=scharlaken] table [y index={2}] {data/conv_upwind.dat};}
+        \only<5->{\addplot[graph,sharp plot,draw=scharlaken,dashed] table [y index={2}] {data/conv_ex.dat};}
+        \only<6->{\addplot[graph,draw=tuesteel] table [y index={4}] {data/conv_upwind.dat};}
+        \only<6->{\addplot[graph,sharp plot,draw=tuesteel,dashed] table [y index={4}] {data/conv_ex.dat};}
         \only<7->{\addplot[graph,draw=tuegreen] table [y index={6}] {data/conv_upwind.dat};}
         \only<7->{\addplot[graph,sharp plot,draw=tuegreen,dashed] table [y index={6}] {data/conv_ex.dat};}
       \end{axis} 
@@ -916,7 +916,7 @@ Forward Euler discretization of temporal and spatial domain:
     \begin{tikzpicture}[font={\footnotesize},scale=0.35,myshade/.style={left color=maincolor!80,right color=white!80,fill opacity=0.5},myfill/.style={fill=maincolor!80,fill opacity=0.5}]
       \fill[myfill] (0,0) arc (270:90:0.5 and 1.5) -- (3.01,3) -- (3.01,0) -- cycle;
       \shade[myshade] (3,3) -- (3,0) -- (3.5,0) -- (3.5,3) -- cycle;
-      \draw[line,dashed,color=gray] (0,0) arc (-90:90:0.5 and 1.5);			% Right ellipse background
+      \draw[line,dashed,color=tueteal] (0,0) arc (-90:90:0.5 and 1.5);			% Right ellipse background
       \draw[line] (0,0) arc (270:90:0.5 and 1.5) -- (8.5,3) arc (90:270:0.5 and 1.5) -- cycle;	% Cilinder body
       
       \draw[line] (8.5,0) arc (-90:90:0.5 and 1.5);% Right ellipse

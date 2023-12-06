@@ -1,18 +1,21 @@
 % TU/e colors
-\definecolor{tuesiena}{RGB}{143,53,42}
-\definecolor{tuered}{RGB}{247,49,49}
+\definecolor{scharlaken}{RGB}{200,25,25}
 \definecolor{tueorange}{RGB}{255,87,51}
-\definecolor{tueorange2}{RGB}{200,113,25}
-\definecolor{tuecarmine}{RGB}{199,0,57}
-\definecolor{tueblue}{RGB}{56,86,138}
 \definecolor{tueyellow}{RGB}{255,195,0}
-\definecolor{tueyellow2}{RGB}{200,200,25}
+\definecolor{tuesteel}{RGB}{52,75,116}
+\definecolor{tuegreen}{RGB}{23,142,30}
+\definecolor{tuepurple}{RGB}{94,69,132}
+\definecolor{tuedpink}{RGB}{187,6,84}
 \definecolor{tueturq}{RGB}{0,172,130}
 \definecolor{tueteal}{RGB}{124,164,152}
-\definecolor{tuesteel}{RGB}{56,86,138}
-\definecolor{tuegreen}{RGB}{113,200,25}
-\definecolor{scharlaken}{RGB}{200,25,25}
-\definecolor{examgreen}{RGB}{40,112,35}
+
+% \definecolor{tuecarmine}{RGB}{199,0,57}
+% \definecolor{tuesiena}{RGB}{143,53,42}
+% \definecolor{tuered}{RGB}{247,49,49}
+% \definecolor{tueorange2}{RGB}{200,113,25}
+% \definecolor{tueblue}{RGB}{56,86,138}
+% \definecolor{tueyellow2}{RGB}{200,200,25}
+% \definecolor{examgreen}{RGB}{40,112,35}
 
 % Colors that match well with scharlaken
 \definecolor{mdblue}{RGB}{56,86,138}
@@ -33,7 +36,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \definecolor{maincolor}{named}{scharlaken} % << change for whole slide layout
 \definecolor{textcolorfg}{named}{white}
-\definecolor{tuealert}{named}{scharlaken} % << change for whole slide layout
+\definecolor{tuealert}{named}{tueorange} % << change for whole slide layout
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \setbeamercolor{normal text}{fg=black,bg=white}
@@ -49,8 +52,8 @@
 \setbeamercolor{palette primary}{fg=textcolorfg,bg=maincolor} % changed this
 
 \setbeamercolor{palette primary}{fg=maincolor,bg=textcolorfg} % changed this
-\setbeamercolor{palette secondary}{use=structure,fg=structure.fg!100!tueblue} % changed this
-\setbeamercolor{palette tertiary}{use=structure,fg=structure.fg!100!tuered} % changed this
+\setbeamercolor{palette secondary}{use=structure,fg=structure.fg!100!tuesteel} % changed this
+\setbeamercolor{palette tertiary}{use=structure,fg=structure.fg!100!scharlaken} % changed this
 
 \setbeamertemplate{navigation symbols}{} % ( Dont use )
 \setbeamercolor{navigation symbols}{use=structure,fg=structure.fg!40!bg}
@@ -60,7 +63,7 @@
 \setbeamercolor{block body}{fg=black,bg=maincolor!10}
 
 \def\colorize<#1>{%
-  \temporal<#1>{\color{tueblue!40!gray!40}}{\color{tuealert}}{\color{black}}}
+  \temporal<#1>{\color{tuesteel!40!gray!40}}{\color{tuealert}}{\color{black}}}
   
 % \setlength{\mathindent}{0pt}
 

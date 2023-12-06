@@ -98,10 +98,10 @@ print(S.data.nbytes)
 %       \node at (0.3,5.7) (B) {};
 %       \node at (5.7,5.7) (C) {};
 %       \node at (5.7,0.3) (D) {};
-%       \draw[thick,tuered] (A) -- node[midway,anchor=east] {$T=T_{b3}$} (B);
+%       \draw[thick,scharlaken] (A) -- node[midway,anchor=east] {$T=T_{b3}$} (B);
 %       \draw[thick,tuegreen] (B) -- node[midway,anchor=south] {$T=T_{b2}$} (C);
 %       \draw[thick,tueorange] (C) -- node[midway,anchor=east] {$T=T_{b4}$} (D);
-%       \draw[thick,tuepurple] (D) -- node[midway,anchor=south] {$T=T_{b1}$} (A);
+%       \draw[thick,tuegreen] (D) -- node[midway,anchor=south] {$T=T_{b1}$} (A);
       \end{tikzpicture}
     \end{center}
     \pause
@@ -129,8 +129,8 @@ print(S.data.nbytes)
         \foreach \y in {0,...,5} 
           {
     %        \pgfmathtruncatemacro{\label}{\x - 5 *  \y +21}
-          \ifthenelse{\x=0 \OR \x=5 \OR \y=0 \OR \y=5}{\node [gdot,fill=tuered]  (\x\y) at (1.5*\x,1.5*\y) {};}
-          \node [gdot,fill=tueblue]  (\x\y) at (1.5*\x,1.5*\y) {};} 
+          \ifthenelse{\x=0 \OR \x=5 \OR \y=0 \OR \y=5}{\node [gdot,fill=scharlaken]  (\x\y) at (1.5*\x,1.5*\y) {};}
+          \node [gdot,fill=tuesteel]  (\x\y) at (1.5*\x,1.5*\y) {};} 
 
         \foreach \x [count=\xi] in {0,...,4}
           \foreach \y [count=\yi] in {0,...,4}  
@@ -183,9 +183,9 @@ print(S.data.nbytes)
     \begin{tikzpicture}[scale=0.7,node distance=5mm]
       \draw[black,thick,->] (0,0)-- node[at end,anchor=north]{$x$}(7,0);
       \draw[black,thick,->] (0,0)-- node[at end,anchor=east ]{$T$}(0,5);
-      \node [gdot,fill=tuered] (n1) at (1,0) {};
-      \node [gdot,fill=tuered] (n2) at (3,0) {};
-      \node [gdot,fill=tuered] (n3) at (5,0) {};
+      \node [gdot,fill=scharlaken] (n1) at (1,0) {};
+      \node [gdot,fill=scharlaken] (n2) at (3,0) {};
+      \node [gdot,fill=scharlaken] (n3) at (5,0) {};
       \node [anchor=south,dot,color=black,fill=black] (e1) at (1,1) {};
       \node [anchor=south,dot,color=black,fill=black] (e2) at (3,2) {};
       \node [anchor=south,dot,color=black,fill=black] (e3) at (5,4) {};

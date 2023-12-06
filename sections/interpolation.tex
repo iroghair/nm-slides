@@ -165,7 +165,7 @@
     \column{0.45\textwidth}
     \begin{itemize}
       \colorize<2> \item Linear interpolation to $(x,y)$ between 2 data points $(x_2,y_2)$ and $(x_3,y_3)$:
-      \colorize<3> {\[ {\color<3>{tuegreen}\frac{y-y_2}{x-x_2}}=\color<3>{tuered}\frac{y_3-y_2}{x_3-x_2} \] }
+      \colorize<3> {\[ {\color<3>{tuegreen}\frac{y-y_2}{x-x_2}}=\color<3>{scharlaken}\frac{y_3-y_2}{x_3-x_2} \] }
       \colorize<4> \item Reordered, and more formally: 
       \[ y = y_n + (y_{n+1} - y_n)\frac{x-x_n}{x_{n+1}-x_n} \]
     \end{itemize}
@@ -177,13 +177,13 @@
       \input{tikzplots/interpolate-graph.tex}
       
       % Interpolant points and captions
-      \draw<2->[dot,draw=none] (x2) -- node[interp,color=tuered,midway,fill=white] (xy){} (x3);
+      \draw<2->[dot,draw=none] (x2) -- node[interp,color=scharlaken,midway,fill=white] (xy){} (x3);
       \node<2->[anchor=north east] at (xy.west) {$(x,y)$};
       \node<2->[anchor=south west] at (x2.east) {$(x_2,y_2)$};
       \node<2->[anchor=south west] at (x3.east) {$(x_3,y_3)$};
       % Slopes between the points in colors
       \draw<3>[dot,draw=tuegreen,line width=3pt] (x2) -- (xy);
-      \draw<3->[dot] (x2) -- node[interp,color=tuered,midway,fill=white] (xy){} (x3);
+      \draw<3->[dot] (x2) -- node[interp,color=scharlaken,midway,fill=white] (xy){} (x3);
 
       % Linear interpolant
       \draw<4->[interp] (0,1) node[interp]{} -- (1,3.667) node[interp]{} -- (2,2.667) node[interp]{} -- (3,1) node[interp]{} -- (4,1.667) node[interp]{} -- (4.555,5);
@@ -205,75 +205,30 @@
 \begin{frame}[t,fragile]
   \frametitle{Example: Linear interpolation in Python}
   \footnotesize\selectfont
-  Consider the data set in \lstinline$sim_exp_dataset.mat$, containing a normalized concentration and time vector for an experiment and a simulation. The simulation was performed with adaptive node distance to save computation time, thus the concentration is not known at the same times. We are not able to compare yet.
+  Consider the data sets in \lstinline$exp_data.txt$ and \lstinline$sim_data.txt$, containing a normalized concentration and time vector for an experiment and a simulation. The simulation was performed with adaptive node distance to save computation time, thus the concentration is not known at the same times. We are not able to compare yet.
   \vfill
-  \begin{tikzpicture}
-    \begin{axis}[
-        width=\textwidth, height=5.5cm,     % size of the image
-        grid = major,
-        grid style={dashed, gray!30},
-        %xmode=log,log basis x=10,
-        %ymode=log,log basis y=10,
-        xmin=0,     % start the diagram at this x-coordinate
-        xmax=200,    % end   the diagram at this x-coordinate
-        ymin=0,     % start the diagram at this y-coordinate
-        ymax=0.02,   % end   the diagram at this y-coordinate
-        /pgfplots/xtick={0,25,...,200}, % make steps of length 5
-        /pgfplots/ytick={0.005,0.01,...,0.02}, % make steps of length 5
-        axis background/.style={fill=white},
-        ylabel=Concentration (\si{\mol\per\cubic\meter}),
-        xlabel=Time (\si{\second}),
-        tick align=outside,
-        legend style={draw=none,fill=none}]
-
-      % import the correct data from a CSV file
-      \addplot[draw=tuered,mark=*,mark options={fill=white},mark size=0.7pt] table [id=exp]{student-data/exp_data.txt};
-      \addlegendentry{Experiment};
-      \addplot[draw=tueblue,mark=triangle*,mark options={fill=white},mark size=0.7pt] table [id=sim]{student-data/sim_data.txt};
-      \addlegendentry{Simulation};
-      % plot the stirling-formulae
-%       \addplot[domain=0:60, red, thick] {1-(365/(365-x))^(365.5-x)*e^(-x)}; 
-    \end{axis} 
-\end{tikzpicture}
+     \begin{tikzpicture}[domain=-1:6]
+      \input{tikzplots/interpolate_sim_exp_data.tex}
+    \end{tikzpicture}
 \end{frame}
 
+{\nologo
 \begin{frame}[t,fragile]
   \frametitle{Example: Linear interpolation in Python}
   \footnotesize\selectfont
-  Consider the data set in \lstinline$sim_dataset.txt$ and \lstinline$exp_dataset.txt$, containing a normalized concentration and time vector for an experiment and a simulation. The simulation was performed with adaptive node distance to save computation time, thus the concentration is not known at the same times. We are not able to compare yet.
+  Consider the data sets in \lstinline$exp_data.txt$ and \lstinline$sim_data.txt$, containing a normalized concentration and time vector for an experiment and a simulation. The simulation was performed with adaptive node distance to save computation time, thus the concentration is not known at the same times. We are not able to compare yet.
   \vfill
  \begin{columns}
   \column{0.49\textwidth}
-  \begin{lstlisting}[language=Python,basicstyle=\tiny]
-import numpy as np
-import matplotlib.pyplot as plt
-
-t_sim, c_sim = np.loadtxt("./student-data/sim_data.txt").T
-t_exp, c_exp = np.loadtxt("./student-data/exp_data.txt").T
-
-# Linear interpolation
-c_sim_new = np.interp(t_exp, t_sim, c_sim)
-diff = np.abs(c_exp - c_sim_new)
-
-# Plot the solution
-plt.subplot(2, 1, 1)
-plt.plot(t_exp, c_exp, 'b-x', label='c_exp')
-plt.plot(t_exp, c_sim_new, 'r-o', label='c_sim_new')
-plt.legend()
-
-plt.subplot(2, 1, 2)
-plt.plot(t_exp, diff); plt.show()
-
-# Compute the L2-norm
-norm = np.linalg.norm(diff)
-print(norm)
-  \end{lstlisting}
+  \lstinputlisting[style=tiny]{scripts/interpolation/interpolate-compare-plot.py}
   \column{0.5\textwidth}
-  \includegraphics[width=0.8\textwidth]{sim_exp_data_interp.pdf}
+  \includegraphics[width=\textwidth]{sim_exp_data_interp.pdf}     
+  % \begin{tikzpicture}[domain=-1:6]
+  %   \input{tikzplots/interpolate_sim_exp_data.tex}
+  % \end{tikzpicture}
 \end{columns}
 \end{frame}
-
-
+}
 
 \begin{frame}
   \frametitle{Bi-linear interpolation}
@@ -297,14 +252,14 @@ print(norm)
       \begin{tikzpicture}[scale=2.5]
 	\draw[line,-,step=1] (0,0) grid (1,1);
 	\coordinate (O) at (0,0);
-	\node[interp,fill=tuesteel] (x0) at (0,0) {};
-	\node[interp,fill=tuesteel] (x1) at (1,0) {};
-	\node[interp,fill=tuesteel] (x2) at (1,1) {};
-	\node[interp,fill=tuesteel] (x3) at (0,1) {};
+	\node[interp,fill=tuealert] (x0) at (0,0) {};
+	\node[interp,fill=tuealert] (x1) at (1,0) {};
+	\node[interp,fill=tuealert] (x2) at (1,1) {};
+	\node[interp,fill=tuealert] (x3) at (0,1) {};
 	\node<3->[interp,draw=tuegreen,fill=tuegreen] (g1) at (0.75,1) {};
 	\node<4->[interp,draw=tuegreen,fill=tuegreen] (g2) at (0.75,0) {};
 	
-	\node[interp,draw=scharlaken,fill=scharlaken] (p) at (0.75,0.6) {};
+	\node[interp,draw=tuedpink,fill=tuedpink] (p) at (0.75,0.6) {};
 	
 	\node[below=1ex of x0,anchor=north east] {$f_{00}=4.0$};
 	\node[below=1ex of x1,anchor=north west] {$f_{10}=6.0$};
@@ -313,11 +268,11 @@ print(norm)
 	\node[right=-0.3ex of p] {$p$};
 	\node<3->[above=1ex of g1] {$g_1$};
 	\node<4->[below=1ex of g2] {$g_2$};
-	\draw<2>[line,dashed,gray] (x0)--(p);
-	\draw<2>[line,dashed,gray] (x1)--(p);
-	\draw<2>[line,dashed,gray] (x2)--(p);
-	\draw<2>[line,dashed,gray] (x3)--(p);
-	\draw<5->[line,-,dashed,gray] (g1)--(g2);
+	\draw<2>[line,dashed,tueteal] (x0)--(p);
+	\draw<2>[line,dashed,tueteal] (x1)--(p);
+	\draw<2>[line,dashed,tueteal] (x2)--(p);
+	\draw<2>[line,dashed,tueteal] (x3)--(p);
+	\draw<5->[line,-,dashed,tueteal] (g1)--(g2);
 	
 	\draw[line,stealth'-stealth'] ($(x0)+(0,0.1)$) -- node[midway,above]{$\Delta x$}($(x1)+(0,0.1)$);
 	\draw[line,stealth'-stealth'] ($(x0)+(0.1,0)$) -- node[midway,right]{$\Delta y$}($(x3)+(0.1,0)$);
@@ -486,16 +441,16 @@ print(a)
     \onslide<2->{
       \begin{longtable}{c|ccc}
 	$x_k$ & $f_k$ & & \\ \hline 
-	\color<2>{tuered} $x_0$ & \color<2>{tuered} $f[x_0]=f_0$ & & \onslide<3->{\\
-	\color<3>{tuered} $x_1$ & \color<3>{tuered} $f[x_1]=f_1$ & \color<3>{tuered} $f[x_0,x_1]=\frac{f_1-f_0}{x_1-x_0}$& \onslide<4->{\\
-	\color<4>{tuered} $x_2$ & \color<4>{tuered} $f[x_2]=f_2$ & \color<4>{tuered} $f[x_1,x_2]=\frac{f_2-f_1}{x_2-x_1}$& \color<4>{tuered} $f[x_0,x_1,x_2] = \frac{f[x_1,x_2]-f[x_0,x_1]}{x_2-x_0}$ }}
+	\color<2>{tueorange} $x_0$ & \color<2>{tueorange} $f[x_0]=f_0$ & & \onslide<3->{\\
+	\color<3>{tueorange} $x_1$ & \color<3>{tueorange} $f[x_1]=f_1$ & \color<3>{tueorange} $f[x_0,x_1]=\frac{f_1-f_0}{x_1-x_0}$& \onslide<4->{\\
+	\color<4>{tueorange} $x_2$ & \color<4>{tueorange} $f[x_2]=f_2$ & \color<4>{tueorange} $f[x_1,x_2]=\frac{f_2-f_1}{x_2-x_1}$& \color<4>{tueorange} $f[x_0,x_1,x_2] = \frac{f[x_1,x_2]-f[x_0,x_1]}{x_2-x_0}$ }}
       \end{longtable}}
   \onslide<2->{
     \begin{longtable}{c|lll}
       $x_k$ & $f_k$ & & \\ \hline
-      \color<2>{tuered} $0$ & \color<2>{tuered} $1$ & & \onslide<3->{\\
-      \color<3>{tuered} $1$ & \color<3>{tuered} $3.67$ & \color<3>{tuered} $\frac{\frac{11}{3}-1}{1-0}=\frac{8}{3}$& \onslide<4>{\\
-      \color<4>{tuered} $2$ & \color<4>{tuered} $2.67$ & \color<4>{tuered} $\frac{\frac{8}{3}-\frac{11}{3}}{2-1}=\frac{-1}{1}=-1$& \color<4>{tuered} $\frac{(-1)-\frac{8}{3}}{2-0}=-\frac{11}{6}$ }}
+      \color<2>{tueorange} $0$ & \color<2>{tueorange} $1$ & & \onslide<3->{\\
+      \color<3>{tueorange} $1$ & \color<3>{tueorange} $3.67$ & \color<3>{tueorange} $\frac{\frac{11}{3}-1}{1-0}=\frac{8}{3}$& \onslide<4>{\\
+      \color<4>{tueorange} $2$ & \color<4>{tueorange} $2.67$ & \color<4>{tueorange} $\frac{\frac{8}{3}-\frac{11}{3}}{2-1}=\frac{-1}{1}=-1$& \color<4>{tueorange} $\frac{(-1)-\frac{8}{3}}{2-0}=-\frac{11}{6}$ }}
     \end{longtable}
   }
 \end{frame}
@@ -509,8 +464,8 @@ print(a)
     \centering Sample data
       \begin{longtable}{c|r}
 	$x_k$ & $f_k$ \\ \hline
-	{\color<4->{tuedyellow}$0$} & $1.00$ \\
-	{\color<4->{tuepurple}$1$} & $\frac{11}{3}=3.67$ \\
+	{\color<4->{tueyellow}$0$} & $1.00$ \\
+	{\color<4->{tuesteel}$1$} & $\frac{11}{3}=3.67$ \\
 	$2$ & $\frac{8}{3}=2.67$ 
       \end{longtable}
     \end{column}
@@ -528,40 +483,40 @@ print(a)
   \pause
   \begin{longtable}{c|lll}
     $x_k$ & $f_k$                    & & \\ \hline
-      $0$ & \color{tuered} $1$     & & \\
-      $1$ &                  $3.67$ & $\frac{\frac{11}{3}-1}{1-0}=\color{tuered} \frac{8}{3}$& \\
-      $2$ &                  $2.67$ & $\frac{\frac{8}{3}-\frac{11}{3}}{2-1}=\frac{-1}{1}=-1$   & $\frac{(-1)-\frac{8}{3}}{2-0}=\color{tuered}-\frac{11}{6}$ 
+      $0$ & \color{tueorange} $1$     & & \\
+      $1$ &                  $3.67$ & $\frac{\frac{11}{3}-1}{1-0}=\color{tuegreen} \frac{8}{3}$& \\
+      $2$ &                  $2.67$ & $\frac{\frac{8}{3}-\frac{11}{3}}{2-1}=\frac{-1}{1}=-1$   & $\frac{(-1)-\frac{8}{3}}{2-0}=\color{tuedpink}-\frac{11}{6}$ 
   \end{longtable}
   \onslide<3->{
     \begin{align*}
-	p_2(x) &= {\color{tuered}1}\cdot w_m(0) + {\color{tuered}\frac{8}{3}}\cdot w_m(1) + \left({\color{tuered}-\frac{11}{6}}\right)\cdot w_m(2)   \\
-	\onslide<4->{&= {\color{tuered}1}\cdot 1 + {\color{tuered}\frac{8}{3}}\cdot (x-{\color{tuedyellow}0}) + \left({\color{tuered}-\frac{11}{6}}\right)\cdot (x-{\color{tuedyellow}0})(x-{\color{tuepurple}1}) \onslide<5>{= \color{tuealert}-\frac{11}{6}x^2+4\frac{1}{2}x+1}}
+	p_2(x) &= {\color{tueorange}1}\cdot w_m(0) + {\color{tuegreen}\frac{8}{3}}\cdot w_m(1) + \left({\color{tuedpink}-\frac{11}{6}}\right)\cdot w_m(2)   \\
+	\onslide<4->{&= {\color{tueorange}1}\cdot 1 + {\color{tuegreen}\frac{8}{3}}\cdot (x-{\color{tueyellow}0}) + \left({\color{tuedpink}-\frac{11}{6}}\right)\cdot (x-{\color{tueyellow}0})(x-{\color{tuesteel}1}) \onslide<5>{= \color{tuealert}-\frac{11}{6}x^2+4\frac{1}{2}x+1}}
     \end{align*}
   }
 \end{frame}
 
-
+{\nologo
 \begin{frame}
   \frametitle{Construction of Newton polynomials: example}
   For each three points, a new polynomial interpolant can be derived:
   \begin{columns}
     \column{0.45\textwidth}
-      \colorize<2>\color<2->{tuered} \[ p_2(x) = -\frac{11}{6}x^2+4\frac{1}{2}x+1 \]
-      \colorize<3>\color<3->{tuelila}   \[ p_2(x) = 4-\frac{x^2}{3} \]
-      \colorize<4>\color<4->{tueorange}  \[ p_2(x) = \frac{7x^2}{6}-7\frac{1}{2}x+13 \]
-      \colorize<5>\color<5->{tuedyellow} \[ p_2(x) = \frac{8}{3}x^2-18x+31 \]
-      \colorize<6>\color<6>{tuedgreen} \[ f(x)=\frac{x^3}{2}-\frac{10x^2}{3}+\frac{11x}{2}+1 \]
+      \colorize<2>\color<2->{scharlaken} \[ p_2(x) = -\frac{11}{6}x^2+4\frac{1}{2}x+1 \]
+      \colorize<3>\color<3->{tuegreen}   \[ p_2(x) = 4-\frac{x^2}{3} \]
+      \colorize<4>\color<4->{tuepurple}  \[ p_2(x) = \frac{7x^2}{6}-7\frac{1}{2}x+13 \]
+      \colorize<5>\color<5->{tueyellow} \[ p_2(x) = \frac{8}{3}x^2-18x+31 \]
+      \colorize<6>\color<6>{tuesteel} \[ f(x)=\frac{x^3}{2}-\frac{10x^2}{3}+\frac{11x}{2}+1 \]
     \column{0.55\textwidth}
     \centering
     \begin{tikzpicture}[domain=-1:6]
       \input{tikzplots/interpolate-graph.tex}
 
       % Polynomial interpolant
-      \draw<2-> [graph,domain=0:2,draw=tuered,opacity=0.7] plot (\x, {-(11/6)*\x*\x+(4.5)*\x+1});
-      \draw<3-> [graph,domain=1:3,draw,tuelila,opacity=0.7] plot (\x, {(-1/3)*\x*\x+4});
-      \draw<4-> [graph,domain=2:4,draw=tueorange,opacity=0.7] plot (\x, {(7/6)*\x*\x-7.5*\x + 13});
-      \draw<5-> [graph,domain=3:4.7,draw=tuedyellow,opacity=0.7] plot (\x, {(8/3)*\x*\x-18*\x+31});
-      \draw<6> [graph,domain=0:4.69,draw=tuedgreen,opacity=0.5] plot (\x, {0.5*\x*\x*\x-(10/3)*\x*\x+5.5*\x+1});
+      \draw<2-> [graph,domain=0:2,draw=scharlaken,opacity=0.7] plot (\x, {-(11/6)*\x*\x+(4.5)*\x+1});
+      \draw<3-> [graph,domain=1:3,draw,tuegreen,opacity=0.7] plot (\x, {(-1/3)*\x*\x+4});
+      \draw<4-> [graph,domain=2:4,draw=tuepurple,opacity=0.7] plot (\x, {(7/6)*\x*\x-7.5*\x + 13});
+      \draw<5-> [graph,domain=3:4.7,draw=tueyellow,opacity=0.7] plot (\x, {(8/3)*\x*\x-18*\x+31});
+      \draw<6> [graph,domain=0:4.69,draw=tuesteel,opacity=0.5] plot (\x, {0.5*\x*\x*\x-(10/3)*\x*\x+5.5*\x+1});
     \end{tikzpicture}
     % \onslide<6>{
 
@@ -569,83 +524,29 @@ print(a)
     \vfill
   \end{columns}
 \end{frame}
+}
 
 \begin{frame}[fragile]
   \frametitle{Polynomial fitting in Python: example}
-  \rowcolors[]{1}{maincolor!20}{maincolor!10}
-  \footnotesize\selectfont
-     \begin{columns}
-    \column{0.45\textwidth}
-    Develop the {\color<5->{tuered}$p_2(x)$}, {\color<6->{tuedgreen}$p_3(x)$} and {\color<7>{tueorange}$p_4(x)$} from the following data set (example data \lstinline$x2$ and \lstinline$y2$): 
-    \vspace*{-1ex}
-    \begin{center}
-      \begin{tabular}{c|r}
-	$x_k$ & $y_k$ \\ \hline
-	$-1.0$ & $2.8677$ \\
-	$-0.5$ & $7.7530$ \\
-	$0.0$ & $22.0000$  \\
-	$0.5$ & $65.7863$ \\
-	$1.0$ & $208.6744$  \\ \hline
-      \end{tabular}
-    \end{center}
-    \column{0.55\textwidth}
-    \centering
-    \begin{tikzpicture}[domain=-1:1,xscale=2,yscale=0.01]
-      \draw[gridline,step=50] (-1,0) grid (1,250);
-      \coordinate (O) at (0,0);
-      % Axes
-      \draw[line,->] (-1,0) -- (1,0) coordinate[label = {right:$x$}] (xmax);
-      \draw[line,->] (0,0) -- (0,250) coordinate[label = {above:$y$}] (ymax);
+  Develop the polynomials $p_1(x)$ through $p_5(x)$ using the following data set: 
+  \lstinputlisting[linerange={0-2,9-11}]{scripts/interpolation/polynomial-interp-example.py}
+  \pause
+  \begin{columns}[T]
+    \column{0.4\textwidth}
+    % \begin{overlayarea}{\textwidth}{4cm}
+      \includegraphics<2>[width=\textwidth]{polyfit-example-data.pdf}%
+      \includegraphics<3>[width=\textwidth]{polyfit-example-p1.pdf}%
+      \includegraphics<4>[width=\textwidth]{polyfit-example-p2.pdf}%
+      \includegraphics<5>[width=\textwidth]{polyfit-example-p3.pdf}%
+      \includegraphics<6>[width=\textwidth]{polyfit-example-p4.pdf}%
+      \includegraphics<7->[width=\textwidth]{polyfit-example-p5.pdf}%
+      % \end{overlayarea}
 
-      % Labels
-%       \draw (0,0) node[below left]{$0$};
-      \foreach \s in {-1,-0.5,...,1}
-      {
-        \draw (\s,0) node[below]{$\s$};
-      }
-      \foreach \s in {50,100,...,250}
-      {
-        \draw (0,\s) node[left]{$\s$};
-      }
-
-      % Title
-%       \draw (2.5,5) node[above]{$f(x)=\frac{x^3}{2}-\frac{10x^2}{3}+\frac{11x}{2}+1$};
-
-      % Plots
-       \node[interp] (x0) at (-1,2.8677) {};
-       \node[interp] (x1) at (-0.5,7.753) {};
-       \node[interp] (x2) at ( 0.0,22.00) {};
-       \node[interp] (x3) at ( 0.5,65.7863) {};
-       \node[interp] (x4) at ( 1.0,208.6744) {};
-       
-       \draw<5-> [graph,draw=tuered,opacity=0.7,domain=-1:1] plot (\x, {87.2986*\x*\x+93.9293*\x+17.7670});
-       \draw<6-> [graph,draw=tuedgreen,opacity=0.7,domain=-1:1] plot (\x, {59.8267*\x*\x*\x+87.2986*\x*\x+43.0766*\x+17.7670});
-       \draw<7> [graph,draw=tueorange,opacity=0.7,domain=-1:1] plot (\x, {32.9234*\x*\x*\x*\x+59.8267*\x*\x*\x+50.8477*\x*\x+43.0766*\x+22.0000});
-    \end{tikzpicture}
-  \end{columns}
-  \pause \vskip1ex
-  We use the built-in \lstinline$np.polyfit(x,y,n)$ and \lstinline$np.polyval(p,x)$ functions: \pause
-  \begin{columns}
-    \column{0.5\textwidth}
-  \begin{lstlisting}[language=Python,basicstyle=\tiny]
-import numpy as np, matplotlib.pyplot as plt
-x_cont = np.linspace(-1, 1, 1001)
-p2 = np.polyfit(x2, y2, 2)
-p3 = np.polyfit(x2, y2, 3)
-p4 = np.polyfit(x2, y2, 4)
-
-y_cont2 = np.polyval(p2, x_cont)
-y_cont3 = np.polyval(p3, x_cont)
-y_cont4 = np.polyval(p4, x_cont)
-
-plt.plot(x2, y2, 'o', label='Data points')
-plt.plot(x_cont, y_cont2, label='Degree 2')
-plt.plot(x_cont, y_cont3, label='Degree 3')
-plt.plot(x_cont, y_cont4, label='Degree 4')
-plt.legend()
-plt.show()
-   \end{lstlisting}
-   \column{0.3\textwidth}
+    \column{0.6\textwidth}
+      \lstinputlisting[linerange={15-22},firstnumber=1]{scripts/interpolation/polynomial-interp-example.py}
+\onslide<8>\begin{lstlisting}[style=PyOutput]
+RankWarning: Polyfit may be poorly conditioned
+\end{lstlisting}
   \end{columns}
 \end{frame}
 
@@ -654,40 +555,17 @@ plt.show()
   \frametitle{Exercise}
   \rowcolors[]{1}{maincolor!20}{maincolor!10}
   \footnotesize\selectfont
-  Develop the {\color<4->{tuered}$p_4(x)$} and {\color<5>{tueorange}$p_{10}(x)$} interpolants from the following data sets: 
-  \vspace*{1em}
+  Develop the $p_4(x)$ and $p_{10}(x)$ interpolants from the following data sets: 
+  % \vspace*{1em}
 \[
 f(x)=\frac{1}{x^2+\frac{1}{25}} \qquad x \in [-1,1]
 \]
-\begin{columns}
+\begin{columns}[t]
   \column{0.65\textwidth}
-  \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
-import numpy as np
-x3a, x3b = np.linspace(-1, 1, 5), np.linspace(-1, 1, 11)
-y3a, y3b = 1/(x3a**2 + 1/25), 1/(x3b**2 + 1/25)
-  \end{lstlisting}\pause
-  %   \begin{tikzpicture}[domain=-1:1,xscale=2,yscale=0.1]
-  %     % (the tikzpicture content remains unchanged)
-  %   \end{tikzpicture}
-  % \vspace*{-1ex}
-  \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
-import matplotlib.pyplot as plt
-x_cont = np.linspace(-1, 1, 1001)
-p4 = np.polyfit(x3a, y3a, 4)
-p10 =  np.polyfit(x3b, y3b, 10)
-y_cont4 = np.polyval(p4, x_cont)
-y_cont10 =  np.polyval(p10, x_cont)
-
-plt.plot(x_cont, 1 / (x_cont**2 + 1/25), label='f(x)')
-plt.scatter(x3a, y3a, marker='o', label='p4 data')
-plt.scatter(x3b, y3b, marker='x', label='p10 data')
-plt.plot(x_cont, y_cont4, label='p4(x)')
-plt.plot(x_cont, y_cont10, label='p10(x)')
-plt.legend()
-plt.show()
-  \end{lstlisting}
+\lstinputlisting[linerange={0-2,9-11}]{scripts/interpolation/polynomial-interp-exercise.py}\pause
+  \lstinputlisting[linerange={16-21},firstnumber=6]{scripts/interpolation/polynomial-interp-exercise.py}
   \column{0.35\textwidth}
-  \includegraphics[width=\textwidth]{p4_p10_interpolants.pdf}
+  \includegraphics[width=\textwidth]{polyfit-exercise-p4.pdf}
 \end{columns}
 \end{frame}
 
@@ -760,18 +638,18 @@ plt.show()
 	\only<2->{\addplot[graph,domain=-4:4,opacity=0.3] {sin(deg(x))/(1+x*x)};}
 	\addlegendentry{Function}
 	% Nodes
-	\only<2->{\addplot[samples=9,nodes near coords={\color{black}$f_\coordindex$},mark=*,mark options={fill=white,color=tuered},only marks,domain=-4:4] {sin(deg(x))/(1+x*x)};}
+	\only<2->{\addplot[samples=9,nodes near coords={\color{black}$f_\coordindex$},mark=*,mark options={fill=white,color=scharlaken},only marks,domain=-4:4] {sin(deg(x))/(1+x*x)};}
 	\addlegendentry{Nodes}
 	
 	% Linear
-	\only<3>{\addplot[graph,sharp plot,samples=9,domain=-4:4,draw=tueblue] {sin(deg(x))/(1+x*x)};}
-	\only<4-5>{\addplot[graph,sharp plot,samples=9,domain=-4:4,draw=tueblue,opacity=0.3] {sin(deg(x))/(1+x*x)};}
+	\only<3>{\addplot[graph,sharp plot,samples=9,domain=-4:4,draw=tuesteel] {sin(deg(x))/(1+x*x)};}
+	\only<4-5>{\addplot[graph,sharp plot,samples=9,domain=-4:4,draw=tuesteel,opacity=0.3] {sin(deg(x))/(1+x*x)};}
 	\addlegendentry{Linear}
 	% Polynomial
 	\only<4>{\addplot[graph,domain=-4:4,draw=tuegreen] {-6.891773605597105e-04*x^7+2.123474572587917e-02*x^5-2.016362539647688e-01*x^3+6.018261780033977e-01*x};}
 	\only<5>{\addplot[graph,domain=-4:4,draw=tuegreen,opacity=0.3] {-6.891773605597105e-04*x^7+2.123474572587917e-02*x^5-2.016362539647688e-01*x^3+6.018261780033977e-01*x};}
 	\addlegendentry{Polynomial}
-	\only<5>{\addplot[graph,draw=tuefuchsia] table [id=spline]{data/spline_data.txt};}
+	\only<5>{\addplot[graph,draw=tueorange] table [id=spline]{data/spline_data.txt};}
 	\addlegendentry{Spline}
       \end{axis} 
     \end{tikzpicture}
@@ -782,23 +660,13 @@ plt.show()
   \frametitle{Spline interpolation in Python}
   We can generate a random data set, and interpolate using \lstinline$scipy.interpolate.interp1d$: 
   \vskip0.5ex \pause
-  \begin{lstlisting}[language=Python,basicstyle=\tiny]
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.interpolate import interp1d
-# Generate random data set
-x = np.arange(0, 26)
-y = np.random.rand(len(x))
-# Interpolant on a fine mesh
-xc = np.linspace(0, 25, 1001)
-yc = interp1d(x, y, kind='cubic')(xc)
-# Plot the data
-plt.plot(x, y, 'o')
-plt.plot(xc, yc, '-r')
-  \end{lstlisting} \vskip1ex
-        \begin{tikzpicture}
-      \begin{axis}[every axis/.append style={font=\footnotesize},
-    width=\columnwidth, height=5cm,     % size of the image
+  \begin{columns}[c]
+    \column{0.5\textwidth}
+      \lstinputlisting[]{scripts/interpolation/cubic-spline-interp-example.py}\pause
+    \column{0.5\textwidth}
+      \begin{tikzpicture}
+        \begin{axis}[every axis/.append style={font=\footnotesize},
+    width=\textwidth, height=5cm,     % size of the image
     grid = major,
     grid style={dashed, gray!30},
     xmin=0,     % start the diagram at this x-coordinate
@@ -815,10 +683,13 @@ plt.plot(xc, yc, '-r')
     tick align=outside,
     ]
 
-      \addplot[interp,draw=none,mark=*] table [id=spline]{data/spline_data1.txt};
+      \addplot[interp,color=tuesteel,draw=none,mark=*] table [id=spline]{data/spline_data1.txt};
       \addplot[graph] table [id=spline]{data/spline_data2.txt};
     \end{axis} 
   \end{tikzpicture}
+  \pause
+  \end{columns}
+  Note: The \href{https://docs.scipy.org/doc/scipy/reference/interpolate.html#interpolation-scipy-interpolate}{SciPy Optimize} module contains various interpolation methods with a similar interface.
 \end{frame}
 
 \begin{frame}

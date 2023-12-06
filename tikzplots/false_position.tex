@@ -23,27 +23,27 @@
         \coordinate (Iter4x) at (0.06,  0.0);
         \coordinate (Iter5x) at (0.19, 0.0);
 
-        \addplot[domain=-2:4.5, samples=100, color=blue, thick]{sin(deg(x*2-0.5))*.6+2/5*x}; % Change this function as per your requirement
-        \draw[gray, dashed] (Iter0) -- (Iter0x)   node[black, at start, above] {};
-        \draw[gray, dashed] (Iter1) -- (Iter1x)   node[black, at start, above] {};
-        \draw (Iter0x) node[blue, above] {$a$};
-        \draw (Iter1x) node[blue, below] {$b$};
-        \draw[gray, dashed] (Iter2) -- (Iter2x)   node[black, at start, below] {$2$};
-        \draw[gray, dashed] (Iter3) -- (Iter3x)   node[black, at start, below] {$3$};
-        \draw[gray, dashed] (Iter4) -- (Iter4x)   node[black, at start, below] {$4$};
-        \draw[gray, dashed] (Iter5) -- (Iter5x)   node[black, at start, below] {$5$};
+        \addplot[domain=-2:4.5, samples=100, color=tuesteel, thick]{sin(deg(x*2-0.5))*.6+2/5*x}; % Change this function as per your requirement
+        \draw[tuesteel, dashed] (Iter0) -- (Iter0x)   node[black, at start, above] {};
+        \draw[tuesteel, dashed] (Iter1) -- (Iter1x)   node[black, at start, above] {};
+        \draw (Iter0x) node[tuesteel, above] {$a$};
+        \draw (Iter1x) node[tuesteel, below] {$b$};
+        \draw[tuesteel, dashed] (Iter2) -- (Iter2x)   node[black, at start, below] {$2$};
+        \draw[tuesteel, dashed] (Iter3) -- (Iter3x)   node[black, at start, below] {$3$};
+        \draw[tuesteel, dashed] (Iter4) -- (Iter4x)   node[black, at start, below] {$4$};
+        \draw[tuesteel, dashed] (Iter5) -- (Iter5x)   node[black, at start, below] {$5$};
     
         \fill[cyan] (Iter0) circle (1pt);
         \fill[cyan] (Iter1) circle (1pt);
         \fill[cyan] (Iter2) circle (1pt);
         \fill[cyan] (Iter3) circle (1pt);
         \fill[cyan] (Iter4) circle (1pt);
-        \draw[blue, solid] (Iter0) circle (1pt);
-        \draw[blue, solid] (Iter1) circle (1pt);
-        \draw[blue, solid] (Iter2) circle (1pt);
-        \draw[blue, solid] (Iter3) circle (1pt);
-        \draw[blue, solid] (Iter4) circle (1pt);
-        \draw[gray, dash pattern={on 0.5pt off 0.2pt}] (Iter5) circle (2pt);
+        \draw[tuesteel, solid] (Iter0) circle (1pt);
+        \draw[tuesteel, solid] (Iter1) circle (1pt);
+        \draw[tuesteel, solid] (Iter2) circle (1pt);
+        \draw[tuesteel, solid] (Iter3) circle (1pt);
+        \draw[tuesteel, solid] (Iter4) circle (1pt);
+        \draw[tuesteel, dash pattern={on 0.5pt off 0.2pt}] (Iter5) circle (2pt);
         
         
     \end{axis}
