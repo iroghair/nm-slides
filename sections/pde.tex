@@ -73,7 +73,7 @@
             ticks=none,axis x line=bottom,axis y line=left
             axis background/.style={fill=white},
             axis x line=middle,axis y line=middle,ylabel=$y$,xlabel=$x$]
-            \draw (axis cs:2.5,2.3) ellipse [x radius=120, y radius=150];
+            \draw[smooth] (axis cs:2.5,2.3) ellipse [x radius=1.20, y radius=1.50];
           \end{axis}
         \end{tikzpicture}
       \end{center}
@@ -123,6 +123,7 @@
   \end{itemize}
 \end{frame}
 
+{\nologo
 \begin{frame}
   \frametitle{Example elliptic PDE (boundary value problems: BVP)}
   \begin{columns}
@@ -151,7 +152,9 @@
   \]
   Efficiency (memory requirements, CPU time) of the numerical method is of crucial importance.
 \end{frame}
+}
 
+{\nologo
 \begin{frame}
   \frametitle{Example parabolic PDE (initial value problem: IVP)}
   \begin{columns}
@@ -180,6 +183,7 @@
   \]
   Stability (in numerical sense) of the numerical method is of crucial importance.
 \end{frame}
+}
 
 \begin{frame}
   \frametitle{Boundary conditions}
@@ -346,8 +350,8 @@
     \end{multline*}
     \colorize<2> \item Substitute boundary conditions to reduce number of equations:
     \begin{multline*}
-      \frac{dc_1}{dt} = \mathcal{D}\frac{{\color<2>{scharlaken}c_L}-2c_1+c_2}{\Delta x^2},\frac{dc_2}{dt} = \mathcal{D}\frac{c_1-2c_2+c_3}{\Delta x^2},\\ 
-      \frac{dc_3}{dt} = \mathcal{D}\frac{c_2-2c_3+c_4}{\Delta x^2},\frac{dc_4}{dt} = \mathcal{D}\frac{c_3-2c_4+{\color<2>{scharlaken}c_R}}{\Delta x^2}
+      \frac{dc_1}{dt} = \mathcal{D}\frac{{\color<2>{tuegreen}c_L}-2c_1+c_2}{\Delta x^2},\frac{dc_2}{dt} = \mathcal{D}\frac{c_1-2c_2+c_3}{\Delta x^2},\\ 
+      \frac{dc_3}{dt} = \mathcal{D}\frac{c_2-2c_3+c_4}{\Delta x^2},\frac{dc_4}{dt} = \mathcal{D}\frac{c_3-2c_4+{\color<2>{tuegreen}c_R}}{\Delta x^2}
     \end{multline*}
   \end{enumerate}
 \end{frame}
@@ -410,7 +414,7 @@
 \begin{frame}[fragile]
   \frametitle{Solving the instationary diffusion equation: example}
   Initialise the variables and matrices:
-  \begin{lstlisting}[language=Python,basicstyle=\scriptsize\ttfamily]
+  \begin{lstlisting}
 import numpy as np
 
 Nx = 100           # Nx grid points
@@ -441,7 +445,7 @@ x = np.linspace(0, x_end, Nx + 1)
 \begin{frame}<handout:0>[fragile]
   \frametitle{Solving the instationary diffusion equation: example}
   Compute the solution (nested time-and-grid loop):
-  \begin{lstlisting}[language=Python,basicstyle=\scriptsize\ttfamily]
+  \begin{lstlisting}
 for n in range(Nt): # time loop
     for i in range(1, Nx): # Nested loop for grid nodes
         c[n+1, i] = Fo*c[n, i-1] + (1-2*Fo)*c[n, i] + Fo*c[n, i+1];
@@ -450,7 +454,7 @@ for n in range(Nt): # time loop
   Plotting the solution at $t=\left\{12.5,62.5,125,625,5000\right\}$ \si{\second}:\\
   \begin{columns}[T]
   \column{0.4\textwidth}
-    \begin{lstlisting}[language=Python,basicstyle=\scriptsize\ttfamily]
+    \begin{lstlisting}
 # Output times
 outt = [12.5, 62.5, 125, 625, 5000]
 
@@ -532,13 +536,13 @@ plt.show()
 \begin{frame}[fragile]
   \frametitle{Solving the instationary diffusion equation: example}
   A double-loop can impose serious computation times if the number of grid points increases:
-  \begin{lstlisting}[language=Python,basicstyle=\scriptsize\ttfamily]
+  \begin{lstlisting}
 for n in range(Nt - 1): # time loop
     for i in range(1, Nx): # Nested loop for grid nodes
         c[n+1, i] = Fo * c[n, i-1] + (1 - 2*Fo) * c[n, i] + Fo * c[n, i+1]
 \end{lstlisting}
 Remedy: vectorization. Construct a 3-point stencil Laplacian matrix first, then use the matrix product to evolve the simulation:
-\begin{lstlisting}[language=Python,basicstyle=\scriptsize\ttfamily]
+\begin{lstlisting}
 from scipy.sparse import diags
 
 # Construct sparse matrix
@@ -594,7 +598,29 @@ for n in range(Nt - 1): # time loop
   \onslide<6->{$\displaystyle 1 \times c_m^{n+1} = c_m^n$ (boundary condition) \\ \vskip1ex}
 \end{frame}
 
-\begin{frame}<handout:1>[fragile]
+\begin{frame}[fragile]
+  \frametitle{Solving the diffusion equation implicitly in Python}
+  \rowcolors{1}{}{}
+  To solve the linear system, we need to define matrix $A$. It is clear that storing many zeros is not efficient in terms of memory. We use a \emph{sparse matrix} format. Two alternative ways to set up the matrix:\\
+  \vspace*{1em}
+  \begin{columns}[t]
+  \column{0.45\textwidth}
+  Set individual elements of the matrix:
+  \begin{itemize}
+    \item Loop over the internal cells
+    \item Set the coefficients in matrix \lstinline|A| (main diagonal + elements left/right to it)
+    \item Then set the coefficients for the boundary cells
+  \end{itemize}
+  \column{0.55\textwidth}
+  Set matrix using bands:
+  \begin{itemize}
+    \item Consider the matrix structure (previous slide) and create vectors containing the values in each band
+    \item Recall the \lstinline|sp.sparse.diags| function to set entire bands to a sparse matrix
+  \end{itemize}  
+  \end{columns}
+\end{frame}
+
+\begin{frame}<handout:0>[fragile]
   \frametitle{Solving the diffusion equation implicitly in Python}
   \rowcolors{1}{}{}
   To solve the linear system, we need to define matrix $A$. It is clear that storing many zeros is not efficient in terms of memory. We use a \emph{sparse matrix} format. Two alternative ways to set up the matrix:\\
@@ -602,7 +628,7 @@ for n in range(Nt - 1): # time loop
   \begin{columns}[t]
   \column{0.45\textwidth}
   Set individual elements of the matrix:
-  \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
+  \begin{lstlisting}
 from scipy.sparse import lil_matrix
 
 # Bands in matrix (internal cells)
@@ -618,7 +644,7 @@ A[Nx, Nx] = 1     # Right
   \end{lstlisting}
   \column{0.55\textwidth}
   Set matrix using bands:
-    \begin{lstlisting}[language=Python,basicstyle=\scriptsize\ttfamily]
+    \begin{lstlisting}
 from scipy.sparse import diags
 
 # Bands in matrix (internal cells)
@@ -646,7 +672,7 @@ A = diags([ld, md, ud], offsets=[-1, 0, 1])
   \frametitle{Solving the diffusion equation implicitly in Python}
   \rowcolors{1}{}{}
   The concentration matrix is initialised and the boundary conditions are set as follows:
-  \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
+  \begin{lstlisting}
 # Initial matrices for solutions (Nx times Nt)
 c = np.zeros((Nt+1, Nx+1))  # All concentrations are zero
 c[:, 0]    = c_L           # Concentration at left side
@@ -654,7 +680,7 @@ c[:, Nx]   = c_R           # Concentration at right side
 \end{lstlisting}
 \vskip1em
 The right hand side vector ($\vec{b}$) can now be set during the time-loop:
-\begin{lstlisting}[language=Python,basicstyle=\scriptsize]
+\begin{lstlisting}
 from scipy.sparse.linalg import spsolve
 
 for n in range(Nt-1):   # time loop 
@@ -706,6 +732,7 @@ for n in range(Nt-1):   # time loop
   \end{itemize}
 \end{frame}
 
+{\nologo
 \subsection{Non-linear source terms}
 \begin{frame}
   \frametitle{Extension with non-linear source terms}
@@ -732,6 +759,7 @@ for n in range(Nt-1):   # time loop
     - \left. \frac{dR}{dc}\right|_i^n c_i^n\right)\Delta t && 
   \end{flalign*}
 \end{frame}
+}
 
 \section{Convection}
 \subsection{Discretization}
@@ -935,7 +963,7 @@ Forward Euler discretization of temporal and spatial domain:
   \frametitle{Central difference and upwind in Python}
   \footnotesize\selectfont
   The results from the previous slides were computed using this script:
-  \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
+  \begin{lstlisting}
 import numpy as np
 
 Nx, Nt = 1000, 10000 # Nc grid points Nt time steps
@@ -966,7 +994,7 @@ t = np.linspace(0, t_end, Nt+1)
   \frametitle{Central difference and upwind in Python}
   \footnotesize\selectfont
   (continued)
-\begin{lstlisting}[language=Python, basicstyle=\scriptsize]
+\begin{lstlisting}
 for n in range(Nt):  # time loop
     for i in range(1, Nx):  # Nested loop for grid nodes
         # Central difference

@@ -292,9 +292,9 @@
     
     \addplot[graph,mark=x] table [id=EE_20]{data/ODE_EulerExpl_20.dat};  \addlegendentry{20 points}
       \only<2->{\addplot[graph,draw=tueyellow] table [id=EE_20]{data/ODE_EulerExpl_40.dat}; } \addlegendentry{40 points}
-      \only<3->{\addplot[graph,draw=tuelblue] table [id=EE_20]{data/ODE_EulerExpl_80.dat}; } \addlegendentry{80 points}
+      \only<3->{\addplot[graph,draw=tuesteel] table [id=EE_20]{data/ODE_EulerExpl_80.dat}; } \addlegendentry{80 points}
       \only<4->{\addplot[graph,draw=tuegreen] table [id=EE_20]{data/ODE_EulerExpl_160.dat};} \addlegendentry{160 points}
-      \only<5->{\addplot[graph,draw=tuelila] table [id=EE_20]{data/ODE_EulerExpl_320.dat};} \addlegendentry{320 points}
+      \only<5->{\addplot[graph,draw=tuepurple] table [id=EE_20]{data/ODE_EulerExpl_320.dat};} \addlegendentry{320 points}
     \end{axis}
   \end{tikzpicture}
   \end{center}
@@ -327,7 +327,7 @@ def first_order_react(c,t):
 euler_basic(first_order_react, 1, 0, 2, 100)
   \end{lstlisting}
     \column{0.3\textwidth}
-      \begin{lstlisting}[style=output]
+      \begin{lstlisting}[style=PyOutput]
 t: 0.00, c: 1.000000
 t: 0.20, c: 0.800000
 t: 0.40, c: 0.640000
@@ -408,9 +408,9 @@ c, t = euler(lambda c, t: -1.0*c, 1, 0, 2, 100)
 
 	\addplot[graph] table [id=EE_20]{data/ODE_EulerExpl_20.dat}; \addlegendentry{$N=20$}
 	\addplot[graph,draw=tueyellow] table [id=EE_20]{data/ODE_EulerExpl_40.dat}; \addlegendentry{$N=40$}
-	\addplot[graph,draw=tuelblue] table [id=EE_20]{data/ODE_EulerExpl_80.dat};  \addlegendentry{$N=80$}
+	\addplot[graph,draw=tuesteel] table [id=EE_20]{data/ODE_EulerExpl_80.dat};  \addlegendentry{$N=80$}
 	\addplot[graph,draw=tuegreen] table [id=EE_20]{data/ODE_EulerExpl_160.dat}; \addlegendentry{$N=160$}
-	\addplot[graph,draw=tuelila] table [id=EE_20]{data/ODE_EulerExpl_320.dat}; \addlegendentry{$N=320$}
+	\addplot[graph,draw=tuepurple] table [id=EE_20]{data/ODE_EulerExpl_320.dat}; \addlegendentry{$N=320$}
       \end{axis}
     \end{tikzpicture}
      \centering Reaction rate: $k = 1$ \si{s^{-1}}
@@ -441,9 +441,9 @@ c, t = euler(lambda c, t: -1.0*c, 1, 0, 2, 100)
 
 	\addplot[graph,sharp plot,mark=+,mark size=1.3pt] table [id=EE_20]{data/ODE_Euler2Expl_20.dat}; \addlegendentry{$N=20$}
 	\addplot[graph,sharp plot,draw=tueyellow,mark=x,mark size=1.3pt] table [id=EE_20]{data/ODE_Euler2Expl_40.dat}; \addlegendentry{$N=40$}
-	\addplot[graph,sharp plot,draw=tuelblue,mark=o,mark size=1.3pt] table [id=EE_20]{data/ODE_Euler2Expl_80.dat};  \addlegendentry{$N=80$}
+	\addplot[graph,sharp plot,draw=tuesteel,mark=o,mark size=1.3pt] table [id=EE_20]{data/ODE_Euler2Expl_80.dat};  \addlegendentry{$N=80$}
 	\addplot[graph,sharp plot,draw=tuegreen] table [id=EE_20]{data/ODE_Euler2Expl_160.dat}; \addlegendentry{$N=160$}
-	\addplot[graph,sharp plot,draw=tuelila] table [id=EE_20]{data/ODE_Euler2Expl_320.dat}; \addlegendentry{$N=320$}
+	\addplot[graph,sharp plot,draw=tuepurple] table [id=EE_20]{data/ODE_Euler2Expl_320.dat}; \addlegendentry{$N=320$}
       \end{axis}
     \end{tikzpicture}
      \centering Reaction rate: $k = 50$ \si{s^{-1}}
@@ -479,7 +479,7 @@ c, t = euler(lambda c, t: -1.0*c, 1, 0, 2, 100)
       log ticks with fixed point,
       xtick={20,40,80,160,320},
       ytick={0.02,0.01,0.005,0.002,0.001}]
-      \addplot[graph,draw=tuelblue,mark=o] table {data/ODE_euler_err.dat};
+      \addplot[graph,draw=tuesteel,mark=o] table {data/ODE_euler_err.dat};
       \end{loglogaxis}
     \end{tikzpicture}
   \end{columns}
@@ -1133,15 +1133,15 @@ Using $b_1+b_2=1$, $c_2b_2=\frac{1}{2}$, $a_{2,1}b_2=\frac{1}{2} \Rightarrow$ 3 
       \draw<2->[line,draw=scharlaken] (t0) .. node [midway,above] (dt1) {$\Delta t$} controls (0.25,0.2) and (0.75,0.2) .. (t1);
       \draw<2->[line,draw=scharlaken] (t1) .. node [midway,above] (dt2) {$\Delta t$} controls (1.25,0.2) and (1.75,0.2) .. (t2);
       
-      \draw<3->[line,draw=tuelblue] (t0) .. node [midway,below] (dt05) {$\frac{\Delta t}{2}$} controls (0.125,-0.15) and (0.375,-0.15) .. (t05);
-      \draw<3->[line,draw=tuelblue] (t05) .. node [midway,below] (dt15) {$\frac{\Delta t}{2}$} controls (0.625,-0.15) and (0.875,-0.15) .. (t1);
-      \draw<3->[line,draw=tuelblue] (t1) .. node [midway,below] (dt05) {$\frac{\Delta t}{2}$} controls (1.125,-0.15) and (1.375,-0.15) .. (t15);
-      \draw<3->[line,draw=tuelblue] (t15) .. node [midway,below] (dt15) {$\frac{\Delta t}{2}$} controls (1.625,-0.15) and (1.875,-0.15) .. (t2);
+      \draw<3->[line,draw=tuesteel] (t0) .. node [midway,below] (dt05) {$\frac{\Delta t}{2}$} controls (0.125,-0.15) and (0.375,-0.15) .. (t05);
+      \draw<3->[line,draw=tuesteel] (t05) .. node [midway,below] (dt15) {$\frac{\Delta t}{2}$} controls (0.625,-0.15) and (0.875,-0.15) .. (t1);
+      \draw<3->[line,draw=tuesteel] (t1) .. node [midway,below] (dt05) {$\frac{\Delta t}{2}$} controls (1.125,-0.15) and (1.375,-0.15) .. (t15);
+      \draw<3->[line,draw=tuesteel] (t15) .. node [midway,below] (dt15) {$\frac{\Delta t}{2}$} controls (1.625,-0.15) and (1.875,-0.15) .. (t2);
       
       \node<2->[above=3pt,color=scharlaken]  at (t1) {$y_1$};
-      \node<3->[below=3pt,color=tuelblue]  at (t1) {$y_2$};
+      \node<3->[below=3pt,color=tuesteel]  at (t1) {$y_2$};
 %       \node[above=3pt,color=scharlaken]  at (t2) {$y_1$};
-%       \node[below=3pt,color=tuelblue]  at (t2) {$y_2$};
+%       \node[below=3pt,color=tuesteel]  at (t2) {$y_2$};
             
 
 %       \draw[line] (t1) .. node [midway,above] (dt2) {$\Delta t$} controls (1.25,0.2) and (1.75,0.2) .. (t2);
@@ -1149,7 +1149,7 @@ Using $b_1+b_2=1$, $c_2b_2=\frac{1}{2}$, $a_{2,1}b_2=\frac{1}{2} \Rightarrow$ 3 
 %       \draw[line,densely dashed] (0.1,0.05) -- node[midway,above] {``Marching''} (0.9,0.05);
     \end{tikzpicture}\begin{itemize}
   \item<2-> \color{scharlaken} RK4 with one large step of $h$: $ y_{i+1} = y_1 + ch^5 + \mathcal{O}{(h^6)} $
-  \item<3-> \color{tuelblue} RK4 with two steps of $\frac{1}{2}h$: $ y_{i+1} = y_2 + 2c(\frac{1}{2}h)^5 + \mathcal{O}{(h^6)} $
+  \item<3-> \color{tuesteel} RK4 with two steps of $\frac{1}{2}h$: $ y_{i+1} = y_2 + 2c(\frac{1}{2}h)^5 + \mathcal{O}{(h^6)} $
 \end{itemize}
 \end{frame}
 
@@ -1199,36 +1199,39 @@ Using $b_1+b_2=1$, $c_2b_2=\frac{1}{2}$, $a_{2,1}b_2=\frac{1}{2} \Rightarrow$ 3 
   We solve the system: $\displaystyle \frac{dx}{dt} = -k_1 x + k_2, k_1 = 0.2, k_2=2.5$
   \begin{itemize}
     \item Create a lambda function:
-    \begin{lstlisting}
-dydx = lambda x,y: (-0.2*y + 2.5)
-    \end{lstlisting}
+    \lstinputlisting[linerange={2-2},firstnumber=1]{scripts/ODEs/demo_solve_single_ode.py}
+%     \begin{lstlisting}
+% dydx = lambda x,y: (-0.2*y + 2.5)
+%     \end{lstlisting}
     \item Solve with a call to \lstinline$solve_ivp(function, timespan, initial_condition)$:
-    \begin{lstlisting}
-from scipy.integrate import solve_ivp
-sol = solve_ivp(dydx, tspan, y0)
-    \end{lstlisting}
+%     \begin{lstlisting}
+% from scipy.integrate import solve_ivp
+% sol = solve_ivp(dydx, tspan, y0)
+%     \end{lstlisting}
+    \lstinputlisting[linerange={6-7},firstnumber=last]{scripts/ODEs/demo_solve_single_ode.py}
     \item Draw the results by calling the relevant Matplotlib commands:
-    \begin{columns}
-      \column{0.3\textwidth}
-      \begin{lstlisting}
-import matplotlib.pyplot as plt
-plt.plot(sol.t, sol.y[0,:])
-plt.show()
-      \end{lstlisting}
+    \begin{columns}[T]
+      \column{0.4\textwidth}
+%       \begin{lstlisting}
+% import matplotlib.pyplot as plt
+% plt.plot(sol.t, sol.y[0,:])
+% plt.show()
+%       \end{lstlisting}
+      \lstinputlisting[linerange={9-9,11-11,16-16},firstnumber=last]{scripts/ODEs/demo_solve_single_ode.py}
       \column{0.45\textwidth}
       \vspace*{2ex}\\
-
-      \begin{tikzpicture}
-        \begin{axis}[%every axis/.append style={font=\footnotesize},
-          width=0.95\columnwidth, height=4cm,     % size of the image
-          grid = major,grid style={dashed, gray!30},
-          axis background/.style={fill=white},
-          axis x line=middle,axis y line=middle,ylabel=$y$,xlabel=$x$]
+      \includegraphics[width=0.7\textwidth]{demo_single_ode.pdf}
+      % \begin{tikzpicture}
+      %   \begin{axis}[%every axis/.append style={font=\footnotesize},
+      %     width=0.95\columnwidth, height=4cm,     % size of the image
+      %     grid = major,grid style={dashed, gray!30},
+      %     axis background/.style={fill=white},
+      %     axis x line=middle,axis y line=middle,ylabel=$y$,xlabel=$x$]
           
-          \addplot[graph,mark=x] table []{data/ODE_matlabsolve_single.dat};  
-          \addlegendentry{$\frac{dy}{dx}$}
-        \end{axis}
-      \end{tikzpicture}
+      %     \addplot[graph,mark=x] table []{data/ODE_matlabsolve_single2.dat};  
+      %     \addlegendentry{$\frac{dy}{dx}$}
+      %   \end{axis}
+      % \end{tikzpicture}
       % \vfill
     \end{columns}
   \end{itemize}

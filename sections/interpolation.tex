@@ -89,14 +89,21 @@
 \section{Piecewise constant}
 \subsection*{}
 \againframe<2>{contents_interpolation}
-\begin{frame}
+\begin{frame}[fragile]
   \frametitle{Today's data set}
   \footnotesize\selectfont
   \begin{columns}
     \column{0.45\textwidth}
-    Download the datafile \lstinline$interpolation-dataset.txt$, which contains multiple data sets.\vskip2em\pause
+    Generate the following data set:
+    \begin{lstlisting}
+import numpy as np
+xdata = np.arange(0,6)
+fun = lambda x: x**3/2 - (10*x**2)/3 + 11*x/2 + 1
+ydata = fun(xdata)
+    \end{lstlisting}
+    \pause
+    This yields some sample points on which we base our examples:\vskip1em
     \begin{center}
-      We start with \lstinline$x1$ and \lstinline$y1$:\vskip1em
       \begin{tabular}{c|r}
 	$x_k$ & $f_k$ \\ \hline
 	$0$ & $1.00$ \\
@@ -202,6 +209,28 @@
   \end{itemize}
 \end{frame}
 
+{\nologo
+\begin{frame}[fragile]
+  \frametitle{Interpolation in Python}
+  Interpolation can be done using the SciPy interpolation submodule, e.g.:
+  \begin{lstlisting}
+from scipy.interpolate import interp1d
+f = interp1d(xdata, ydata, kind='linear')
+  \end{lstlisting}
+  This creates a function object \lstinline|f| based on the given data.\pause
+  \begin{columns}[T]
+    \column{0.52\textwidth}
+        \lstinputlisting[linerange={2-11}]{scripts/interpolation/demo-python-interp1d.py}
+    \pause
+      \lstinputlisting[linerange={13-13,17-18}]{scripts/interpolation/demo-python-interp1d.py}
+      \pause
+    \column{0.48\textwidth}
+    \pause
+      \includegraphics[width=0.9\textwidth]{demo-python-interp1d.pdf}
+  \end{columns}
+\end{frame}
+}
+
 \begin{frame}[t,fragile]
   \frametitle{Example: Linear interpolation in Python}
   \footnotesize\selectfont
@@ -285,6 +314,7 @@
   }
 \end{frame}
 
+{\nologo
 \begin{frame}
   \frametitle{Higher-dimensional field interpolation in Python}
   2D or higher-dimensional fields of data can be interpolated in Python using the \lstinline$scipy.interpolate.interp2d$, \lstinline$scipy.interpolate.interp3d$, or even \lstinline$scipy.interpolate.RegularGridInterpolator$ functions. The method can be adjusted:
@@ -305,10 +335,11 @@
   \end{columns}
   \vskip1em
   \begin{itemize}
-    \item Similar to 1D linear interpolation, the derivatives are discontinuous on the grid nodes.
+    % \item Similar to 1D linear interpolation, the derivatives are discontinuous on the grid nodes.
     \item Also consider tri-linear interpolation (for 3D fields) with \lstinline$scipy.interpolate.LinearNDInterpolator$, or bicubic interpolation (2D, but third order) with \lstinline$scipy.interpolate.interp2d$.
   \end{itemize}
 \end{frame}
+}
 
 
 \begin{frame}
@@ -358,19 +389,13 @@
    y_m
  \end{pmatrix}
 $\vskip1em
-The coefficients of a polynomial through the data points can be obtained by solving the linear system $Va=y$.
+The coefficients of a polynomial through the data are obtained by solving the linear system $Va=y$.
 \pause
 \begin{columns}
   \column{0.5\textwidth}
-    \begin{lstlisting}[language=Python]
-import numpy as np
-x = np.array([0, 1, 2])
-y = np.array([1.0000, 3.6667, 2.6667])
-V = np.vander(x, increasing=True)
-a = np.linalg.solve(V, y)
-print(a)
-# Output
-# [-1.8333, 4.5000, 1.0000]
+  \lstinputlisting[linerange={1-5}]{scripts/interpolation/polynomial-interp-vandermonde.py}
+    \begin{lstlisting}[style=PyOutput]
+[ 1.       4.50005 -1.83335]
     \end{lstlisting}
   \column{0.5\textwidth}
   \pause
@@ -526,6 +551,7 @@ print(a)
 \end{frame}
 }
 
+{\nologo
 \begin{frame}[fragile]
   \frametitle{Polynomial fitting in Python: example}
   Develop the polynomials $p_1(x)$ through $p_5(x)$ using the following data set: 
@@ -533,14 +559,15 @@ print(a)
   \pause
   \begin{columns}[T]
     \column{0.4\textwidth}
-    % \begin{overlayarea}{\textwidth}{4cm}
+    \begin{overlayarea}{\textwidth}{4cm}
+    \mode<beamer>{
       \includegraphics<2>[width=\textwidth]{polyfit-example-data.pdf}%
       \includegraphics<3>[width=\textwidth]{polyfit-example-p1.pdf}%
       \includegraphics<4>[width=\textwidth]{polyfit-example-p2.pdf}%
       \includegraphics<5>[width=\textwidth]{polyfit-example-p3.pdf}%
-      \includegraphics<6>[width=\textwidth]{polyfit-example-p4.pdf}%
+      \includegraphics<6>[width=\textwidth]{polyfit-example-p4.pdf}}%
       \includegraphics<7->[width=\textwidth]{polyfit-example-p5.pdf}%
-      % \end{overlayarea}
+      \end{overlayarea}
 
     \column{0.6\textwidth}
       \lstinputlisting[linerange={15-22},firstnumber=1]{scripts/interpolation/polynomial-interp-example.py}
@@ -549,23 +576,26 @@ RankWarning: Polyfit may be poorly conditioned
 \end{lstlisting}
   \end{columns}
 \end{frame}
-
+}
 
 \begin{frame}[fragile]
   \frametitle{Exercise}
   \rowcolors[]{1}{maincolor!20}{maincolor!10}
   \footnotesize\selectfont
   Develop the $p_4(x)$ and $p_{10}(x)$ interpolants from the following data sets: 
-  % \vspace*{1em}
+  \vspace*{1em}
 \[
 f(x)=\frac{1}{x^2+\frac{1}{25}} \qquad x \in [-1,1]
-\]
-\begin{columns}[t]
+\]\pause
+\begin{columns}[T]
   \column{0.65\textwidth}
-\lstinputlisting[linerange={0-2,9-11}]{scripts/interpolation/polynomial-interp-exercise.py}\pause
+\lstinputlisting[linerange={0-2,9-11}]{scripts/interpolation/polynomial-interp-exercise.py}
+  \pause
   \lstinputlisting[linerange={16-21},firstnumber=6]{scripts/interpolation/polynomial-interp-exercise.py}
+
   \column{0.35\textwidth}
-  \includegraphics[width=\textwidth]{polyfit-exercise-p4.pdf}
+    \pause\vspace*{-4em}
+    \includegraphics[width=\textwidth]{polyfit-exercise-p4.pdf}
 \end{columns}
 \end{frame}
 
@@ -602,6 +632,7 @@ f(x)=\frac{1}{x^2+\frac{1}{25}} \qquad x \in [-1,1]
   \end{itemize}
 \end{frame}
 
+{\nologo
 \begin{frame}
   \frametitle{Splines: comparison to other interpolation techniques}
   \footnotesize\selectfont
@@ -655,7 +686,9 @@ f(x)=\frac{1}{x^2+\frac{1}{25}} \qquad x \in [-1,1]
     \end{tikzpicture}
   \end{center}
 \end{frame}
+}
 
+{\nologo
 \begin{frame}[fragile]
   \frametitle{Spline interpolation in Python}
   We can generate a random data set, and interpolate using \lstinline$scipy.interpolate.interp1d$: 
@@ -691,6 +724,7 @@ f(x)=\frac{1}{x^2+\frac{1}{25}} \qquad x \in [-1,1]
   \end{columns}
   Note: The \href{https://docs.scipy.org/doc/scipy/reference/interpolate.html#interpolation-scipy-interpolate}{SciPy Optimize} module contains various interpolation methods with a similar interface.
 \end{frame}
+}
 
 \begin{frame}
   \frametitle{Summary}

@@ -9,33 +9,24 @@
   \only<2>{\tableofcontents[currentsection]}
 \end{frame}
 
-
+{\nologo
 \begin{frame}[fragile]
-  \frametitle{Practice}
-  Given a vector 
-  \[ 
-     x = \left[2 \ 4 \ 6 \ 8 \ 10 \ 12 \ 14 \ 16 \ 18 \ 20 \ 30 \ 40 \ 50 \ 60 \ 70 \ 80 \right]
-  \]
-  \begin{itemize}
-   \item Define the vector using \lstinline|range|'s, without typing all individual elements
-   \pause
-   \begin{onlyenv}<beamer> \begin{lstlisting}[]
- >>> x = list(range(2,20,2)) + list(range(20,90,10))
-     \end{lstlisting}
-     \pause
-    \end{onlyenv}
-   \item Investigate the meaning of the following commands:
-   \begin{lstlisting}[language=Python, numbers=none]
- >>> x[2]            
- >>> x[0:5]          
- >>> x[:-1]          
- >>> y = x[4:]       
- >>> y[3]            
- >>> y.pop(3)      
- >>> sum(x)    
- >>> max(x)       
- >>> min(x) 
- >>> x[::-1]       
-     \end{lstlisting}    
-  \end{itemize}
- \end{frame}
+  \frametitle{Interpolation in Python}
+  Interpolation can be done using the SciPy interpolation submodule, e.g.:
+  \begin{lstlisting}
+from scipy.interpolate import interp1d
+f = interp1d(xdata, ydata, kind='linear')
+  \end{lstlisting}
+  This creates a function object \lstinline|f| based on the given data.\pause
+  \begin{columns}[T]
+    \column{0.52\textwidth}
+        \lstinputlisting[linerange={2-11}]{scripts/interpolation/demo-python-interp1d.py}
+    \pause
+      \lstinputlisting[linerange={13-13,17-18}]{scripts/interpolation/demo-python-interp1d.py}
+      \pause
+    \column{0.48\textwidth}
+    \pause
+      \includegraphics[width=0.9\textwidth]{demo-python-interp1d.pdf}
+  \end{columns}
+\end{frame}
+}

@@ -25,26 +25,26 @@
 \subsection*{}
 \againframe<2>{contents_opt}
 \begin{frame}[fragile,label={slidedatacreate}]{Let's do an 'experiment' to gather data}
-    \begin{lstlisting}[basicstyle=\scriptsize]
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.stats import norm
+    \begin{lstlisting}
+def generate_random_data(N=101,p=[1,1/3,1.5,3.5],draw=False):
+    # Generate linear space of control points
+    # N -  Number of data points
+    # p -  Coefficients of polynomial
+    x = np.linspace(0, 1, N)  # Points (independent variable)
 
-# Generate linear space of control points
-N = 100                   # Number of data points
-x = np.linspace(0, 1, N)  # Points (independent variable)
-A = [1, 1/3, 1.5, 3.5]    # Coefficients of polynomial
+    # Generate 'measurement values' with errors following a normal distribution
+    # Initialize randomizer
+    pd = norm(loc=0, scale=0.1)
+    # Add scatter data to the polynomial
+    y = np.polyval(p,x) + pd.rvs(size=N)
 
-# Generate 'measurement values' with errors following a normal distribution
-# Initialize randomizer
-pd = norm(loc=0, scale=0.5)
-# Add scatter data to the polynomial
-y = A[3]*x**3 + A[2]*x**2 + A[1]*x + A[0] + pd.rvs(size=N)
-
-# Plot the generated data
-plt.plot(x, y, 'x')
-plt.show()      
+    # Plot the generated data
+    if draw:
+        plt.plot(x, y, 'x')
+        plt.show()      
+    return x,y   
     \end{lstlisting}
+    Gather some data by calling the function and storing \lstinline|x| and \lstinline|y|
 \end{frame}
 
 \frame{
@@ -55,37 +55,56 @@ plt.show()
   \vfill
 }
 
+\begin{frame}[fragile]
+  \frametitle{How to fit a model to the data?}
+  We would like to fit the following model to the data:
+  \[
+    \hat{y} = a_0 x^3 + a_1 x^2 + a_2x + a_3
+  \]
+  \vfill \pause
+  First attempt - using the \lstinline|polyfit| function we have seen with the interpolation lecture:
+  \begin{lstlisting}
+def fit_using_polyfit(x,y,n=2,draw=False):
+    p = np.polyfit(x,y,n)
+    if draw:
+        plt.plot(x, y, 'x')
+        plt.plot(x, np.polyval(p,x), '-')
+        plt.show()     
+    return p
+  \end{lstlisting}
+  If we print \lstinline|p|, we get the coefficients. But this is a black box, what does it do?
+\end{frame}
+
 \frame{
   \frametitle{How to fit a model to the data?}
   We would like to fit the following model to the data:
   \[
-    \hat{y} = a_1 + a_2x + a_3x^2 + a_4 x^3
+    \hat{y} = a_0 x^3 + a_1 x^2 + a_2x + a_3
   \]
   \vfill \pause
-  First step: If we have $N$ data points, we could write the model as the product of a matrix and a vector:
+  Attempt to solve a linear system: If we have $N$ data points, we could write the model as the product of a matrix and a vector:
   \begin{columns}\
     \column{0.6\textwidth}
       \[
       \begin{bmatrix}
+      \hat{y}_0 \\
       \hat{y}_1 \\
       \hat{y}_2 \\
-      \hat{y}_3 \\
       \vdots \\
-      \hat{y}_N
+      \hat{y}_{N-1}
     \end{bmatrix}
     =
     \left. \begin{bmatrix}
-      1 & x_1 & x_1^2 & x_1^3 \\
-      1 & x_2 & x_2^2 & x_2^3 \\
-      1 & x_3 & x_3^2 & x_3^3 \\
-      \vdots  & \vdots  & \vdots  \\
-      1 & x_N & x_N^2 & x_N^3
-    \end{bmatrix}    
+      x_0^3   &   x_0^2  &x_0       & 1     \\
+      x_1^3   &   x_1^2  &x_1       & 1     \\
+      x_2^3   &   x_2^2  &x_2       & 1     \\
+      \vdots  &   \vdots &\vdots   & \vdots \\
+      x_{N-1}^3   &   x_{N-1}^2  &x_{N-1}       & 1         \end{bmatrix}    
     \begin{bmatrix}
+      a_0 \\
       a_1 \\
       a_2 \\
-      a_3 \\
-      a_4
+      a_3
     \end{bmatrix} \right.
       \]
     \column{0.4\textwidth}
@@ -125,7 +144,7 @@ plt.show()
     \frac{\partial}{\partial a_i} \left[ \left(y - \left(Xa\right)^T\right)\left(y - Xa\right) \right]
   \]
   \pause
-  In Matlab, we can solve our linear system $\hat{Y} = Xa$ simply by running \lstinline$a = np.linalg.solve(X,y)$.
+  In Python, we can solve our linear system $\hat{Y} = Xa$ simply by running \lstinline$a = np.linalg.solve(X,y)$.
   \pause
   \begin{itemize}
     \item If there are more data points ($N>4$), we can write an analogue, but maybe a consistent solution does not exist (the system is over specified).
@@ -147,18 +166,17 @@ plt.show()
   \begin{columns}[T]
     \column{0.5\textwidth}
     \begin{lstlisting}
-import numpy as np
-
-# Assuming x and y are defined previously
-N = len(x)
-X = np.zeros((N, 4))
-X[:, 0] = 1
-X[:, 1] = x
-X[:, 2] = x**2
-X[:, 3] = x**3
-A = np.linalg.lstsq(X, y, rcond=None)[0]      
-
-# y_fit = X@A 
+def fit_using_lstsqr(x,y,n=2,draw=False):
+    xmat = np.vander(x,n+1)
+    sol = np.linalg.lstsq(xmat,y,rcond=None)
+    A = sol[0]
+    yhat = xmat@A
+    if draw:
+        plt.plot(x,y,'x')
+        plt.plot(x,yhat,'-')
+        plt.title('Fit using lstsq')
+        plt.show()
+    return A,yhat
     \end{lstlisting}
     \column{0.5\textwidth}
       \input{tikzplots/scatter-model.tikz}
@@ -166,16 +184,16 @@ A = np.linalg.lstsq(X, y, rcond=None)[0]
 \end{frame}
 
 
-\begin{frame}[fragile] 
-  \frametitle{Fitting our problem: Excel}
-    \begin{itemize}
-      \item Create a column with the independent and dependent data series ($x$ and $y$)
-      \item Create a column that computes $\hat{y}$, keeping the coefficients as separate cells
-      \item Compute the sum of squares of the residuals (another column, sum the results)
-      \item Use the solver to minimize this sum, modifying the coefficient cells
-      \item Note: regression in Excel + display equation is dangerous if you choose the 'line' plot (use scatter if you can)
-    \end{itemize}
-\end{frame}
+% \begin{frame}[fragile] 
+%   \frametitle{Fitting our problem: Excel}
+%     \begin{itemize}
+%       \item Create a column with the independent and dependent data series ($x$ and $y$)
+%       \item Create a column that computes $\hat{y}$, keeping the coefficients as separate cells
+%       \item Compute the sum of squares of the residuals (another column, sum the results)
+%       \item Use the solver to minimize this sum, modifying the coefficient cells
+%       \item Note: regression in Excel + display equation is dangerous if you choose the 'line' plot (use scatter if you can)
+%     \end{itemize}
+% \end{frame}
 
 \begin{frame}[fragile] 
   \frametitle{How good is the model?}
@@ -259,56 +277,79 @@ A = np.linalg.lstsq(X, y, rcond=None)[0]
 \section{Fitting numerical models}
 \subsection*{}
 \againframe<2>{contents_opt}
+
+{\nologo
 \begin{frame}[fragile]
   \frametitle{Curve fitting from command line: scipy.optimize.curve\_fit}
   Python offers various non-linear parameter and curve fitting tools that can be run from the command line. The function \lstinline$curve_fit$ from the \lstinline$scipy.optimize$ module allows to fit a model to a given dataset. Again, based on the data generated in slide~\ref{slidedatacreate}:
-    \begin{lstlisting}[language=Python,basicstyle=\tiny]
+    \begin{lstlisting}
+from poly_regression import generate_random_data
 from scipy.optimize import curve_fit
-
-# Initial guess of coefficients
-a0 = [1, 2, 1, 3]
+import matplotlib.pyplot as plt
+import numpy as np
 
 # Define the model function
-def curve_fit_model(xdata, a1, a2, a3, a4):
-    return a1*xdata**3 + a2*xdata**2 + a3*xdata + a4
+def curve_fit_model_1(xdata, a0, a1, a2, a3):
+    return a0*xdata**3 + a1*xdata**2 + a2*xdata + a3
+    \end{lstlisting}
+    \begin{lstlisting}
+if __name__ == '__main__':
+    x,y = generate_random_data()
+    a0 = [1, 2, 1, 3] # Initial guess of coefficients
+    
+    # Perform fitting, store resulting coeffs in a_fit
+    a_fit, _ = curve_fit(curve_fit_model_1, x, y, p0=a0)
+    
+    # Run the model once more, with fitted coefficients
+    y_model = curve_fit_model_1(x, *a_fit) # unpack coefficients using *
+    \end{lstlisting}
+    % The model function takes individual parameters separately, we use the unpacking syntax (\lstinline$*$) to pass the fitted parameters when generating the \lstinline$y_model$ data.
+\end{frame}
+}
 
-# Perform fitting, store resulting coeffs in a_fit
-a_fit, _ = curve_fit(curve_fit_model, x, y, p0=a0)
+\begin{frame}[fragile]
+  \frametitle{Curve fitting from command line: scipy.optimize.curve\_fit}
+  For fitting a polynomial model, this function works as well as \lstinline|polyfit|. But it also allows other (much more complex) types of model to be defined:
+    \begin{lstlisting}
+def curve_fit_model_2(xdata, a0, a1, a2):
+    return a0*np.exp(a1*xdata) + a2
+
+# Initial guess of coefficients
+a0 = [1,1,1]
+
+# Perform fitting of the data to another model
+a_fit, _ = curve_fit(curve_fit_model_2, x, y, p0=a0)
 
 # Run the model once more, with fitted coefficients
-y_model = curve_fit_model(x, *a_fit)
-
-plt.plot(x, y_model, '-r')
-plt.show()
+y_model = curve_fit_model_2(x, *a_fit)
     \end{lstlisting}
-    In the Python translation, the model function takes individual parameters separately rather than as an array, and we use the unpacking syntax (\lstinline$*$) to pass the fitted parameters when generating the \lstinline$y_model$ data.
-  \end{frame}
-  
+    The model functions take individual parameters separately, we use the unpacking syntax (\lstinline$*$) to pass the fitted parameters when generating the \lstinline$y_model$ data.
+\end{frame}
 
-  \begin{frame}[fragile] 
-    \frametitle{Dynamic fitting of non-linear equations}
-    You may encounter situations where the model data is slightly more complicated to obtain (e.g., a numerical model based on ODEs where coefficients are unknown), or you want to perform fitting of multiple functions/coefficients, or just want to automate things via scripts. Python's Scipy library gives access to powerful functions such as \lstinline$least_squares$ and \lstinline$curve_fit$.
-  \end{frame}
-    
-  \begin{frame}[fragile] 
-    \frametitle{General use of scipy.optimize.least\_squares}
-    \begin{lstlisting}[language=Python]
+\begin{frame}[fragile] 
+  \frametitle{Dynamic fitting of non-linear equations}
+  You may encounter situations where the model data is slightly more complicated to obtain (e.g., a numerical model based on ODEs where coefficients are unknown), or you want to perform fitting of multiple functions/coefficients, or just want to automate things via scripts. Python's Scipy library gives access to powerful functions such as \lstinline$least_squares$ and \lstinline$curve_fit$.
+\end{frame}
+  
+\begin{frame}[fragile] 
+  \frametitle{General use of scipy.optimize.least\_squares}
+  \begin{lstlisting}
 from scipy.optimize import least_squares
 
 result = least_squares(fun, k0, bounds=(lb, ub), xtol=1.0E-6, max_nfev=1000)
-    \end{lstlisting}
-    \begin{itemize}
-      \item \lstinline$fun$ is a function handle to the fit criterion (e.g., \lstinline$myFitCrit$). The fit criterion function \lstinline$myFitCrit$ should return the residuals vector, e.g., $d_i = \left(y_i - \hat{y}_i\right)$. Here, $y_i$ would again be the measurement data and $\hat{y}$ the solution computed by a model.
-      \item \lstinline$k0$ is the initial guess for the fitting coefficient (or: array of initial guesses when fitting multiple coefficients).
-      \item \lstinline$lb$ and \lstinline$ub$ are the lower and upper boundaries for \lstinline$k0$. These should both be the size of the \lstinline$k0$-array.
-      \item Use arguments such as \lstinline$xtol$ and \lstinline$max_nfev$ for more fine-grained control on the fit procedure. 
-    \end{itemize}  
-  \end{frame}
+  \end{lstlisting}
+  \begin{itemize}
+    \item \lstinline$fun$ is a function handle to the fit criterion (e.g., \lstinline$myFitCrit$). The fit criterion function \lstinline$myFitCrit$ should return the residuals vector, e.g., $d_i = \left(y_i - \hat{y}_i\right)$. Here, $y_i$ would again be the measurement data and $\hat{y}$ the solution computed by a model.
+    \item \lstinline$k0$ is the initial guess for the fitting coefficient (or: array of initial guesses when fitting multiple coefficients).
+    \item \lstinline$lb$ and \lstinline$ub$ are the lower and upper boundaries for \lstinline$k0$. These should both be the size of the \lstinline$k0$-array.
+    \item Use arguments such as \lstinline$xtol$ and \lstinline$max_nfev$ for more fine-grained control on the fit procedure. 
+  \end{itemize}  
+\end{frame}
   
   
   \begin{frame}[fragile] 
   \frametitle{General use of scipy.optimize.curve\_fit}
-  \begin{lstlisting}[language=Python]
+  \begin{lstlisting}
 from scipy.optimize import curve_fit
 
 popt, pcov = curve_fit(fun, xdata, ydata, p0=k0, bounds=(lb, ub))
@@ -332,21 +373,23 @@ popt, pcov = curve_fit(fun, xdata, ydata, p0=k0, bounds=(lb, ub))
     \pause
     \begin{itemize}
       \item First, we define a function that describes our model:
-      \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
-from scipy.integrate import odeint
+      \begin{lstlisting}
+import scipy as sp
+import numpy as np
 
-def simpleode(u, t, k1, k2):
+def simpleode(t, u, k1, k2):
     dudt = -k1*u + k2
     return dudt
       \end{lstlisting}
       Note that we supply the coefficients \(k_1\) and \(k_2\) as arguments to the function.
       \pause
       \item We create a fit criterion function:
-      \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
-def fitcrit(t, k1, k2):
-    u0 = 1.0
-    u = odeint(simpleode, u0, t, args=(k1, k2))
-    return u.ravel()
+      \begin{lstlisting}
+def fitcrit(t,k1, k2):
+    u0 = [1.0]
+    tspan = [0,max(t)]
+    sol = sp.integrate.solve_ivp(simpleode, tspan, u0, args=(k1, k2), t_eval=t)
+    return sol.y[0]
       \end{lstlisting}
     \end{itemize}
     \end{frame}
@@ -355,19 +398,15 @@ def fitcrit(t, k1, k2):
     \frametitle{Example use of scipy.optimize.curve\_fit}
     Now let's make a script that uses \lstinline$curve_fit$ to yield k-values fitted to our dataset:
     \pause
-    \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
-from scipy.optimize import curve_fit
-import numpy as np
-
+    \begin{lstlisting}
 # Load your data here (adjust as necessary)
-T, U = np.loadtxt('./scripts/used_by_students/lecture_archive_regression_optim/tudataset1.txt', unpack=True, skiprows=1)
+T, U = np.loadtxt('./scripts/optimization/tudataset1.txt',unpack=True, skiprows=1)
 
 # Initial guesses for model parameters
 k0 = [1.0, 1.0]
 
 # Perform the curve fitting
-params, params_covariance = curve_fit(fitcrit, T, U, p0=k0)
-
+params, params_covariance = sp.optimize.curve_fit(fitcrit, T, U, p0=k0)
 print('Fitted coefficients:', params)
     \end{lstlisting}
     Our fitted coefficients are stored in \lstinline|params|. The \lstinline|params_covariance| gives an estimate of the covariance of the estimated parameters, offering an insight into the uncertainty of the fit.
@@ -385,7 +424,7 @@ print('Fitted coefficients:', params)
 params, params_covariance = curve_fit(fitcrit, T, U, p0=k0)
   \end{lstlisting}
   We can use the square root of the diagonal of the covariance matrix, multiplied by a factor from the t-distribution to get the confidence bounds:
-  \begin{lstlisting}[language=Python,basicstyle=\scriptsize]
+  \begin{lstlisting}
 from scipy import stats
 import numpy as np
 
@@ -406,86 +445,86 @@ print('k2:', params[1] - ci[1], params[1] + ci[1])
   \end{frame}
 
 
-  \begin{frame}[fragile]
-    \frametitle{Second example: curve\_fit}
-    The model doesn't have to be an ODE; it can be any model that is part of the fitting goal function. Let's consider an (adapted) version of the Laplace equation solver, where we can set a single, central node to a certain temperature. We will illustrate this using Python, where we define a function to solve the Laplace equation:
+%   \begin{frame}[fragile]
+%     \frametitle{Second example: curve\_fit}
+%     The model doesn't have to be an ODE; it can be any model that is part of the fitting goal function. Let's consider an (adapted) version of the Laplace equation solver, where we can set a single, central node to a certain temperature. We will illustrate this using Python, where we define a function to solve the Laplace equation:
     
-    \begin{lstlisting}[language=Python, basicstyle=\tiny]
-from scipy.sparse import spdiags
-import numpy as np
+%     \begin{lstlisting}[language=Python, basicstyle=\tiny]
+% from scipy.sparse import spdiags
+% import numpy as np
 
-def solveLaplaceEq(Nx, Ny, Tb, Tint):
-    e = np.ones(Nx*Ny)
-    diag_data = [e, e, -4*e, e, e]
-    diag_indices = [-Nx, -1, 0, 1, Nx]
-    A = spdiags(diag_data, diag_indices, Nx*Ny, Nx*Ny)
-    b = np.zeros(Nx*Ny)
+% def solveLaplaceEq(Nx, Ny, Tb, Tint):
+%     e = np.ones(Nx*Ny)
+%     diag_data = [e, e, -4*e, e, e]
+%     diag_indices = [-Nx, -1, 0, 1, Nx]
+%     A = spdiags(diag_data, diag_indices, Nx*Ny, Nx*Ny)
+%     b = np.zeros(Nx*Ny)
     
-    # Set boundary conditions here (omitted for brevity)
-    A, b = setBoundaryConditions(A, b, Tb, Nx, Ny)
+%     # Set boundary conditions here (omitted for brevity)
+%     A, b = setBoundaryConditions(A, b, Tb, Nx, Ny)
 
-    # Set a central node to Tint
-    ind = round(Nx * (Ny/2) + Nx/2)
-    A[ind, :] = 0
-    A[ind, ind] = 1
-    b[ind] = Tint
+%     # Set a central node to Tint
+%     ind = round(Nx * (Ny/2) + Nx/2)
+%     A[ind, :] = 0
+%     A[ind, ind] = 1
+%     b[ind] = Tint
 
-    T = spsolve(A, b)
-    return T.reshape(Nx, Ny)
-    \end{lstlisting}
-  \end{frame}
+%     T = spsolve(A, b)
+%     return T.reshape(Nx, Ny)
+%     \end{lstlisting}
+%   \end{frame}
   
 
-  \begin{frame}[fragile] 
-    \frametitle{Second example: curve\_fit}
-    Now let's make a goal function based on our model and the desired setpoint (the mean temperature in the domain):
+%   \begin{frame}[fragile] 
+%     \frametitle{Second example: curve\_fit}
+%     Now let's make a goal function based on our model and the desired setpoint (the mean temperature in the domain):
     
-    \begin{lstlisting}[language=Python]
-def fitcrit_laplace(actuate_T, Nx, Ny, boundary_T, setpoint_T):
-    # Compute model:
-    T = solveLaplaceEq(Nx, Ny, boundary_T, actuate_T)
+%     \begin{lstlisting}[language=Python]
+% def fitcrit_laplace(actuate_T, Nx, Ny, boundary_T, setpoint_T):
+%     # Compute model:
+%     T = solveLaplaceEq(Nx, Ny, boundary_T, actuate_T)
     
-    # Compute error (deviation of mean T with desired setpoint T)
-    err = np.mean(T) - setpoint_T
-    return err
-    \end{lstlisting}
-  \end{frame}  
+%     # Compute error (deviation of mean T with desired setpoint T)
+%     err = np.mean(T) - setpoint_T
+%     return err
+%     \end{lstlisting}
+%   \end{frame}  
 
-  \begin{frame}[fragile] 
-    \frametitle{Second example: curve\_fit}
-    \begin{itemize}
-      \item Set up system parameters
-      \item Run the fitting procedures
-      \item Compute and plot the final solution
-    \end{itemize}
+%   \begin{frame}[fragile] 
+%     \frametitle{Second example: curve\_fit}
+%     \begin{itemize}
+%       \item Set up system parameters
+%       \item Run the fitting procedures
+%       \item Compute and plot the final solution
+%     \end{itemize}
     
-    \begin{lstlisting}[language=Python,basicstyle=\tiny]
-from scipy.optimize import curve_fit
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+%     \begin{lstlisting}
+% from scipy.optimize import curve_fit
+% import matplotlib.pyplot as plt
+% from mpl_toolkits.mplot3d import Axes3D
 
-# Set up parameters
-Nx = 35; Ny = 35;
-Tb = [40, 10, 40, 10]     # Fixed boundary temperatures
-T0 = [0]                  # Initial guess 
-T_set = 20                # Setpoint
+% # Set up parameters
+% Nx = 35; Ny = 35;
+% Tb = [40, 10, 40, 10]     # Fixed boundary temperatures
+% T0 = [0]                  # Initial guess 
+% T_set = 20                # Setpoint
 
-# Run fitting
-params, params_covariance = curve_fit(lambda T, _: fitcrit_laplace(T, Nx, Ny, Tb, T_set), [0], [0], p0=T0)
+% # Run fitting
+% params, params_covariance = curve_fit(lambda T, _: fitcrit_laplace(T, Nx, Ny, Tb, T_set), [0], [0], p0=T0)
 
-# Compute again and plot
-T_model = solveLaplaceEq(Nx, Ny, Tb, params[0])
-T_plot = T_model.reshape(Nx, Ny)       # Reshape x-vec to mat Nx, Ny
-x, y = np.meshgrid(range(Ny), range(Nx))  # Get position arrays
+% # Compute again and plot
+% T_model = solveLaplaceEq(Nx, Ny, Tb, params[0])
+% T_plot = T_model.reshape(Nx, Ny)       # Reshape x-vec to mat Nx, Ny
+% x, y = np.meshgrid(range(Ny), range(Nx))  # Get position arrays
 
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-ax.plot_surface(x, y, T_plot)           # Surface plot
-plt.show()
+% fig = plt.figure()
+% ax = fig.add_subplot(111, projection='3d')
+% ax.plot_surface(x, y, T_plot)           # Surface plot
+% plt.show()
 
-print(np.mean(T_model))
-    \end{lstlisting}
-  \end{frame}
+% print(np.mean(T_model))
+%     \end{lstlisting}
+%   \end{frame}
   
 
 
@@ -545,8 +584,8 @@ print(np.mean(T_model))
 \begin{tabular}{lll}
 \hline
 \rowcolor[HTML]{C0C0C0} 
-Problem                                                                 & Method                                                                                                                                                                    & Solvers                                                                                                                         \\ \hline
-LP                                                                      & \begin{tabular}[c]{@{}l@{}}Simplex method\\ Barrier methods\end{tabular}                                                                                                  & \begin{tabular}[c]{@{}l@{}}Linprog (Matlab)\\ CPLEX (GAMS, AIMMS, AMPL, OPB)\end{tabular}                                       \\
+Problem     & Method       & Solvers   \\ \hline
+LP & \begin{tabular}[c]{@{}l@{}}Simplex method\\ Barrier methods\end{tabular} & \begin{tabular}[c]{@{}l@{}}Linprog\\ CPLEX (GAMS, AIMMS, AMPL, OPB)\end{tabular} \\
 \rowcolor[HTML]{EFEFEF} 
 {\color[HTML]{000000} \begin{tabular}[c]{@{}l@{}}NLP\\ QP\end{tabular}} & {\color[HTML]{000000} \begin{tabular}[c]{@{}l@{}}Lagrange multiplier method\\ Successive linear programming\\ Quadratic programming\end{tabular}}                         & {\color[HTML]{000000} \begin{tabular}[c]{@{}l@{}}Fminsearch/fmincon (Matlab)\\ MINOS (GAMS, AMPL)\\ CONOPT (GAMS)\end{tabular}} \\
 \begin{tabular}[c]{@{}l@{}}MIP\\ MILP\\ MINLP\\ MIQP\end{tabular}       & \begin{tabular}[c]{@{}l@{}}Branch and bound\\ Dynamic programming\\ Generalized Benders decomposition\\ Outer approximation method\\ Disjunctive programming\end{tabular} & \begin{tabular}[c]{@{}l@{}}Bintprog (Matlab)\\ DICOPT (GAMS)\\ BARON (GAMS)\end{tabular}                                        \\ \hline
@@ -752,8 +791,8 @@ T_2 = \begin{bmatrix}
     \end{array}
     \]
     \column{0.5\textwidth}
-    Using the function \texttt{linprog} from \texttt{scipy.optimize}:
-    \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
+    Using the function \lstinline|linprog| from \lstinline|scipy.optimize|:
+    \begin{lstlisting}
 from scipy.optimize import linprog
 
 c = [-5, -4, -6]
@@ -764,7 +803,7 @@ bounds = [(0, None), (0, None), (0, None)]
 res = linprog(c, A_ub=A, b_ub=b, bounds=bounds)
     \end{lstlisting}
 Gives (after accessing appropriate attributes of the result object):
-    \begin{lstlisting}[language=Python, basicstyle=\scriptsize]
+    \begin{lstlisting}
 x = res.x
 fun = res.fun
 slack = res.slack
