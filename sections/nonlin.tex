@@ -1,0 +1,1351 @@
+\part{Non-linear equations}
+\section{Introduction}
+\subsection*{General}
+\begin{frame}[label=contents_nonlin]
+  \frametitle{Outline}
+  \mode<beamer>{
+    \only<1>{\tableofcontents}
+  }
+  \only<2>{\tableofcontents[currentsection,currentsubsection]}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Goals}
+  \begin{block}{Root finding}
+    How to solve \(\mathbf{f}(\mathbf{x}) = \mathbf{0}\) for arbitrary functions \(\mathbf{f}\) (i.e., \(\mathbf{f}(\mathbf{x})\) move all terms to the left)
+  \end{block}
+\vskip2em
+Introduction to underlying ideas and algorithms:
+  \begin{itemize}
+    \item One-dimensional case: 'Bracket' or 'trap' a root between bracketing values, then hunt it down like a rabbit.
+    \item Multi-dimensional case:
+    \begin{itemize}
+      \item \(N\) equations in \(N\) unknowns: You can only hope to find a solution.
+      \item It may have no (real) solution, or more than one solution!
+      \item Much more difficult!!
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\subsection*{Passing functions}
+\againframe<2>{contents_nonlin}
+\begin{frame}[fragile]
+  \frametitle{A short intermezzo: functions revisited}
+  \begin{itemize}
+    \item In Python, you can define your own functions to reuse certain functionalities. We can define a mathematical function at the top of a file, or in a separate file with \lstinline|.py| extension:
+          \begin{lstlisting}
+def demo_f1(x):
+    return x**2 + np.exp(x)
+      \end{lstlisting}
+    \item The first line contains the function name, in this case \lstinline|demo_f1|
+    \item The return statement defines the output, \lstinline|x| is defined as input
+    \item It can use \lstinline|x| as a scalar as well as a vector by using NumPy: e.g. \lstinline|np.exp()|
+    \begin{itemize}
+      \item If \lstinline|x| is a vector, the output is also a vector.
+    \end{itemize}
+    \item In case you define your function in a separate file, e.g. \lstinline|nonlin_functions.py|, you can import the function into another file through:
+    \begin{lstlisting}
+from nonlin_functions import demo_f1
+    \end{lstlisting}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Passing Functions in Python}
+
+  \begin{itemize}
+    \item To solve \( f(x) = x^2 - 4x + 2 = 0 \) numerically, we first need to write a function that returns the value of \( f(x) \):
+          \begin{lstlisting}
+def MyFunc(x):  # Note: case sensitive!!
+    return x**2 - 4*x + 2
+      \end{lstlisting}
+    \item The function can be assigned to a variable as an alias:
+    \begin{columns}[T]
+      \column{0.5\textwidth}
+      \begin{lstlisting}
+f = MyFunc
+a = 4
+b = f(a)
+      \end{lstlisting}    
+      \column{0.3\textwidth}
+      \begin{lstlisting}[style=PyOutput]
+
+
+2
+      \end{lstlisting}
+    \end{columns}
+    \item We can then call a solving routine (e.g., \lstinline|fsolve| from SciPy):
+    \begin{columns}[T]
+      \column{0.5\textwidth}
+      \begin{lstlisting}
+from scipy.optimize import fsolve
+ans = fsolve(MyFunc, 5)
+ans = fsolve(lambda x: x**2 - 4*x + 2, 5)
+      \end{lstlisting}
+      \column{0.3\textwidth}
+      \begin{lstlisting}[style=PyOutput]
+
+array([3.41421356])
+array([3.41421356])
+        \end{lstlisting}
+    \end{columns}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Passing Functions in Python}
+
+  \begin{itemize}
+    \item We can also make our own function, that takes another function as an argument:
+          \begin{lstlisting}
+import matplotlib.pyplot as plt
+import numpy as np
+
+def draw_my_function(func):
+    # Draws a function in the range [0, 10] using 20 data points.
+    # 'func' is a function that can be any actual function.
+    x = np.linspace(0, 10, 20)
+    y = func(x)
+    plt.plot(x, y, "-o")
+    plt.show()
+      \end{lstlisting}
+
+    \item Now we can call the function with another function, either a lambda function or a common function:
+          \begin{lstlisting}
+f = lambda x: x**2 - 4*x + 2
+draw_my_function(f)
+      \end{lstlisting}
+  \end{itemize}
+\end{frame}
+
+\section{Bracketing}
+\subsection*{General}
+\againframe<2>{contents_nonlin}
+
+{\nologo
+\begin{frame}[fragile]
+  \frametitle{Bracketing}
+  Bracketing a root involves identifying an interval \((a, b)\) within which the function changes its sign.
+  \begin{columns}
+    \column{0.4\textwidth}
+    \vspace{0.25cm}
+    \input{tikzplots/bracketing_diagram}
+    \vspace{0.25cm}
+    \input{tikzplots/intermediate_value_theorem_diagram}
+    \column{0.5\textwidth}
+    \begin{itemize}
+      \item If \(f(a)\) and \(f(b)\) have opposite signs, it indicates that at least one root lies in the interval \((a, b)\), assuming the function is continuous in the interval.
+      % \item This is supported by the Intermediate Value Theorem.
+    \end{itemize}
+    \begin{block}{Intermediate value theorem}
+      States that if \(f(x)\) is continuous on \([a, b]\) and \(k\) is a constant lying between \(f(a)\) and \(f(b)\), then there exists a value \(x \in [a, b]\) such that \(f(x) = k\).
+    \end{block}
+  \end{columns}
+\end{frame}
+}
+
+\begin{frame}[fragile]
+  \frametitle{Bracketing}
+
+  \begin{block}{What's the point?}
+    Bracketing a root = Understanding that the function changes its sign in a specified interval, which is termed as bracketing a root.
+  \end{block}
+  \vspace*{1cm}
+  \begin{columns}
+    \column{0.4\textwidth}
+    \vspace{0.25cm}
+    \input{tikzplots/bracketing_diagram.tex}
+
+    \column{0.5\textwidth}
+    \textbf{General best advice}:
+    \begin{itemize}
+      \item Always bracket a root before attempting to converge on a solution.
+      \item Never allow your iteration method to get outside the best bracketing bounds...
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+{\nologo
+\begin{frame}[fragile]
+  \frametitle{General Idea}
+  Potential issues to be cautious of while bracketing:
+  \begin{columns}
+    \column{0.45\textwidth}
+    \input{tikzplots/no_solutions.tex}\vspace{0.01cm}
+    \newline
+    No answer (no root found)
+    \vspace{0.8cm}
+
+    \input{tikzplots/one_solution.tex}\vspace{0.01cm}
+    \newline
+    Ideal scenario with one root found
+    \vspace{0.8cm}
+
+    \column{0.45\textwidth}
+    \input{tikzplots/two_solutions.tex}\vspace{0.01cm}
+    \newline
+    Oops! Encountering two roots
+    \vspace{0.8cm}
+
+    \input{tikzplots/three_solutions.tex}\vspace{0.01cm}
+    \newline
+    Finding three roots (might work temporarily)
+    \vspace{0.8cm}
+  \end{columns}
+  % Add any visual or diagram here, replace 'path/to/your/diagram' with the actual path to your diagram file
+  % \includegraphics[width=0.5\textwidth]{path/to/your/diagram}
+\end{frame}
+}
+
+\begin{frame}[fragile,label=practice_nonlin2]
+  \frametitle{Bracketing exercise}
+  Write a Python function to bracket a function, starting with an initially guessed interval \lstinline|iv=[x1,x2]| through the expansion of the interval bounds with a growth factor \lstinline|gr|.
+    \begin{enumerate}
+      \item Define a function with input \lstinline|func| and interval \lstinline|iv|
+      \item Test whether the interval is currently bracketing a root: \lstinline|f(x1)*f(x2)<0|
+      \item If \lstinline|True|: exit function and return the interval. 
+      \item If \lstinline|False|:
+        \begin{itemize}
+        \item Find the function evaluation (\lstinline|f(x1)| or \lstinline|f(x2)|) closest to zero
+        \item Expand that interval boundary with the growth factor times the interval size
+        \item Lower interval boundary should decrease, upper interval boundary should increase
+        \item Re-evaluate the function on the new bounds
+        \end{itemize}
+      \item Repeat from 2
+    \end{enumerate}
+    Test the function for \( f(x) = x^2 -4x +2 \)
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Bracketing exercise}
+  \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+def bracket(func,iv,gr=0.2,max_it=100):
+    if not callable(func):
+            print("The function func should be a callable function.")
+            return
+        if len(iv) != 2 or iv[0]==iv[1]:
+            print("The interval iv should be a list or array of size 2 with unique values.")
+            return
+    
+    # Make sure that the interval is ordered and of type float
+    iv = np.sort(np.array(iv,dtype=np.float64))
+    feval = func(iv)
+    it = 0
+
+    while np.prod(feval) > 0:
+        interval_size = ...
+        
+        # Determine which value is closer to 0
+        
+        # Expand interval range
+        
+        # Apply new boundaries
+
+        # Safeguard possible divergence
+        if (it := it+1) >= max_it:
+            print(f"Maximum iterations reached, no bracket found on interval {iv}")
+            return False,iv
+ 
+    print(f"Bracketing interval found: {iv}")
+    return True,iv
+  \end{lstlisting}
+\end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Bracketing - exercise 2}
+
+%   \begin{itemize}
+%     \item Initially, if feasible, draft a graph using the following Python commands:
+%     % TODO: Add plot
+%           \begin{lstlisting}
+% import matplotlib.pyplot as plt
+% import numpy as np
+
+% x = np.linspace(0, 5, 50)
+% y = x**2 - 4*x + 2
+% plt.figure()
+% plt.plot(x, y, x, np.zeros(len(x)))
+% plt.axis('tight')
+% plt.grid(True)
+% plt.show()
+%         \end{lstlisting}
+%     \item This graphical representation instantly reveals the existence of two roots, evaluated as:
+%           \[
+%             x_1 = 2 - \sqrt{2} \approx 0.59 \quad ,\qquad
+%             x_2 = 2 + \sqrt{2} \approx 3.41
+%           \]
+%   \end{itemize}
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Bracketing}
+
+%   \textbf{Exercise 2: Function to Bracket a Function}
+%   \begin{itemize}
+%     \item Devise a Python function to bracket a function with an initial guessed range of \( x_1 \) and \( x_2 \) through the expansion of the interval.
+%     \item Create a program to determine the minimum number of roots within the \( x_1 \) and \( x_2 \) interval.
+%     \item \textbf{Remark}: These functions can be synergized to build a function that designates bracketing intervals for varying roots.
+%   \end{itemize}
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Bracketing - exercise 2}
+
+%   \begin{columns}
+%     \column{0.57\textwidth}
+%     % TODO: Return x1, x2
+%     \begin{lstlisting}[style=tiny]
+% def find_root_by_bracketing(func, x1, x2, tol=1e-6, max_iter=1000):
+%   # Ensure the bracket is valid
+%   if func(x1) * func(x2) > 0:
+%       print('The bracket is invalid. The function must have opposite signs at the two endpoints.')
+%       return False
+
+%   # Loop until we find the root or exceed the maximum number of iterations
+%   for i in range(max_iter):
+%       # Find the midpoint
+%       x_mid = (x1 + x2) / 2
+      
+%       # Check if we found the root
+%       if abs(func(x_mid)) < tol:
+%           print(f'Root found: {x_mid}')
+%           return True
+      
+%       # Narrow down the bracket
+%       if func(x_mid) * func(x1) < 0:
+%           x2 = x_mid
+%       else:
+%           x1 = x_mid
+
+%   # If we reach here, we did not find the root within the maximum number of iterations
+%   print('Failed to find the root within the maximum number of iterations.')
+%   return False
+%       \end{lstlisting}
+%     \column{0.4\textwidth}
+%     \textbf{Steps:}
+%     \begin{itemize}
+%       \item Formulate a function to augment the interval \((x_1, x_2)\) up to a maximum of 250 iterations or until a root is discovered.
+%       \item The function should:
+%             \begin{itemize}
+%               \item Return true if a root is found, and false otherwise.
+%               \item Showcase the results.
+%             \end{itemize}
+%     \end{itemize}
+%   \end{columns}
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Bracketing}
+
+%   \textbf{Exercise 2: Function to Bracket a Function}
+%   \begin{columns}
+%     \column{0.49\textwidth}
+%     \begin{lstlisting}
+% def brak(func, x1, x2, n):
+%     nroot = 0
+%     dx = (x2 - x1) / n
+%     xb1 = []
+%     xb2 = []
+
+%     x = x1
+%     for i in range(n):
+%         x += dx
+%         if func(x) * func(x - dx) <= 0:
+%             nroot += 1
+%             xb1.append(x - dx)
+%             xb2.append(x)
+
+%     for i in range(nroot):
+%         print(f'Root {i+1} in bracketing interval [{xb1[i]}, {xb2[i]}]')
+%     else:
+%         if nroot == 0:
+%             print('No roots found!')
+%     \end{lstlisting}
+%     \column{0.49\textwidth}
+%     \textbf{Steps:}
+%     \begin{itemize}
+%       \item The function subdivides the interval \((x_1, x_2)\) into \(n\) parts to check for at least one root.
+%       \item It returns the left and right boundaries of the intervals where roots are found in arrays xb1 and xb2.
+%     \end{itemize}
+%   \end{columns}
+% \end{frame}
+
+\section{Bisection method}
+\subsection*{General}
+\againframe<2>{contents_nonlin}
+\begin{frame}[fragile]
+  \frametitle{Bisection Method}
+
+  Bisection Algorithm:
+  \begin{itemize}
+    \item Within a certain interval, the function crosses zero, indicated by a change in sign.
+    \item Evaluate the function value at the midpoint of the interval and examine its sign.
+    \item The midpoint then supersedes the limit sharing its sign.
+  \end{itemize}
+
+  \begin{columns}
+    \column{0.45\textwidth}
+    \vspace{0.5cm}
+    \centering
+    \input{tikzplots/bisection.tex}
+    \column{0.45\textwidth}
+
+    \begin{block}{Properties}
+      \begin{itemize}
+        \item Pros: The method is infallible.
+        \item Cons: Convergence is relatively slow.
+      \end{itemize}
+    \end{block}
+  \end{columns}
+\end{frame}
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Bisection Method}
+
+%   \textbf{Exercise 3}
+%   \begin{itemize}
+%     \item Write a function in Excel to find a root of a function using the bisection method.
+%     \item Assume that an initial bracketing interval \((x_1, x_2)\) is provided.
+%     \item Specify the required tolerance.
+%     \item Output the required number of iterations.
+%     \item Implement the same in Python.
+%   \end{itemize}
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Exercise 3}
+
+%   \textbf{Bisection Method in Excel:}
+%   \begin{table}[]
+%     \begin{tabular}{|c|c|c|c|c|c|c|c|}
+%       \hline
+%       it     & \(x_1\)  & \(x_2\)  & \(f_1\)              & \(f_2\)                 & xmid     & fmid                    & Interval Size           \\
+%       \hline
+%       0      & -2       & 2        & 14                   & -2                      & 0        & 2                       & 4                       \\
+%       1      & 0        & 2        & 2                    & -2                      & 1        & -1                      & 2                       \\
+%       \vdots & \vdots   & \vdots   & \vdots               & \vdots                  & \vdots   & \vdots                  & \vdots                  \\
+%       25     & 0.585786 & 0.585786 & \(1 \times 10^{-7}\) & \(-6.8 \times 10^{-8}\) & 0.585786 & \(1.58 \times 10^{-8}\) & \(5.96 \times 10^{-8}\) \\
+%       \hline
+%     \end{tabular}
+%   \end{table}
+
+%   Note: The table represents a sequence of iterations showing how the bisection method converges to a root with each step, demonstrating variable updates and interval size reduction.
+
+% \end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Bisection Method - Python Implementation} 
+  \begin{columns}
+    \column{0.45\textwidth}
+    \begin{lstlisting}[style=tiny]
+def bisection(func, a, b, tol, maxIter):
+    if func(a) * func(b) > 0:
+        print('Error: f(a) and f(b) must have different signs.')
+        return None
+
+    iter = 0
+    while (b - a) / 2 > tol:
+        iter += 1
+        if iter >= maxIter:
+            print('Maximum iterations reached')
+            return None
+
+        c = (a + b) / 2
+        print(f'Iteration {iter}: Current estimate: {c}')
+
+        if func(c) == 0:
+            return c
+
+        if np.sign(func(c)) != np.sign(func(a)):
+            b = c
+        else:
+            a = c
+
+    return (a + b) / 2
+      \end{lstlisting}
+
+    \column{0.45\textwidth}
+    \vspace{-1cm}
+    \begin{itemize}
+      \item Criterion used for both the function value and the step size.
+      \item While loop usually requires protection for a maximum number of iterations.
+      \item Bisection is sure to converge.
+      \item Root found in 25 iterations. Can we optimize it further?
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Bisection Method}
+
+  \textbf{Required Number of Iterations:}
+  \begin{itemize}
+    \item Interval bounds containing the root decrease by a factor of 2 after each iteration.
+          \begin{columns}
+            \column{0.40\textwidth}
+            \[
+              \varepsilon_{n+1} = \frac{1}{2}\varepsilon_n \quad\Rightarrow\quad \boxed{n = \log _2\frac{\varepsilon_0}{tol}}
+            \]
+            \column{0.55\textwidth}
+            \begin{align*}
+              \varepsilon_0 & = \text{initial bracketing interval}, \\
+              tol           & = \text{desired tolerance}.
+            \end{align*}
+          \end{columns}
+    \item After \(50\) iterations, the interval is decreased by a factor of \(2^{50} = 10^{15}\).
+    \item Consider machine accuracy when setting tolerance.
+    \item Order of convergence is \(1\):
+          \begin{columns}
+            \column{0.30\textwidth}
+            \[
+              \boxed{\varepsilon_{n+1} = K\varepsilon_n ^ m}
+            \]
+            \column{0.69\textwidth}
+            \begin{itemize}
+              \item \(m = 1\): linear convergence.
+              \item \(m = 2\): quadratic convergence.
+            \end{itemize}
+          \end{columns}
+          \vspace{0.25cm}
+    \item Bisection method will:
+          \begin{itemize}
+            \item Find one of the roots if there is more than one.
+            \item Find the singularity if there is no root but a singularity exists.
+          \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\section{Other methods}
+\subsection*{General}
+\againframe<2>{contents_nonlin}
+\begin{frame}[fragile]
+  \frametitle{Secant and False Position Method}
+
+  \textbf{Secant/False Position (Regula Falsi) Method}
+  \begin{itemize}
+    \item Provides faster convergence given sufficiently smooth behavior.
+    \item Differs from the bisection method in the choice of the next point:
+          \begin{itemize}
+            \item \textbf{Bisection}: selects the mid-point of the interval.
+            \item \textbf{Secant/False position}: chooses the point where the approximating line intersects the axis.
+          \end{itemize}
+    \item Adopts a new estimate by discarding one of the boundary points:
+          \begin{itemize}
+            \item \textbf{Secant}: retains the most recent of the previous estimates.
+            \item \textbf{False position}: maintains the prior estimate with the opposite sign to ensure the points continue to bracket the root.
+          \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Secant and False Position Method: Comparison}
+
+  \begin{columns}
+    \column{0.49\textwidth}
+    \textbf{Secant Method}
+    \vspace{0.1cm}
+    \newline
+
+    \input{tikzplots/bisection.tex}
+
+    \begin{itemize}
+      \item Slightly faster convergence:
+            \[
+              \lim_{n \to \infty} \vline\varepsilon_{n+1}\vline = K\vline\varepsilon_n\vline^{1.618}
+            \]
+    \end{itemize}
+
+    \column{0.49\textwidth}
+    \textbf{False Position Method}
+    \vspace{0.3cm}
+    \newline
+    % \begin{tikzpicture}
+    \input{tikzplots/false_position.tex}
+    % \end{tikzpicture}
+    \begin{itemize}
+      \item Guaranteed convergence
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Brent's Method}
+
+  \textbf{Features of Brent's method:}
+  \begin{itemize}
+    \item Superlinear convergence with the sureness of bisection
+    \item Keeps track of superlinear convergence, and if not achieved, alternates with bisection steps, ensuring at least linear convergence
+    \item Implemented in \lstinline|scipy.optimize.fzero| function:
+          \begin{itemize}
+            \item Utilizes root-bracketing
+            \item Bisection/secant/inverse quadratic interpolation
+          \end{itemize}
+    \item Inverse quadratic interpolation:
+          \begin{itemize}
+            \item Uses three prior points to fit an inverse quadratic function ($x(y)$)
+            \item Involves contingency plans for roots falling outside the brackets
+          \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Secant and False Position Method}
+
+%   \textbf{Exercise 4:}
+%   \begin{itemize}
+%     \item Write a function in Excel and Python to find a root of a function using the Secant and False position methods.
+%     \item Assume that an initial bracketing interval \((x_1, x_2)\) is provided.
+%     \item Specify the required tolerance.
+%     \item Output the required number of iterations.
+%     \item Compare the bisection, false position, and secant methods.
+%   \end{itemize}
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Secant and False Position Method}
+
+%   \textbf{Exercise 4:}
+%   \begin{itemize}
+%     \item Determination of the abscissa of the approximating line:
+%           \begin{columns}
+%             \column{0.5\textwidth}
+%             \begin{itemize}
+%               \item Determine the approximating line using the expression:
+%                     \[
+%                       f(x) \approx f(a) + \frac{f(b) - f(a)}{b - a}(x - a)
+%                     \]
+%               \item Determine the abscissa where \(f(x^*) = 0\):
+%                     \begin{align*}
+%                       x^* & = a - \frac{f(a)(b - a)}{f(b) - f(a)} \\
+%                           & = \frac{af(b) - bf(a)}{f(b) - f(a)}
+%                     \end{align*}
+%             \end{itemize}
+%             \column{0.5\textwidth}
+%             \vspace{0.5cm}
+%             \input{tikzplots/false_position_mid.tex}
+%           \end{columns}
+%   \end{itemize}
+%   Note: In the above equations, \(a\) and \(b\) are the initial guesses/boundaries where the root is suspected to be, and \(f(x)\) is the function for which we are finding the root.
+% \end{frame}
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Secant and False Position Method}
+
+%   \textbf{Exercise 4:}
+%   \begin{itemize}
+%     \item Write a function in Excel and Python to find a root of a function using the Secant and the False position methods.
+%     \item Assume that an initial bracketing interval \((x_1, x_2)\) is provided.
+%     \item Specify the required tolerance.
+%     \item Output the required number of iterations.
+%     \item Compare the bisection, false position, and secant methods.
+%   \end{itemize}
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Secant and False Position Method}
+
+%   \textbf{Exercise 4: False Position Method in Excel}
+%   \begin{table}[]
+%     \begin{tabular}{|l|l|l|l|l|l|l|l|}
+%       \hline
+%       iteration & xa      & xb     & fa      & fb     & x absc  & fabsc   & interval \\ \hline
+%       0         & -1.5000 & 4.0000 & -0.3895 & 2.1628 & -0.6606 & -0.8455 & 5.5000   \\ \hline
+%       1         & -0.6606 & 4.0000 & -0.8455 & 2.1628 & 0.6493  & 0.6896  & 4.6606   \\ \hline
+%       2         & -0.6606 & 0.6493 & -0.8455 & 0.6896 & 0.0609  & -0.1972 & 1.3099   \\ \hline
+%       3         & 0.0609  & 0.6493 & -0.1972 & 0.6896 & 0.1917  & 0.0070  & 0.5884   \\ \hline
+%       4         & 0.0609  & 0.1917 & -0.1972 & 0.0070 & 0.1873  & -0.0001 & 0.1308   \\ \hline
+%       5         & 0.1873  & 0.1917 & -0.0001 & 0.0070 & 0.1874  & 0.0000  & 0.0045   \\ \hline
+%       6         & 0.1874  & 0.1917 & 0.0000  & 0.0070 & 0.1874  & 0.0000  & 0.0044   \\ \hline
+%       7         & 0.1874  & 0.1917 & 0.0000  & 0.0070 & 0.1874  & 0.0000  & 0.0044   \\ \hline
+%     \end{tabular}
+%   \end{table}
+%   Relevant expressions:
+%   \begin{itemize}
+%     \item \lstinline|a=IF((a*fa)<0,a,xbsc)|
+%     \item \lstinline|b=IF((b*fb)<0,b,xbsc)|
+%     \item \lstinline|xbsc=a - fa*(xb-xa)/(fb-fa)|
+%   \end{itemize}
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Secant and False Position Method}
+
+%   \textbf{Exercise 4:}
+%   \begin{itemize}
+%     \item Write a function in Excel and Python to find a root of a function using the Secant and the False position methods.
+%     \item Assume that an initial bracketing interval \((x_1, x_2)\) is provided.
+%     \item Also the required tolerance is specified.
+%     \item Also output the required number of iterations.
+%     \item Compare the bisection, false position, and secant methods.
+%   \end{itemize}
+% \end{frame}
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Secant and False Position Method}
+
+%   \textbf{Exercise 4: Secant method in excel}
+
+%   \begin{table}[]
+%     \begin{tabular}{|l|l|l|}
+%       \hline
+%       iteration & x       & f       \\ \hline
+%       -1        & 2.0000  & 0.5895  \\ \hline
+%       0         & -1.0000 & -0.7591 \\ \hline
+%       1         & 0.6886  & 0.7368  \\ \hline
+%       2         & -0.1431 & -0.4819 \\ \hline
+%       3         & 0.1857  & -0.0026 \\ \hline
+%       4         & 0.1875  & 0.0002  \\ \hline
+%       5         & 0.1874  & 0.0000  \\ \hline
+%     \end{tabular}
+%   \end{table}
+%   \textbf{Relevant expressions:}
+%   \[
+%     x_{n} = x_{n-1} - f(x_{n-1})\frac{x_{n-1} - x_{n-2}}{f(x_{n-1}) - f(x_{n-2})}
+%   \]
+%   \[
+%     f_{n} = f(x_{n})
+%   \]
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Secant and False Position Method}
+
+%   \textbf{Exercise 4: False position method in Python}
+%   \begin{lstlisting}
+% def false_position(f, x0, x1, tol, max_iter):
+%     if f(x0) * f(x1) > 0:
+%         raise ValueError('f(x0) and f(x1) must have different signs.')
+
+%     history = []
+
+%     for i in range(max_iter):
+%         x2 = x1 - f(x1) * (x1 - x0) / (f(x1) - f(x0))
+%         history.append(x2)
+
+%         if abs(f(x2)) < tol:
+%             break
+
+%         if f(x2) * f(x0) < 0:
+%             x1 = x2
+%         else:
+%             x0 = x2
+
+%     root = x2
+%     return root, history
+%   \end{lstlisting}
+
+%   Calling the function:
+%   \begin{lstlisting}
+% secant_method(lambda x: x**2 - 4*x + 2, 0, 2, 1e-7, 100)
+%   \end{lstlisting}
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Secant and False Position Method}
+
+%   \textbf{Exercise 4: Secant method in Python}
+%   \begin{lstlisting}
+% def secant_method(f, x0, x1, tol, max_iter):
+%     history = [x0, x1]
+    
+%     for i in range(1, max_iter):
+%         x2 = x1 - f(x1) * (x1 - x0) / (f(x1) - f(x0))
+%         history.append(x2)
+
+%         if abs(x2 - x1) < tol:
+%             break
+
+%         x0 = x1
+%         x1 = x2
+
+%     root = x1
+%     return root, history
+%   \end{lstlisting}
+
+%   Calling the function:
+%   \begin{lstlisting}[language=Python, basicstyle=\small]
+% false_position(lambda x: x**2 - 4*x + 2, 0, 2, 1e-7, 100)
+%   \end{lstlisting}
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Comparison of Methods}
+
+%   \textbf{Exercise 4:}
+%   \begin{itemize}
+%     \item \( \text{tol}_{\text{eps}}, \text{tol}_{\text{func2}} = 1e-15, \quad \text{and} \quad (x_1, x_2) = (0,2) \)
+%     \item \( f(x) = x^2 - 4x + 2 = 0 \)
+%   \end{itemize}
+
+%   \begin{table}
+%     \begin{tabular}{|l|c|}
+%       \hline
+%       Method         & Nr. of iterations \\
+%       \hline
+%       Bisection      & 52                \\
+%       False position & 22                \\
+%       Secant         & 9                 \\
+%       \hline
+%     \end{tabular}
+%   \end{table}
+
+%   \begin{lstlisting}[language=Python, basicstyle=\small]
+% from scipy.optimize import root_scalar
+
+% root_scalar(lambda x: x**2 - 4*x + 2, method='brentq', bracket=[0, 2], xtol=1e-15)
+%   \end{lstlisting}
+
+%   Note the initial bracketing steps in root\_scalar!
+% \end{frame}
+
+% \section{Brent's method}
+% \subsection*{General}
+% \againframe<2>{contents_nonlin}
+% \begin{frame}[fragile]
+%   \frametitle{Brent's Method}
+
+%   \textbf{Features of Brent's method:}
+%   \begin{itemize}
+%     \item Superlinear convergence with the sureness of bisection
+%     \item Keeps track of superlinear convergence, and if not achieved, alternates with bisection steps, ensuring at least linear convergence
+%     \item Implemented in \lstinline|scipy.optimize.fzero| function:
+%           \begin{itemize}
+%             \item Utilizes root-bracketing
+%             \item Bisection/secant/inverse quadratic interpolation
+%           \end{itemize}
+%     \item Inverse quadratic interpolation:
+%           \begin{itemize}
+%             \item Uses three prior points to fit an inverse quadratic function ($x(y)$)
+%             \item Involves contingency plans for roots falling outside the brackets
+%           \end{itemize}
+%   \end{itemize}
+
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Brent's method}
+%   \textbf{Formulas:}
+%   \begin{align*}
+%     x & = b + \frac{P}{Q},                        & R & = \frac{f(b)}{f(c)} \\
+%     P & = S\left[T(R-T)(c-b) - (1-R)(b-a)\right], & S & = \frac{f(b)}{f(a)} \\
+%     Q & = (T-1)(R-1)(S-1),                        & T & = \frac{f(a)}{f(c)}
+%   \end{align*}
+%   \begin{itemize}
+%     \item b = current best estimate
+%     \item $P/Q$ = a 'small' correction
+%   \end{itemize}
+%   Note: If P/Q does not land within the bounds or if bounds are not collapsing quickly enough, a bisection step is taken.
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Brent's method script}
+%   \begin{columns}
+%     \column{0.49\textwidth}
+%     \lstinputlisting[style=tiny,lastline=28]{scripts/nonlinear/brents_method.py}
+%     \column{0.49\textwidth}
+%     \lstinputlisting[style=tiny,firstline=28,lastline=57,firstnumber=28]{scripts/nonlinear/brents_method.py}
+%   \end{columns}
+% \end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Using Excel for Solving Non-linear Equations: Goal-Seek and Solver}
+
+  \textbf{Setting up Goal-Seek and Solver in Excel:}
+  \begin{itemize}
+    \item Available in Excel with some prerequisites installation.
+    \item For Excel 2010:
+          \begin{itemize}
+            \item Install via \texttt{Excel → File → Options → Add-Ins → Go} (at the bottom) \texttt{→ Select solver add-in}.
+            \item Accessible through the 'data' menu ('Oplosser' in Dutch).
+          \end{itemize}
+  \end{itemize}
+
+  \textbf{Procedure for solving:}
+  \begin{itemize}
+    \item Select the goal-cell.
+    \item Specify whether you want to minimize, maximize, or set a certain value.
+    \item Define the variable cells for Excel to adjust to find the solution.
+    \item Set the boundary conditions (if any).
+    \item Click 'solve', possibly after setting advanced options.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Excel: Goal-Seek Example}
+
+  \textbf{Using Goal-Seek to find a solution:}
+  \begin{itemize}
+    \item The Goal-Seek function can set the goal-cell to a desired value by adjusting another cell.
+    \item Steps:
+          \begin{enumerate}
+            \item Open Excel and input the following data:
+
+                  \begin{tabular}{|c|c|c|}
+                    \hline
+                    A & x    & B                            \\
+                    \hline
+                    1 & x    & 3                            \\
+                    \hline
+                    2 & f(x) & f(x) = -3*B1\^{}2 - 5*B1 + 2 \\
+                    \hline
+                    3 &      &                              \\
+                    \hline
+                  \end{tabular}
+
+            \item Navigate to \texttt{Data → What-if Analysis → Goal Seek} and input:
+                  \begin{itemize}
+                    \item Set cell: B2
+                    \item To value: 0
+                    \item By changing cell: B1
+                  \end{itemize}
+            \item Press OK to find a solution of approximately 0.3333.
+          \end{enumerate}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Excel: Solver Example}
+
+  \textbf{Using Solver to Find Solutions with Boundary Conditions:}
+  \begin{itemize}
+    \item Solver can adjust values in one or more cells to reach a desired goal-cell value, respecting specified boundary conditions.
+    \item Example sheet setup:
+
+          \begin{tabular}{|c|c|c|c|}
+            \hline
+              & A  & B & C             \\
+            \hline
+            1 &    & x & f(x)          \\
+            \hline
+            2 & x1 & 3 & =2*B2*B3-B3+2 \\
+            \hline
+            3 & x2 & 4 & =2*B3-4*B2-4  \\
+            \hline
+          \end{tabular}
+
+    \item Procedure:
+          \begin{enumerate}
+            \item Navigate to \texttt{Data → Solver}.
+            \item Set the goal function to C2 with a target value of 0.
+            \item Add a boundary condition: C3 = 0.
+            \item Specify the cells to change as \texttt{\$B\$2:\$B\$3}.
+            \item Click "Solve" to find B2 = 0 and B3 = 2 as solutions.
+          \end{enumerate}
+  \end{itemize}
+\end{frame}
+
+
+\section{Newton-Raphson method}
+\subsection*{Introduction}
+\againframe<2>{contents_nonlin}
+
+\begin{frame}[fragile]
+    \frametitle{Newton-Raphson Method}
+    Very effective method, often used.
+    \begin{itemize}
+        \item Requires evaluating both the function \( f(x) \) and its derivative \( f'(x) \) at arbitrary points.
+        \item Extend the tangent line at the current point \( x_i \) until it intersects with zero.
+        \item Set the next guess \( x_{i+1} \) as the abscissa of that zero crossing.
+        \item For small enough \( \delta x \) and well-behaved functions, non-linear terms in the Taylor series become unimportant.
+    \end{itemize}
+    \vspace{-0.10cm}
+    \begin{align*}
+    f(x) &\approx f(x_i) + f'(x_i)\delta x + \mathcal{O}(\delta x^2) + \dots \\
+    0 &\approx f(x_i) + f'(x_i)\delta x \\
+    \delta x &\approx -\frac{f(x_i)}{f^\prime (x_i)} \\
+    \end{align*}
+
+    \vspace{-1.2cm}
+    \begin{columns}
+      \column{0.3\textwidth}
+    \[
+      \boxed{x_{i+1} = x_i - \frac{f(x_i)}{f'(x_i)}}
+      \]   
+    \column{0.6\textwidth}
+    \begin{itemize}
+        \item Can be extended to higher dimensions.
+        \item Requires an initial guess close enough to the root to avoid failure.
+    \end{itemize}
+  \end{columns}
+    
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Newton-Raphson Method}
+    \vspace{-0.4cm}
+    \begin{columns}
+    \column{0.54\textwidth}
+    \textbf{Example with the Formula:}
+      \[
+      x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}
+      \]
+    \textbf{When it works:}
+    \begin{itemize}
+        \item Converges enormously fast when it functions correctly.
+    \end{itemize}
+    
+    \textbf{When it does not work:}
+    \begin{itemize}
+        \item Underrelaxation can sometimes be helpful.
+        \item Underrelaxation formula:
+        \begin{align*}
+        x_{n+1} = (1-\lambda)x_n + \lambda x_{n+1}\\
+        \lambda \in [0,1]  
+        \end{align*}
+    \end{itemize}
+    \column{0.43\textwidth}
+    \input{tikzplots/newton_works.tex}
+    \input{tikzplots/newton_not_works.tex}
+   \end{columns}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Newton-Raphson Method}
+    \textbf{Basic Algorithm:}
+
+    Given initial \( x \) and a required tolerance \( \varepsilon > 0 \),
+    \begin{enumerate}
+        \item Compute \( f(x) \) and \( f'(x) \).
+        \item If \( |f(x)| \leq \varepsilon \), return \( x \).
+        \item Update \( x \) using the formula:
+        \[
+        x \leftarrow x - \frac{f(x)}{f'(x)}
+        \]
+    \end{enumerate}
+    Repeat the above steps until a solution is found within the tolerance or the maximum number of iterations is exceeded.
+\end{frame}
+
+% \begin{frame}[fragile]
+%     \frametitle{Newton-Raphson Method}
+
+%     \textbf{Exercise 5: Newton-Raphson Method in Excel}
+%     \begin{table}[]
+%       \begin{tabular}{|l|l|l|l|}
+%       \hline
+%       iteration & x        & f        & f'       \\ \hline
+%       0         & -2       & 14       & -8       \\ \hline
+%       1         & -0.25    & 3.0625   & -4.5     \\ \hline
+%       2         & 0.430556 & 0.463156 & -3.13889 \\ \hline
+%       3         & 0.57811  & 0.021772 & -2.84378 \\ \hline
+%       4         & 0.585766 & 5.86E-05 & -2.82847 \\ \hline
+%       5         & 0.585786 & 4.29E-10 & -2.82843 \\ \hline
+%       6         & 0.585786 & 0        & -2.82843 \\ \hline
+%       \end{tabular}
+%       \end{table}
+
+%       Used formulas:
+%       \begin{align*}
+%       f(x) &= x^2 - 4x + 2\\
+%       f^\prime &= 2x - 4\\
+%       x_{n+1} &= x_n - \frac{f(x_n)}{f^\prime(x_n)}
+%       \end{align*}
+% \end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Newton-Raphson Method}
+    
+    \textbf{Why is the Newton-Raphson so powerful?}
+    \begin{itemize}
+        \item High rate of convergence
+        \item Can achieve quadratic convergence!
+    \end{itemize}
+
+    \begin{columns}
+      \column{0.4\textwidth}
+      \textbf{Derivation of quadratic convergence:}
+      \begin{enumerate}
+          \item Subtract solution
+          \item Define error
+          \item Express in terms of error
+          \item Use taylor expansion around solution
+          \item Rewrite in terms of error
+          \item Ignore higher order terms
+        \end{enumerate}
+        \column{0.5\textwidth}
+        \begin{align*}
+          &x_{n+1} - x^*     = x_n - x^* - f(x_n)/f^\prime(x_n) \\
+        &\varepsilon_n    = x_n - x^*  \\
+        &\varepsilon_{n+1} = \varepsilon_n - f(x_n)/f^\prime(x_n)  \\
+        &\varepsilon_{n+1} \approx \varepsilon_n - \frac{f(x^*)+f^{\prime}(x^*)\varepsilon_n+f^{\prime\prime}(x^*)\varepsilon_n ^2}{f^\prime(x^*)+\mathcal{O}(\varepsilon_n ^2)}\\
+        &\varepsilon_{n+1} \approx -\frac{f^{\prime\prime}(x^*)\varepsilon_n ^2 + \mathcal{O}(\varepsilon_n ^3)}{f^\prime(x^*)+\mathcal{O}(\varepsilon_n ^2)}\\
+        &\boxed{\varepsilon_{n+1} \approx -K\varepsilon_n ^2}
+        \end{align*}
+      \end{columns}
+\end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Newton-Raphson Method}
+    
+%   \textbf{Deriving the order of convergence}
+%   \begin{itemize}
+%     \item The main issue with determining the order of convergence is that the solution is not known a priori
+%     \item To get around this issue it is possible to rewrite the problem in terms of known quantities.
+%     \item In the coming derivation, the following steps are taken to derive the order of convergence:
+%     \begin{enumerate}
+%       \item The formal definition of $K$ is given in terms of $\varepsilon$ and the order of convergence $m$
+%       \item This formal definition is used to rewrite the fraction of successive errors
+%       \item Logarithms are used to isolate $m$
+%     \end{enumerate}
+%     \item Since the $\varepsilon$ can't be computed without knowing the solution, the following approximation is made before plugging the final result:
+%     \[\varepsilon_{n+1} \approx | x_{n+1}-x_n|\]
+%   \end{itemize}
+% \end{frame}
+
+% \begin{frame}[fragile]
+%     \frametitle{Newton-Raphson Method}
+%     \begin{enumerate}
+%     \item Formal definition of $K$ and $m$:
+%     \[\lim_{{n \to \infty}} |\varepsilon_{n+1}| = K|\varepsilon_n|^m\]
+%     \item Fraction of successive errors:
+%     \[\frac{|\varepsilon_{n+1}|}{|\varepsilon_n|} = \frac{K|\varepsilon_{n}|^m}{K|\varepsilon_{n-1}|^m} \Rightarrow \left| \frac{\varepsilon_n}{\varepsilon_{n-1}} \right|^m\]
+%     \item Extracting $m$:
+%     \[\ln \left| \frac{\varepsilon_{n+1}}{\varepsilon_n} \right| = m\ln \left| \frac{\varepsilon_n}{\varepsilon_{n-1}} \right| \Rightarrow \boxed{m = \frac{\ln \left| \frac{\varepsilon_{n+1}}{\varepsilon_n} \right|}{\ln \left| \frac{\varepsilon_n}{\varepsilon_{n-1}} \right|}}\]
+%     \end{enumerate}
+% \end{frame}
+
+% \begin{frame}[fragile]
+%     \frametitle{Newton-Raphson Method}
+    
+%     \textbf{Exercise 5: Newton-Raphson Method in Excel}
+
+%     \begin{itemize}
+%         \item In this exercise, you will be working with the Newton-Raphson method implemented in Excel.
+%         \item The order of convergence (\(m\)) can be estimated using the relation:
+%         \[m = \frac{\ln\left(\frac{\varepsilon_{n+1}}{\varepsilon_{n}}\right)}{\ln\left(\frac{\varepsilon_{n}}{\varepsilon_{n-1}}\right)}\]
+%         Where it is assumed that $\varepsilon$ can be approximated by: 
+%         \[\varepsilon_{n+1} = |x_{n+1} - x_{n}|\]
+%         \item Solve a problem using the Newton-Raphson method in Excel and verify the order of convergence using the formulas above.
+%     \end{itemize}
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Newton-Raphson Method}
+  
+%   \textbf{Exercise 5: Newton-Raphson Method in Excel solution}
+
+%   \begin{table}[]
+%     \begin{tabular}{|l|l|l|l|l|l|}
+%     \hline
+%     iteration & x      & f      & f'     & eps   & m     \\ \hline
+%     0         & -2.000 & 14.000 & -8.000 & 1.750 &       \\ \hline
+%     1         & -0.250 & 3.063  & -4.500 & 0.681 & 1.619 \\ \hline
+%     2         & 0.431  & 0.463  & -3.139 & 0.148 & 1.935 \\ \hline
+%     3         & 0.578  & 0.022  & -2.844 & 0.008 & 1.998 \\ \hline
+%     4         & 0.586  & 0.000  & -2.828 & 0.000 & 2.000 \\ \hline
+%     5         & 0.586  & 0.000  & -2.828 & 0.000 &       \\ \hline
+%     6         & 0.586  & 0.000  & -2.828 &       &       \\ \hline
+%     \end{tabular}
+%     \end{table}
+
+%     Used formulas:
+%     \begin{align*}
+%         &x_{n+1} = x_n - f(x_n)/f^\prime(x_n)  \\
+%         &m = \frac{\ln\left(\frac{\varepsilon_{n+1}}{\varepsilon_{n}}\right)}{\ln\left(\frac{\varepsilon_{n}}{\varepsilon_{n-1}}\right)}\\
+%         &\varepsilon_{n+1} = |x_{n+1} - x_{n}|
+%     \end{align*}
+% \end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Exercise: Newton-Raphson Method in Python}
+
+    \begin{itemize}
+        \item Write a Python function to find the root of a function using the Newton-Raphson method.
+        \item Assume that an initial guess \(x_0\) is provided.
+        \item The required tolerance for the solution should also be provided.
+        \item Output the results of each iteration.
+        \item Compute the order of convergence.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Exercise: Newton-Raphson Method in Python}
+  
+  \begin{lstlisting}[language=Python]
+def newton1D(f, df, x0, tol, max_iter):
+  x = x0
+  e = [0] * max_iter
+  p = float('nan')
+  for i in range(max_iter):
+      x_new = x - f(x) / df(x)
+      e[i] = abs(x_new - x)
+      if i >= 2:
+          p = (log(e[i]) - log(e[i - 1])) / (log(e[i - 1]) - log(e[i - 2]))
+      print(f'x: {x_new:.10f}, e: {e[i]:.10f}, p: {p:.10f}')
+      if e[i] < tol:
+          break
+      x = x_new
+  return x
+  \end{lstlisting}
+  \begin{itemize}
+      \item Running the following command in Python yielded convergence in 6 iterations:
+      \begin{lstlisting}[language=Python]
+newton1D(lambda x: x**2 - 4*x + 2, lambda x: 2*x - 4, 1, 1e-12, 100)
+      \end{lstlisting}
+      \item Question: Why does it not work with an initial guess of \( x_0 = 2 \)?
+      \item This exercise encourages you to think about the influence of the initial guess on the convergence of the Newton-Raphson method.
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Newton-Raphson Method}
+
+    Modifications to the Basic Algorithm
+
+    \begin{itemize}
+        \item If \(f'(x)\) is not known or is difficult to compute/program, a local numerical approximation can be used:
+        \[
+        f'(x) \approx \frac{f(x+\delta x) - f(x)}{\delta x} \quad (\text{with } \delta x \sim 10^{-8})
+        \]
+        \item The chosen \(\delta x\) should be small but not too small to avoid round-off errors.
+        
+        \item The method should be combined with:
+        \begin{itemize}
+            \item A bracketing method to prevent the solution from wandering outside of the bounds.
+            \item A reduced Newton step method for more robustness; don't take the full step if the error doesn't decrease sufficiently.
+            \item Sophisticated step size controls like local line searches and backtracking using cubic interpolation for global convergence.
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Newton-Raphson Method: Numerical Differentiation}
+  
+  \begin{lstlisting}[language=Python]
+from math import log
+def newton1Dnum(f, h, x0, tol, max_iter):
+  x = x0
+  e = [0] * max_iter
+  p = float('nan')
+  for i in range(max_iter):
+      x_new = x - f(x) / ((f(x + h) - f(x)) / h)  # NUMERICAL DIFFERENTIATION
+      e[i] = abs(x_new - x)
+      if i >= 2:
+          p = (log(e[i]) - log(e[i - 1])) / (log(e[i - 1]) - log(e[i - 2]))
+      print(f'x: {x_new:.10f}, e: {e[i]:.10f}, p: {p:.10f}')
+      if e[i] < tol:
+          break
+      x = x_new
+  return x
+  \end{lstlisting}
+  \begin{itemize}
+      \item A command involving numerical differentiation in Python:
+      \begin{lstlisting}[language=Python]
+newton1Dnum(lambda x: x**2 - 4*x + 2, 1e-7, 1, 1e-12, 100)
+      \end{lstlisting}
+      \item This demonstrates that numerical differentiation can be utilized in the Newton-Raphson method to find the roots with the same efficiency in this specific case.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Newton-Raphson Method}
+    \textbf{How to Solve for Arbitrary Functions \( f \): "Root Finding"}
+    \begin{itemize}
+        \item \textbf{One-dimensional case}:
+            \begin{itemize}
+                \item Move all terms to the left to have \( f(x) = 0 \).
+                \item Bracket or 'trap' a root between bracketing values, then hunt it down "like a rabbit."
+            \end{itemize}
+        
+        \item \textbf{Multi-dimensional case}:
+            \begin{itemize}
+                \item Involving \( N \) equations in \( N \) unknowns.
+                \item It is not guaranteed to find a solution; it might not have a real solution or might have more than one solution.
+                \item Much more challenging compared to the one-dimensional case.
+                \item It is unpredictable to know if a root is nearby unless it has been found.
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+
+\section{Python solvers}
+\subsection*{General}
+\againframe<2>{contents_nonlin}
+
+\begin{frame}[fragile]
+  \frametitle{Non-linear Equation Solving in Python: root_scalar}
+
+  Single Variable Non-linear Zero Finding:
+  \begin{itemize}
+      \item Use the \lstinline|root_scalar| function from \lstinline|scipy.optimize| for finding zeros of a single-variable non-linear function.
+      \item Be aware of the initial bracketing steps in \lstinline|root_scalar|.
+  \end{itemize}
+
+  \begin{lstlisting}[language=Python]
+from scipy.optimize import root_scalar
+
+func = lambda x: -3*x**2 - 5*x + 2
+
+root_scalar(func, method='brentq', bracket=[1, 4], xtol=1e-15)
+  \end{lstlisting}
+  \lstinputlisting[style=PyOutput]{scripts/nonlinear/output_root_scalar.txt}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Non-linear Equation Solving in Python: fsolve}
+
+  Single Variable Non-linear Root Finding:
+  \begin{itemize}
+      \item Use the \lstinline|fsolve| function from \lstinline|scipy.optimize| for finding zeros of a single-variable non-linear function.
+  \end{itemize}
+
+  \begin{lstlisting}[language=Python]
+from scipy.optimize import fsolve
+
+func = lambda x: -3*x**2 - 5*x + 2
+
+ans = fsolve(func, 1, full_output=True)
+  \end{lstlisting}
+  \lstinputlisting[style=PyOutput]{scripts/nonlinear/output_fsolve.txt}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Non-linear Equation Solving in Python: additional arguments}
+
+  \begin{itemize}
+      \item Use the help function on \lstinline|fsolve| or documentation to find out more information about its functionalities
+      \item As an example, we demonstrate the use of a function that takes multiple input parameters:
+  \end{itemize}
+
+  \begin{lstlisting}[language=Python]
+from scipy.optimize import fsolve
+
+def func(x,a):
+    return -3*x**2 - 5*x + a
+
+ans = fsolve(func, 1, args=(4,))
+print(ans)
+  \end{lstlisting}
+  \begin{lstlisting}[style=PyOutput]
+[0.59066729]
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Non-linear equation solver in Python (multiple variables)}
+
+  \begin{itemize}
+      \item Use \lstinline|fsolve| from \lstinline|scipy.optimize| for systems involving multiple variables.
+      \item Suitable for non-linear equations with two or more variables.
+  \end{itemize}
+  \begin{lstlisting}[language=Python]
+from scipy.optimize import fsolve
+
+def equations(x):
+    f1 = 2*x[0]*x[1] - x[1] + 2
+    f2 = 2*x[1] - 4*x[0] - 4
+    return [f1,f2]
+
+fsolve(equations, [1, 1], xtol=1e-15)
+    \end{lstlisting}
+  \begin{lstlisting}[style=PyOutput]
+array([-0.5,  1. ])
+  \end{lstlisting}
+\end{frame}

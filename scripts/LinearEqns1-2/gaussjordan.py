@@ -72,12 +72,6 @@ def gaussian_eliminate_partial_pivot(A,b):
 
     return A,b
 
-def swap_rows(mat,i1,i2):
-    """Swap two rows in a matrix/vector"""
-    temp = mat[i1,...].copy()
-    mat[i1,...] = mat[i2,...]
-    mat[i2,...] = temp
-
 def gaussian_eliminate_v2(A,b):
     """Perform elimination to obtain an upper triangular matrix
     
@@ -95,8 +89,8 @@ def gaussian_eliminate_v2(A,b):
     N = len(b)
     for col in range(N-1):
         index = np.argmax(np.abs(A[col:, col])) + col
-        swap_rows(A,col,index)
-        swap_rows(b,col,index)
+        A[[i,col]] = A[[col,i]]
+        b[[i,col]] = b[[col,i]]
         for row in range(col+1,N):
             d = A[row,col] / A[col,col]
             A[row,:] = A[row,:] - d * A[col,:]

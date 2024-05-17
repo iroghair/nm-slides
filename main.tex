@@ -3,10 +3,10 @@
 % !TEX spellcheck = en_US
 
 % Handout mode
-\documentclass[10pt,table,final,fleqn,hyperref={pdfpagemode=UseThumbs, pdfpagelayout=SinglePage,bookmarks=true,},xcolor={usenames,dvipsnames},aspectratio=169,handout]{beamer}
+% \documentclass[10pt,table,final,fleqn,hyperref={pdfpagemode=UseThumbs, pdfpagelayout=SinglePage,bookmarks=true,},xcolor={usenames,dvipsnames},aspectratio=169,handout]{beamer}
 
 % Presentation mode
-% \documentclass[10pt,table,final,fleqn,hyperref={pdfpagemode=FullScreen},xcolor={usenames,dvipsnames},aspectratio=169]{beamer}
+\documentclass[10pt,table,final,fleqn,hyperref={pdfpagemode=FullScreen},xcolor={usenames,dvipsnames},aspectratio=169]{beamer}
 \useoutertheme[subsection=false]{miniframes}
 \usetheme[]{Frankfurt}
 \usecolortheme{crane}
@@ -14,9 +14,9 @@
 % Adding some directories to the input
 \input{preamble/settings.tex}
 
-\author[I.~Roghair]{Dr.ir.~Ivo~Roghair, Prof.dr.ir.~Martin van Sint Annaland}
-\institute{Chemical Process Intensification group\\Eindhoven University of Technology}
-\date{\small Numerical Methods (6E5X0), 2023-2024}
+\author[I.~Roghair]{Dr.ir.~Ivo~Roghair, Dr.ir.~Maike Baltussen, Prof.dr.ir.~Martin van Sint Annaland}
+\institute{Multiphase Reactors group\\Eindhoven University of Technology}
+\date{\small Advanced Numerical Methods for EngD (6PDPPD122), 2023-2024}
 \logo { 
 \begin{tikzpicture}[overlay,remember picture]
 \node[anchor=south west] at (current page.south west){
@@ -31,25 +31,25 @@
      
 \begin{document}
 
-\title{Numerical Methods for Chemical Engineers}
-\subtitle{Study guide for 6E5X0}
-\lecture{Course introduction}{introduction}
-\include{sections/introduction}
+% \title{Numerical Methods for Chemical Engineers}
+% \subtitle{Study guide for 6E5X0}
+% \lecture{Course introduction}{introduction}
+% \include{sections/introduction}
 
-\title{Python and Programming 1} 
-\subtitle{Programming basics and algorithms}
-\lecture{Programming 1}{programming1}
-\include{sections/programming1}
+% \title{Python and Programming 1} 
+% \subtitle{Programming basics and algorithms}
+% \lecture{Programming 1}{programming1}
+% \include{sections/programming1}
 
-\title{Python and Programming 2}
-\subtitle{Programming workflow and advanced features}
-\lecture{Programming 2}{programming2}
-\include{sections/programming2}
+% \title{Python and Programming 2}
+% \subtitle{Programming workflow and advanced features}
+% \lecture{Programming 2}{programming2}
+% \include{sections/programming2}
 
-\title{Numerical errors in computer simulations}
-\subtitle{}
-\lecture{Numerical errors}{numericalerrors}
-\include{sections/numericalerrors}
+% \title{Numerical errors in computer simulations}
+% \subtitle{}
+% \lecture{Numerical errors}{numericalerrors}
+% \include{sections/numericalerrors}
 
 \title{Linear equations 1}
 \subtitle{Linear algebra basics}
@@ -66,15 +66,24 @@
 \lecture{Linear equations 3}{linear3}
 \include{sections/linear3}
 
-\title{Numerical interpolation}
-\subtitle{}
-\lecture{interpolation}{interpolation}
-\include{sections/interpolation}
+% \title{Numerical interpolation}
+% \subtitle{}
+% \lecture{interpolation}{interpolation}
+% \include{sections/interpolation}
 
-\title{Numerical integration}
-\subtitle{}
-\lecture{integration}{integration}
-\include{sections/integration}
+% \title{Numerical integration}
+% \subtitle{}
+% \lecture{integration}{integration}
+% \include{sections/integration}
+\title{Non-linear equations}
+\subtitle{One dimensional case}
+\lecture{Non-linear Equations 1}{nonlin1}
+\include{sections/nonlin1}
+
+\title{Non-linear equations}
+\subtitle{Towards the multi-dimensional case}
+\lecture{Non-linear Equations 2}{nonlin2}
+\include{sections/nonlin2}
 
 \title{Ordinary differential equations 1}
 \subtitle{Explicit techniques for ODEs}
@@ -86,25 +95,16 @@
 \lecture{ODE 2}{ode2}
 \include{sections/ode2}
 
-\title{Partial differential equations}
-\subtitle{}
-\lecture{PDE}{pde}
-\include{sections/pde}
+% \title{Partial differential equations}
+% \subtitle{}
+% \lecture{PDE}{pde}
+% \include{sections/pde}
 
-\title{Curve fitting, regression and optimization}
-\subtitle{}
-\lecture{Curve fitting, regression and optimization}{optimization}
-\include{sections/optimization}
+% \title{Curve fitting, regression and optimization}
+% \subtitle{}
+% \lecture{Curve fitting, regression and optimization}{optimization}
+% \include{sections/optimization}
 
-\title{Non-linear equations}
-\subtitle{One dimensional case}
-\lecture{Non-linear Equations 1}{nonlin1}
-\include{sections/nonlin1}
-
-\title{Non-linear equations}
-\subtitle{Towards the multi-dimensional case}
-\lecture{Non-linear Equations 2}{nonlin2}
-\include{sections/nonlin2}
 
 \title{Sample slides}
 \subtitle{Examples and code testing}

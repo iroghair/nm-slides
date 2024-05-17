@@ -1,0 +1,8 @@
+(array([-0.66666667]),
+ {'nfev': 13,
+  'fjac': array([[-1.]]),
+  'r': array([1.00000009]),
+  'qtf': array([1.32049927e-12]),
+  'fvec': array([4.4408921e-16])},
+ 1,
+ 'The solution converged.')

@@ -403,7 +403,7 @@ def backsubstitution_v1(A,b):
 \begin{frame}[fragile]
   \frametitle{A full Gauss Elimination solver}
   \begin{itemize}
-    \item The functions we just built are distributed via Canvas too
+    \item The functions we just built are distributed in a Python module
     \item Use \lstinline$help GaussianEliminate$ to find out how it works
     \item Solve the following system of equations:
     \[
@@ -446,24 +446,17 @@ def backsubstitution_v1(A,b):
 \begin{frame}[fragile]
   \frametitle{Partial pivoting: implementing row swaps}
   \begin{itemize}[<+->]
-    \item Find maximum element row below pivot in current column
+    \item Find maximum element row in $A$ below pivot in current column, store the index
     \begin{lstlisting}[numbers=none]
 index = np.argmax(np.abs(A[col:, col])) + col 
     \end{lstlisting}
-    \item Store current row
+    \item Swap rows through indexing (i.e. select rows by their index).
     \begin{lstlisting}[numbers=none]
-temp = A[column,:]
+A[[i,col]] = A[[col,i]]
     \end{lstlisting}
-    \item Swap pivot row and desired row in \lstinline$A$
+    \item Do the same for \lstinline$b$ --- swap through indexing
     \begin{lstlisting}[numbers=none]
-A[column,:] = A[index,:]
-A[index,:] = temp
-      \end{lstlisting}
-    \item Do the same for \lstinline$b$ --- store and swap
-    \begin{lstlisting}[numbers=none]
-temp = b[column]
-b[column] = b[index]
-b[index] = temp
+b[[i,col]] = b[[col,i]]
       \end{lstlisting}
   \end{itemize}
 \end{frame}
@@ -480,43 +473,9 @@ def gaussian_eliminate_partial_pivot(A,b):
     N = len(b)
     for col in range(N-1):
         index = np.argmax(np.abs(A[col:, col])) + col
-        temp = A[col,:]
-        A[col,:] = A[index,:]
-        A[index,:] = temp
+        A[[i,col]] = A[[col,i]]
+        b[[i,col]] = b[[col,i]]
 
-        temp = b[col]
-        b[col] = b[index]
-        b[index] = temp
-        for row in range(col+1,N):
-            d = A[row,col] / A[col,col]
-            A[row,:] = A[row,:] - d * A[col,:]
-            b[row] = b[row] - d * b[col]
-
-    return A,b
-  \end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Improve the program by using re-usable functions}
-  \begin{lstlisting}[language=Python]
-def swap_rows(mat,i1,i2):
-    """Swap two rows in a matrix/vector"""
-    temp = mat[i1,...].copy()
-    mat[i1,...] = mat[i2,...]
-    mat[i2,...] = temp
-  \end{lstlisting}
-  \begin{lstlisting}[language=Python]
-def gaussian_eliminate_v2(A,b):
-    A = np.array(A,dtype=np.float64)
-    b = np.array(b,dtype=np.float64)
-
-    assert A.shape[0] == A.shape[1], "Coefficient matrix should be square"
-
-    N = len(b)
-    for col in range(N-1):
-        index = np.argmax(np.abs(A[col:, col])) + col
-        swap_rows(A,col,index)
-        swap_rows(b,col,index)
         for row in range(col+1,N):
             d = A[row,col] / A[col,col]
             A[row,:] = A[row,:] - d * A[col,:]
@@ -592,331 +551,52 @@ followed by a backward substitution!
 \begin{frame}[fragile]
   \frametitle{Substitutions}
   \begin{itemize}
-    \item Define a lower and upper matrix $L$ and $U$ so that $A = LU$
-    \item Therefore $LUx = b$
+    \item Define $L$ and $U$ such that $A = LU$
+    \item Therefore $Ax = LUx = b$
     \item Define a new vector $y = Ux$ so that $Ly = b$
     \item Solve for $y$, use $L$ and forward substitution
     \item Then we have $y$, solve for $x$, use $Ux = y$
     \item Solve for $x$, use $U$ and backward substitution
     \item But how to get L and U?
+    \begin{itemize}
+      \item Gaussian elimination
+      \item Doolittle's decomposition
+      \item Crout's decomposition
+    \end{itemize}
   \end{itemize}
 \end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Decomposing the matrix (1)}
-  When we eliminate the element $A_{21}$ we can keep multiplying by a matrix that undoes this row operations, so that the product remains equal to $A$.
-\[ 
-\begin{bmatrix}
-A_{11} & A_{12} & A_{13}\\ 
-A_{21} & A_{22} & A_{23}\\ 
-A_{31} & A_{32} & A_{33}
-\end{bmatrix} = 
-\begin{bmatrix}
-1 & 0 & 0 \\
-d_{21}& 1 & 0 \\
-0 & 0 & 1
-\end{bmatrix}
-\begin{bmatrix}
-A_{11} & A_{12} & A_{13}\\ 
-0 & A_{22}-d_{21}A_{12} & A_{23}-d_{21}A_{13}\\ 
-A_{31} & A_{32} & A_{33}
-\end{bmatrix}
-\]
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Decomposing the matrix (2)}
-  When we eliminate the element $A_{31}$ we can keep multiplying by a matrix that undoes this row operations, so that the product remains equal to $A$.
-\[ 
-A = 
-\begin{bmatrix}
-1 & 0 & 0 \\
-d_{21}& 1 & 0 \\
-d_{31} & 0 & 1
-\end{bmatrix}
-\begin{bmatrix}
-A_{11} & A_{12} & A_{13}\\ 
-0 & A'_{22}=A_{22}-d_{21}A_{12} & A'_{23} = A_{23}-d_{21}A_{13}\\ 
-0 & A'_{32} = A_{32}-d_{31}A_{12} & A'_{33} = A_{33}-d_{31}A_{21}
-\end{bmatrix}
-\]
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Decomposing the matrix (3)}
-  When we eliminate the element $A_{32}$ we can keep multiplying by a matrix that undoes this row operations, so that the product remains equal to $A$.
-\[ 
-\begin{bmatrix}
-A_{11} & A_{12} & A_{13}\\ 
-A_{21} & A_{22} & A_{23}\\ 
-A_{31} & A_{32} & A_{33}
-\end{bmatrix} = 
-\begin{bmatrix}
-1 & 0 & 0 \\
-d_{21}& 1 & 0 \\
-d_{31} & d_{32} & 1
-\end{bmatrix}
-\begin{bmatrix}
-A_{11} & A_{12} & A_{13}\\ 
-0 & A'_{22} & A'_{23} \\ 
-0 & 0  & A''_{33} = A'_{33}-d_{32}A'_{23}
-\end{bmatrix}
-\]\pause
-We now have a lower matrix $L$ and an upper matrix $U$. This finishes the LU decomposition! 
-\end{frame}
-
-\subsection*{Pivoting in LU decomposition}
-{\nologo
-\begin{frame}[fragile]
-\frametitle{Pivoting during decomposition}
-Suppose we have arrived at the situation below, where $A'_{32}>A'_{22}$:
-\vfill
-\[ 
-\begin{bmatrix}
-A_{11} & A_{12} & A_{13}\\ 
-A_{21} & A_{22} & A_{23}\\ 
-A_{31} & A_{32} & A_{33}
-\end{bmatrix} = 
-\begin{bmatrix}
-1 & 0 & 0 \\
-d_{21}& 1 & 0 \\
-d_{31} & 0 & 1
-\end{bmatrix}
-\begin{bmatrix}
-A_{11} & A_{12} & A_{13}\\ 
-0 & \tikzmarkin[mat=style tueturq]{n1} A'_{22} & A'_{23} \\ 
-0 & A'_{32}\tikzmarkend{n1} & A'_{33} 
-\end{bmatrix}
-\]
-\vfill 
-\pause
-Exchange rows 2 and 3 to get the largest value on the main diagonal. Use a permutation matrix to store the swapped rows:
-\vfill
-\pause
-\[ 
-\begin{bmatrix}
-\tikzmarkin[txt=style tueturq]{n2} 1 & 0 & 0 \\
-0& 0 & 1 \\
-0 & 1 & 0 \tikzmarkend{n2}
-\end{bmatrix}
-\begin{bmatrix}
-A_{11} & A_{12} & A_{13}\\ 
-A_{21} & A_{22} & A_{23}\\ 
-A_{31} & A_{32} & A_{33}
-\end{bmatrix} = 
-\begin{bmatrix}
-1 & 0 & 0 \\
-\tikzmarkin[txt=style tueorange]{n3} d_{31}& 0 & 1 \tikzmarkend{n3}\\
-\tikzmarkin[txt=style tueorange]{n4} d_{21} & 1 & 0 \tikzmarkend{n4}
-\end{bmatrix}
-\begin{bmatrix}
-A_{11} & A_{12} & A_{13}\\ 
-\tikzmarkin[txt=style tueorange]{n5}0 & A'_{32} & A'_{33} \tikzmarkend{n5}\\ 
-\tikzmarkin[txt=style tueorange]{n6}0 & A'_{22} & A'_{23} \tikzmarkend{n6} 
-\end{bmatrix}
-\]
-\pause
-Multiplying with a permutation matrix will swap the rows of a matrix. The permutation matrix is just an identity matrix, whose rows
-have been interchanged.
-\end{frame}
-}
-% 
-% \begin{frame}[fragile]
-% \frametitle{Pivoting during decomposition}
-% Multiplying with a permutation matrix will swap the rows of a matrix. The permutation matrix is just an identity matrix, whose rows
-% have been interchanged.
-% \vfill
-% \[ 
-% \begin{bmatrix}
-% 1 & 0 & 0 \\
-% 0& 0 & 1 \\
-% 0 & 1 & 0
-% \end{bmatrix}
-% \begin{bmatrix}
-% A_{11} & A_{12} & A_{13}\\ 
-% A_{21} & A_{22} & A_{23}\\ 
-% A_{31} & A_{32} & A_{33}
-% \end{bmatrix} = 
-% \begin{bmatrix}
-% 1 & 0 & 0 \\
-% d_{31}& 0 & 1 \\
-% d_{21} & 1 & 0
-% \end{bmatrix}
-% \begin{bmatrix}
-% A_{11} & A_{12} & A_{13}\\ 
-% 0 & A'_{32} & A'_{33} \\ 
-% 0 & A'_{22} & A'_{23} 
-% \end{bmatrix}
-% \]
-% \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Recipe for LU decomposition}
-   When decomposing matrix $A$ into $A=LU$, it may be beneficial to swap rows to get the largest values on the diagonal of $U$ (pivoting). A permutation matrix $P$ is used to store row swapping such that:
+  LU decomposition can be done in Python using \lstinline|scipy.linalg.lu|. Row swapping is done to get the largest values on the main diagonal of $U$ (pivoting). A permutation matrix $P$ is used to store row swapping such that:
    \[
     PA = LU
    \]
-  \begin{itemize}
-    \item Write down a permutation matrix and the linear system
-    \item Promote the largest value in the column diagonal
-    \item Eliminate all elements below diagonal
-    \item Move on to the next column and move largest elements to diagonal
-    \item Eliminate elements below diagonal
-    \item Repeat 5 and 6
-    \item Write down L,U and P
-  \end{itemize}
-\end{frame}
+   Matrix $P$ is returned in addition to $L$ and $U$:
+  \begin{columns}[T]
+    \column{0.7\textwidth}
+      \begin{lstlisting}
+from scipy.linalg import lu
+A = np.array([[1,1,1],[2,1,3],[3,1,6]])
+P,L,U = lu(A)
+with np.printoptions(precision=2, threshold=5):
+    print(P,L,U,sep='\n\n')
+      \end{lstlisting}
+    \column{0.3\textwidth}
+      \begin{lstlisting}[style=PyOutput,keepspaces=true]
+[[0. 1. 0.]
+ [0. 0. 1.]
+ [1. 0. 0.]]
 
-\subsection*{LU decomposition with pivoting-example}
-\begin{frame}[fragile]
-  \frametitle{LU decomposition example (1)}
-  Write down a permutation matrix, which starts as the identity matrix, and the linear system:
-  \begin{align*}
-    PA &= LU \\
-    \begin{bmatrix}
-      1 & 0 & 0\\
-      0 & 1 & 0\\
-      0 & 0 & 1
-    \end{bmatrix} 
-    \begin{bmatrix}
-      0 & 1 & 1\\
-      2 & 1 & 1\\
-      1 & 2 & 0
-      \end{bmatrix}&= 
-      \begin{bmatrix}
-      1 & 0 & 0\\
-      0 & 1 & 0\\
-      0 & 0 & 1
-      \end{bmatrix}
-      \begin{bmatrix}
-      0 & 1 & 1\\
-      2 & 1 & 1\\
-      1 & 2 & 0
-      \end{bmatrix}
-  \end{align*}
-  \pause
-  Promote the largest value into the diagonal of column 1 --- swap row 1 and 2:
-    \[
-      \begin{bmatrix}
-	\tikzmarkin[txt=style yellow]{am1} 0 & 1 & 0\\
-	1 & 0 & 0 \tikzmarkend{am1}\\
-	0 & 0 & 1
-      \end{bmatrix} 
-      \begin{bmatrix}
-	0 & 1 & 1\\
-	2 & 1 & 1\\
-	1 & 2 & 0
-      \end{bmatrix}= 
-      \begin{bmatrix}
-	1 & 0 & 0\\
-	0 & 1 & 0\\
-	0 & 0 & 1
-      \end{bmatrix}
-      \begin{bmatrix}
-	\tikzmarkin[txt=style yellow]{am2}2 & 1 & 0\\
-	0 & 1 & 1 \tikzmarkend{am2}\\
-	1 & 2 & 0
-      \end{bmatrix}
-    \]
-\end{frame}
-% 
-\begin{frame}[fragile]
-  \frametitle{LU decomposition example (2)}
-  Eliminate all \tikzmarkin[txt=style tueorange]{lu1}elements below the diagonal\tikzmarkend{lu1} --- row 2 already contains a zero in column 1, row 3 = row 3 - 0.5 row 1. Record the \tikzmarkin[txt=style tuesteel]{lu2}multiplier 0.5\tikzmarkend{lu2} in $L$:
-  \[
-    \begin{bmatrix}
-      0 & 1 & 0\\
-      1 & 0 & 0\\
-      0 & 0 & 1
-    \end{bmatrix} 
-    \begin{bmatrix}
-      0 & 1 & 1\\
-      2 & 1 & 1\\
-      1 & 2 & 0
-      \end{bmatrix}= 
-      \begin{bmatrix}
-      1 & 0 & 0\\
-      0 & 1 & 0\\
-      \tikzmarkin[txt=style tuesteel]{lu3}0.5\tikzmarkend{lu3} & 0 & 1
-      \end{bmatrix}
-      \begin{bmatrix}
-      2 & 1 & 1\\
-      \tikzmarkin[txt=style tueorange]{lu4}0 & 1 & 1\\
-      0\tikzmarkend{lu4} & 1.5 & -0.5
-      \end{bmatrix}
-  \]
-  \pause
-  Elimination of column 1 is done. Now step to the next column, and move the largest value below/on the diagonal to the diagonal (~\tikzmarkin[txt=style yellow]{lu8}swap rows 2 and 3\tikzmarkend{lu8}~). Adjust $P$ and the \tikzmarkin[txt=style tueturq]{lu9}lower triangle of $L$\tikzmarkend{lu9} accordingly:
-  \[
-    \begin{bmatrix}
-      0 & 1 & 0\\
-      \tikzmarkin[txt=style yellow]{lu5} 0 & 0 & 1 \\
-      1 & 0 & 0\tikzmarkend{lu5}
-    \end{bmatrix} 
-    \begin{bmatrix}
-      0 & 1 & 1\\
-      2 & 1 & 0\\
-      1 & 2 & 0
-      \end{bmatrix}= 
-      \begin{bmatrix}
-      1 & 0 & 0\\
-      \tikzmarkin[draw=none,txt=style tueturq]{lu6}(0.25,-0.15)0.5 & 1 & 0\\
-      \tikzmarkin[draw=none,txt=style tueturq]{lu10}0\tikzmarkend{lu6} & 0\tikzmarkend{lu10} & 1
-      \end{bmatrix}
-      \begin{bmatrix}
-      2 & 1 & 1\\
-      \tikzmarkin[txt=style yellow]{lu7}(0.4,-0.15) 0 & 1.5 & -0.5 \\
-      0 & 1 & 1\tikzmarkend{lu7}
-      \end{bmatrix}
-  \]
-\end{frame}
+[[1.   0.   0.  ]
+ [0.33 1.   0.  ]
+ [0.67 0.5  1.  ]]
 
-\begin{frame}[fragile]
-  \frametitle{LU decomposition example (3)}
-    Eliminate \tikzmarkin[txt=style tueorange]{f3}all elements below the diagonal\tikzmarkend{f3} ---\\
-    row 3 = row 3 - $\frac{2}{3}$row 2. Record the multiplier \tikzmarkin[txt=style tueturq]{f1}$\frac{2}{3}$\tikzmarkend{f1} in $L$:
-  \[
-    \begin{bmatrix}
-      0 & 1 & 0\\
-      0 & 0 & 1 \\
-      1 & 0 & 0
-    \end{bmatrix} 
-    \begin{bmatrix}
-      0 & 1 & 1\\
-      2 & 1 & 0\\
-      1 & 2 & 0
-      \end{bmatrix}= 
-      \begin{bmatrix}
-      1 & 0 & 0\\
-      0.5 & 1 & 0\\
-      0 & \tikzmarkin[txt=style tueturq]{f2}\frac{2}{3}\tikzmarkend{f2} & 1
-      \end{bmatrix}
-      \begin{bmatrix}
-      2 & 1 & 1\\
-      0 & 1.5 & -0.5 \\
-      0 & \tikzmarkin[txt=style tueorange]{f4}0\tikzmarkend{f4} & \frac{4}{3}\\
-      \end{bmatrix}
-  \]
-  \pause
-  We have obtained the matrices from $PA=LU$:
-  \[
-    P = \begin{bmatrix}
-      0 & 1 & 0\\
-      0 & 0 & 1 \\
-      1 & 0 & 0
-    \end{bmatrix} \quad
-    L=\begin{bmatrix}
-      1 & 0 & 0\\
-      0.5 & 1 & 0\\
-      0 & \frac{2}{3} & 1
-      \end{bmatrix} \quad
-      U = \begin{bmatrix}
-      2 & 1 & 1\\
-      0 & 1.5 & -0.5 \\
-      0 & 0 & \frac{4}{3}\\
-      \end{bmatrix}
-  \]
-  Proceed with solving for $x$.
+[[ 3.    1.    6.  ]
+ [ 0.    0.67 -1.  ]
+ [ 0.    0.   -0.5 ]]
+      \end{lstlisting}
+  \end{columns}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -962,8 +642,8 @@ A = np.random.rand(5, 5)  # Get random matrix
 P, L, U = lu(A)           # Get L, U and P
 b = np.random.rand(5)     # Random b vector
 d = P @ b                 # Permute b vector
-y = forwardSub(L, d)      # Can also do y=L\d
-x = backwardSub(U, y)     # Can also do x=U\y
+y = forwardSub(L, d)      # Can also do y=np.linalg.solve(L,d)
+x = backwardSub(U, y)     # Can also do x=np.linalg.solve(U,y)
 rnorm = np.linalg.norm(A @ x - b)  # Residual
   \end{lstlisting}
   \pause
