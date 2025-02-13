@@ -780,7 +780,7 @@ def golden_mean_powerlaw(Ntot):
   \pause
   \begin{itemize}
     \item Compare the outcomes: \lstinline$plot(goldenMeanPowerlaw(40) - goldenMeanRecurrent(40))$ \pause
-    \item See what happens if you use single precision (uncomment the second line of both functions).
+    \item See what happens if you use single precision (add \lstinline|dtype=np.float32| to line 5 (\lstinline|np.zeros|) and line 8 (\lstinline|np.arange|)).
   \end{itemize}
   \vskip1em
 \end{frame}
