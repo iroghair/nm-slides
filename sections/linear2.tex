@@ -404,7 +404,7 @@ def backsubstitution_v1(A,b):
   \frametitle{A full Gauss Elimination solver}
   \begin{itemize}
     \item The functions we just built are distributed via Canvas too
-    \item Use \lstinline$help GaussianEliminate$ to find out how it works
+    \item Use \lstinline$help(gaussian_eliminate_v1)$ to find out how it works
     \item Solve the following system of equations:
     \[
     \begin{bmatrix}
@@ -846,7 +846,7 @@ have been interchanged.
       \end{bmatrix}
   \]
   \pause
-  Elimination of column 1 is done. Now step to the next column, and move the largest value below/on the diagonal to the diagonal (~\tikzmarkin[txt=style yellow]{lu8}swap rows 2 and 3\tikzmarkend{lu8}~). Adjust $P$ and the \tikzmarkin[txt=style tueturq]{lu9}lower triangle of $L$\tikzmarkend{lu9} accordingly:
+  Elimination of column 1 is done. Now step to the next column, and move the largest value below/on the diagonal to the diagonal (\tikzmarkin[txt=style yellow]{lu8}swap rows 2 and 3\tikzmarkend{lu8}). Adjust $P$ and the \tikzmarkin[txt=style tueturq]{lu9}lower triangle of $L$\tikzmarkend{lu9} accordingly:
   \[
     \begin{bmatrix}
       0 & 1 & 0\\
