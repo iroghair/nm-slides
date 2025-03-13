@@ -138,7 +138,7 @@
 \column{0.5\textwidth}
   The total area is obtained by geometric reconstruction of trapezoids:
   \[
-    T_n = \sum_{i=1}^n \frac{f(x_{i+1})+f(x_i)}{2}\Delta x_i
+    T_n = \sum_{i=0}^{n-1} \frac{f(x_{i+1})+f(x_i)}{2}\Delta x_i
   \]
 \onslide<3>{%
 Note that this can be rewritten for equidistant intervals:
