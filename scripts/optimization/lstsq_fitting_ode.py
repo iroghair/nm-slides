@@ -8,11 +8,14 @@ def simpleode(t, u, k1, k2):
     dudt = -k1*u + k2
     return dudt
 
-def fitcrit(t,k1, k2):
-    u0 = [1.0]
+def fitcrit(k,expdata):
+    t = expdata[0]
+    u = expdata[1]
+    u0 = [u[0]]
     tspan = [0,max(t)]
+    k1,k2 = k
     sol = sp.integrate.solve_ivp(simpleode, tspan, u0, args=(k1, k2), t_eval=t)
-    return sol.y[0]
+    return sol.y[0] - u
 
 # Load your data here (adjust as necessary)
 T, U = np.loadtxt('./slides/scripts/optimization/tudataset1.txt',unpack=True, skiprows=1)
@@ -21,7 +24,10 @@ T, U = np.loadtxt('./slides/scripts/optimization/tudataset1.txt',unpack=True, sk
 k0 = [1.0, 1.0]
 
 # Perform the curve fitting
-params, params_covariance = sp.optimize.curve_fit(fitcrit, T, U, p0=k0)
+expdata = [T,U]
+fit = sp.optimize.least_squares(fitcrit, k0, args=(expdata,))
+params = fit.x
+params_covariance = fit.jac
 print('Fitted coefficients:', params)
 
 plt.plot(T,U,'x')
