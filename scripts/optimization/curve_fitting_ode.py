@@ -15,7 +15,7 @@ def fitcrit(t,k1, k2):
     return sol.y[0]
 
 # Load your data here (adjust as necessary)
-T, U = np.loadtxt('./scripts/optimization/tudataset1.txt',unpack=True, skiprows=1)
+T, U = np.loadtxt('./slides/scripts/optimization/tudataset1.txt',unpack=True, skiprows=1)
 
 # Initial guesses for model parameters
 k0 = [1.0, 1.0]

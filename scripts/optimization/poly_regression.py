@@ -41,9 +41,36 @@ def fit_using_lstsqr(x,y,n=2,draw=False):
         plt.show()
     return A,yhat
 
+def fit_linear_model(x,y,draw=False):
+    assert x.shape == y.shape, 'x and y must have the same shape'
+    n = x.shape[0]
+    sx2 = np.sum(x**2)
+    sx = np.sum(x)
+    sxy = np.sum(x*y)
+    sy = np.sum(y)
+
+    A = np.array([[sx2,sx],[sx,n]])
+    b = np.array([sxy,sy])
+    a,b = np.linalg.solve(A,b)
+    # Alternatively, we could use the following:
+    # a = (n*sxy - sx*sy)/(n*sx2 - sx**2)
+    # b = (sy - a*sx)/n
+    print(f'Found linear model: f(x) = {a:1.4}x + {b:1.4}')
+    
+    if draw:
+        plt.plot(x,y,'x')
+        plt.plot(x,a*x+b,'-')
+        plt.title('Fit using linear model')
+        plt.show()
+    return a,b
+
 if __name__ == '__main__':
-    x,yhat = generate_random_data()
-    ahat = fit_using_polyfit(x,yhat,n=3,draw=False)
+    # Generate random data (linear case)
+    x,y = generate_random_data(5,[1.5,4.2],True)
+    a,b = fit_linear_model(x,y,True)
+    exit()
+    x,y = generate_random_data()
+    ahat = fit_using_polyfit(x,y,n=3,draw=True)
     print(f'Coefficients using polyfit: {ahat}')
-    ahat = fit_using_lstsqr(x,yhat,3,draw=False)
+    ahat,_ = fit_using_lstsqr(x,y,3,draw=True)
     print(f'Coefficients using lstsq: {ahat}')

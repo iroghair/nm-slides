@@ -30,6 +30,11 @@ Example:
  - [x] programming1
  - [x] programming2
 
+All slides in the right order:
+```
+python render.py introduction programming1 programming2 numericalerrors linear1 linear2 linear3 nonlin1 nonlin2 interpolation integration ode1 ode2 pde optimization
+```
+
 ## Todo (by priority after testing the code)
 1. Make sure the story flows correctly (specially due to modules)
 ✅ Fix the issue with the table of contents not showing

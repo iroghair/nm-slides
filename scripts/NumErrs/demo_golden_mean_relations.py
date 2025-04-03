@@ -2,7 +2,7 @@ import numpy as np
 
 def golden_mean_recurrent(Ntot):
 # Initialize the series with the given initial conditions
-    y = np.zeros(Ntot)
+    y = np.zeros(Ntot,dtype=np.float32)
     y[0] = 1
     y[1] = 2 / (1 + np.sqrt(5))
     # Perform the recurrence to fill in the rest of the series
@@ -14,7 +14,7 @@ def golden_mean_powerlaw(Ntot):
     # Initialize the constant value
     x = (1 + np.sqrt(5)) / 2
     # Generate a range of values from 0 to Ntot and apply the power law
-    y = x ** -np.arange(0, Ntot + 1)
+    y = x ** -np.arange(0, Ntot + 1,dtype=np.float32)
 
     return y    
 

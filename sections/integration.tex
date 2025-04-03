@@ -58,7 +58,7 @@
         \draw [interp,smooth,opacity=0.4,dashed,domain=-0.15:4.73] plot (\x, {0.5*\x*\x*\x-(10/3)*\x*\x+5.5*\x+1});
       \end{tikzpicture}
       \[
-        L_n = \sum_{i=1}^n f(x_{i-1})\Delta x_i
+        L_n = \sum_{i=0}^{n-1} f(x_{i})\Delta x_i
       \]
     \end{center}
     \pause
@@ -76,7 +76,7 @@
         \draw [interp,smooth,opacity=0.4,dashed,domain=-0.15:4.73] plot (\x, {0.5*\x*\x*\x-(10/3)*\x*\x+5.5*\x+1});
       \end{tikzpicture}
       \[
-        R_n = \sum_{i=1}^n f(x_i)\Delta x_i
+        R_n = \sum_{i=0}^{n-1} f(x_{i+1})\Delta x_i
       \]
 
     \end{center}
@@ -100,9 +100,9 @@
           \draw [interp,smooth,opacity=0.4,dashed,domain=-0.15:4.73] plot (\x, {0.5*\x*\x*\x-(10/3)*\x*\x+5.5*\x+1});
         \end{tikzpicture}
         \[
-          M_n = \sum_{i=1}^n f(\bar{x}_i)\Delta x_i
+          M_n = \sum_{i=0}^{n-1} f(\bar{x}_i)\Delta x_i
         \]
-        with $\bar{x}_i = \frac{x_{i-1}+x_i}{2}$
+        with $\bar{x}_i = \frac{x_{i}+x_{i+1}}{2}$
       \end{center}
   \end{columns}
 \end{frame}
@@ -138,7 +138,7 @@
 \column{0.5\textwidth}
   The total area is obtained by geometric reconstruction of trapezoids:
   \[
-    T_n = \sum_{i=1}^n \frac{f(x_{i+1})+f(x_i)}{2}\Delta x_i
+    T_n = \sum_{i=0}^{n-1} \frac{f(x_{i+1})+f(x_i)}{2}\Delta x_i
   \]
 \onslide<3>{%
 Note that this can be rewritten for equidistant intervals:

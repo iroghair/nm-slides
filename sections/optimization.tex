@@ -137,6 +137,7 @@ def fit_using_polyfit(x,y,n=2,draw=False):
   \]
 }
 
+
 \frame{
   \frametitle{Minimizing the sum of squares}
   Choose the parameter vector such that the sum of squares of the residuals is minimized; the partial derivative with respect to each parameter should be set to zero:
@@ -151,6 +152,111 @@ def fit_using_polyfit(x,y,n=2,draw=False):
     \item However, Python will find values for the vector a which minimize $\norm{y-aX}^2$ , so i.e. a least squares fit.
   \end{itemize}
 }
+
+\frame{
+  \frametitle{Example: fitting a linear model using least-squares}
+  Assume the model is given as:
+  \[
+  \hat{y} = ax + b
+  \]
+  Then the error is computed as the sum of squares:
+  \[
+    E(a,b) = \sum_{i=0}^{n-1} \left(y_i - \hat{y}_i\right)^2 = \sum_{i=0}^{n-1} \left(y_i - (ax_i + b)\right)^2 
+  \]
+  \pause
+  The partial derivatives with respect to $a$ and $b$ are:
+  \[
+    \frac{\partial E}{\partial a} = -2 \sum_{i=0}^{n-1} x_i \left(y_i - (ax_i + b)\right)
+  \]
+  \[
+    \frac{\partial E}{\partial b} = -2 \sum_{i=0}^{n-1} \left(y_i - (ax_i + b)\right)
+  \]
+}
+
+{\nologo
+\frame{
+  \frametitle{Example: fitting a linear model using least-squares}
+  Setting the partial derivatives to zero gives the following system of equations:
+  \[
+    \begin{bmatrix}
+    \sum_i x_i^2 & \sum_i x_i \\
+    \sum_i x_i & N
+    \end{bmatrix}
+    \begin{bmatrix}
+    a \\
+    b
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+    \sum_i x_i y_i \\
+    \sum_i y_i
+    \end{bmatrix}
+  \]
+  \pause
+  Exercise: make a program that takes $x$ and $y$ as input and returns the coefficients $a$ and $b$.
+  \begin{itemize}
+    \item Either set up and solve the linear system
+    \item Or substitute equations/use Cramer's rule to obtain:
+    \[
+    a = \frac{n\sum_i x_i y_i - \sum_i x_i \sum_i y_i}{n\sum_i x_i^2 - (\sum_i x_i)^2}, \, b = \frac{\sum_i y_i - a\sum_i x_i}{n}
+    \]
+  \end{itemize}
+  \pause
+  \begin{itemize}
+    \item Try for yourself to derive the equations for a second degree polynomial model
+    \item Create a program that implements a generic polynomial model of degree $n$ using:
+    \[
+    \begin{bmatrix}
+    \sum_i x_i^{2n} & \sum_i x_i^{2n-1} & \cdots & \sum_i x_i^n \\
+    \sum_i x_i^{2n-1} & \sum_i x_i^{2n-2} & \cdots & \sum_i x_i^{n-1} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    \sum_i x_i & \sum_i x_i & \cdots & N
+    \end{bmatrix}
+    \begin{bmatrix}
+    a_n \\
+    a_{n-1} \\
+    \vdots \\
+    a_0
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+    \sum_i x_i^n y_i \\
+    \sum_i x_i^{n-1} y_i \\
+    \vdots \\
+    \sum_i y_i
+    \end{bmatrix}
+  \]
+  \end{itemize}
+}
+}
+
+\begin{frame}[fragile]{Example solution}
+    \begin{lstlisting}
+def fit_linear_model(x,y,draw=False):
+    assert x.shape == y.shape, 'x and y must have the same shape'
+    n = x.shape[0]
+    sx2 = np.sum(x**2)
+    sx = np.sum(x)
+    sxy = np.sum(x*y)
+    sy = np.sum(y)
+
+    A = np.array([[sx2,sx],[sx,n]])
+    b = np.array([sxy,sy])
+    a,b = np.linalg.solve(A,b)
+    # Alternatively, we could use the following:
+    # a = (n*sxy - sx*sy)/(n*sx2 - sx**2)
+    # b = (sy - a*sx)/n
+    print(f'Found linear model: f(x) = {a:1.4}x + {b:1.4}')
+    
+    if draw:
+        plt.plot(x,y,'x')
+        plt.plot(x,a*x+b,'-')
+        plt.title('Fit using linear model')
+        plt.show()
+    return a,b
+    \end{lstlisting}
+\end{frame}
+
 
 % \frame{ 
 %   \frametitle{Using Matlab's linear solver for fitting}
@@ -413,13 +519,14 @@ print('Fitted coefficients:', params)
     \end{frame}      
 
 \begin{frame}[fragile] 
-  \frametitle{Example use of lsqnonlin}
+  \frametitle{Example fitted ODE model}
   \centering\input{tikzplots/lsqnonlinfit.tikz}
 \end{frame}
 
-\begin{frame}[fragile] 
+
+\begin{frame}[fragile,label={postprocess_fit}] 
   \frametitle{Postprocessing of results}
-  The data returned by \lstinline|curve_fit| can be used to obtain the 95\% confidence intervals for the fitted parameters. Recall the command:
+  The data returned by \lstinline|curve_fit| or \lstinline|least_squares| can be used to obtain the 95\% confidence intervals for the fitted parameters. Recall we stored/computed the parameters and covariance matrix:
   \begin{lstlisting}[language=Python]
 params, params_covariance = curve_fit(fitcrit, T, U, p0=k0)
   \end{lstlisting}
@@ -444,6 +551,51 @@ print('k2:', params[1] - ci[1], params[1] + ci[1])
   \end{lstlisting}
   \end{frame}
 
+\begin{frame}[fragile] 
+    \frametitle{Similar case, but using scipy.optimize.least\_squares}
+    \begin{itemize}
+      \item First, we define a function that describes our model:
+      \begin{lstlisting}
+def simpleode(t, u, k1, k2):
+    dudt = -k1*u + k2
+    return dudt
+      \end{lstlisting}
+      \pause
+      \item Create a fit criterion function that computes the residuals between the model and the data:
+      \begin{lstlisting}
+def fitcrit(k,expdata):
+    t = expdata[0]
+    u = expdata[1]
+    u0 = [u[0]]
+    tspan = [0,max(t)]
+    k1,k2 = k
+    sol = sp.integrate.solve_ivp(simpleode, tspan, u0, args=(k1, k2), t_eval=t)
+    return sol.y[0] - u
+      \end{lstlisting}
+      Note: the function \lstinline|fitcrit| takes the parameters to fit as a single argument, so we need to unpack them inside the function.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile] 
+    \frametitle{Similar case, but using scipy.optimize.least\_squares}
+    \begin{itemize}
+      \item Perform the fitting:
+      \begin{lstlisting}
+# Initial guesses for model parameters
+k0 = [1.0, 1.0]
+
+# Perform the curve fitting
+expdata = [T,U]
+fit = sp.optimize.least_squares(fitcrit, k0, args=(expdata,))
+params = fit.x
+params_covariance = fit.jac
+print('Fitted coefficients:', params)
+      \end{lstlisting}
+      \item Postprocessing of results is similar to the \lstinline|curve_fit| case.
+    \end{itemize}
+\end{frame}
+
+\againframe{postprocess_fit}
 
 %   \begin{frame}[fragile]
 %     \frametitle{Second example: curve\_fit}
