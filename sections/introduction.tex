@@ -56,18 +56,18 @@ approximate solutions
   \hline
   Lecture  & Topic & Teacher \\ 
   \hline
-  1 & Programming and algorithms (1) & IR \\ 
-  2 & Programming and algorithms (2) & IR \\ 
-  3 & Numerical errors & IR \\ 
-  4 & Linear eqns: direct methods & IR\\ 
-  5 & Linear eqns: iterative methods & IR \\ 
-  6 & Interpolation + integration & IR \\ 
-  7 & Non-linear equations (1) & MSA \\ 
-  8 & Non-linear equations (2) & MSA\\ 
-  9 & ODEs (1) & MSA \\
-  10 & ODEs (2) & MSA \\ 
-  11 & PDEs & MSA \\ 
-  12 & Regression and Optimization & IR \\ 
+  1 & Intro + advanced programming & IR \\ 
+  2 & Numerical errors & IR \\ 
+  3 & Linear eqns: direct methods & IR\\ 
+  4 & Linear eqns: iterative methods & IR \\ 
+  5 & Non-linear equations (1) & MSA \\ 
+  6 & Non-linear equations (2) & MSA\\ 
+  7 & Interpolation + integration & IR \\ 
+  8 & ODEs (1) & MSA/IR \\
+  9 & ODEs (2) & MSA/IR \\ 
+  10 & PDEs & MSA \\ 
+  11 & Regression and Optimization & IR \\ 
+  12 & Questions/practice & IR \\ 
   \hline
   \end{tabular} 
  \end{frame}
@@ -100,7 +100,7 @@ approximate solutions
 \begin{frame}
  \frametitle{Course Materials}
  \begin{itemize}
-  \item Lecture slides (+ lecture recordings?)
+  \item Lecture slides
   \item Python scripts
   \item Additional articles
   \item There are some useful books for those seeking more in-depth knowledge and alternative methods, not mandatory:
@@ -111,8 +111,9 @@ approximate solutions
     \item Python Crash Course, 3rd Edition, Eric Matthes
   \end{itemize}
  \end{itemize}
+ \vskip1em
   \tikz{\node[emphblock,text width=\textwidth]{
-    Look on Canvas for the slides, exercises, scripts, assignments and additional documentation on Python.
+    Look on Canvas/modules for the slides, exercises, scripts, assignments and additional documentation on Python.
    };}
 \end{frame}
 
@@ -126,16 +127,16 @@ approximate solutions
     \item Each 20\% of the final result
     \item Done in groups of 2 persons, see Canvas$\,\to\,$People$\,\to\,$Project Groups
     \item Short report (template provided, Overleaf and Canvas)
-    \item Assignment 1--3 graded through peer review
+    \item Assignment 1 graded through peer review, 2--4 graded by instructor
     \end{itemize}   
  \end{block}
  \pause
  \begin{block}{Final exam}
   \begin{itemize}
     \item Practical and theoretical questions, covering \emph{all topics}
-    \item Exam taken on your own computer
-    \item You can use the slides and modules documentation
-    \item Sample exam will be released before Christmas
+    \item Exam taken on your own computer using Schoolyear software
+    \item You can use the slides and (online) modules documentation
+    \item Sample exam will be released after lecture topics are done
     \item Grade of the final exam needs to be at least a 5.0
   \end{itemize}   
  \end{block}
@@ -145,7 +146,7 @@ approximate solutions
 \begin{frame}
   \frametitle{Assignment grading: peer assessment \& feedback (1)}
   \begin{itemize}
-    \item Assignments are graded through supervised peer-assessment. After the deadline, each \emph{person} will grade 2 other assignments. Rubrics are available to maintain a consistent assessment among different groups. Criteria are:\hfill
+    \item Assignment 1 is graded through supervised peer-assessment. After the deadline, each \emph{person} will grade 2 other assignments. Rubrics are available to maintain a consistent assessment among different groups. Criteria are:\hfill
       \begin{columns}
         \column{0.4\textwidth}
           \begin{itemize}
@@ -163,7 +164,7 @@ approximate solutions
     \item Review are done within 3 days (rubrics+written feedback to establish its validity). We assess the feedback quality by a multiplier (0.8-1.2).
     \item You can challenge one or more reviews by submitting a rebuttal;
     \item The final grade will be the averaged grade from the remaining peer-assessments (group), multiplied by the peer-review quality (individual), with a max. of 10.
-    \item When statistics are poor ($\leq 2$ reviews), the assignment will be graded by the instructor, which discards all remaining peer-reviews.
+    \item When statistics are poor ($\leq 2$ reviews), the assignment will be graded by the instructor, which discards all remaining peer-reviews/grades.
   \end{itemize}
 \end{frame}
 
@@ -208,9 +209,27 @@ approximate solutions
     \begin{itemize}
       \item Deadlines are given on Canvas as well
       \item Deliver the report in PDF format
-      \item Send along the scripts + necessities in a .zip
+      \item Submit along the scripts + necessities in a .zip (do not put the report in the zip)
       \item Use your student ID instead of your name for identification purposes
       \item Be aware that a .docx stores the original author name as metadata.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{So... What about AI?}
+    We understand that you might use AI in the assignments, but note:
+    \begin{itemize}
+      \item Practice makes perfect; the final exam is without AI assistance
+      \item Always indicate the LLM/AI tool and version and the extent
+      \item AI might be wrong, misleading, or suboptimal
+      \item You take full responsibility for everything you turn in
+    \end{itemize}
+    You can use AI effectively and to your advantage:
+    \begin{itemize}
+      \item Use it to explain concepts, not to generate the answer. The struggle is part of the learning process.
+      \item First try yourself, let AI comment on your approach
+      \item Be critical of the output, verify and validate
+      \item Numerical methods are about understanding the algorithms, and about validation. 
     \end{itemize}
 \end{frame}
 
@@ -221,7 +240,7 @@ approximate solutions
 \begin{frame}
   \frametitle{Course Philosophy}
  \begin{itemize}
-  \item This is a hard course! It will take a lot of hours, especially if you have no coding experience.
+  \item This is a hard course! It will take a lot of hours, especially if you have little coding experience.
   \item We are here to help you. To have nice discussions, to show alternative ways, etc. Clarify language subtleties, or suggestions. Not to give away the answers.
   \item We encourage research and independent learning. It comes down to paying attention, repetition of the concepts, and practice practice practice! 
   \item We try to make the lectures interactive, working on examples and creating scripts as we go. It is advised that you work along with us to get the most out of this course!

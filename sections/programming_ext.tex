@@ -1,0 +1,913 @@
+\section{Introduction}
+\subsection*{General}
+\begin{frame}[label=contents_prog1]
+  \frametitle{Today's outline}
+    \only<1>{\tableofcontents[hideallsubsections]}
+    \only<2>{\tableofcontents[hideallsubsections,currentsection]}
+\end{frame}
+
+\section{Python tutorial slides}
+\begin{frame}[fragile]
+   \frametitle{Lists in Python (1)}
+  \begin{itemize}
+    \item Lists are containers of collections of objects
+    \item A list is initialized using square brackets with comma-separated elements
+    \begin{lstlisting}[language=Python,numbers=none]
+>>> brands = ['Audi', 'Toyota', 'Honda', 'Ford', 'Tesla']
+    \end{lstlisting}
+    \item Lists can contain and mix any object type, even other lists:
+    \begin{lstlisting}[language=Python,numbers=none]
+>>> another_list = [0.0, 0.1, 0.2, 'Hello', brands]
+>>> print(another_list)
+    \end{lstlisting}
+    \begin{lstlisting}[style=PyOutput]
+[0.0, 0.1, 0.2, 'Hello', ['Audi', 'Toyota', 'Honda', 'Ford', 'Tesla']]
+    \end{lstlisting}
+    \item Access (i.e., read) an entry in a list. Note that indexing starts at 0:
+    \begin{lstlisting}[language=Python,numbers=none]
+>>> print(another_list[0],another_list[3])
+    \end{lstlisting}
+    \begin{lstlisting}[style=PyOutput]
+0.0 Hello
+    \end{lstlisting}
+  \end{itemize}
+ \end{frame}
+ 
+ \begin{frame}[fragile]
+   \frametitle{Lists in Python (2)}
+   \begin{itemize}
+    \item Manipulate the value of an entry goes likewise:
+    \begin{lstlisting}[language=Python,numbers=none]
+>>> another_list[3] = 'Bye' # Becomes: [0.0, 0.1, 0.2, 'Bye', ['Audi', ...]]
+    \end{lstlisting}
+    \item Slicing is used to retrieve multiple elements:
+    \begin{lstlisting}[language=Python,numbers=none]
+>>> another_list[1:4] # This will give the elements from index 1 to index 3
+    \end{lstlisting}
+    \begin{lstlisting}[style=PyOutput]
+[0.1, 0.2, 'Bye']
+    \end{lstlisting}
+    \item Lists can be unpacked into individual variables:
+    \begin{lstlisting}[language=Python,numbers=none]
+>>> a,b,c,d,e = brands
+>>> print(f"The first list element was {a}, then {b}, {c}, {d} and finally {e}.")
+    \end{lstlisting}
+    \begin{lstlisting}[style=PyOutput]
+The first list element was Audi, then Toyota, Honda, Ford and finally Tesla.
+    \end{lstlisting}
+    \item From here onwards, we will omit the \lstinline|print| statements from the slides
+   \end{itemize}\vskip1em
+  \end{frame}
+ 
+  \begin{frame}[fragile]
+    \frametitle{Lists in Python (3)}
+    \begin{itemize}
+      \item Lists can be concatenated or repeated by the addition and multiplication operators respectively: 
+      \begin{lstlisting}[language=Python,numbers=none]
+>>> more_brands = ['Nissan','Kia'] + brands
+      \end{lstlisting}
+      \begin{lstlisting}[style=PyOutput]
+['Nissan', 'Kia', 'Audi', 'Toyota', 'Honda', 'Ford', 'Tesla']
+      \end{lstlisting}
+      \begin{lstlisting}[language=Python,numbers=none]
+>>> zeros = 10*[0]
+      \end{lstlisting}
+      \begin{lstlisting}[style=PyOutput]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+      \end{lstlisting}
+      \item Find out which methods can be performed on a list by using \lstinline|dir(more_brands)|:
+      \begin{lstlisting}
+more_brands.append('Volvo') # Append object (here: string literal) at the end of the list 
+more_brands.insert(1,'BMW') # Insert object at index 1
+more_brands.sort()          # Sorts the list in-place
+item = more_brands.pop(3)   # Removes element at index 3 from the list, stores it as item
+      \end{lstlisting}
+    \end{itemize}
+\end{frame}
+ 
+ \begin{frame}[fragile]
+   \frametitle{Lists in Python (4)}
+   Ranges of numbers are set using the \lstinline|range(start=0,stop,step=1)| command:
+   \begin{itemize}
+    \item Create a list with a range of numbers:
+    \begin{lstlisting}[language=Python,numbers=none]
+>>> a = list(range(1, 11))     # Creates a list from 1 to 10
+    \end{lstlisting}
+    \item List comprehensions can be used to create lists with more complex patterns:
+    \begin{lstlisting}[language=Python,numbers=none]
+>>> x = [i/10 for i in range(-10, 11)]   # Creates a list from -1 to 1 with a step of 0.1
+    \end{lstlisting}
+    \item Manipulating multiple components using slicing and a loop:
+    \begin{lstlisting}[language=Python,numbers=none]
+>>> y = list(range(11))  # Creates a list from 0 to 10
+>>> for i in [0, 3, 4, 5, 6]: 
+>>>     y[i] = 1
+    \end{lstlisting}
+    \item Or (by supplying a list instead of a scalar):
+    \begin{lstlisting}[language=Python,numbers=none]
+>>> y[0:2] = [16, 19]  # Sets y[0] to 16 and y[1] to 19
+    \end{lstlisting}
+  \end{itemize}
+ \end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Assignment of variables; value or reference}
+  Consider the following code snippets:
+  \begin{columns}[t]
+    \column{0.4\textwidth}
+    \begin{lstlisting}
+>>> i = 3
+>>> j = i 
+>>> j = i + 3
+>>> print(i,j)
+>>> print(id(i), id(j)) # Print memory address of data
+    \end{lstlisting}\pause
+    \begin{lstlisting}[style=PyOutput]
+3, 6
+8885416 8885544
+    \end{lstlisting}\pause
+    \column{0.5\textwidth}
+    \begin{lstlisting}
+>>> list_a = ['aa', 1, 'bb', 12, True, 1.618]
+>>> list_b = list_a
+>>> list_b[2] = 'cc'
+>>> print(list_a, list_b, sep='\n')
+>>> print(id(list_a), id(list_b))
+    \end{lstlisting}\pause
+    \begin{lstlisting}[style=PyOutput]
+['aa', 1, 'cc', 12, True, 1.618]
+['aa', 1, 'cc', 12, True, 1.618]
+140285003056512 140285003056512
+    \end{lstlisting}\pause
+  \end{columns}
+  \begin{itemize}
+    \item Primitive or immutable data types (e.g. \lstinline|int|, \lstinline|float|, \lstinline|str|, \lstinline|tuple|) are \emph{assigned by value}; the value is copied and changes do not affect the original variables.
+    \item Mutable data types (e.g. \lstinline|list|, \lstinline|set|, \lstinline|dict|) are \emph{assigned by reference}; they are two names pointing to the same data, changing one affects the values of the other.
+  \end{itemize}
+\end{frame}
+
+
+
+%% STRING SECTION
+\subsection{Strings}
+\begin{frame}[fragile]
+  \frametitle{Strings in Python (1)}
+  Creating a string:
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> s = "Hello, world!"
+>>> len(s)
+13
+  \end{lstlisting}
+  Accessing a character in a string:
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> s[7]
+'w'
+  \end{lstlisting}
+  Getting a substring:
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> s[7:12]
+'world'
+  \end{lstlisting}
+  Or separate by whitespace using a string method (see \lstinline|dir(s)|):
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> s.split()
+['Hello,', 'world!']
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Strings in Python (2)}
+  Replacing a substring with another string:
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> s.replace('world', 'Python')
+'Hello, Python!'
+  \end{lstlisting}
+  Converting to upper and lower case:
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> s.upper()
+'HELLO, WORLD!'
+>>> s.lower()
+'hello, world!'
+  \end{lstlisting}
+  You can combine methods with string literals too:
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> s.replace('WoRlD'.lower(), 'Python')
+'Hello, Python!'
+>>> s.startswith('hello'.title())
+True
+  \end{lstlisting}
+  Finding the starting index of a substring:
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> s.index("world")
+7
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile,label=practice_strings]
+  \frametitle{Practice}
+  Given a string
+  \begin{lstlisting}
+>>> s = "Python programming is fun!"
+  \end{lstlisting}
+  \begin{itemize}
+   \item Find and print the index of the word "is".
+   \item Create a new string where "fun" is replaced with "awesome".
+   \item Print the string in uppercase.
+  \end{itemize}
+  \begin{onlyenv}<beamer>
+    \begin{lstlisting}[]
+>>> s.index('is')
+>>> p = s.replace('fun','awesome')
+>>> print(p.upper())
+    \end{lstlisting}
+  \end{onlyenv}
+ \end{frame}
+
+ %% TUPLES SECTION
+\subsection{Tuples}
+\begin{frame}[fragile]
+  \frametitle{Tuples in Python}
+  A tuple is a built-in data type that contains an immutable sequence of values. 
+  Creating a tuple:
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> t = (1, 2, 3)
+  \end{lstlisting}
+  Accessing an element of a tuple:
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> t[1]
+2
+  \end{lstlisting}
+  Tuples are immutable, so we can't change their elements. However, we can create a new tuple based on the old one:
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> t = t + (4, )
+  \end{lstlisting}
+  Finding the length of a tuple:
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> len(t)
+4
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile,label=practice_tuples]
+  \frametitle{Practice}
+  Given a tuple
+  \begin{lstlisting}
+>>> t = (1, 2, 3, 4, 5, 6)
+  \end{lstlisting}
+  \begin{itemize}
+   \item Access and print the third element of the tuple.
+   \item Try to change the value of the second element of the tuple.
+   \item Create a new tuple by concatenating a second tuple \((7, 8, 9)\) to the original tuple.
+  \end{itemize}\pause
+  \begin{onlyenv}<beamer>
+    \begin{lstlisting}[]
+t = (1, 2, 3, 4, 5, 6)
+print(t[2])
+t[2] = 6
+t2 = t + (7,8,9)
+print(t2)
+    \end{lstlisting}
+  \end{onlyenv}
+ \end{frame}
+
+%% DICTIONARY SECTION 
+\subsection{Dictionaries}
+\begin{frame}[fragile]
+  \frametitle{Dictionaries in Python (1)}
+  Creating a dictionary:
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> d = {'a': 1, 'b': 2, 'c': 3}
+  \end{lstlisting}
+  Accessing a value by its key:
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> d['b']
+2
+  \end{lstlisting}
+  Modifying a value associated with a key:
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> d['b'] = 47
+  \end{lstlisting}
+  Adding a new key-value pair:
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> d['d'] = 4
+  \end{lstlisting}
+  Removing a key-value pair using pop:
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> d.pop('d')
+4
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Dictionaries in Python (2)}
+  Get all keys as a list:
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> list(d.keys())
+['a', 'b', 'c']
+  \end{lstlisting}
+  Get all values as a list:
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> list(d.values())
+[1, 47, 3]
+  \end{lstlisting}
+  Get all key-value pairs as a list of tuples:
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> list(d.items())
+[('a', 1), ('b', 47), ('c', 3)]
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile,label=practice_dictionary]
+  \frametitle{Practice}
+  Given a dictionary
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> d = { 'Alice': 24, 'Bob': 27, 'Charlie': 22, 'Dave': 30}
+  \end{lstlisting}
+  \begin{itemize}
+   \item Access and print the age of 'Charlie'.
+   \item Update 'Alice' age to 25.
+   \item Add a new entry for 'Eve' with age 29.
+   \item Print all the keys in the dictionary.
+  \end{itemize}\pause
+  \begin{onlyenv}<beamer>
+    \begin{lstlisting}[]
+>>> print(d['Charlie'])
+>>> d['Alice'] = 25
+>>> d['Eve'] = 29
+>>> print(d.keys())
+dict_keys(['Alice', 'Bob', 'Charlie', 'Dave', 'Eve'])
+    \end{lstlisting}
+  \end{onlyenv}
+ \end{frame}
+
+ \section{Control flow}
+ \subsection{Loops}
+ \againframe<2>{contents_prog1}
+ 
+ %% Loops
+\begin{frame}[fragile]
+  \frametitle{Loops in Python (1)}
+  The \lstinline$for$ loop is used to iterate over a sequence (e.g. lists, sets, tuples, dictionaries, strings). Any \emph{iterable} object can be listed over:
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> for i in range(5):
+...     print(i)
+0
+1
+2
+3
+4
+  \end{lstlisting}\pause
+  You can iterate over a list directly:
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> my_list = [1, 2, 3, 4, 5]
+>>> for num in my_list:
+...     print(num)
+1
+2
+3
+4
+5
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Loops in Python (2)}
+  The \lstinline|enumerate| keyword returns both the \emph{index} as well as the \emph{list element}:
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> my_list = ['aa', 1, 'bb', 12, True, 1.618034, []]
+>>> for idx,elm in enumerate(my_list):
+...     print(f'Element {elm} of type {type(elm)} at index {idx}')
+  \end{lstlisting}
+  \pause
+  \begin{lstlisting}[style=PyOutput]
+Element aa of type <class 'str'> at index 0
+Element 1 of type <class 'int'> at index 1
+Element bb of type <class 'str'> at index 2
+Element 12 of type <class 'int'> at index 3
+Element True of type <class 'bool'> at index 4
+Element 1.618034 of type <class 'float'> at index 5
+Element [] of type <class 'list'> at index 6
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Loops in Python (3)}
+  The `while` loop keeps going as long as a condition is \lstinline{True}:
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> i = 0
+>>> while i < 3:
+...     print(i)
+...     i += 1
+0
+1
+2
+  \end{lstlisting}\pause
+  Use \lstinline|break| to exit a loop prematurely, and \lstinline|continue| to skip to the next iteration:
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> for i in range(5):
+...     if i == 3:
+...         break
+...     print(i)
+0
+1
+2
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile,label=practice_for]
+  \frametitle{Practice}
+  Given a list
+  \begin{lstlisting}[language=Python,numbers=none]
+>>> my_list = [1, 3, 7, 8, 9] 
+  \end{lstlisting}
+ 
+ \begin{itemize}
+  \item Use a for loop to print each element of the list.\pause
+  \item Use a while loop to print the values at indices 0 to 4.\pause
+  \item Use a loop to find and print the index of the number 7 in the list.
+ \end{itemize}
+ \begin{onlyenv}<beamer>
+  \begin{columns}[T]
+    \column{0.33\textwidth}
+      \begin{lstlisting}[]
+>>> for i in my_list:
+...    print(i)
+      \end{lstlisting}
+    \column{0.33\textwidth}
+      \begin{lstlisting}[]
+>>> c = 0
+>>> while (c<4):
+...    print(f"{my_list[c]=}")
+...    c += 1
+      \end{lstlisting}
+    \column{0.33\textwidth}
+      \begin{lstlisting}[]
+>>> c = 0
+>>> while not my_list[c] == 7:
+...    c += 1
+>>> print(my_list[c])
+      \end{lstlisting}      
+  \end{columns}
+ \end{onlyenv}
+\end{frame}
+
+%% CONTROL STATEMENTS
+\subsection{Branching}
+\begin{frame}[fragile]
+  \frametitle{Conditional Statements in Python}
+  The Boolean type \lstinline|bool| has only 2 possible values: \lstinline|True| or \lstinline|False| \\
+  The \lstinline{if} statement is used to execute a block of code only if a condition is evaluated to \lstinline|True|:
+  \begin{lstlisting}[language=Python, numbers=none, deletekeywords={is,not}]
+>>> x = 5
+>>> if x > 0:
+...     print("x is positive")
+x is positive
+  \end{lstlisting}\pause
+  Use \lstinline{elif} to specify additional conditions, and \lstinline{else} to define what to do if no conditions are met:
+  \begin{lstlisting}[language=Python, numbers=none, deletekeywords={is,not}]
+>>> if x > 10:
+...     print("x is greater than 10")
+... elif x == 10:
+...     print("x is exactly 10")
+... else:
+...     print("x is less than 10")
+x is less than 10
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Nested conditionals}
+  Nesting conditions allows for more complex conditionals:
+  \begin{lstlisting}[language=Python, numbers=none, deletekeywords={is,not}]
+>>> if x > 0:
+...     if x % 2 == 0: # The modulo operator % yields the remainder of a division
+...         print("x is positive and even")
+...     else:
+...         print("x is positive but odd")
+... else:
+...     print("x is non-positive")
+x is positive but odd
+  \end{lstlisting}\pause
+  The \lstinline{in} keyword can be used to check membership in a sequence:
+  \begin{lstlisting}[language=Python, numbers=none, deletekeywords={is,not}]
+>>> my_list = [1, 2, 3, 4, 5]
+>>> if 3 in my_list:
+...     print("3 is a member of the list")
+3 is a member of the list
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Combined conditionals}
+  \begin{block}{Leap year determination}
+    To be a leap year, the year number must be divisible by four, except for end-of-century years, which must be divisible by 400.
+  \end{block}\pause
+  We can create combined conditions using \lstinline|not|, \lstinline|and| and \lstinline|or| to determine whether we have a leap year:
+  \pause
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> year = 2024
+>>> if year % 4 == 0 and (not year % 100 == 0 or year % 400 == 0):
+...    print(f"{year} is a leap year.")
+... else:
+...    print(f"{year} is not a leap year.")
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Conditionals in list comprehensions}
+  List comprehensions can be extended with conditionals too:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> x = [i for i in range(0,31) if i%3 == 0]
+>>> print(x)
+[0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30]
+  \end{lstlisting}\pause
+  \vskip1em
+  Conditions are not restricted to modulo's. Here we select artists who have an 'r' or 'R' in their name:
+  \begin{lstlisting}[language=Python, numbers=none]
+artists = ["Adele", "Harry Styles", "Stef Ekkel", "Ed Sheeran", "Nicki Minaj", "Ariana Grande", "Robbie Williams"]
+
+my_artists = [artist for artist in artists if artist.lower().count('r') > 0]
+print(my_artists)
+['Harry Styles', 'Ed Sheeran', 'Ariana Grande', 'Robbie Williams']
+  \end{lstlisting}
+  
+\end{frame}
+
+\begin{frame}[fragile,label=practice_conditions]
+  \frametitle{Practice}
+  Consider the list:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> my_list = [x**3 for x in range(1,25,2)] # Cubes of odd numbers
+  \end{lstlisting}  \pause
+  \begin{itemize}
+  \item Use an \lstinline{if} statement to check if 125 is in \lstinline{my_list}, and print a message indicating the result.
+  \item Write a statement that checks and prints whether \lstinline{my_list[3]} is divisible by 3, and if not, print the remainder.
+  \item Use a list comprehension to create a list of all numbers in \lstinline|my_list| that are not divisible by 5.
+ \end{itemize}\pause
+ \begin{onlyenv}<beamer>
+  \begin{columns}[T]
+    \column{0.33\textwidth}
+    \begin{lstlisting}[]
+>>> if 125 in my_list:
+...     print('The number 125 was found in my_list!')
+    \end{lstlisting}
+    \column{0.33\textwidth}
+    \begin{lstlisting}[]
+>>> if my_list[3] % 3 == 0:
+...     print(f'{my_list[3]} is divisible by 3')
+... else:
+...     print(f'The remainder of {my_list[3]} and 3 is {my_list[3]%3}')
+    \end{lstlisting}
+    \column{0.33\textwidth}
+    \begin{lstlisting}
+>>> k = [n for n in my_list if not n % 5 == 0 ]
+    \end{lstlisting}
+  \end{columns}
+\end{onlyenv}
+\end{frame}
+
+%% FUNCTIONS 
+\section{Functions}
+\subsection{Defining functions}
+\againframe<2>{contents_prog1}
+
+\begin{frame}[fragile]
+  \frametitle{Functions in Python (1)}
+  Functions are defined using the \lstinline{def} keyword followed by the function name and a list of parameters in parentheses. The function body starts after the colon:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> def greet(name):
+...     print(f"Hello, {name}!")
+  \end{lstlisting}\pause
+  Call the function with the necessary arguments:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> greet("Alice")
+Hello, Alice!
+  \end{lstlisting}\pause
+  Functions can return values using the \lstinline{return} keyword:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> def add(a, b):
+...     return a + b
+  \end{lstlisting}\pause
+  Capture the return value in a variable, e.g. \lstinline|result|:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> result = add(2, 3)
+>>> print(result)
+5
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Functions in Python (2)}
+  Default argument values can be specified, making the argument optional:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> def greet(name, greeting="Hello"):
+...     print(f"{greeting}, {name}!")
+  \end{lstlisting}\pause
+  Call the function with or without the optional argument:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> greet("Bob")
+Hello, Bob!
+>>> greet("Bob", "Buzz off")
+Buzz off, Bob!
+  \end{lstlisting}\pause
+  Python supports functions with a variable number of arguments:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> def my_function(*args):
+...     print(args)
+  \end{lstlisting}\pause
+  Call the function with a varying number of arguments:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> my_function(1, 2, 3, "Hello")
+(1, 2, 3, "Hello")
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Functions in Python (3)}
+  Functions can also return multiple values (also >2)
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> def statistics(numbers):
+...     return max(numbers), min(numbers)
+  \end{lstlisting}\pause
+  Let's call the function with some list:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> numlist = [94,12,6,19,33,14,81,56,43,22]
+>>> print(statistics(numlist))
+(94, 6)
+  \end{lstlisting}\pause
+  Store the elements in separate variables:
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> a,b = statistics(numlist)
+>>> print(f'{a=}, {b=}')
+a=94, b=6
+  \end{lstlisting}
+\end{frame}
+
+{\nologo
+\begin{frame}[fragile]
+  \frametitle{Functions in Python (4)}
+  \begin{itemize}
+    \item Functions are very useful for \emph{abstraction}:
+    \begin{itemize}
+      \item You can compartmentalize and 'hide' complex pieces of code\
+      \item Retain flexibility through arguments
+      \item You can reuse often used pieces of code, limiting copy-paste of code
+    \end{itemize}
+    \item Extending functionality or fixing bugs is done in 1 place\pause
+    \item \bfseries{Documentation is crucial!}\pause
+  \end{itemize}
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> def statistics(numbers):
+...     """Return the maximum and minimum of a list of numbers
+...        Function arguments:
+...        numbers: list of numbers"""
+...     return max(numbers), min(numbers)
+  \end{lstlisting}\pause
+  \begin{lstlisting}[language=Python, numbers=none]
+>>> help(statistics)
+  \end{lstlisting}
+  \begin{lstlisting}[style=PyOutput,keywords={statistics},keywordstyle=\bfseries]
+Help on function statistics in module __main__:
+
+statistics(numbers)
+Return the maximum and minimum of a list of numbers
+Function arguments:
+numbers: list of numbers
+  \end{lstlisting}
+\end{frame}
+}
+
+{\nologo
+\begin{frame}[fragile]
+  \frametitle{Passing arguments by value or reference?}
+  Recall that certain Python variables are assigned by value, and others reference; the same goes for passing arguments \footnote{\href{https://k0nze.dev/posts/python-copy-reference-none/}{https://k0nze.dev/posts/python-copy-reference-none/}}:
+  \begin{itemize}
+    \item Primitive or immutable data types are \emph{passed by value}; the value is copied and changes made inside the function will not affect the values stored in the variables passed to the function.
+    \item Mutable data types (e.g. list, set, dict) are passed to a function \emph{by reference}; changes that are made inside the function do affect the values outside of the function.
+  \end{itemize}
+  \begin{columns}[t]
+    
+    \column{0.4\textwidth}
+    Consider the function:
+
+    \begin{lstlisting}
+def func(x, y):
+    x = x - 1 # Subtract 1
+    y.pop()   # Remove last item
+    \end{lstlisting}\pause
+    \column{0.6\textwidth}
+    % We call the function using an immutable data type (\lstinline|int|) and a mutable data type (\lstinline|list|):
+    \begin{lstlisting}
+i = 1
+l = ['a', 'b']
+
+func(i, l)
+
+print(i, l)
+    \end{lstlisting}
+    \begin{lstlisting}[style=PyOutput]
+1, ['a']      
+    \end{lstlisting}
+  \end{columns}
+\end{frame}
+}
+
+
+\subsection{Scope}
+\begin{frame}[fragile]
+  \frametitle{Scope of functions and variables in Python}
+
+  In Python, the scope of a variable refers to the regions of a program where that variable is accessible. Understanding the scope of variables helps to avoid bugs and maintain a clean codebase. The scopes in Python are categorized as follows:
+
+  \begin{description}
+    \item[Local Scope] Variables defined inside a function are in the local scope of that function. They can only be accessed within that function.
+    \item[Enclosing Scope] In the case of nested functions, a function will have access to the variables of the functions it is nested within.
+    \item[Global Scope] Variables defined at the top-level of a script are global and can be accessed by all functions in the script, unless overridden within a function.
+    \item[Built-in Scope] Python has a number of built-in identifiers that should not be used as variable names as they have special significance. Examples include \textit{print}, \textit{list}, \textit{dict}, etc.
+  \end{description}
+
+  % Python follows the LEGB rule for name resolution: Local, Enclosing, Global, Built-in.
+\end{frame}
+
+{\nologo
+\begin{frame}[fragile]
+  \frametitle{Examples Variable Scope}
+  \begin{columns}[T]
+    \column[T]{0.5\textwidth}
+      \textbf{1. Local Scope}:
+    \column[T]{0.5\textwidth}
+      \begin{lstlisting}[language=Python]
+def my_func():
+local_var = 100  # Local scope
+    print(local_var)
+      \end{lstlisting}
+  \end{columns}
+  {\color{scharlaken}\noindent\rule{\textwidth}{0.4pt}}
+  \begin{columns}    
+  \column[T]{0.5\textwidth}
+    \textbf{2. Enclosing Scope}:
+  \column[T]{0.5\textwidth}
+    \begin{lstlisting}[language=Python]
+def outer_func():
+    outer_var = 200  # Enclosing scope
+          
+    def inner_func():
+        print(outer_var)
+    
+    inner_func()
+    \end{lstlisting}
+  \end{columns}
+  {\color{scharlaken}\noindent\rule{\textwidth}{0.4pt}}
+  \begin{columns}[T]
+    \column[T]{0.5\textwidth}
+    \textbf{3. Global Scope}:
+    \column[T]{0.5\textwidth}
+      \begin{lstlisting}[language=Python]
+global_var = 300  # Global scope
+
+def another_func():
+    print(global_var)
+      \end{lstlisting}
+    \end{columns}
+    {\color{scharlaken}\noindent\rule{\textwidth}{0.4pt}}
+    \begin{columns}[T]
+      \column[T]{0.5\textwidth}
+        \textbf{4. Built-in Scope}:
+      \column[T]{0.5\textwidth}
+        \begin{lstlisting}[language=Python]
+print(max, min, len, str, int, list)
+        \end{lstlisting}
+    \end{columns}
+\end{frame}
+}
+
+\begin{frame}[fragile]
+  \frametitle{Exercise Variable Scope}
+  Investigate the behavior of the following nested functions and variables with the same name:
+  \begin{lstlisting}[language=Python]
+def outer_func():
+    outer_var = 200
+
+    def inner_func():
+        outer_var = 500
+        print(outer_var)
+
+    inner_func()
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Lambda functions}
+  If you do not want to create a new function block, you can create an \emph{lambda function}:
+  Lambda functions are small, anonymous functions that can be instantiated in a single line, or even as an argument to a function.
+  \begin{lstlisting}[language=Python]
+from math import exp
+f = lambda x: x**2 + exp(x)
+  \end{lstlisting}
+  \pause
+  \begin{itemize}
+    \item \lstinline[language=Python]|f|: the name of the function
+    \item \lstinline[language=Python]|lambda|: used to define the inline function
+    \item \lstinline[language=Python]|x|: the input argument (can be multiple, comma separated)
+    \item \lstinline|:|: colon indicating the function definition will start
+    \item \lstinline[language=Python]|x**2 + exp(x)|: the actual function
+  \end{itemize}\pause
+  \begin{lstlisting}[language=Python]
+xsqr_exp = [f(x) for x in range(5)]
+print(xsqr_exp)
+  \end{lstlisting}
+  \begin{lstlisting}[language=Python]
+[1.0, 3.718281828459045, 11.38905609893065, 29.085536923187668, 70.59815003314424]
+  \end{lstlisting}
+\end{frame}
+
+
+
+
+\subsection{The random module}
+\begin{frame}[fragile]
+  \frametitle{The random module (1)}
+  Random number generators and sampling tools are available through the \href{https://docs.python.org/3/library/random.html}{random module}. A few examples for \href{https://docs.python.org/3/library/random.html#functions-for-integers}{integers and sequences}:
+  \begin{lstlisting}
+import random as rnd
+
+# Random integers
+random_integers = [rnd.randint(0,10) for i in range(10)]
+print(f'{random_integers = }')
+
+# Sample from given population
+my_range = range(12) # [0, 1, 2, ..., 11]
+select_from_range = rnd.sample(my_range,8)
+print(f'{select_from_range = }') # Selected 8 elements
+
+# Choose 1 element from list
+days_of_week = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+day = rnd.choice(days_of_week)
+print(f"I've chosen {day} as my lucky day!")
+  \end{lstlisting}\pause
+
+  \begin{lstlisting}[style=PyOutput]
+random_integers = [6, 6, 2, 5, 5, 8, 3, 7, 3, 4]
+select_from_range = [2, 3, 10, 1, 6, 4, 8, 5]
+I've chosen Wednesday as my lucky day!
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{The random module (2)}
+  Examples for \href{https://docs.python.org/3/library/random.html#real-valued-distributions}{real valued distributions}:
+  \begin{lstlisting}
+import random as rnd
+
+# Random number (uniform distribution) 0 < x < 1
+x = [rnd.random() for i in range(5)]
+print(x)
+
+# Random number (uniform distribution) between given bounds
+x = [rnd.uniform(1,3) for i in range(5)]
+print(x)
+
+# Random number from a Gauss distribution (mu=0, sigma=2)
+x = [rnd.gauss(0,2) for i in range(5)]
+print(x)
+  \end{lstlisting}\pause
+
+  \begin{lstlisting}[style=PyOutput,basicstyle=\tiny\ttfamily]
+[0.6697878114597362, 0.4136014290205997, 0.5108247513505662, 0.44260043089156076, 0.9902269207988261]
+[2.4749381508841077, 2.943448233960596, 2.516639180020423, 1.0481550073898795, 1.961356325508141]
+[1.8199856149229392, 2.000097897306016, -2.4604868187736026, -0.46836605162997846, -2.5069012642608803]
+  \end{lstlisting}
+\end{frame}
+  
+\begin{frame}[fragile,label=practice_random]
+  \frametitle{Practice}
+  \begin{itemize}
+    \item Create a \emph{function} that returns a list of $N$ dice throws (cubic dice, values 1-6)
+    \item Throw the dice many times
+    \item Print for each value how often it has been thrown
+  \end{itemize} \pause
+  \begin{onlyenv}<beamer>
+    \begin{lstlisting}
+import random as rnd
+
+def throw_dice(N):
+    return [rnd.randint(1,6) for _ in range(N)]
+
+throws = throw_dice(40)
+print(throws)
+
+for i in range(1,7):
+    n = len([t for t in throws if t==i])
+    print(f"Value {i} was thrown {n} times")
+        \end{lstlisting}\pause
+  \end{onlyenv}
+  \begin{lstlisting}[style=PyOutput,basicstyle=\tiny\ttfamily]
+[5, 1, 1, 4, 6, 3, 3, 1, 5, 6, 1, 1, 1, 1, 5, 5, 2, 1, 1, 2, 2, 5, 5, 4, 6, 1, 3, 5, 6, 3, 1, 5, 6, 2, 3, 1, 6, 3, 2, 1]
+Value 1 was thrown 13 times
+Value 2 was thrown 5 times
+Value 3 was thrown 6 times
+Value 4 was thrown 2 times
+Value 5 was thrown 8 times
+Value 6 was thrown 6 times
+  \end{lstlisting}
+\end{frame}

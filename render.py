@@ -34,19 +34,19 @@ def render(argv):
     # Run latex compiler until output does not change
     while not re.search(fr"File `{outfile.stem}.out' has not changed","|".join(logfile)) and (run := run+1) < 4:
         sp.run([latex_exec, "-interaction=nonstopmode","-jobname=%s"%outfile.stem,infile]) 
-        with open(f"{outfile.stem}.log","r") as f:
+        with open(f"{outfile.stem}.log","r", encoding='utf-8', errors='replace') as f:
             logfile = f.readlines()
 
 def get_input_output_filenames(argv):
     filenames = [Path(f).stem for f in argv]
     print(filenames)
     outnames = '_'.join(filenames)
-    with open(infile,'r') as file:
+    with open(infile,'r', encoding='utf-8', errors='replace') as file:
          data = file.readlines()
          for line in data:
              if line.startswith('\documentclass'):
                  if bool(re.findall('handout',line)):
-                     outfile = Path(outnames.title() + ".pdf")
+                     outfile = Path("Handout" + outnames.title() + ".pdf")
                  else:
                      outfile = Path("Lecture" + outnames.title() + ".pdf")
 

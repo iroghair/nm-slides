@@ -52,13 +52,14 @@ basicstyle=\tiny\ttfamily
 
 \lstdefinestyle{PyOutput}{
   basicstyle=\scriptsize\ttfamily,% the size of the fonts that are used for the code
-  % basicstyle=\fontfamily{pcr}\selectfont\footnotesize,
-  numbers=none,                   % where to put the line-numbers
+  numbers=none,                   % no line numbers
+  numberstyle=\relax,             % ensure no number style is applied
+  numbersep=0pt,                  % no space for numbers
   frame=single,                   % adds a frame around the code
-  tabsize=4,                      % sets default tab size to 2 spaces
+  tabsize=4,                      % sets default tab size to 4 spaces
   breaklines=true,                % automatic line breaking only at whitespace
   breakatwhitespace=false,        % automatic breaks should only happen at whitespace
-  escapeinside={(*@}{@*)},         % if you want to add LaTeX within your code
+  escapeinside={(*@}{@*)},        % if you want to add LaTeX within your code
   keywordstyle=\color{black},  % keyword style
   commentstyle=\color{black},     % comment style
   stringstyle=\color{black},        % string literal style

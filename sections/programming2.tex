@@ -3,31 +3,11 @@
 \subsection{Introduction}
 \begin{frame}[label=contents_prog2]
   \frametitle{Today's outline}
-  \mode<beamer>{
-    \only<1>{\tableofcontents}
-  }
-  \only<2>{\tableofcontents[currentsection]}
+    \mode<beamer>{
+      \only<1>{\tableofcontents[hideallsubsections]}
+    }
+    \only<2>{\tableofcontents[hideallsubsections,sectionstyle=show,subsectionstyle=hide]}
 \end{frame}
-% \begin{frame}[label=contents_prog2]
-%   \frametitle{Today's outline}
-%   \mode<beamer>{
-%     \only<1>{
-%       \begin{columns}
-%         \column{0.5\textwidth}
-%           \tableofcontents[sections={1-3}]
-%         \column{0.5\textwidth}
-%           \tableofcontents[sections={4-8}]
-%       \end{columns}}
-%   }
-%   \only<2>{
-%     \begin{columns}
-%       \column{0.5\textwidth}
-%         \tableofcontents[sections={1-3},currentsection]
-%       \column{0.5\textwidth}
-%         \tableofcontents[sections={4-8},currentsection]
-%     \end{columns}
-%     }
-% \end{frame}
 
 %% NUMPY
 \subsection{Introduction to NumPy}
@@ -35,18 +15,18 @@
   \frametitle{Introduction to NumPy (1)}
   NumPy is a powerful library for numerical computing in Python. It introduces the multidimensional array (\lstinline|ndarray|) data structure which is central to numerical computing tasks. To start using NumPy, you need to import it first:
   \begin{lstlisting}[language=Python, numbers=none]
->>> import numpy as np
+import numpy as np
   \end{lstlisting}\pause
   Creating arrays from Python lists and accessing elements:
   \begin{lstlisting}[language=Python, numbers=none]
->>> arr = np.array([1, 2, 3, 4, 5])
->>> arr[0]
+arr = np.array([1, 2, 3, 4, 5])
+arr[0]
 1
   \end{lstlisting}\pause
   Create arrays with predetermined values:
   \begin{lstlisting}[language=Python, numbers=none]
->>> np.zeros(5)  # Creates an array of five zeros
->>> np.ones((3, 3))  # Creates a 3x3 array of ones - note that the input argument is a tuple
+np.zeros(5)  # Creates an array of five zeros
+np.ones((3, 3))  # Creates a 3x3 array of ones - note that the input argument is a tuple
   \end{lstlisting}
 \end{frame}
 
@@ -54,23 +34,23 @@
   \frametitle{Introduction to NumPy (2)}
   Useful array creation functions:
   \begin{lstlisting}[language=Python, numbers=none]
->>> arr  = np.arange(0, 10, 2)  # Creates an array with values from 0 to 10, step 2
->>> arr2 = np.linspace(0, 1, 5) # Creates an array with 5 values evenly spaced between 0 and 1
->>> arr3 = np.logspace(-3,2,6)  # Creates an array spaced evenly on a logscale
+arr  = np.arange(0, 10, 2)  # Creates an array with values from 0 to 10, step 2
+arr2 = np.linspace(0, 1, 5) # Creates an array with 5 values evenly spaced between 0 and 1
+arr3 = np.logspace(-3,2,6)  # Creates an array spaced evenly on a logscale
   \end{lstlisting}\pause
 
   Array operations:
   \begin{lstlisting}[language=Python, numbers=none]
->>> arr * 2  # Multiplies every element by 2
->>> arr + np.array([5, 4, 3, 2, 1])  # Element-wise addition
+arr * 2  # Multiplies every element by 2
+arr + np.array([5, 4, 3, 2, 1])  # Element-wise addition
   \end{lstlisting}\pause
   
   Inspecting your array:
   \begin{lstlisting}[language=Python, numbers=none]
->>> arr.shape  # Returns the dimensions of the array (tuple)
->>> arr.shape[0] # Returns the number of rows ([1] for columns)
->>> len(arr)  # Returns the size of the first dimension
->>> arr.size # Returns the total number of elements in arr
+arr.shape  # Returns the dimensions of the array (tuple)
+arr.shape[0] # Returns the number of rows ([1] for columns)
+len(arr)  # Returns the size of the first dimension
+arr.size # Returns the total number of elements in arr
   \end{lstlisting}
 \end{frame}
 
@@ -78,21 +58,21 @@
   \frametitle{Introduction to NumPy (3)}
   Zeros- or ones-filled arrays:
   \begin{lstlisting}[language=Python, numbers=none]
->>> many_zeros = np.zeros_like(arr) # Array with zeros of size like arr, also: np.zeros
->>> just_ones  = np.ones((2,4))     # Create array with ones of size (2,4), also: np.ones_like
->>> identity   = np.eye((3,3))      # Identity matrix (zeros with ones on the main diagonal)
+many_zeros = np.zeros_like(arr) # Array with zeros of size like arr, also: np.zeros
+just_ones  = np.ones((2,4))     # Create array with ones of size (2,4), also: np.ones_like
+identity   = np.eye((3,3))      # Identity matrix (zeros with ones on the main diagonal)
     \end{lstlisting}\pause
       
     Or random numbers, useful for e.g. stochastic simulations. Note that these are NumPy intrinsic methods, and differ from the ones in the \lstinline|random| module.
     \begin{lstlisting}[language=Python, numbers=none]
->>> np.random.rand() # Single random floating point number [0,1)
+np.random.rand() # Single random floating point number [0,1)
 0.11879317099184983
 
->>> np.random.rand(2,3)
+np.random.rand(2,3)
 array([[0.36482694, 0.47204049, 0.20908193],
        [0.76626339, 0.64075302, 0.82440279]])
 
->>> np.random.randint(1,10,5) # 5 random integers from 1 (inclusive) until 10 (exclusive)
+np.random.randint(1,10,5) # 5 random integers from 1 (inclusive) until 10 (exclusive)
 array([9, 1, 6, 4, 6])
         \end{lstlisting}
 \end{frame}
@@ -105,20 +85,20 @@ array([9, 1, 6, 4, 6])
   \begin{itemize}
     \item Linear Algebra:
     \begin{lstlisting}[language=Python, numbers=none]
->>> np.dot(arr, arr)     # Dot product (alternative: arr @ arr)
->>> np.linalg.norm(arr)  # Euclidean norm (L2 norm)
+np.dot(arr, arr)     # Dot product (alternative: arr @ arr)
+np.linalg.norm(arr)  # Euclidean norm (L2 norm)
     \end{lstlisting}\pause
     
     \item Trigonometric Functions:
   \begin{lstlisting}[language=Python, numbers=none]
->>> np.sin(arr)  # Sine of each element
->>> np.cos(arr)  # Cosine of each element
+np.sin(arr)  # Sine of each element
+np.cos(arr)  # Cosine of each element
   \end{lstlisting}
   
   \item Statistical functions to analyze data:
   \begin{lstlisting}[language=Python, numbers=none]
->>> np.mean(arr)  # Mean value of the array elements
->>> np.std(arr)   # Standard deviation of the array elements
+np.mean(arr)  # Mean value of the array elements
+np.std(arr)   # Standard deviation of the array elements
   \end{lstlisting}
 \end{itemize}
 \end{frame}
@@ -159,19 +139,19 @@ array([9, 1, 6, 4, 6])
   \begin{itemize}
     \item Manually creating matrices (2D ndarrays):
     \begin{lstlisting}[language=Python, numbers=none]
->>> import numpy as np
->>> matrix = np.array([[1, 2], 
+import numpy as np
+matrix = np.array([[1, 2], 
                       [3, 4]]) # Matrices are arrays of arrays(rows)
     \end{lstlisting}\pause
 
     \item Reshaping, slicing and modifying matrices (try for yourself and print each new result):
     \begin{lstlisting}[language=Python, numbers=none]
->>> mat = np.arange(25).reshape(5,5)
->>> col = mat[:,2]  # Get column index 2
->>> row = mat[3,:]  # Get row index 3
->>> sub = mat[1:4,1:4] # Save submatrix
->>> mat[1,:] = row  # Replace row index 1 by 'row'
->>> mat[mat>5] = -1 # Conditional slicing/update of values
+mat = np.arange(25).reshape(5,5)
+col = mat[:,2]  # Get column index 2
+row = mat[3,:]  # Get row index 3
+sub = mat[1:4,1:4] # Save submatrix
+mat[1,:] = row  # Replace row index 1 by 'row'
+mat[mat>5] = -1 # Conditional slicing/update of values
     \end{lstlisting}
   \end{itemize}
 \end{frame}
@@ -283,22 +263,22 @@ print(f"The iterated approach took {time.time()-start} seconds")
   \frametitle{Assignment of arrays by reference}
   Careful with assignment, default is a reference to the same object as observed with lists:
   \begin{lstlisting}[language=Python, numbers=none]
->>> arr = np.arange(0,10,1)
->>> print(arr)
+arr = np.arange(0,10,1)
+print(arr)
 [0 1 2 3 4 5 6 7 8 9]
->>> new_arr = arr 
->>> new_arr2 = arr.copy()
->>> new_arr[4] = 11
->>> print(new_arr)
+new_arr = arr 
+new_arr2 = arr.copy()
+new_arr[4] = 11
+print(new_arr)
 [ 0  1  2  3 11  5  6  7  8  9]
->>> print(arr) # :mind_blown: we did not change this, did we?
+print(arr) # :mind_blown: we did not change this, did we?
 [ 0  1  2  3 11  5  6  7  8  9]
   \end{lstlisting}\pause
 
   Saving and loading matrices:
   \begin{lstlisting}[language=Python, numbers=none]
->>> np.save('my_matrix.npy', matrix)  # Save the matrix to a file
->>> loaded_matrix = np.load('my_matrix.npy')  # Load the matrix from a file
+np.save('my_matrix.npy', matrix)  # Save the matrix to a file
+loaded_matrix = np.load('my_matrix.npy')  # Load the matrix from a file
   \end{lstlisting}
 \end{frame}
 
@@ -308,14 +288,14 @@ print(f"The iterated approach took {time.time()-start} seconds")
 
 %   Matrix Transposition and Inversion:
 %   \begin{lstlisting}[language=Python, numbers=none]
-% >>> np.transpose(matrix)  # Find the transpose of the matrix
-% >>> np.linalg.inv(matrix)  # Find the inverse of the matrix
+% np.transpose(matrix)  # Find the transpose of the matrix
+% np.linalg.inv(matrix)  # Find the inverse of the matrix
 %   \end{lstlisting}\pause
 
 %   Matrix Products and Dot Products:
 %   \begin{lstlisting}[language=Python, numbers=none]
-% >>> np.dot(matrix, matrix)  # Find the dot product
-% >>> matrix @ matrix  # Alternative way to find the dot product
+% np.dot(matrix, matrix)  # Find the dot product
+% matrix @ matrix  # Alternative way to find the dot product
 %   \end{lstlisting}
 % \end{frame}
 
@@ -325,13 +305,13 @@ print(f"The iterated approach took {time.time()-start} seconds")
   
 %   Determinant and Rank of a Matrix:
 %   \begin{lstlisting}[language=Python, numbers=none]
-% >>> np.linalg.det(matrix)  # Find the determinant of the matrix
-% >>> np.linalg.matrix_rank(matrix)  # Find the rank of the matrix
+% np.linalg.det(matrix)  # Find the determinant of the matrix
+% np.linalg.matrix_rank(matrix)  # Find the rank of the matrix
 %   \end{lstlisting}\pause
   
 %   Eigenvalues and Eigenvectors:
 %   \begin{lstlisting}[language=Python, numbers=none]
-% >>> np.linalg.eig(matrix)  # Find the eigenvalues and eigenvectors of the matrix
+% np.linalg.eig(matrix)  # Find the eigenvalues and eigenvectors of the matrix
 %   \end{lstlisting}
 % \end{frame}
 
@@ -563,31 +543,31 @@ plt.show()
 \end{frame}
 
 
-\begin{frame}[fragile]
-  \frametitle{Advanced plotting: Animating plots}
-  The \lstinline|fig.canvas.draw()| and \lstinline|fig.canvas.flush_events()| methods hold the execution of your program until the graph is updated, facilitating a live view of the simulation result.
-  \begin{lstlisting}
-import numpy as np
-import matplotlib.pyplot as plt
+% \begin{frame}[fragile]
+%   \frametitle{Advanced plotting: Animating plots}
+%   The \lstinline|fig.canvas.draw()| and \lstinline|fig.canvas.flush_events()| methods hold the execution of your program until the graph is updated, facilitating a live view of the simulation result.
+%   \begin{lstlisting}
+% import numpy as np
+% import matplotlib.pyplot as plt
 
-x = np.linspace(0, 4*np.pi, 100)
-y = np.sin(x)
+% x = np.linspace(0, 4*np.pi, 100)
+% y = np.sin(x)
 
-fig, ax = plt.subplots()
-line, = ax.plot(x, y, '-')
+% fig, ax = plt.subplots()
+% line, = ax.plot(x, y, '-')
 
-ax.set_xlabel('X')
-ax.set_ylabel('Y')
-ax.set_title('Animating a Sine Wave')
-plt.show(block=False)
+% ax.set_xlabel('X')
+% ax.set_ylabel('Y')
+% ax.set_title('Animating a Sine Wave')
+% plt.show(block=False)
 
-for i in range(len(x)):
-    line.set_data(x[:i+1], y[:i+1])
-    fig.canvas.draw()
-    fig.canvas.flush_events()
-    plt.pause(0.01)
-  \end{lstlisting}
-\end{frame}
+% for i in range(len(x)):
+%     line.set_data(x[:i+1], y[:i+1])
+%     fig.canvas.draw()
+%     fig.canvas.flush_events()
+%     plt.pause(0.01)
+%   \end{lstlisting}
+% \end{frame}
 
 
 % \begin{frame}[fragile]
@@ -748,50 +728,50 @@ for i in range(len(x)):
 
 
 % INPUT AND OUTPUT
-\section{IO}
-\subsection*{Input/output}
-\againframe<2>{contents_prog2}
+% \section{IO}
+% \subsection*{Input/output}
+% \againframe<2>{contents_prog2}
 
-\begin{frame}[fragile]
-  \frametitle{Input and Output in Python (1)}
-  Many programs require some input (data) to function correctly. A combination of the following is common:
-  \begin{itemize}[<+->]
-    \item Input may be given in a parameters file (``hard-coded'')
-    \item Input may be entered via the keyboard using the `input` function:
-    \begin{lstlisting}[language=Python,numbers=none]
->>> a = input('Please enter a number: ')
-    \end{lstlisting}
-    \item Input may be read from a file, for instance using Python's built-in open function or libraries like `numpy` for more complex data structures:
-    \begin{lstlisting}[language=Python,numbers=none]
-with open('myData.txt', 'r') as file:
-    data = file.read() # Alt: data.readlines() gives a list of lines
+% \begin{frame}[fragile]
+%   \frametitle{Input and Output in Python (1)}
+%   Many programs require some input (data) to function correctly. A combination of the following is common:
+%   \begin{itemize}[<+->]
+%     \item Input may be given in a parameters file (``hard-coded'')
+%     \item Input may be entered via the keyboard using the `input` function:
+%     \begin{lstlisting}[language=Python,numbers=none]
+% a = input('Please enter a number: ')
+%     \end{lstlisting}
+%     \item Input may be read from a file, for instance using Python's built-in open function or libraries like `numpy` for more complex data structures:
+%     \begin{lstlisting}[language=Python,numbers=none]
+% with open('myData.txt', 'r') as file:
+%     data = file.read() # Alt: data.readlines() gives a list of lines
 
-import numpy as np
-data = np.loadtxt("my_file.csv")
-    \end{lstlisting}
-    \item There are many other libraries and functions for more advanced input operations, such as json, xml, etc.
-  \end{itemize}
- \end{frame}
+% import numpy as np
+% data = np.loadtxt("my_file.csv")
+%     \end{lstlisting}
+%     \item There are many other libraries and functions for more advanced input operations, such as json, xml, etc.
+%   \end{itemize}
+%  \end{frame}
 
- \begin{frame}[fragile]
-  \frametitle{Input and Output in Python (2)}
-  Output of results can be done in several ways, including:
-  \begin{itemize}[<+->]
-    \item Displaying results to the console - simply omitting a print statement will automatically show expression results in most Python IDEs.
-    \item Using the `print` function to show results in the console:
-    \begin{lstlisting}[language=Python,numbers=none]
->>> print("The result is:", result)
-    \end{lstlisting}
-    \item Saving data to a file can be done using various methods including writing to a file or using libraries like pandas for structured data:
-    \begin{lstlisting}[language=Python,numbers=none]
->>> with open('output.txt', 'w') as file:
-...     file.write(str(data))
+%  \begin{frame}[fragile]
+%   \frametitle{Input and Output in Python (2)}
+%   Output of results can be done in several ways, including:
+%   \begin{itemize}[<+->]
+%     \item Displaying results to the console - simply omitting a print statement will automatically show expression results in most Python IDEs.
+%     \item Using the `print` function to show results in the console:
+%     \begin{lstlisting}[language=Python,numbers=none]
+% print("The result is:", result)
+%     \end{lstlisting}
+%     \item Saving data to a file can be done using various methods including writing to a file or using libraries like pandas for structured data:
+%     \begin{lstlisting}[language=Python,numbers=none]
+% with open('output.txt', 'w') as file:
+% ...     file.write(str(data))
 
->>> data.save("data.npy")
-    \end{lstlisting}
-    \item More advanced output methods can utilize libraries such as NumPy, pandas, etc. to save data in various formats including JSON, Excel, etc.
-  \end{itemize}
- \end{frame}
+% data.save("data.npy")
+%     \end{lstlisting}
+%     \item More advanced output methods can utilize libraries such as NumPy, pandas, etc. to save data in various formats including JSON, Excel, etc.
+%   \end{itemize}
+%  \end{frame}
 
 \section{Coding style}
 \subsection{Program design}
@@ -1010,112 +990,28 @@ else:
  \end{columns}
 \end{frame}
 
-
-%% ASPECTS OF A GOOD PROGRAM
-\subsection*{Aspects of a good program}
 \begin{frame}
   \frametitle{Writing readable code}
-  Good code reads like a book.\vskip2em \pause
   \begin{itemize}
-    \item When it doesn't, make sure to use comments. In Python, everything following \lstinline|#| is a comment
-    \item Prevent ``smart constructions'' in the code
-    \item Re-use working code (i.e. create functions for well-defined tasks).
+    \item Good code reads like a book.
+    \begin{itemize}
+      \item Write code as if it were paragraphs in a story
+    \end{itemize}
+    \item Use comments to document design and purpose, not mechanics
+    \item If you have $>15$ lines of code, you can probably replace it by one or more functions: don't repeat yourself.
+    \item Use meaningful variable and function names
+    \begin{itemize}
+      \item \lstinline|calculate_average_temperature()|
+      \item \lstinline|grid_size = (100,100)|
+    \end{itemize}
     \item Document functions using docstrings 
-    \item External documentation is also useful, but harder to maintain.
-    % \item Python comes with a function that generates reports from comments
+    \item Generalize: separate data from algorithms
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{How not to comment}
-  \begin{itemize}[<+->]
-   \item Useless:
-   \begin{lstlisting}
-# Start program 
-   \end{lstlisting}
-   \item Obvious:
-   \begin{lstlisting}
-if (a > 5)   # Check if a is greater than 5
-    ... 
- \end{lstlisting}
-   \item Too much about the life:
-   \begin{lstlisting}[basicstyle=\tiny\ttfamily]
-# Well... I do not know how to explain what is going on
-# in the snippet below. I tried to code in the night 
-# with some booze and it worked then, but now I have a 
-# strong hangover and some parameters still need to be
-# worked out...
-   \end{lstlisting}
- 
-   \item ...
-   \begin{lstlisting}[basicstyle=\tiny\ttfamily]
-# You may think that this function is obsolete, and doesn't seem to
-# do anything. And you would be correct. But when we remove this 
-# function for some reason the whole program crashes and we can't 
-# figure out why, so here it will stay.
-   \end{lstlisting}
-  \end{itemize}
- \end{frame}
- 
- \begin{frame}[fragile]
-  \frametitle{Adding comments to our Python program}
-  \centering\tikz{\node[emphblock, text width=0.7\textwidth]{Use comments to document design and purpose (functionality), not mechanics (implementation).};}
-  \begin{lstlisting}
-IAmFree = checkSchedule()
-if IAmFree:
-    # Count books and amount of free space on a shelf. 
-    # If minimum number of books I need is less than a 
-    # shelf capacity, go shopping and buy additional 
-    # literature. If the amount of books after the 
-    # shopping is too big, use boxes to store them.
-    books = countBooks()
-    shelfSize = countFreeSpaceShelf()
-    
-    ...
-    
-else:
-    burnBooks()
-    goToBookStore()
- \end{lstlisting}
- \end{frame}
-
-\begin{frame}
-  \frametitle{What else makes a good program?}
-  \begin{columns}[T]
-        \column{0.5\textwidth}
-        \begin{itemize}
-            \item Portability (guaranteed in Python)
-            \item Readability
-            \item Efficiency 
-            \item Structural
-            \item Flexibility
-            \item Generality
-            \item Documentation
-        \end{itemize}
-        \column{0.5\textwidth}
-Funny thing is: This list does not mention that the program should be actually working for its intended purposes!
-    \end{columns}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Readability}
-  Don't use meaningless variable or function names. Rule of thumb: use verbs for functions and nouns for variables.
-  \vspace*{2em}
-  \begin{lstlisting}[language=Python]
-# stupid names
-x = 5;
-xx = myfunction(x);
-
-# proper names
-number_dams = 6;
-beaver_workforce = allocate_beavers();
-dams = build_dams(beaver_workforce, number_dams);
-  \end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Efficiency}
-  This one is difficult. Not much you can do without truly understanding how Python is utilizing your processor and memory. A couple of guidelines though:
+  \frametitle{Writing efficient code}
+  Numerical methods are about efficient techniques to compute your answer. A couple of guidelines:
   \begin{itemize}
       \item Avoid loops
       \item Especially avoid nested loops
@@ -1160,139 +1056,6 @@ print(f'Execution time: {end_time - start_time} seconds')
     \end{lstlisting}
   \end{columns}
 \end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Structural}
-  \begin{itemize}
-      \item Compartmentalize your code.
-      \item Write functions whenever possible.
-      \begin{itemize}
-        \item If you have $>15$ lines of code, you can probably replace it by one or more functions.
-        \item In principle, it should not even matter how function works, as long as it gives the expected output.\\ \vskip1ex
-        \begin{tikzpicture}[node distance = 3cm, auto]
-          % Place nodes
-          \node [emphblock] (function) {Function};
-          \node [emphblock, left of=function] (input) {Input};
-          \node [emphblock, right of=function] (output) {Output};
-          % Draw edges
-          \draw [line,->] (input) -> (function);
-          \draw [line,->] (function) -> (output);
-      \end{tikzpicture}\vskip1ex
-      \end{itemize}
-      \item Put critical variables at the beginning of your program.
-  \end{itemize}  
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Structural}
-    Write code as though it were paragraphs in a story.
-    \begin{lstlisting}[language=Python]
-from dependencies import * # importing all dependencies
-
-# Step 0: Define variables
-n_steps = 10000  # number of steps
-n_walks = 1000  # number of random walk samples
-
-# Step 1: Generate n_walks number of random walks
-de = np.zeros((n_walks, 2))
-for i in range(n_walks):
-    angles = get_random_angles(n_steps)
-    coord = transform_angles_to_coordinates(angles)
-    de[i, 0] = calculate_de(coord)  # store de
-    de[i, 1] = de[i, 0]**2  # store de^2
-
-# Step 2: Plot the histogram
-plt.hist(de[:, 0], density=True)
-D, P = calculate_pdf(n_steps, 1000)
-plt.plot(D, P)
-plt.show()
-    \end{lstlisting}
-\end{frame}
-
-
-\begin{frame}[fragile]
-  \frametitle{Flexibility}
-    If you want to add a feature or change something inside the program, it should not require rewriting the whole program. (jargon: non-linear propagation of change).\\
-    
-    Solution: Encapsulate your code and "Don't Repeat Yourself"
-    \begin{itemize}
-        \item Use functions for specific tasks (can you verbalize it? Then it is probably a function)
-        \item Use variables, even for constants (it sounds like a oxymoron, but it's not! In fact, constant variables are a real thing)
-        \item Use abstraction whenever possible
-    \end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Generalization}
-    If your code works for one problem, it should also work for a similar problem, whether it's in another company or on another planet. \\ \vskip1em
-    
-    Pro-tip: Separate data from algorithms.\\
-    
-    To be honest, I rarely see students making this mistake.
-    
-\begin{lstlisting}
-# Stupid code
-A = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]  # Hardcode data in the program
-    
-# Smart code
-with open('some_random_dataset.dat') as file:
-    data = file.read()  # or use appropriate data loading functions from libraries like pandas
-\end{lstlisting}
-\end{frame}
-
-
-\begin{frame}[fragile]
-  \frametitle{Documentation}
-    Properly document your code. Write your comments in a clear and concise fashion. Help your future self: Write clear and concise documentation.
-    \begin{columns}
-    \column{0.6\textwidth}
-    \begin{lstlisting}[language=Python]
-def f(a, b=None):
-    if b is not None:
-        c = a + b
-    elif b is None and a is not None:
-        c = a + a
-    else:
-        c = 0
-    return c
-    \end{lstlisting}
-    \column{0.4\textwidth}
-    \includegraphics[width=\columnwidth]{figures/drakeno.jpg}
-    \end{columns}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Documentation}
-    Properly document your code. Write your comments in a clear and concise fashion. Help your future self: Write clear and concise documentation.
-    \begin{columns}
-    \column{0.6\textwidth}
-    \begin{lstlisting}[language=Python]
-def f(a, b=None):
-    """
-    Add two values together.
-    
-    Parameters:
-    a: The first number.
-    b: The second number. Optional.
-    
-    Returns:
-    The sum of a and b, or 2*a if b is not given, or 0 if a is not given.
-    
-    See also: sum, operator.add
-    """
-    if b is not None:
-        c = a + b  # sum two different numbers
-    elif b is None and a is not None:
-        c = a + a  # double single number
-    else:
-        c = 0      # input not valid
-    return c
-    \end{lstlisting}
-    \column{0.4\textwidth}
-    \includegraphics[width=\columnwidth]{figures/drakeyes.jpg}
-    \end{columns}
-\end{frame}
-
 
 \againframe{workrightfast}
 
