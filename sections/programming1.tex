@@ -271,7 +271,7 @@ params["TotalSteps"] = int(params["T"] / params["dt"])  # Add new key--value pai
 print(f"New timestep: {params["dt"]} s, total steps: {params["TotalSteps"]}")
 \end{lstlisting}
 \pause
-\begin{lstlisting}[language=PyOutput]
+\begin{lstlisting}[style=PyOutput]
 Time step: 0.01 s
 New timestep: 0.02 s, total steps: 500
 \end{lstlisting}
@@ -296,7 +296,7 @@ print(my_tuple)
 my_tuple[1] = 4
 \end{lstlisting}
 \pause
-\begin{lstlisting}[language=PyOutput]
+\begin{lstlisting}[style=PyOutput]
 (1, 2, 3)
 Traceback (most recent call last):
   File "/home/ivo/Repositories/nm-slides/test_scripts.py", line 5, in <module>
@@ -317,7 +317,7 @@ for i in range(5):
     print(f"Iteration {i}")
   \end{lstlisting}
   \pause
-  \begin{lstlisting}[language=PyOutput]
+  \begin{lstlisting}[style=PyOutput]
 Index 0, Value 10
 Index 1, Value 20
 Index 2, Value 30
@@ -339,7 +339,7 @@ L = [10, 20, 30, 40]
 for i, val in enumerate(L):
     print(f"Index {i}, Value {val}")
     \end{lstlisting}
-    \begin{lstlisting}[language=PyOutput]
+    \begin{lstlisting}[style=PyOutput]
 Index 0, Value 10
 Index 1, Value 20
 Index 2, Value 30
@@ -354,7 +354,7 @@ N_list = [1,2,3,4,5]
 for m,n in zip(M_list, N_list):
     print(f"Value {m = }, Value {n = }")
     \end{lstlisting}
-    \begin{lstlisting}[language=PyOutput]
+    \begin{lstlisting}[style=PyOutput]
 Value m = 'a', Value n = 1
 Value m = 'b', Value n = 2
 Value m = 'c', Value n = 3
@@ -421,7 +421,7 @@ for v in values:
 print(f"Number of negative values before exceeding 10: {neg_count}")
     \end{lstlisting}
 \pause
-    \begin{lstlisting}[language=PyOutput]
+    \begin{lstlisting}[style=PyOutput]
 Number of negative values before exceeding 10: 2
     \end{lstlisting}
   \end{onlyenv}
@@ -623,6 +623,7 @@ L = [x**2 for x in L if x % 2 == 0]
   \end{lstlisting}
 \end{frame}
 
+\subsection{Object oriented programming}
 \begin{frame}[fragile]
   \frametitle{Python classes}
   Sometimes, you may end up with many functions and data that are related to each other. In such cases, it is often useful to group them together into a single unit called a class.

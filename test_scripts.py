@@ -1,20 +1,19 @@
-class IdealGas:
-    def __init__(self, name, n=1, R=8.314):
-        """Create an ideal gas of n moles (using default R J/K/mol)"""
-        self.name = name
-        self.R = R
-        self.n = n
-        
-    def compute_pressure(self,V,T):
-        """Compute the pressure using P=nRT/V"""
-        P = (self.n * self.R * T) / V
-        return P
-    
-H2 = IdealGas("Hydrogen", 1.0)
-N2 = IdealGas("Nitrogen", 2.5)
-O2 = IdealGas("Oxygen", 1.333)
+import numpy as np
 
-for gas in [H2,N2,O2]:
-    pres = gas.compute_pressure(0.1,373)
-    print(f'{gas.name} has a pressure of {pres:4.2f} Pa')
-    
+a,b,c = 1.0,1e8,1.0
+disc = np.sqrt(b*b-4*a*c)
+
+x1 = (-b+disc)/(2*a)
+x2 = (-b-disc)/(2*a)
+
+print(x1, x2, x1*x2)
+
+
+import numpy as np
+
+def roots_stable(a,b,c):
+    disc = np.sqrt(b*b-4*a*c)
+    q = -0.5*(b+np.sign(b)*disc)
+    return q/a, c/q
+
+print(roots_stable(a,b,c))

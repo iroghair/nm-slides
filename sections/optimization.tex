@@ -25,6 +25,7 @@
 \subsection*{}
 \againframe<2>{contents_opt}
 \begin{frame}[fragile,label={slidedatacreate}]{Let's do an 'experiment' to gather data}
+The following function can be found in the \lstinline|poly_regression.py| script (see git repository).
     \begin{lstlisting}
 def generate_random_data(N=101,p=[1,1/3,1.5,3.5],draw=False):
     # Generate linear space of control points
@@ -230,7 +231,7 @@ def fit_using_polyfit(x,y,n=2,draw=False):
 }
 }
 
-\begin{frame}[fragile]{Example solution}
+\begin{frame}<handout:0|beamer:1->[fragile]{Example solution}
     \begin{lstlisting}
 def fit_linear_model(x,y,draw=False):
     assert x.shape == y.shape, 'x and y must have the same shape'
@@ -386,8 +387,8 @@ def fit_using_lstsqr(x,y,n=2,draw=False):
 
 {\nologo
 \begin{frame}[fragile]
-  \frametitle{Curve fitting from command line: scipy.optimize.curve\_fit}
-  Python offers various non-linear parameter and curve fitting tools that can be run from the command line. The function \lstinline$curve_fit$ from the \lstinline$scipy.optimize$ module allows to fit a model to a given dataset. Again, based on the data generated in slide~\ref{slidedatacreate}:
+  \frametitle{Curve fitting: scipy.optimize.curve\_fit}
+  Python offers various non-linear parameter and curve fitting tools. The function \lstinline$curve_fit$ from the \lstinline$scipy.optimize$ module allows to fit a model to a given dataset. Again, based on the data generated in slide~\ref{slidedatacreate}:
     \begin{lstlisting}
 from poly_regression import generate_random_data
 from scipy.optimize import curve_fit
@@ -540,8 +541,7 @@ n = len(U)    # number of data points
 p = len(params) # number of parameters
 
 dof = max(0, n - p) # number of degrees of freedom
-# t value for the dof and confidence level
-tval = stats.t.ppf(1.0-alpha/2., dof) 
+tval = stats.t.ppf(1.0-alpha/2., dof) # t value for the dof and confidence level
 sigma = np.sqrt(np.diag(params_covariance))
 ci = sigma * tval
 

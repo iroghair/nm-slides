@@ -1,3 +1,323 @@
-\part{Examples}
-\section{Style testing}
+% \part{Git intro}
+% \section{Git essentials for collaboration}
 
+% % ============================================================
+% % Numerical Errors & Stability (Beamer slide suggestions)
+% % Topics: unstable methods, error propagation, catastrophic cancellation, summation
+% % Each topic: concept, example, mitigation, exercise
+% % ============================================================
+
+% \subsection{Unstable methods}
+
+% \begin{frame}
+%   \frametitle{Unstable methods: concept}
+%   A numerical method is \emph{unstable} if small perturbations (roundoff, truncation, data noise)
+%   grow rapidly during iteration or time-stepping.
+
+%   For a one-step method
+%   \[
+%     y_{n+1} = \Phi(y_n;h),
+%   \]
+%   the error $e_n = y_n - y(t_n)$ satisfies
+%   \[
+%     e_{n+1} \approx \Phi'(y(t_n)) e_n + \tau_n,
+%   \]
+%   where $\tau_n$ is the local truncation error.
+
+%   For explicit Euler applied to $y' = \lambda y$:
+%   \[
+%     y_{n+1} = (1 + h\lambda)y_n,
+%     \qquad
+%     e_{n+1} = (1 + h\lambda)e_n.
+%   \]
+
+%   Stability requires
+%   \[
+%     |1 + h\lambda| \le 1.
+%   \]
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Unstable methods: example (stiff decay)}
+%   Consider
+%   \[
+%     y' = -50 y, \qquad y(0) = 1.
+%   \]
+%   The exact solution decays smoothly: $y(t) = e^{-50t}$.
+
+%   Explicit Euler gives $y_{n+1} = (1 - 50h)y_n$.
+%   If $h > 0.04$, the method becomes unstable.
+
+%   \begin{lstlisting}[language=Python]
+% import numpy as np
+
+% lam = -50.0
+% for h in [0.02, 0.05]:
+%     N = int(1.0/h)
+%     y = 1.0
+%     for n in range(N):
+%         y = y + h*lam*y
+%     print(h, y)
+%   \end{lstlisting}
+% \end{frame}
+
+% \begin{frame}
+%   \frametitle{Unstable methods: mitigation}
+%   Practical remedies:
+%   \begin{itemize}
+%     \item Reduce the step size $h$ to remain inside the stability region.
+%     \item Use an A-stable method (e.g. backward Euler):
+%     \[
+%       y_{n+1} = \frac{1}{1 - h\lambda} y_n.
+%     \]
+%     \item Use adaptive step-size control.
+%   \end{itemize}
+
+%   Rule of thumb: exploding or oscillating solutions usually indicate
+%   a \emph{stability} problem, not an accuracy problem.
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Exercise: stability threshold}
+%   For $y' = -50y$, $y(0)=1$:
+%   \begin{itemize}
+%     \item Scan step sizes $h \in [0.005, 0.1]$.
+%     \item Determine for which $h$ the solution is stable.
+%     \item Compare with the theoretical condition $|1-50h|\le 1$.
+%   \end{itemize}
+
+%   \begin{lstlisting}[language=Python]
+% import numpy as np
+
+% lam = -50.0
+
+% def euler_final(h):
+%     y = 1.0
+%     N = int(1.0/h)
+%     for _ in range(N):
+%         y += h*lam*y
+%     return y
+
+% for h in np.linspace(0.005, 0.1, 20):
+%     y1 = euler_final(h)
+%     print(h, abs(y1) < 2)
+%   \end{lstlisting}
+% \end{frame}
+
+% % ------------------------------------------------------------
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Exercise: forward vs central difference}
+%   Compare
+%   \[
+%     \frac{f(x+h)-f(x)}{h}
+%     \quad \text{and} \quad
+%     \frac{f(x+h)-f(x-h)}{2h}.
+%   \]
+
+%   \begin{lstlisting}[language=Python]
+% import numpy as np
+
+% x = 1.0
+% true = np.cos(x)
+
+% for k in range(1,17):
+%     h = 10.0**(-k)
+%     df = (np.sin(x+h)-np.sin(x))/h
+%     dc = (np.sin(x+h)-np.sin(x-h))/(2*h)
+%     print(h, abs(df-true), abs(dc-true))
+%   \end{lstlisting}
+% \end{frame}
+
+% % ------------------------------------------------------------
+
+% \subsection{Catastrophic cancellation}
+
+
+% % ------------------------------------------------------------
+
+% \subsection{Summation and compensated summation}
+
+% \begin{frame}
+%   \frametitle{Summation error: concept}
+%   Floating-point addition is not associative:
+%   \[
+%     (a+b)+c \neq a+(b+c).
+%   \]
+
+%   When summing many numbers of different magnitudes,
+%   small contributions may be lost.
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Summation error: order matters}
+%   Example:
+%   \[
+%     10^8 + \sum_{i=1}^N 10^{-8}.
+%   \]
+
+%   \begin{lstlisting}[language=Python]
+% N = 1000000
+% big = 1e8
+% tiny = 1e-8
+
+% s1 = big
+% for _ in range(N):
+%     s1 += tiny
+
+% s2 = 0.0
+% for _ in range(N):
+%     s2 += tiny
+% s2 += big
+
+% print(s1, s2)
+%   \end{lstlisting}
+% \end{frame}
+
+% \begin{frame}
+%   \frametitle{Kahan summation}
+%   Kahan compensated summation tracks lost low-order bits:
+%   \[
+%     y = x - c,\quad
+%     t = s + y,\quad
+%     c = (t - s) - y,\quad
+%     s = t.
+%   \]
+
+%   Improves accuracy at minimal extra cost.
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Exercise: implement Kahan summation}
+%   \begin{lstlisting}[language=Python]
+% def kahan_sum(xs):
+%     s = 0.0
+%     c = 0.0
+%     for x in xs:
+%         y = x - c
+%         t = s + y
+%         c = (t - s) - y
+%         s = t
+%     return s
+%   \end{lstlisting}
+% \end{frame}
+
+
+
+% ------------------------------------------------------------
+\subsection{Git essentials for collaboration}
+
+\begin{frame}
+  \frametitle{Why Git (and what you actually need)}
+  Git is a \emph{distributed version control system}.
+  You use it to:
+  \begin{itemize}
+    \item track changes in code,
+    \item collaborate without overwriting each other,
+    \item recover from mistakes (yes, including stupid ones).
+  \end{itemize}
+
+  \vspace{0.5em}
+  Mental model:
+  \begin{itemize}
+    \item \textbf{Repository}: the project + its history.
+    \item \textbf{Commit}: a snapshot with a message (“what changed and why”).
+    \item \textbf{Remote}: shared version (e.g. GitLab/GitHub).
+  \end{itemize}
+
+  You do \emph{not} need:
+  \begin{itemize}
+    \item rebasing wizardry,
+    \item cherry-picking,
+    \item Git archaeology.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{The only Git workflow you need (for this course)}
+  Basic collaboration pattern:
+  \begin{enumerate}
+    \item Clone the repository
+    \item Create your own branch
+    \item Make changes + commit
+    \item Push branch
+    \item Merge via main branch
+  \end{enumerate}
+
+  \pause
+  Essential commands:
+  \begin{lstlisting}[language=Python]
+git clone <repo-url>
+git checkout -b my-branch
+git status
+git add file.py
+git commit -m "Clear message"
+git push origin my-branch
+  \end{lstlisting}
+
+  \pause
+  Rules that save friendships:
+  \begin{itemize}
+    \item Never work directly on \texttt{main}
+    \item Commit often, commit small
+    \item If something breaks: Git remembers, you don’t have to
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{What Git does NOT solve for you}
+  Important realism check:
+  \begin{itemize}
+    \item Git does not fix bad code
+    \item Git does not prevent bad ideas
+    \item Git does not write commit messages for you
+  \end{itemize}
+
+  \vspace{0.5em}
+  Merge conflicts are not errors — they are Git saying:
+  \begin{quote}
+    “Two people changed the same thing.  
+    You decide.”
+  \end{quote}
+
+  If you fear conflicts, you waited too long to commit.
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Exercise: first collaborative Git workflow}
+  \textbf{Setup (teacher):}
+  \begin{itemize}
+    \item Create a practice repository with:
+    \begin{itemize}
+      \item \lstinline|README.md|
+      \item \lstinline|compute.py| (simple placeholder function)
+    \end{itemize}
+    \item Add students as collaborators
+  \end{itemize}
+
+  \pause
+  \textbf{Student task:}
+  \begin{enumerate}
+    \item Clone the repository
+    \item Create a branch named \lstinline|firstname-lastname|
+    \item Modify \lstinline|compute.py|:
+      \begin{itemize}
+        \item add a small function (e.g. square, cube, norm, etc.)
+        \item add your name in a comment
+      \end{itemize}
+    \item Commit with message:
+    \begin{quote}
+      \lstinline|"Add <function-name> by <name>"}
+    \end{quote}
+    \item Push your branch
+  \end{enumerate}
+
+  \pause
+  \textbf{Bonus (controlled conflict):}
+  \begin{itemize}
+    \item Two students edit the same line in \lstinline|README.md|
+    \item Merge branches and resolve the conflict together
+  \end{itemize}
+\end{frame}

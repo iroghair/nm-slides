@@ -214,7 +214,7 @@ plt.show()
   \end{itemize}
 }
 
-\section{Roundoff and truncation errors}
+\section{Roundoff errors}
 \againframe<2>{contents_err}
 \subsection*{roundoff}
 \frame{
@@ -314,65 +314,8 @@ plt.show()
  \end{itemize}
 }
 
-\begin{frame}
-  \frametitle{Arithmetic operations with binary numbers}
-  \centering 
-  Addition: \vskip1em
-  \begin{columns}
-  \column{0.3\textwidth}
-    $ 0 + 0 = 0$\\
-    $ 0 + 1 = 1$\\
-    $ 1 + 0 = 1$\\
-    \alert{$ 1 + 1 = 0$ (carry one)}\pause
-    \column{0.25\textwidth}
-      \begin{tabular}{cccc}
-	  & 1 & 4 & 5 \\
-	+ &   & 2 & 3 \\
-	\hline
-	  & 1 & 6 & 8 \\
-      \end{tabular}\pause
-    \column{0.45\textwidth}
-      \begin{tabular}{ccccccccc}
-	  & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 1\\
-	+ & 0 & 0 & 0 & 1 & 0 & 1 & 1 & 1 \\
-	\hline \pause
-	  & 1 & 0 & 1 & 0 & 1 & 0 & 0 & 0 \\
-      \end{tabular}
-  \end{columns}
-  \pause
-\centering 
-\vskip2em  
-Subtraction: \\ 
-\vskip1em
-  \begin{columns}
-  \column{0.3\textwidth}
-    $ 0 - 0 = 0$\\
-    $1 - 0 = 1$\\
-    $1 - 1 = 0$\\
-    \alert{$0 - 1 = 1$ (borrow one)}\pause
-    \column{0.25\textwidth}
-      \begin{tabular}{cccc}
-	  & 1 & 4 & 5 \\
-	- &   & 2 & 3 \\
-	\hline
-	  & 1 & 2 & 2 \\
-      \end{tabular}\pause
-    \column{0.45\textwidth}
-      \begin{tabular}{ccccccccc}
-	  & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 1\\
-	- & 0 & 0 & 0 & 1 & 0 & 1 & 1 & 1 \\
-	\hline \pause
-	  & 0 & 1 & 1 & 1 & 1 & 0 & 1 & 0 \\
-      \end{tabular}
-  \end{columns}
-  \vskip1em
-  \begin{itemize}
-    \item Multiplication and division are more expensive, and more elaborate
-  \end{itemize}
-\end{frame}
-
 \frame{
- \frametitle{Exercise}
+ \frametitle{Try yourself}
   Try the following commands in Python:
     \begin{longtable}{l!{\vrule}c}
       Command & Result \\ \hline
@@ -422,55 +365,176 @@ Subtraction: \\
  \end{itemize}
 \end{frame}
 
+
+
+
 \begin{frame}[fragile]
- \frametitle{Representation of real (floating point) numbers}
- \begin{itemize}
-    \item Example: $\lambda = 3$, $m = 2$, $x = \frac{2}{3}$
-    \[ x = \pm \left( 2^{-1} + c_2 2^{-2}\right)2^e \]
-    \begin{itemize}
-      \item $c_0 \in \{0,1\}$
-      \item $e = \pm a_0 2^0$
-      \item $a_0 \in \{0,1\}$
-    \end{itemize}
-    \item Truncation: $fl(x) = 2^{-1} = 0.5$
-    \item Round off: $fl(x) = 2^{-1} + 2^{-2} = 0.75$
- \end{itemize}
+  \frametitle{Roundoff error: truncation vs rounding}
+
+  Real numbers are stored with a limited number of digits (or bits).
+  When a number does not fit, the representation must be \emph{approximated}.
+
+  \vspace{0.5em}
+  Truncation (chopping)
+  \begin{itemize}
+    \item Extra digits are simply discarded.
+    \item Always biases the result in the same direction.
+    \[
+      \pi = 3.14159265 \;\Rightarrow\; 3.14
+    \]
+  \end{itemize}
+
+  \vspace{0.5em}
+  Rounding (to nearest)
+  \begin{itemize}
+    \item Last retained digit is rounded up or down.
+    \item Error is smaller and approximately unbiased.
+    \[
+      \pi = 3.14159265 \;\Rightarrow\; 3.14,\qquad
+      3.145 \Rightarrow 3.15
+    \]
+  \end{itemize}
+
+  \vspace{0.5em}
+  In binary floating-point, this corresponds to choosing the last bit as
+  $0$ or $1$ when the exact value lies in between.
 \end{frame}
 
-% \begin{frame}[fragile]
-%  \frametitle{Representation of floating point numbers}
-%  \begin{columns}
-%  \column{0.6\textwidth}
-%   \begin{itemize}
-%     \item A double is 64 bits (8 bytes)
-%     \item Calculate the size of $s$
-%     \[ s = \sum_{m=0}^{63} 2^m \onslide<3->{= 1.8447e+19} \]
-%   \end{itemize}
-%   \pause 
-%  \column{0.4\textwidth}
-%  \begin{block}{Code example}
-%   \begin{lstlisting}
-% s = 0;
-% for i = 0:63
-% s = s + 2^i;
-% end
-% s
-%   \end{lstlisting}
-%  \end{block}
-%  \pause 
-%  \end{columns}
-%   \pause
-%  \begin{itemize}
-%   \item Why is this number smaller than \lstinline$realmax$?
-%  \end{itemize}
-%  \pause
-%  \centering
-%  \includegraphics[width=0.9\textwidth]{IEEE_754_Double_Floating_Point_Format}
-%    \begin{flushright}
-%   {\tiny
-%    Image: \href{http://commons.wikimedia.org/wiki/File:IEEE_754_Double_Floating_Point_Format.svg#mediaviewer/File:IEEE_754_Double_Floating_Point_Format.svg}{Wikimedia Commons}} CCA by-SA
-%   \end{flushright}
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{Truncation vs rounding: numerical example}
+
+  Simulate decimal arithmetic with 3 significant digits.
+\begin{columns}[b]
+  \column{0.5\textwidth}  
+  \begin{lstlisting}[language=Python]
+import math
+
+x = math.pi
+
+# chopping to 3 significant digits
+chop = float(f"{x:.3g}")
+
+# rounding to nearest (default Python behavior)
+rounding = round(x, 3)
+
+print(f"'exact' : {x}...")
+print(f"chopped : {chop}")
+print(f"rounded : {rounding}")
+print(f"errors  : {chop-x}, {rounding-x}")
+
+  \end{lstlisting}
+  \vspace{0pt}
+  \column{0.5\textwidth}
+  \begin{lstlisting}[style=PyOutput]
+'exact' : 3.141592653589793...
+chopped : 3.14
+rounded : 3.142
+errors  : -0.0015926535897929917, 
+  0.0004073464102067881
+  \end{lstlisting}
+  \vspace{0pt}
+\end{columns}
+  \pause
+  \begin{itemize}
+    \item Chopping always underestimates here.
+    \item Rounding alternates between over- and underestimation.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Exercise: binary representation}
+
+  Consider a binary floating point number, here represented as $x = 1.101101011_2$.
+  \begin{itemize}
+    \item The digits before the binary point represent powers of $2^0, 2^1, \ldots$ (from right to left)
+    \item The digits after the binary point represent powers of $2^{-1}, 2^{-2}, \ldots$
+  \end{itemize}
+
+  Write a function to convert a string representation of a binary number (e.g. \lstinline|'1.101101011'|) to its decimal value.
+
+    \pause
+  
+    \begin{lstlisting}[language=Python]
+def binary_to_float(_bin: str) -> float:
+    _pos,_neg = _bin.split('.')
+    _float = 0
+    # Count positive powers
+    for i in range(len(_pos)):
+        _float += int(_pos[i]) * 2**i
+    # Count negative powers
+    for i in range(1,len(_neg)+1):
+        _float += int(_neg[i-1]) * 2**(-i)
+    return _float
+
+my_bin = '1.101'
+print(binary_to_float(my_bin))
+    \end{lstlisting}
+  % def binary_to_decimal(binary_str):
+  %   """Convert a binary string (e.g. '1.101101011') to its decimal value."""
+  %   if '.' in binary_str:
+  %     int_part, frac_part = binary_str.split('.')
+  %   else:
+  %     int_part, frac_part = binary_str, ''
+  %   # Integer part
+  %   int_value = sum(int(bit) * 2**i for i, bit in enumerate(reversed(int_part)))
+  %   # Fractional part
+  %   frac_value = sum(int(bit) * 2**-(i+1) for i, bit in enumerate(frac_part))
+  %   return int_value + frac_value
+
+  % # Example usage:
+  % x = '1.101101011'
+  % print(binary_to_decimal(x))  # Output: 1.7138671875
+\end{frame}
+
+\begin{frame}
+  \frametitle{Binary truncation (chopping)}
+
+  Example: store $x = 1.101101011_2$ using only $p=5$ bits.
+  \[
+    x = 1.\underline{10110}\,1011_2
+    \;\Rightarrow\;
+    \mathrm{fl}_{\text{chop}}(x) = 1.10110_2
+  \]
+
+  Properties:
+  \begin{itemize}
+    \item Always rounds \emph{towards zero}.
+    \item Error has fixed sign.
+    \item Bias accumulates in long computations.
+  \end{itemize}
+
+  Relative error:
+  \[
+    \frac{|x-\mathrm{fl}(x)|}{|x|} < 2^{-p}.
+  \]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Binary rounding (to nearest)}
+
+  Same number, same precision ($p=5$ bits):
+  \[
+    x = 1.\underline{10110}\,1011_2
+  \]
+
+  Look at the first discarded bit:
+  \[
+    \mathrm{fl}_{\text{round}}(x) = 1.10111_2
+  \]
+
+  Properties:
+  \begin{itemize}
+    \item Error is smaller than with chopping.
+    \item Over- and underestimation occur with similar probability.
+    \item Expected rounding error is approximately zero.
+  \end{itemize}
+
+  Bound on relative error:
+  \[
+    \frac{|x-\mathrm{fl}(x)|}{|x|} \le \tfrac{1}{2} 2^{-p}.
+  \]
+\end{frame}
+
 
 \section{Break errors}
 \againframe<2>{contents_err}
@@ -575,6 +639,65 @@ Subtraction: \\
 
 \section{Loss of digits}
 \againframe<2>{contents_err}
+\subsection*{Machine arithmetic}
+
+\begin{frame}
+  \frametitle{Arithmetic operations with binary numbers}
+  \centering 
+  Addition: \vskip1em
+  \begin{columns}
+  \column{0.3\textwidth}
+    $ 0 + 0 = 0$\\
+    $ 0 + 1 = 1$\\
+    $ 1 + 0 = 1$\\
+    \alert{$ 1 + 1 = 0$ (carry one)}\pause
+    \column{0.25\textwidth}
+      \begin{tabular}{cccc}
+	  & 1 & 4 & 5 \\
+	+ &   & 2 & 3 \\
+	\hline
+	  & 1 & 6 & 8 \\
+      \end{tabular}\pause
+    \column{0.45\textwidth}
+      \begin{tabular}{ccccccccc}
+	  & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 1\\
+	+ & 0 & 0 & 0 & 1 & 0 & 1 & 1 & 1 \\
+	\hline \pause
+	  & 1 & 0 & 1 & 0 & 1 & 0 & 0 & 0 \\
+      \end{tabular}
+  \end{columns}
+  \pause
+\centering 
+\vskip2em  
+Subtraction: \\ 
+\vskip1em
+  \begin{columns}
+  \column{0.3\textwidth}
+    $ 0 - 0 = 0$\\
+    $1 - 0 = 1$\\
+    $1 - 1 = 0$\\
+    \alert{$0 - 1 = 1$ (borrow one)}\pause
+    \column{0.25\textwidth}
+      \begin{tabular}{cccc}
+	  & 1 & 4 & 5 \\
+	- &   & 2 & 3 \\
+	\hline
+	  & 1 & 2 & 2 \\
+      \end{tabular}\pause
+    \column{0.45\textwidth}
+      \begin{tabular}{ccccccccc}
+	  & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 1\\
+	- & 0 & 0 & 0 & 1 & 0 & 1 & 1 & 1 \\
+	\hline \pause
+	  & 0 & 1 & 1 & 1 & 1 & 0 & 1 & 0 \\
+      \end{tabular}
+  \end{columns}
+  \vskip1em
+  \begin{itemize}
+    \item Multiplication and division are more expensive, and more elaborate
+  \end{itemize}
+\end{frame}
+
 \subsection*{loss of digits}
 \frame{ 
   \frametitle{Loss of digits}
@@ -583,6 +706,8 @@ Subtraction: \\
     \item Consider the summation of $x$ and $y$
      \[ \tilde{x} - \delta \leq x \leq \tilde{x} + \delta \quad \mathrm{and} \quad \tilde{y} - \varepsilon \leq y \leq \tilde{y} + \varepsilon \]
      \[ (\tilde{x} + \tilde{y}) - (\delta + \varepsilon) \leq x + y \leq (\tilde{x} + \tilde{y}) + (\delta + \varepsilon) \]
+    \item Consider the subtraction of $x$ and $y$
+     \[ (\tilde{x} - \tilde{y}) - (\delta + \varepsilon) \leq x - y \leq (\tilde{x} - \tilde{y}) + (\delta + \varepsilon) \]
   \end{itemize}
 }
 
@@ -608,12 +733,121 @@ Subtraction: \\
   \end{itemize}
 }
 
+
+\begin{frame}
+  \frametitle{Catastrophic cancellation: concept}
+  Catastrophic cancellation occurs when subtracting nearly equal numbers.
+
+  Relative error scales as
+  \[
+    \frac{|\delta a - \delta b|}{|a-b|}.
+  \]
+
+  When $|a-b|$ is small, relative error becomes large.
+\end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Catastrophic cancellation: quadratic roots}
+%   Naive quadratic formula:
+%   \[
+%     x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}.
+%   \]
+
+%   Example: $x^2 + 10^8 x + 1 = 0$.
+
+%   \begin{lstlisting}[language=Python]
+% import numpy as np
+
+% a,b,c = 1.0,1e8,1.0
+% disc = np.sqrt(b*b-4*a*c)
+
+% x1 = (-b+disc)/(2*a)
+% x2 = (-b-disc)/(2*a)
+
+% print(x1, x2, x1*x2)
+%   \end{lstlisting}
+% \end{frame}
+
+% \begin{frame}
+%   \frametitle{Catastrophic cancellation: mitigation}
+%   Stable quadratic algorithm:
+%   \[
+%     q = -\frac{1}{2}\left(b + \mathrm{sign}(b)\sqrt{b^2-4ac}\right),
+%   \]
+%   \[
+%     x_1 = \frac{q}{a}, \qquad x_2 = \frac{c}{q}.
+%   \]
+
+%   Avoids subtraction of nearly equal numbers.
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Exercise: stable quadratic solver}
+%   Implement the stable variant and verify:
+%   \[
+%     x_1 x_2 = \frac{c}{a}, \qquad x_1 + x_2 = -\frac{b}{a}.
+%   \]
+
+%   \begin{lstlisting}[language=Python]
+% import numpy as np
+
+% def roots_stable(a,b,c):
+%     disc = np.sqrt(b*b-4*a*c)
+%     q = -0.5*(b+np.sign(b)*disc)
+%     return q/a, c/q
+%   \end{lstlisting}
+% \end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Loss of digits: Summation order matters}
+  Example:
+  \[
+    10^8 + \sum_{i=1}^N 10^{-8}.
+  \]
+
+  \begin{lstlisting}[language=Python]
+N = 1000000
+big = 1e8
+tiny = 1e-8
+
+s1 = big
+for _ in range(N):
+    s1 += tiny
+
+s2 = 0.0
+for _ in range(N):
+    s2 += tiny
+s2 += big
+
+print(s1, s2)
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Exercise: summation of many numbers}
+
+  \begin{lstlisting}[language=Python]
+import numpy as np
+np.random.seed(42) # Make sure that the results are reproducible
+x = 10.0**np.random.uniform(-12, 12, size=1_000_000)
+  \end{lstlisting}
+
+\begin{itemize}
+  \item Sum the numbers in \lstinline|x| in the given order.
+  \item Now sort the numbers in ascending order and sum them again.
+  \item Finally, sort the numbers in descending order and sum them again.
+  \item What do you observe?
+\end{itemize}  
+\pause
+Specialized algorithms (Kahan summation, pairwise summation) can reduce the error.
+\end{frame}
+
 \frame{ 
-  \frametitle{Loss of digits: Example 2}
+  \frametitle{Loss of digits: Example 3}
   \begin{itemize}
     \colorize<1> \item Calculate $e^{-5}$
     \begin{itemize}
-      \colorize<1> \item Use the Taylor series
+      \colorize<1> \item Use the Taylor series we programmed before ($e^x \approx \sum_{n=0}^{N} \frac{x^n}{n!}$ )
       \colorize<1> \item Calculate the first 26 terms ($N=26$)
     \end{itemize}
     \colorize<2> \item Now repeat the calculation, but use for each calculation only 4 digits. What do you find? \\
@@ -622,7 +856,6 @@ Subtraction: \\
     \colorize<4> \item If you only use 4 digits in the calculations, you'll find 0.00998
   \end{itemize}
 }
-
 
 \frame{ 
   \frametitle{Badly (ill) conditioned problems}
@@ -727,84 +960,140 @@ print(y)
   \end{itemize}
 }
 
-\frame{
-  \frametitle{The Golden mean}
-  The Golden Mean is a well known ratio and one of the solutions of $\phi^2=\phi+1$, such that $\phi=\frac{1+\sqrt{5}}{2}$, and $\phi-1 = \phi^{-1}$. Many relations to compute $\phi$ have been established (which pose often an interesting source for creating small test programs).
-  \begin{itemize}
-   \colorize<1> \item Let's evaluate the following recurrent relationship:
-    \[ y_{n+1} = y_{n-1} - y_n \]
-    \[ y_0 = 1, \quad y_1 = 1-\phi = \phi^{-1} = \frac{2}{1+\sqrt{5}} \]
-    \colorize<2> \item Alternatively, a closed form power law relation exists, which again computes $y_n$:
-    \[ y_n = x^{-n}, \quad n=0,1,2,\ldots, \quad x = \frac{1 + \sqrt{5}}{2} \]
-  \end{itemize}
-}
-% 
-{\nologo
-\begin{frame}[fragile]
-  \frametitle{The Golden mean}
-  \begin{columns}[T]
-    \column{0.5\textwidth}
-      \begin{block}{Recurrent version}
-        \begin{lstlisting}[language=Python]
-import numpy as np
+% \frame{
+%   \frametitle{The Golden mean}
+%   The Golden Mean is a well known ratio and one of the solutions of $\phi^2=\phi+1$, such that $\phi=\frac{1+\sqrt{5}}{2}$, and $\phi-1 = \phi^{-1}$. Many relations to compute $\phi$ have been established (which pose often an interesting source for creating small test programs).
+%   \begin{itemize}
+%    \colorize<1> \item Let's evaluate the following recurrent relationship:
+%     \[ y_{n+1} = y_{n-1} - y_n \]
+%     \[ y_0 = 1, \quad y_1 = 1-\phi = \phi^{-1} = \frac{2}{1+\sqrt{5}} \]
+%     \colorize<2> \item Alternatively, a closed form power law relation exists, which again computes $y_n$:
+%     \[ y_n = x^{-n}, \quad n=0,1,2,\ldots, \quad x = \frac{1 + \sqrt{5}}{2} \]
+%   \end{itemize}
+% }
+% % 
+% {\nologo
+% \begin{frame}[fragile]
+%   \frametitle{The Golden mean}
+%   \begin{columns}[T]
+%     \column{0.5\textwidth}
+%       \begin{block}{Recurrent version}
+%         \begin{lstlisting}[language=Python]
+% import numpy as np
 
-def golden_mean_recurrent(Ntot):
-    # Initialize the series with the given initial conditions
-    y = np.zeros(Ntot)
-    y[0] = 1
-    y[1] = 2 / (1 + np.sqrt(5))
+% def golden_mean_recurrent(Ntot):
+%     # Initialize the series with the given initial conditions
+%     y = np.zeros(Ntot)
+%     y[0] = 1
+%     y[1] = 2 / (1 + np.sqrt(5))
     
-    # Perform the recurrence to fill in the rest of the series
-    for n in range(2, Ntot):
-        y[n] = y[n-1] - y[n-2]
-    return y
-        \end{lstlisting}
-      \end{block}
-    \pause
-    \column{0.5\textwidth}
-      \begin{block}{Power law version}
-        \begin{lstlisting}[language=Python]
-import numpy as np
+%     # Perform the recurrence to fill in the rest of the series
+%     for n in range(2, Ntot):
+%         y[n] = y[n-1] - y[n-2]
+%     return y
+%         \end{lstlisting}
+%       \end{block}
+%     \pause
+%     \column{0.5\textwidth}
+%       \begin{block}{Power law version}
+%         \begin{lstlisting}[language=Python]
+% import numpy as np
 
-def golden_mean_powerlaw(Ntot):
-    # Initialize the constant value
-    x = (1 + np.sqrt(5)) / 2
+% def golden_mean_powerlaw(Ntot):
+%     # Initialize the constant value
+%     x = (1 + np.sqrt(5)) / 2
     
-    # Generate a range of values from 0 to Ntot and apply the power law
-    y = x ** -np.arange(0, Ntot + 1)
+%     # Generate a range of values from 0 to Ntot and apply the power law
+%     y = x ** -np.arange(0, Ntot + 1)
     
-    return y
-        \end{lstlisting}
-      \end{block}
-  \end{columns}
-  \pause
-  \begin{itemize}
-    \item Compare the outcomes: \lstinline$plot(goldenMeanPowerlaw(40) - goldenMeanRecurrent(40))$ \pause
-    \item See what happens if you use single precision (add \lstinline|dtype=np.float32| to line 5 (\lstinline|np.zeros|) and line 8 (\lstinline|np.arange|)).
-  \end{itemize}
-  \vskip1em
+%     return y
+%         \end{lstlisting}
+%       \end{block}
+%   \end{columns}
+%   \pause
+%   \begin{itemize}
+%     \item Compare the outcomes: \lstinline$plot(goldenMeanPowerlaw(40) - goldenMeanRecurrent(40))$ \pause
+%     \item See what happens if you use single precision (add \lstinline|dtype=np.float32| to line 5 (\lstinline|np.zeros|) and line 8 (\lstinline|np.arange|)).
+%   \end{itemize}
+%   \vskip1em
+% \end{frame}
+% }
+% % 
+% \begin{frame}[fragile]
+%   \frametitle{The Golden mean}
+%   \begin{longtable}{c!{\vrule}cc}
+%     \hline
+%       $n$   & Recurrent & Power law \\ \hline
+%       $0$   & $1.0000$ & $1.0000$ \\
+%       $1$   & $0.6180$ & $0.6180$ \\
+%       $2$   & $0.3820$ & $0.3820$ \\
+%       $3$   & $0.2361$ & $0.2361$ \\
+%       $\ldots$ & $\ldots$ & $\ldots$ \\
+%       $37$ & $1.714\cdot10^{-08}$ & $1.851\cdot10^{-08}$ \\
+%       $38$ & $1.366\cdot10^{-08}$ & $1.144\cdot10^{-08}$ \\
+%       $39$ & $3.485\cdot10^{-08}$ & $7.071\cdot10^{-09}$ \\
+%       $40$ & $1.017\cdot10^{-08}$ & $4.370\cdot10^{-09}$ \\ \hline
+%     \end{longtable} 
+%     \begin{itemize}
+%       \colorize<2> \item The recurrent approach enlarges errors from earlier calculations!
+%     \end{itemize}
+%     \vskip2em
+% \end{frame}
+
+
+
+\subsection{Error propagation}
+
+\begin{frame}
+  \frametitle{Error propagation: concept}
+  Errors propagate through numerical algorithms.
+
+  For an iteration
+  \[
+    x_{n+1} = g(x_n),
+  \]
+  the error satisfies
+  \[
+    e_{n+1} \approx g'(x^\ast) e_n + \delta_n.
+  \]
+
+  If $|g'(x^\ast)| < 1$, errors decay.
+  If $|g'(x^\ast)| > 1$, errors amplify.
 \end{frame}
-}
-% 
+
 \begin{frame}[fragile]
-  \frametitle{The Golden mean}
-  \begin{longtable}{c!{\vrule}cc}
-    \hline
-      $n$   & Recurrent & Power law \\ \hline
-      $0$   & $1.0000$ & $1.0000$ \\
-      $1$   & $0.6180$ & $0.6180$ \\
-      $2$   & $0.3820$ & $0.3820$ \\
-      $3$   & $0.2361$ & $0.2361$ \\
-      $\ldots$ & $\ldots$ & $\ldots$ \\
-      $37$ & $1.714\cdot10^{-08}$ & $1.851\cdot10^{-08}$ \\
-      $38$ & $1.366\cdot10^{-08}$ & $1.144\cdot10^{-08}$ \\
-      $39$ & $3.485\cdot10^{-08}$ & $7.071\cdot10^{-09}$ \\
-      $40$ & $1.017\cdot10^{-08}$ & $4.370\cdot10^{-09}$ \\ \hline
-    \end{longtable} 
-    \begin{itemize}
-      \colorize<2> \item The recurrent approach enlarges errors from earlier calculations!
-    \end{itemize}
-    \vskip2em
+  \frametitle{Error propagation: numerical differentiation}
+  Forward difference:
+  \[
+    f'(x) \approx \frac{f(x+h)-f(x)}{h}.
+  \]
+
+  Truncation error is $O(h)$, roundoff error behaves like $O(\varepsilon/h)$.
+
+  Example: $f(x)=\sin x$ at $x=1$.
+
+  \begin{lstlisting}[language=Python]
+import numpy as np
+
+x = 1.0
+true = np.cos(x)
+
+for k in range(1,17):
+    h = 10.0**(-k)
+    approx = (np.sin(x+h)-np.sin(x))/h
+    print(h, abs(approx-true))
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Error propagation: mitigation}
+  \begin{itemize}
+    \item Use higher-order schemes (e.g. central differences).
+    \item Choose $h$ where truncation and roundoff balance.
+    \item Avoid subtraction when possible (symbolic or automatic differentiation).
+  \end{itemize}
+
+  Smaller step sizes are not always better.
 \end{frame}
 
 \frame{
