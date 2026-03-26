@@ -44,7 +44,7 @@ def get_input_output_filenames(argv):
     with open(infile,'r', encoding='utf-8', errors='replace') as file:
          data = file.readlines()
          for line in data:
-             if line.startswith('\documentclass'):
+             if line.startswith('\\documentclass'):
                  if bool(re.findall('handout',line)):
                      outfile = Path("Handout" + outnames.title() + ".pdf")
                  else:
